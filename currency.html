@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แปลงสกุลเงิน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+        .currency-card {
+            background: white;
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        .currency-title {
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .currency-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .input-group-text {
+            font-weight: bold;
+            min-width: 55px;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .form-control {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: right;
+        }
+        .currency-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+        .input-wrapper {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .input-wrapper.active {
+            border-color: #11998e;
+            background: #e8f5e9;
+        }
+        .input-wrapper.disabled {
+            opacity: 0.6;
+            background: #e9ecef;
+        }
+        .convert-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 25px 0;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .convert-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+        .result-time {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        .result-time.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .rate-info {
+            text-align: center;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+        .btn-back {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .lock-icon {
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: 5px;
+        }
+        .refresh-btn {
+		    width: 100%;
+    		padding: 12px;
+    		font-size: 1.1rem;
+    		font-weight: bold;
+    		border: 2px solid #11998e;
+    		border-radius: 12px;
+    		background: white;
+    		color: #11998e;
+    		margin-top: 10px;
+    		transition: all 0.3s;
+		}
+		.refresh-btn:hover {
+    		background: #11998e;
+    		color: white;
+    		transform: translateY(-2px);
+		}
+    </style>
+</head>
+<body>
+    <a href="index.html" class="btn-back">← กลับหน้าแรก</a>
+    
+    <div class="currency-card">
+        <div class="currency-title">💱 แปลงสกุลเงิน</div>
+        <div class="currency-subtitle">ใส่ค่าในช่องใดช่องหนึ่ง แล้วกดแปลง</div>
+        
+        <!-- THB -->
+        <div class="input-wrapper" id="wrap-thb">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">฿</span>
+                <input type="number" class="form-control" id="thb" placeholder="0" step="0.01" oninput="handleInput('thb')">
+            </div>
+            <div class="currency-label">Thai Baht (THB) <span class="lock-icon" id="lock-thb"></span></div>
+        </div>
+        
+        <!-- JPY -->
+        <div class="input-wrapper" id="wrap-jpy">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">¥</span>
+                <input type="number" class="form-control" id="jpy" placeholder="0" step="0.01" oninput="handleInput('jpy')">
+            </div>
+            <div class="currency-label">Japanese Yen (JPY) <span class="lock-icon" id="lock-jpy"></span></div>
+        </div>
+        
+        <!-- USD -->
+        <div class="input-wrapper" id="wrap-usd">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="usd" placeholder="0" step="0.01" oninput="handleInput('usd')">
+            </div>
+            <div class="currency-label">US Dollar (USD) <span class="lock-icon" id="lock-usd"></span></div>
+        </div>
+        
+        <button class="convert-btn" onclick="convertCurrency()">
+            🔄 แปลงสกุลเงิน
+        </button>
+        
+        <button class="refresh-btn" onclick="refreshAll()">
+		    🔄 รีเฟรช / เริ่มใหม่
+		</button>
+        
+        <div class="result-time" id="resultTime"></div>
+        
+        <div class="rate-info">
+            อัตราแลกเปลี่ยนโดยประมาณ<br>
+            1 USD ≈ 35 THB | 1 USD ≈ 150 JPY | 1 THB ≈ 4.3 JPY
+        </div>
+    </div>
+
+    <script>
+    	let activeInput = null;
+let latestRates = null; // เก็บอัตราล่าสุด
+
+// ดึงอัตราแลกเปลี่ยนล่าสุด
+async function fetchRates() {
+    try {
+        const response = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+        const data = await response.json();
+        latestRates = data;
+        return data;
+    } catch (error) {
+        console.log('API ล่ม:', error);
+        return null;
+    }
+}
+
+function getRate(from, to) {
+    if (!latestRates) return null;
+    
+    // แปลงจาก USD เป็นเป้าหมาย
+    const fromRate = latestRates.usd[from]; // เช่น usd.thb = 35.12
+    const toRate = latestRates.usd[to];     // เช่น usd.jpy = 149.85
+    
+    // คำนวณ: (1/fromRate) * toRate
+    return (1 / fromRate) * toRate;
+}
+
+function handleInput(currency) {
+    const value = document.getElementById(currency).value;
+    
+    if (value && value !== '0') {
+        activeInput = currency;
+        lockOtherInputs(currency);
+        highlightActive(currency);
+    } else {
+        activeInput = null;
+        unlockAllInputs();
+        clearHighlight();
+    }
+}
+
+function lockOtherInputs(active) {
+    const currencies = ['thb', 'jpy', 'usd'];
+    currencies.forEach(curr => {
+        if (curr !== active) {
+            document.getElementById(curr).readOnly = true;
+            document.getElementById('lock-' + curr).textContent = '🔒';
+            document.getElementById('wrap-' + curr).classList.add('disabled');
+        }
+    });
+}
+
+function unlockAllInputs() {
+    ['thb', 'jpy', 'usd'].forEach(curr => {
+        document.getElementById(curr).readOnly = false;
+        document.getElementById('lock-' + curr).textContent = '';
+        document.getElementById('wrap-' + curr).classList.remove('disabled');
+    });
+}
+
+function highlightActive(currency) {
+    clearHighlight();
+    document.getElementById('wrap-' + currency).classList.add('active');
+}
+
+function clearHighlight() {
+    ['thb', 'jpy', 'usd'].forEach(curr => {
+        document.getElementById('wrap-' + curr).classList.remove('active');
+    });
+}
+
+async function convertCurrency() {
+    if (!activeInput) {
+        alert('กรุณาใส่จำนวนเงินในช่องใดช่องหนึ่งก่อน!');
+        return;
+    }
+    
+    const value = parseFloat(document.getElementById(activeInput).value);
+    if (isNaN(value) || value < 0) {
+        alert('กรุณาใส่ตัวเลขที่ถูกต้อง!');
+        return;
+    }
+    
+    // แสดงกำลังโหลด
+    const btn = document.querySelector('.convert-btn');
+    btn.textContent = '⏳ กำลังโหลดอัตรา...';
+    
+    // ดึงอัตราล่าสุด
+    const data = await fetchRates();
+    
+    if (!data) {
+        alert('ดึงข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');
+        btn.textContent = '🔄 แปลงสกุลเงิน';
+        return;
+    }
+    
+    // คำนวณ
+    const apiCodes = { thb: 'thb', jpy: 'jpy', usd: 'usd' };
+    const otherCurrencies = ['thb', 'jpy', 'usd'].filter(c => c !== activeInput);
+    
+    otherCurrencies.forEach(target => {
+        const rate = getRate(apiCodes[activeInput], apiCodes[target]);
+        const result = (value * rate).toFixed(2);
+        document.getElementById(target).value = result;
+    });
+    
+    // อัปเดตข้อความอัตรา
+    updateRateInfo(data.date);
+    
+    showTimestamp();
+    btn.textContent = '🔄 แปลงสกุลเงิน';
+}
+
+function updateRateInfo(date) {
+    const thbRate = latestRates.usd.thb.toFixed(2);
+    const jpyRate = latestRates.usd.jpy.toFixed(2);
+    const thbToJpy = (latestRates.usd.jpy / latestRates.usd.thb).toFixed(2);
+    
+    document.querySelector('.rate-info').innerHTML = 
+        `✅ อัตราล่าสุด (${date})<br>` +
+        `1 USD = ${thbRate} THB | 1 USD = ${jpyRate} JPY | 1 THB = ${thbToJpy} JPY`;
+}
+
+function showTimestamp() {
+    const now = new Date();
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: false
+    };
+    const thaiTime = now.toLocaleString('th-TH', options);
+    
+    const resultDiv = document.getElementById('resultTime');
+    resultDiv.innerHTML = `✅ แปลงสำเร็จ<br><strong>🕐 ${thaiTime}</strong>`;
+    resultDiv.classList.add('show');
+}
+
+function refreshAll() {
+    document.getElementById('thb').value = '';
+    document.getElementById('jpy').value = '';
+    document.getElementById('usd').value = '';
+    
+    activeInput = null;
+    unlockAllInputs();
+    clearHighlight();
+    
+    document.getElementById('resultTime').classList.remove('show');
+    
+    // รีเซ็ตข้อความอัตรา
+    document.querySelector('.rate-info').innerHTML = 
+        'อัตราแลกเปลี่ยนล่าสุดจาก GitHub API<br>' +
+        'กดแปลงเพื่อดึงข้อมูล';
+    
+    document.getElementById('thb').focus();
+}
+
+// โหลดอัตราเริ่มต้นเมื่อเปิดหน้า
+fetchRates().then(data => {
+    if (data) {
+        updateRateInfo(data.date);
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') convertCurrency();
+});
+    </script>
+</body>
+</html>
