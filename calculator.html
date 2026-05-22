@@ -34,9 +34,32 @@
             font-size: 1.3rem;
             font-weight: bold;
         }
+                .btn-back {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
     </style>
 </head>
 <body>
+    <a href="index.html" class="btn-back">← กลับหน้าแรก</a>
     <div class="container">
         <div class="card calc-card shadow-lg">
             <div class="card-body p-4">
