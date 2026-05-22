@@ -107,15 +107,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>📝 Menu List</h1>
+        <h1>📝 รายการสิ่งที่ต้องทำ</h1>
         
         <div class="input-group">
-            <input type="text" id="taskInput" placeholder="Add New Menu..." onkeypress="handleEnter(event)">
+            <input type="text" id="taskInput" placeholder="เพิ่มรายการใหม่..." onkeypress="handleEnter(event)">
             <button onclick="addTask()">เพิ่ม</button>
         </div>
         
         <ul id="taskList">
-            <div class="empty-state">Nothing here! Let's make one!</div>
+            <div class="empty-state">ยังไม่มีรายการ ลองเพิ่มสิ!</div>
         </ul>
     </div>
 
@@ -127,14 +127,14 @@
             const list = document.getElementById('taskList');
             
             if (tasks.length === 0) {
-                list.innerHTML = '<div class="empty-state">Nothing here! Let's make one!</div>';
+                list.innerHTML = '<div class="empty-state">ยังไม่มีรายการ ลองเพิ่มสิ!</div>';
                 return;
             }
             
             list.innerHTML = tasks.map((task, index) => `
                 <li>
                     <span>${task}</span>
-                    <button class="delete-btn" onclick="deleteTask(${index})">DEL</button>
+                    <button class="delete-btn" onclick="deleteTask(${index})">ลบ</button>
                 </li>
             `).join('');
         }
@@ -144,7 +144,7 @@
             const task = input.value.trim();
             
             if (task === '') {
-                alert('Please input text first!');
+                alert('กรุณาใส่รายการก่อน!');
                 return;
             }
             
