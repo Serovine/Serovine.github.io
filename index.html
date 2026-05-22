@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #667eea;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s, background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .delete-btn {
+            background: #ff4757;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        
+        .delete-btn:hover {
+            background: #ff3344;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Menu List</h1>
+        
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Add New Menu..." onkeypress="handleEnter(event)">
+            <button onclick="addTask()">เพิ่ม</button>
+        </div>
+        
+        <ul id="taskList">
+            <div class="empty-state">Nothing here! Let's make one!</div>
+        </ul>
+    </div>
+
+    <script>
+        // โหลดข้อมูลจาก LocalStorage
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                list.innerHTML = '<div class="empty-state">Nothing here! Let's make one!</div>';
+                return;
+            }
+            
+            list.innerHTML = tasks.map((task, index) => `
+                <li>
+                    <span>${task}</span>
+                    <button class="delete-btn" onclick="deleteTask(${index})">DEL</button>
+                </li>
+            `).join('');
+        }
+        
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const task = input.value.trim();
+            
+            if (task === '') {
+                alert('Please input text first!');
+                return;
+            }
+            
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            input.value = '';
+            renderTasks();
+        }
+        
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+        
+        function handleEnter(event) {
+            if (event.key === 'Enter') addTask();
+        }
+        
+        // แสดงผลครั้งแรก
+        renderTasks();
+    </script>
+</body>
+</html>
