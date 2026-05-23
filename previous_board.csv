@@ -1,6 +1,6 @@
-Symbol,Exchange,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
-WMT,NYSE,Walmart Inc.,18-05-26,Before Market,60.50,15.20%,28.5,LONG,+4.50%,Hit!
-HD,NYSE,Home Depot,19-05-26,Before Market,340.20,5.10%,22.1,LONG,-2.10%,Loss!
-PANW,NASDAQ,Palo Alto Networks,20-05-26,After Market,310.15,40.50%,55.2,LONG,+8.20%,Hit!
-TGT,NYSE,Target Corp,21-05-26,Before Market,155.80,-2.50%,16.4,SHORT,+0.00%,Even
-DE,NYSE,Deere & Co,22-05-26,Before Market,405.00,8.40%,14.2,LONG,-1.50%,Loss!
+Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+TSLA,Tesla Inc.,18-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
+HD,Home Depot,19-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0..50%,Flop
+MSFT,Microsoft Corp.,20-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
+CSCO,Cisco Systems,21-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
+CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon
