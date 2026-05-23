@@ -8,22 +8,29 @@ import concurrent.futures
 BOARD_FILE = "earnings_board.csv"
 
 def get_display_day(date_str, time_str):
-    """คู่มือแมปปิ้งวันตามกฎ: After Market วันก่อนหน้า + Before Market วันปัจจุบัน"""
-    if date_str == "22-05-26" and time_str == "After Market": return "Monday"
-    if date_str == "25-05-26" and time_str == "Before Market": return "Monday"
-    
-    if date_str == "25-05-26" and time_str == "After Market": return "Tuesday"
-    if date_str == "26-05-26" and time_str == "Before Market": return "Tuesday"
-    
-    if date_str == "26-05-26" and time_str == "After Market": return "Wednesday"
-    if date_str == "27-05-26" and time_str == "Before Market": return "Wednesday"
-    
-    if date_str == "27-05-26" and time_str == "After Market": return "Thursday"
-    if date_str == "28-05-26" and time_str == "Before Market": return "Thursday"
-    
-    if date_str == "28-05-26" and time_str == "After Market": return "Friday"
-    if date_str == "29-05-26" and time_str == "Before Market": return "Friday"
-    return "N/A"
+    """
+    คู่มือแมปปิ้งวันแบบ Dynamic: 
+    อ่านวันที่จากไฟล์ ถ้าเป็น After Market จะถูกปัดไปเป็นโควต้าของ 'วันทำการถัดไป' ทันที
+    """
+    try:
+        # แปลงข้อความ 'DD-MM-YY' ให้เป็นออบเจกต์วันที่ของ Python
+        dt = datetime.datetime.strptime(str(date_str).strip(), '%d-%m-%y')
+        
+        # ตรรกะปัดวัน: ถ้างบออกหลังตลาดปิด (After Market) ผลลัพธ์จะไปโชว์ตอนตลาดเปิดวันถัดไป
+        if str(time_str).strip() == "After Market":
+            if dt.weekday() == 4: 
+                # ถ้าวันศุกร์ (4) งบออก AMC ให้กระโดดข้ามเสาร์-อาทิตย์ไปเป็นวันจันทร์ (+3 วัน)
+                dt += datetime.timedelta(days=3)
+            else: 
+                # วันจันทร์-พฤหัสบดี ให้ทดไป 1 วันตามปกติ
+                dt += datetime.timedelta(days=1)
+                
+        # ส่งกลับชื่อวันในสัปดาห์ (เช่น 'Monday', 'Tuesday')
+        return dt.strftime('%A')
+        
+    except Exception:
+        # กันเหนียวเผื่อช่องวันที่ว่างเปล่า หรือ Format ใน CSV เพี้ยน
+        return "N/A"
 
 def fetch_current_price(symbol):
     """ดึงราคาล่าสุด ณ เวลาที่เปิดตลาดหรือรันสคริปต์"""
@@ -115,6 +122,28 @@ def main():
     # os.system("git add earnings_board.csv")
     # os.system('git commit -m "🤖 Auto-update lotto results via desktop script"')
     # os.system("git push")
+    
+def main():
+    # ---------------------------------------------------------
+    # 🗽 ระบบป้องกัน Daylight Saving (DST Guard) - เป็นด่านแรกสุด
+    # ---------------------------------------------------------
+    ny_tz = pytz.timezone('America/New_York')
+    ny_now = datetime.datetime.now(ny_tz)
+    market_open = ny_now.replace(hour=9, minute=30, second=0, microsecond=0)
+    
+    if ny_now < market_open:
+        print(f"🚫 ตลาดยังไม่เปิด! เวลาที่ NY ตอนนี้คือ {ny_now.strftime('%H:%M')} (ต้องรอ 09:30)")
+        return
+    # ---------------------------------------------------------
+
+    if not os.path.exists(BOARD_FILE):
+        print(f"❌ ไม่พบไฟล์ {BOARD_FILE} กรุณาตรวจสอบว่ารันถูกโฟลเดอร์")
+        return
+
+    # โหลดฐานข้อมูลหลัก
+    df = pd.read_csv(BOARD_FILE)
+    
+    # ... (โค้ดส่วนที่เหลือของฟังก์ชัน main() ปล่อยไว้เหมือนเดิมยาวไปจนจบฟังก์ชัน) ...
 
 if __name__ == "__main__":
     main()
