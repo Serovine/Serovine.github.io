@@ -688,11 +688,24 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         });
 
         function calculateWeekDates() {
-            const now = new Date();
-            const dayOfWeek = now.getDay();
-            
-            const monday = new Date(now);
-            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0=อาทิตย์, 6=เสาร์
+    
+    let targetMonday = new Date(now);
+    
+    if (dayOfWeek === 6) {
+        // เสาร์ → ยังอยู่สัปดาห์เดิม (จันทร์ที่ผ่านมา)
+        targetMonday.setDate(now.getDate() - 5);
+    } else if (dayOfWeek === 0) {
+        // อาทิตย์ → สัปดาห์ใหม่เริ่มแล้ว (จันทร์หน้า)
+        targetMonday.setDate(now.getDate() + 1);
+    } else {
+        // จันทร์-ศุกร์ → จันทร์ของสัปดาห์นี้
+        const diffToMonday = 1 - dayOfWeek;
+        targetMonday.setDate(now.getDate() + diffToMonday);
+    }
+    
+    const monday = targetMonday;
             monday.setDate(now.getDate() + diffToMonday);
             
             const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -828,13 +841,15 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         function renderPreviousSection() {
             const container = document.getElementById('previous-content');
-            const days = [
-                { key: 'mon', name: 'Monday', date: '18 May 2026', csvDate: '18-05-26' },
-                { key: 'tue', name: 'Tuesday', date: '19 May 2026', csvDate: '19-05-26' },
-                { key: 'wed', name: 'Wednesday', date: '20 May 2026', csvDate: '20-05-26' },
-                { key: 'thu', name: 'Thursday', date: '21 May 2026', csvDate: '21-05-26' },
-                { key: 'fri', name: 'Friday', date: '22 May 2026', csvDate: '22-05-26' }
-            ];
+            const currentMonday = currentWeekDates['Monday'].fullDate;
+const prevMonday = new Date(currentMonday);
+prevMonday.setDate(currentMonday.getDate() - 7);
+
+const days = [
+    { key: 'mon', name: 'Monday', date: formatDate(prevMonday), csvDate: formatCSVDate(prevMonday) },
+    // ... บวกวันละ 1 ไปจนถึงศุกร์
+];
+
 
             container.innerHTML = days.map(day => {
                 const dayStocks = getPreviousDayStocks(day.csvDate);
