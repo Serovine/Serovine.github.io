@@ -7,143 +7,137 @@ import concurrent.futures
 
 BOARD_FILE = "earnings_board.csv"
 
+
 def get_display_day(date_str, time_str):
     """
-    คู่มือแมปปิ้งวันแบบ Dynamic: 
-    อ่านวันที่จากไฟล์ ถ้าเป็น After Market จะถูกปัดไปเป็นโควต้าของ 'วันทำการถัดไป' ทันที
+    แมปวันที่ประกาศงบ → วันที่ตลาดจะซื้อขาย
+    BMO  → วันเดิม
+    AMC  → วันทำการถัดไป (ข้าม Weekend ถ้าจำเป็น)
     """
     try:
-        # แปลงข้อความ 'DD-MM-YY' ให้เป็นออบเจกต์วันที่ของ Python
         dt = datetime.datetime.strptime(str(date_str).strip(), '%d-%m-%y')
-        
-        # ตรรกะปัดวัน: ถ้างบออกหลังตลาดปิด (After Market) ผลลัพธ์จะไปโชว์ตอนตลาดเปิดวันถัดไป
         if str(time_str).strip() == "After Market":
-            if dt.weekday() == 4: 
-                # ถ้าวันศุกร์ (4) งบออก AMC ให้กระโดดข้ามเสาร์-อาทิตย์ไปเป็นวันจันทร์ (+3 วัน)
-                dt += datetime.timedelta(days=3)
-            else: 
-                # วันจันทร์-พฤหัสบดี ให้ทดไป 1 วันตามปกติ
-                dt += datetime.timedelta(days=1)
-                
-        # ส่งกลับชื่อวันในสัปดาห์ (เช่น 'Monday', 'Tuesday')
+            days_ahead = 3 if dt.weekday() == 4 else 1  # ศุกร์ → จันทร์, อื่น → +1
+            dt += datetime.timedelta(days=days_ahead)
         return dt.strftime('%A')
-        
     except Exception:
-        # กันเหนียวเผื่อช่องวันที่ว่างเปล่า หรือ Format ใน CSV เพี้ยน
         return "N/A"
 
+
 def fetch_current_price(symbol):
-    """ดึงราคาล่าสุด ณ เวลาที่เปิดตลาดหรือรันสคริปต์"""
+    """ดึงราคาปัจจุบันด้วย yfinance"""
     try:
         ticker = yf.Ticker(symbol)
         hist = ticker.history(period="1d")
         if not hist.empty:
-            return symbol, hist['Close'].iloc[-1]
-    except:
+            return symbol, float(hist['Close'].iloc[-1])
+    except Exception:
         pass
     return symbol, None
 
+
+def is_value_empty(val):
+    """เช็คว่าช่องนั้น 'ว่าง' จริงๆ ไม่ว่าจะเป็น NaN, '', หรือ string 'nan'"""
+    if val is None:
+        return True
+    if pd.isna(val):
+        return True
+    return str(val).strip().lower() in ("", "nan")
+
+
 def main():
-    if not os.path.exists(BOARD_FILE):
-        print(f"❌ ไม่พบไฟล์ {BOARD_FILE} กรุณาตรวจสอบว่ารันถูกโฟลเดอร์")
+    # ─── DST Guard: เช็คว่าตลาด NY เปิดแล้วหรือยัง ───────────────────────────
+    ny_tz  = pytz.timezone('America/New_York')
+    ny_now = datetime.datetime.now(ny_tz)
+    market_open = ny_now.replace(hour=9, minute=30, second=0, microsecond=0)
+
+    if ny_now < market_open:
+        print(f"🚫 ตลาดยังไม่เปิด! NY ตอนนี้ {ny_now.strftime('%H:%M')} (รอ 09:30)")
         return
 
-    # โหลดฐานข้อมูลหลัก
+    # ─── โหลดไฟล์ ──────────────────────────────────────────────────────────────
+    if not os.path.exists(BOARD_FILE):
+        print(f"❌ ไม่พบไฟล์ {BOARD_FILE}")
+        return
+
     df = pd.read_csv(BOARD_FILE)
-    
-    # บังคับ Type ป้องกันบั๊ก Pandas float64 อันเลื่องชื่อ
+
+    # บังคับ column ที่อาจมีปัญหา type เป็น object ทั้งหมด
     for col in ['Bet', '%Today', 'Result']:
         if col in df.columns:
             df[col] = df[col].astype(object)
 
-    # ตรวจสอบวันปัจจุบันตามเวลาประเทศไทย
-    tz = pytz.timezone('Asia/Bangkok')
-    now = datetime.datetime.now(tz)
-    current_day = now.strftime('%A')
-    
-    print(f"🕒 เวลาปัจจุบัน (ไทย): {now.strftime('%Y-%m-%d %H:%M:%S')} ({current_day})")
-    
-    # กรองหาหุ้นที่ตรงรอบประกาศของ "วันนี้"
+    # ─── หาวันปัจจุบัน (เวลาไทย) ────────────────────────────────────────────────
+    thai_tz     = pytz.timezone('Asia/Bangkok')
+    thai_now    = datetime.datetime.now(thai_tz)
+    current_day = thai_now.strftime('%A')
+
+    print(f"🕒 เวลาไทย: {thai_now.strftime('%Y-%m-%d %H:%M:%S')} ({current_day})")
+    print(f"🗽 เวลา NY:  {ny_now.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    # ─── กรองหุ้นที่ต้องอัปเดตวันนี้ ────────────────────────────────────────────
     targets = []
     for idx, row in df.iterrows():
         day = get_display_day(str(row['Earnings Date']), str(row['Time']))
-        if day == current_day:
-            # 🛑 กฎ One and Done: ถ้าเคยตรวจไปแล้ว (%Today ไม่ว่าง) จะข้ามทันที ไม่บันทึกซ้ำ
-            if pd.isna(row['%Today']) or str(row['%Today']).strip() == "":
-                targets.append((idx, row['Symbol'], row['Price'], row['Bet']))
+        if day != current_day:
+            continue
+        # One-and-Done: ถ้ามี %Today แล้ว ข้ามเลย
+        if not is_value_empty(row.get('%Today')):
+            continue
+        try:
+            pre_price = float(str(row['Price']).replace(',', '').strip())
+        except (ValueError, TypeError):
+            print(f"⚠️  {row['Symbol']}: Price '{row['Price']}' แปลงเป็นตัวเลขไม่ได้ ข้าม")
+            continue
+        targets.append((idx, str(row['Symbol']).strip(), pre_price, row.get('Bet', '')))
 
     if not targets:
-        print(f"✨ ไม่มีหุ้นที่ต้องตรวจหวยเพิ่มสำหรับวัน {current_day} (หรือตรวจผลของวันนี้ไปหมดแล้ว)")
+        print(f"✨ ไม่มีหุ้นที่ต้องอัปเดตสำหรับวัน {current_day}")
         return
 
-    print(f"🔍 พบหุ้นในรอบวัน {current_day} ที่ต้องอัปเดตราคา {len(targets)} ตัว:")
-    symbols_to_fetch = [t[1] for t in targets]
-    print(", ".join(symbols_to_fetch))
+    print(f"🔍 พบ {len(targets)} ตัวที่ต้องอัปเดต: {', '.join(t[1] for t in targets)}")
 
-    # ใช้ Multithreading แยกร่างดึงราคาพร้อมกันด่วนจี๋
+    # ─── ดึงราคาแบบ Parallel ──────────────────────────────────────────────────
     prices_map = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        results = executor.map(fetch_current_price, symbols_to_fetch)
-        for sym, price in results:
-            if price:
+        for sym, price in executor.map(fetch_current_price, [t[1] for t in targets]):
+            if price is not None:
                 prices_map[sym] = price
 
-    # คำนวณ % และบันทึกผลลัพธ์
+    # ─── คำนวณ % และบันทึก ───────────────────────────────────────────────────
     updated_count = 0
     for idx, symbol, pre_price, bet in targets:
-        if symbol in prices_map:
-            current_price = prices_map[symbol]
-            pct_change = ((current_price - pre_price) / pre_price) * 100
-            
-            # 1. หยอด %Today เข้าไปในระบบ
-            df.at[idx, '%Today'] = f"{pct_change:+.2f}%"
-            
-            # 2. คำนวณช่อง Result ทิ้งไว้ให้ (เพื่อความยืดหยุ่น)
-            # ในแอปคอมพิวเตอร์: จะอ่านค่านี้ไปโชว์ Hit! / Loss! 
-            # ในเว็บมือถือ: จะคำนวณจาก %Today แปลงเป็น SURGED / PLUNGED อัตโนมัติ
-            bet_str = str(bet).strip().upper() if pd.notna(bet) else ""
-            if bet_str == "LONG":
-                df.at[idx, 'Result'] = "Hit!" if pct_change > 0 else ("Loss!" if pct_change < 0 else "Even")
-            elif bet_str == "SHORT":
-                df.at[idx, 'Result'] = "Hit!" if pct_change < 0 else ("Loss!" if pct_change > 0 else "Even")
-            else:
-                df.at[idx, 'Result'] = "Long" if pct_change > 0 else ("Short" if pct_change < 0 else "Even")
-            
-            print(f"🎯 {symbol}: ราคาตั้งต้น ${pre_price:.2f} -> ตอนนี้ ${current_price:.2f} ({pct_change:+.2f}%)")
-            updated_count += 1
+        if symbol not in prices_map:
+            print(f"⚠️  {symbol}: ดึงราคาไม่ได้ ข้าม")
+            continue
 
-    # เซฟบันทึกผลกลับลงไฟล์ CSV
+        current_price = prices_map[symbol]
+        pct_change    = ((current_price - pre_price) / pre_price) * 100
+
+        df.at[idx, '%Today'] = f"{pct_change:+.2f}%"
+
+        bet_str = str(bet).strip().upper() if not is_value_empty(bet) else ""
+        if bet_str == "LONG":
+            result = "Hit!" if pct_change > 0 else ("Loss!" if pct_change < 0 else "Even")
+        elif bet_str == "SHORT":
+            result = "Hit!" if pct_change < 0 else ("Loss!" if pct_change > 0 else "Even")
+        else:
+            result = "Long" if pct_change > 0 else ("Short" if pct_change < 0 else "Even")
+
+        df.at[idx, 'Result'] = result
+
+        print(f"🎯 {symbol}: ${pre_price:.2f} → ${current_price:.2f} ({pct_change:+.2f}%) [{result}]")
+        updated_count += 1
+
+    # ─── เซฟไฟล์ ──────────────────────────────────────────────────────────────
     df.to_csv(BOARD_FILE, index=False)
-    print(f"💾 อัปเดตราคาและเซฟลงไฟล์ {BOARD_FILE} เรียบร้อย! (อัปเดตไป {updated_count} ตัว)")
+    print(f"💾 เซฟเรียบร้อย! อัปเดตไป {updated_count} ตัว")
 
-    # 🚀 ระบบ Git Push อัตโนมัติสำหรับรันบนคอมพิวเตอร์
-    # เอาเครื่องหมาย # ด้านล่างออกได้เลย ถ้าต้องการให้คอมพิวเตอร์สั่ง Push ขึ้น GitHub ให้เองหลังจากรันเสร็จ
-    # print("📤 กำลังส่งข้อมูลขึ้น GitHub ตัวเองอัตโนมัติ...")
+    # ─── Git Push (เปิดใช้ตอน deploy บน GitHub Actions) ──────────────────────
     # os.system("git add earnings_board.csv")
-    # os.system('git commit -m "🤖 Auto-update lotto results via desktop script"')
+    # os.system('git commit -m "🤖 Auto-update lotto results"')
     # os.system("git push")
-    
-def main():
-    # ---------------------------------------------------------
-    # 🗽 ระบบป้องกัน Daylight Saving (DST Guard) - เป็นด่านแรกสุด
-    # ---------------------------------------------------------
-    ny_tz = pytz.timezone('America/New_York')
-    ny_now = datetime.datetime.now(ny_tz)
-    market_open = ny_now.replace(hour=9, minute=30, second=0, microsecond=0)
-    
-    if ny_now < market_open:
-        print(f"🚫 ตลาดยังไม่เปิด! เวลาที่ NY ตอนนี้คือ {ny_now.strftime('%H:%M')} (ต้องรอ 09:30)")
-        return
-    # ---------------------------------------------------------
 
-    if not os.path.exists(BOARD_FILE):
-        print(f"❌ ไม่พบไฟล์ {BOARD_FILE} กรุณาตรวจสอบว่ารันถูกโฟลเดอร์")
-        return
-
-    # โหลดฐานข้อมูลหลัก
-    df = pd.read_csv(BOARD_FILE)
-    
-    # ... (โค้ดส่วนที่เหลือของฟังก์ชัน main() ปล่อยไว้เหมือนเดิมยาวไปจนจบฟังก์ชัน) ...
 
 if __name__ == "__main__":
     main()
