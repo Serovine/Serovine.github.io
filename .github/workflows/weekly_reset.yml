@@ -1,0 +1,41 @@
+name: Weekly Saturday Reset
+
+on:
+  schedule:
+    # 11:00 UTC = 18:00 ไทย ทุกวันเสาร์
+    - cron: '0 11 * * 6'
+
+  # กดรันเองได้จากหน้าเว็บ (สำหรับเทส)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reset-board:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🔄 Rotate CSV files
+        run: |
+          # ถ้า earnings_board.csv มีอยู่ → copy ทับ previous_board.csv
+          if [ -f earnings_board.csv ]; then
+            cp earnings_board.csv previous_board.csv
+            echo "✅ Copy earnings_board.csv → previous_board.csv สำเร็จ"
+          else
+            echo "⚠️  ไม่พบ earnings_board.csv ข้าม step นี้"
+          fi
+
+          # เคลียร์ earnings_board.csv ให้เหลือแค่ header
+          echo "Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result" > earnings_board.csv
+          echo "✅ เคลียร์ earnings_board.csv เรียบร้อย (เหลือแค่ header)"
+
+      - name: 💾 Commit and Push
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add earnings_board.csv previous_board.csv
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 Weekly reset: rotate CSV files [$(date '+%Y-%m-%d')]" && git push)
