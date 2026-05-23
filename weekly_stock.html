@@ -1,0 +1,22 @@
+
+                            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                            let timeStr = "";
+                            if(d > 0) timeStr += `${d}d `; // รองรับเคสวันเสาร์ไปวันจันทร์ (ทะลุ 24 ชั่วโมง)
+                            timeStr += `${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
+                            
+                            boxEl.innerHTML = `Market Opens In: <span id="timer-${day}" class="mono fw-bold">${timeStr}</span>`;
+                        } else {
+                            // วันถัดไปที่ไกลออกไปอีก ให้ขึ้นสถานะจองคิวเงียบๆ ไว้
+                            boxEl.innerHTML = `Market Status: <span style="color: #4b5563; font-weight:500;">QUEUED</span>`;
+                        }
+                    }
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
