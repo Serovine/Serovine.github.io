@@ -1,0 +1,43 @@
+name: Daily Auto Lotto Checker
+
+# ตั้งเวลาการทำงานของบอท
+on:
+    schedule:
+    # รันตอน 13:45 UTC (20:45 ไทย) และ 14:45 UTC (21:45 ไทย)
+    - cron: '45 13,14 * * 1-5'
+
+  
+  # อนุญาตให้เรากดปุ่มรันเองได้จากหน้าเว็บ (สำหรับเอาไว้เทสต์)
+  workflow_dispatch: 
+
+permissions:
+  contents: write # ให้สิทธิ์บอทในการแก้ไขและเซฟไฟล์ทับลง Repo
+
+jobs:
+  check-lotto:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Install Requirements
+        # โหลดไลบรารีที่จำเป็น (ไม่ต้องสร้างไฟล์ requirements.txt ก็ได้ สั่งลงตรงนี้เลยเร็วดี)
+        run: pip install pandas yfinance pytz
+
+      - name: 🚀 Run Auto Lotto Checker
+        # สั่งรันไฟล์ Python ของเรา
+        run: python auto_lotto_checker.py
+
+      - name: 💾 Commit and Push Changes
+        # ตั้งค่าให้บอทเซฟไฟล์ CSV ที่อัปเดตแล้ว กลับขึ้นมาบน GitHub
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add earning_board.csv
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Auto-update %Today results" && git push)
