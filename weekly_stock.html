@@ -599,11 +599,11 @@ PLUS,ePlus inc.,28-05-26,After Market,82.39,-9.43%,14.86,,,
 MNSO,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
 
         const mockPreviousCSV = `Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
-TSLA,Tesla Inc.,18-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
-HD,Home Depot,19-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0.50%,Flop
-MSFT,Microsoft Corp.,20-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
-CSCO,Cisco Systems,21-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
-CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
+TSLA,Tesla Inc.,12-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
+HD,Home Depot,14-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0.50%,Flop
+MSFT,Microsoft Corp.,13-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
+CSCO,Cisco Systems,14-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
+CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         // ─── STATE ───────────────────────────────────────────────────────────────
         let activeStocks = [];
@@ -708,8 +708,33 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         function initializeSystem() {
             fetch('earnings_board.csv')
                 .then(res => res.ok ? res.text() : Promise.reject())
-                .then(text => compileCSV(text))
-                .catch(() => compileCSV(mockDataCSV));
+                .then(text => {
+                    const rows = text.split('\n').filter(l => l.trim());
+                    if (rows.length <= 1) {
+                        // มีแค่ header → Admin ยังไม่อัพสัปดาห์ใหม่
+                        showWaitingBanner();
+                    } else {
+                        compileCSV(text);
+                    }
+                })
+                .catch(() => compileCSV(mockDataCSV));  // fetch ไม่ได้เลย (local/dev) → ใช้ mock
+        }
+
+        function showWaitingBanner() {
+            // โชว์ banner บนทุก day-card แทน pills
+            WEEK_KEYS.forEach(d => {
+                const el = document.getElementById('pills-' + d);
+                if (el) el.innerHTML = `
+                    <div style="
+                        width:100%; padding: 10px 0 2px;
+                        color: var(--text-muted);
+                        font-size: 0.78rem;
+                        display: flex; align-items: center; gap: 6px;
+                    ">
+                        <i class="fa-solid fa-clock" style="opacity:0.5"></i>
+                        Waiting for Admin to update calendar...
+                    </div>`;
+            });
         }
 
         function parseCSVLines(text) {
@@ -787,8 +812,11 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         function loadPreviousData() {
             fetch('previous_board.csv')
                 .then(res => res.ok ? res.text() : Promise.reject())
-                .then(text => parsePreviousCSV(text))
-                .catch(() => parsePreviousCSV(mockPreviousCSV));
+                .then(text => {
+                    const rows = text.split('\n').filter(l => l.trim());
+                    parsePreviousCSV(rows.length <= 1 ? '' : text);
+                })
+                .catch(() => parsePreviousCSV(mockPreviousCSV));  // fetch ไม่ได้เลย → mock
         }
 
         function parsePreviousCSV(text) {
