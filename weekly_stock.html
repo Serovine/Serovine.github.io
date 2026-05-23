@@ -164,6 +164,38 @@
             border-radius: 50%;
         }
 
+        .count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--yellow);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 20px;
+            margin-left: 6px;
+        }
+
+        .count-badge-sm {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.12);
+            color: var(--text);
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+
         .dot-bmo { background: #fbbf24; }
         .dot-amc { background: #a78bfa; }
 
@@ -494,7 +526,7 @@
             <div id="card-Monday" class="day-card" onclick="navigateToDetail('Monday')">
                 <div class="day-header">
                     <div>
-                        <div class="day-name">Monday</div>
+                        <div class="day-name">Monday <span class="count-badge" id="count-Monday">0</span></div>
                         <div class="day-date" id="date-Monday">--</div>
                     </div>
                     <span class="status-badge" id="badge-Monday">--</span>
@@ -506,7 +538,7 @@
             <div id="card-Tuesday" class="day-card" onclick="navigateToDetail('Tuesday')">
                 <div class="day-header">
                     <div>
-                        <div class="day-name">Tuesday</div>
+                        <div class="day-name">Tuesday <span class="count-badge" id="count-Tuesday">0</span></div>
                         <div class="day-date" id="date-Tuesday">--</div>
                     </div>
                     <span class="status-badge" id="badge-Tuesday">--</span>
@@ -518,7 +550,7 @@
             <div id="card-Wednesday" class="day-card" onclick="navigateToDetail('Wednesday')">
                 <div class="day-header">
                     <div>
-                        <div class="day-name">Wednesday</div>
+                        <div class="day-name">Wednesday <span class="count-badge" id="count-Wednesday">0</span></div>
                         <div class="day-date" id="date-Wednesday">--</div>
                     </div>
                     <span class="status-badge" id="badge-Wednesday">--</span>
@@ -530,7 +562,7 @@
             <div id="card-Thursday" class="day-card" onclick="navigateToDetail('Thursday')">
                 <div class="day-header">
                     <div>
-                        <div class="day-name">Thursday</div>
+                        <div class="day-name">Thursday <span class="count-badge" id="count-Thursday">0</span></div>
                         <div class="day-date" id="date-Thursday">--</div>
                     </div>
                     <span class="status-badge" id="badge-Thursday">--</span>
@@ -542,7 +574,7 @@
             <div id="card-Friday" class="day-card" onclick="navigateToDetail('Friday')">
                 <div class="day-header">
                     <div>
-                        <div class="day-name">Friday</div>
+                        <div class="day-name">Friday <span class="count-badge" id="count-Friday">0</span></div>
                         <div class="day-date" id="date-Friday">--</div>
                     </div>
                     <span class="status-badge" id="badge-Friday">--</span>
@@ -559,6 +591,7 @@
                         <div>
                             <strong>Previous Week</strong>
                             <span id="prev-week-label">--</span>
+                            <span class="count-badge-sm" id="count-prev-total">0</span>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-down prev-icon" id="prev-icon"></i>
@@ -825,6 +858,15 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 pill.innerHTML = `<span class="pill-dot ${isBMO ? 'dot-bmo' : 'dot-amc'}"></span>${stock['Symbol']}`;
                 block.appendChild(pill);
             });
+
+            // อัปเดต count badge แต่ละวัน
+            WEEK_KEYS.forEach(d => {
+                const el = document.getElementById('count-' + d);
+                if (!el) return;
+                const count = activeStocks.filter(s => s.TradingDisplayDay === d).length;
+                el.textContent = count;
+                el.style.display = count === 0 ? 'none' : 'inline-flex';
+            });
         }
 
         // ─── PREVIOUS WEEK DATA ──────────────────────────────────────────────────
@@ -853,11 +895,15 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 csvDate: prevWeekDates[dayName].csv
             }));
 
+            let totalPrev = 0;
+
             container.innerHTML = days.map(day => {
                 const dayStocks = getPreviousDayStocks(day.csvDate);
+                const cnt = dayStocks.length;
+                totalPrev += cnt;
 
                 let stocksHTML = '';
-                if (dayStocks.length === 0) {
+                if (cnt === 0) {
                     stocksHTML = '<div class="no-data">No Earnings Stock</div>';
                 } else {
                     stocksHTML = '<div class="prev-pills">' +
@@ -881,12 +927,17 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                     '</div>';
                 }
 
+                const cntBadge = cnt > 0
+                    ? `<span class="count-badge-sm">${cnt}</span>`
+                    : '';
+
                 return `
                     <div class="prev-day-item">
                         <div class="prev-day-header" onclick="togglePrevDay('${day.key}')">
-                            <div>
+                            <div style="display:flex;align-items:center;gap:4px;">
                                 <span class="prev-day-name">${day.name}</span>
                                 <span class="prev-day-date">${day.short}</span>
+                                ${cntBadge}
                             </div>
                             <i class="fa-solid fa-chevron-down prev-day-icon" id="prev-day-icon-${day.key}"></i>
                         </div>
@@ -895,6 +946,13 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                         </div>
                     </div>`;
             }).join('');
+
+            // อัปเดต total badge ที่ previous week header
+            const totalEl = document.getElementById('count-prev-total');
+            if (totalEl) {
+                totalEl.textContent = totalPrev;
+                totalEl.style.display = totalPrev === 0 ? 'none' : 'inline-flex';
+            }
         }
 
         function getPreviousDayStocks(csvDate) {
@@ -1026,6 +1084,47 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         function backToCalendar() { switchView('calendar'); }
 
         // ─── COUNTDOWN TIMERS ────────────────────────────────────────────────────
+
+        /**
+         * คืนค่าเวลาตลาด NY เปิด (9:30 AM ET) ของวันที่กำหนด เป็น Date object
+         * รองรับ DST อัตโนมัติผ่าน Intl.DateTimeFormat
+         * EST (Nov-Mar): UTC-5 → 9:30 ET = 14:30 UTC = 21:30 ICT
+         * EDT (Mar-Nov): UTC-4 → 9:30 ET = 13:30 UTC = 20:30 ICT
+         */
+        function getMarketOpenTime(date) {
+            // สร้าง Date ที่ตรงกับ 9:30 AM ใน timezone America/New_York ของวันนั้น
+            // วิธี: หา UTC offset ของ NY ณ วันนั้น แล้วบวกกลับ
+            const year  = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day   = String(date.getDate()).padStart(2, '0');
+
+            // สร้าง string แบบ NY local time 09:30:00 แล้วแปลงเป็น UTC
+            const nyTimeStr = `${year}-${month}-${day}T09:30:00`;
+
+            // ใช้ Intl เพื่อหา offset ของ NY ณ วันนั้น (รองรับ DST อัตโนมัติ)
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            });
+
+            // หา UTC timestamp ของ 9:30 NY โดย binary search ผ่าน offset
+            // วิธีง่ายกว่า: สร้าง Date UTC แล้วเช็ค NY offset จากมัน
+            const approxUTC = new Date(nyTimeStr + 'Z'); // สมมติเป็น UTC ก่อน
+            const nyParts   = formatter.formatToParts(approxUTC);
+            const nyHour    = parseInt(nyParts.find(p => p.type === 'hour').value);
+            const offsetHrs = nyHour - 9; // ต่างจาก 9:30 NY กี่ชั่วโมง
+
+            // ปรับ UTC ให้ตรงกับ 9:30 NY จริงๆ
+            const marketOpen = new Date(approxUTC);
+            marketOpen.setUTCHours(marketOpen.getUTCHours() - offsetHrs);
+            marketOpen.setUTCMinutes(30);
+            marketOpen.setUTCSeconds(0, 0);
+
+            return marketOpen;
+        }
+
         function initCountdownTimers() {
             updateTimers();
             setInterval(updateTimers, 1000);
@@ -1041,12 +1140,11 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 const badge = document.getElementById('badge-' + dayName);
                 if (!card || !box || !badge) return;
 
-                // Market open = 9:30 ET = 20:30 ICT
-                const targetDate = new Date(currentWeekDates[dayName].fullDate);
-                targetDate.setHours(20, 30, 0, 0);
+                // คำนวณเวลาตลาดเปิดแบบ DST-aware
+                const marketOpen = getMarketOpenTime(currentWeekDates[dayName].fullDate);
 
                 // Session lasts 6.5 hrs = 23400000 ms
-                const diff = targetDate - now;
+                const diff = marketOpen - now;
 
                 card.classList.remove('live', 'upcoming');
 
