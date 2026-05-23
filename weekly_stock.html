@@ -33,7 +33,6 @@
 
         .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Header */
         .header {
             background: rgba(10,14,26,0.95);
             backdrop-filter: blur(20px);
@@ -66,7 +65,6 @@
             font-size: 1.1rem;
         }
 
-        /* Day Card */
         .day-card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -169,7 +167,6 @@
         .dot-bmo { background: #fbbf24; }
         .dot-amc { background: #a78bfa; }
 
-        /* Previous Week Section */
         .previous-section {
             margin-top: 20px;
             border-top: 1px solid var(--border);
@@ -204,18 +201,9 @@
             gap: 10px;
         }
 
-        .previous-title i {
-            color: var(--text-muted);
-        }
-
-        .previous-title strong {
-            font-size: 1rem;
-        }
-
-        .previous-title span {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
+        .previous-title i { color: var(--text-muted); }
+        .previous-title strong { font-size: 1rem; }
+        .previous-title span { color: var(--text-muted); font-size: 0.85rem; }
 
         .prev-icon {
             color: var(--text-muted);
@@ -240,10 +228,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* Previous Day Accordion */
-        .prev-day-item {
-            margin-bottom: 8px;
-        }
+        .prev-day-item { margin-bottom: 8px; }
 
         .prev-day-header {
             display: flex;
@@ -256,18 +241,11 @@
             transition: all 0.2s;
         }
 
-        .prev-day-header:hover {
-            background: rgba(255,255,255,0.04);
-        }
+        .prev-day-header:hover { background: rgba(255,255,255,0.04); }
 
-        .prev-day-header.active {
-            border-radius: 10px 10px 0 0;
-        }
+        .prev-day-header.active { border-radius: 10px 10px 0 0; }
 
-        .prev-day-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+        .prev-day-name { font-weight: 600; font-size: 0.9rem; }
 
         .prev-day-date {
             color: var(--text-muted);
@@ -281,9 +259,7 @@
             font-size: 0.8rem;
         }
 
-        .prev-day-header.active .prev-day-icon {
-            transform: rotate(180deg);
-        }
+        .prev-day-header.active .prev-day-icon { transform: rotate(180deg); }
 
         .prev-day-stocks {
             display: none;
@@ -297,11 +273,7 @@
             animation: fadeIn 0.2s ease;
         }
 
-        .prev-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .prev-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 
         .prev-pill {
             display: inline-flex;
@@ -350,13 +322,9 @@
             border-color: var(--border);
         }
 
-        .prev-pill.chop:hover {
-            background: rgba(255,255,255,0.08);
-        }
+        .prev-pill.chop:hover { background: rgba(255,255,255,0.08); }
 
-        .prev-pill .emoji {
-            font-size: 0.9rem;
-        }
+        .prev-pill .emoji { font-size: 0.9rem; }
 
         .no-data {
             color: var(--text-muted);
@@ -365,7 +333,6 @@
             text-align: center;
         }
 
-        /* Detail View */
         .detail-header {
             padding: 20px;
             background: var(--card);
@@ -401,7 +368,6 @@
             margin-top: 4px;
         }
 
-        /* Stock List */
         .stock-list { padding: 12px; }
 
         .stock-item {
@@ -416,9 +382,7 @@
             transition: all 0.2s;
         }
 
-        .stock-item:hover {
-            border-color: rgba(255,255,255,0.1);
-        }
+        .stock-item:hover { border-color: rgba(255,255,255,0.1); }
 
         .stock-left {
             display: flex;
@@ -441,14 +405,9 @@
             gap: 6px;
         }
 
-        .stock-symbol:hover {
-            border-color: rgba(96,165,250,0.3);
-        }
+        .stock-symbol:hover { border-color: rgba(96,165,250,0.3); }
 
-        .stock-info {
-            display: flex;
-            flex-direction: column;
-        }
+        .stock-info { display: flex; flex-direction: column; }
 
         .stock-name {
             font-size: 0.85rem;
@@ -462,9 +421,7 @@
             margin-top: 2px;
         }
 
-        .stock-right {
-            text-align: right;
-        }
+        .stock-right { text-align: right; }
 
         .stock-pct {
             font-family: 'JetBrains Mono', monospace;
@@ -480,30 +437,12 @@
             margin-top: 4px;
         }
 
-        .pct-moon {
-            color: var(--green);
-            text-shadow: 0 0 20px rgba(16,185,129,0.2);
-        }
-
+        .pct-moon { color: var(--green); text-shadow: 0 0 20px rgba(16,185,129,0.2); }
         .status-moon { color: var(--green); }
-
-        .moon-glow {
-            box-shadow: 0 0 30px rgba(16,185,129,0.15);
-            border-color: rgba(16,185,129,0.3) !important;
-        }
-
-        .pct-flop {
-            color: var(--red);
-            text-shadow: 0 0 20px rgba(239,68,68,0.2);
-        }
-
+        .moon-glow { box-shadow: 0 0 30px rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3) !important; }
+        .pct-flop { color: var(--red); text-shadow: 0 0 20px rgba(239,68,68,0.2); }
         .status-flop { color: var(--red); }
-
-        .flop-glow {
-            box-shadow: 0 0 30px rgba(239,68,68,0.15);
-            border-color: rgba(239,68,68,0.3) !important;
-        }
-
+        .flop-glow { box-shadow: 0 0 30px rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3) !important; }
         .pct-chop { color: var(--text-muted); }
         .status-chop { color: var(--text-muted); }
 
@@ -517,6 +456,16 @@
             font-size: 3rem;
             margin-bottom: 16px;
             opacity: 0.3;
+        }
+
+        .explain-box-bottom {
+            padding: 12px 16px;
+            margin: 8px 12px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .view { display: none; }
@@ -550,10 +499,7 @@
                     </div>
                     <span class="status-badge" id="badge-Monday">--</span>
                 </div>
-                <div class="countdown" id="timer-box-Monday">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Opens in <span class="mono" id="timer-Monday">--:--:--</span></span>
-                </div>
+                <div class="countdown" id="timer-box-Monday"><i class="fa-regular fa-clock"></i><span>Opens in <span class="mono" id="timer-Monday">--:--:--</span></span></div>
                 <div id="pills-Monday" class="pills"></div>
             </div>
 
@@ -565,10 +511,7 @@
                     </div>
                     <span class="status-badge" id="badge-Tuesday">--</span>
                 </div>
-                <div class="countdown" id="timer-box-Tuesday">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Opens in <span class="mono" id="timer-Tuesday">--:--:--</span></span>
-                </div>
+                <div class="countdown" id="timer-box-Tuesday"><i class="fa-regular fa-clock"></i><span>Opens in <span class="mono" id="timer-Tuesday">--:--:--</span></span></div>
                 <div id="pills-Tuesday" class="pills"></div>
             </div>
 
@@ -580,10 +523,7 @@
                     </div>
                     <span class="status-badge" id="badge-Wednesday">--</span>
                 </div>
-                <div class="countdown" id="timer-box-Wednesday">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Opens in <span class="mono" id="timer-Wednesday">--:--:--</span></span>
-                </div>
+                <div class="countdown" id="timer-box-Wednesday"><i class="fa-regular fa-clock"></i><span>Opens in <span class="mono" id="timer-Wednesday">--:--:--</span></span></div>
                 <div id="pills-Wednesday" class="pills"></div>
             </div>
 
@@ -595,10 +535,7 @@
                     </div>
                     <span class="status-badge" id="badge-Thursday">--</span>
                 </div>
-                <div class="countdown" id="timer-box-Thursday">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Opens in <span class="mono" id="timer-Thursday">--:--:--</span></span>
-                </div>
+                <div class="countdown" id="timer-box-Thursday"><i class="fa-regular fa-clock"></i><span>Opens in <span class="mono" id="timer-Thursday">--:--:--</span></span></div>
                 <div id="pills-Thursday" class="pills"></div>
             </div>
 
@@ -610,10 +547,7 @@
                     </div>
                     <span class="status-badge" id="badge-Friday">--</span>
                 </div>
-                <div class="countdown" id="timer-box-Friday">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Opens in <span class="mono" id="timer-Friday">--:--:--</span></span>
-                </div>
+                <div class="countdown" id="timer-box-Friday"><i class="fa-regular fa-clock"></i><span>Opens in <span class="mono" id="timer-Friday">--:--:--</span></span></div>
                 <div id="pills-Friday" class="pills"></div>
             </div>
 
@@ -624,14 +558,12 @@
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         <div>
                             <strong>Previous Week</strong>
-                            <span>18 - 22 May 2026</span>
+                            <span id="prev-week-label">--</span>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-down prev-icon" id="prev-icon"></i>
                 </div>
-                <div class="previous-content" id="previous-content">
-                    <!-- Dropdown 5 วันจะถูกสร้างโดย JS -->
-                </div>
+                <div class="previous-content" id="previous-content"></div>
             </div>
         </div>
     </div>
@@ -650,14 +582,11 @@
             <div id="lotto-items-injector"></div>
         </div>
 
-        <div class="explain-box-bottom" id="explain-text">
-            <i class="fa-solid fa-circle-info me-2"></i>
-            <strong>วันจันทร์:</strong> มีเฉพาะ <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> 
-            (Before Market Open) ของวันจันทร์เท่านั้น
-        </div>
+        <div class="explain-box-bottom" id="explain-text"></div>
     </div>
 
     <script>
+        // ─── MOCK DATA ───────────────────────────────────────────────────────────
         const mockDataCSV = `Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
 AAPL,Apple Inc.,25-05-26,After Market,304.84,14.47%,33.16,LONG,+1.25%,
 BJ,BJ's Wholesale Club,25-05-26,Before Market,93.49,2.05%,19.05,LONG,+0.04%,
@@ -676,10 +605,17 @@ MSFT,Microsoft Corp.,20-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
 CSCO,Cisco Systems,21-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
 CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
+        // ─── STATE ───────────────────────────────────────────────────────────────
         let activeStocks = [];
         let previousStocks = [];
-        let currentWeekDates = {};
+        let currentWeekDates = {};  // { Monday: { fullDate, display, short }, ... }
+        let prevWeekDates   = {};   // same shape for previous week
 
+        const DAY_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const WEEK_KEYS   = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+
+        // ─── BOOT ────────────────────────────────────────────────────────────────
         window.addEventListener('DOMContentLoaded', function() {
             calculateWeekDates();
             initializeSystem();
@@ -687,49 +623,88 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
             initCountdownTimers();
         });
 
-        function calculateWeekDates() {
-    const now = new Date();
-    const dayOfWeek = now.getDay(); // 0=อาทิตย์, 6=เสาร์
-    
-    let targetMonday = new Date(now);
-    
-    if (dayOfWeek === 6) {
-        // เสาร์ → ยังอยู่สัปดาห์เดิม (จันทร์ที่ผ่านมา)
-        targetMonday.setDate(now.getDate() - 5);
-    } else if (dayOfWeek === 0) {
-        // อาทิตย์ → สัปดาห์ใหม่เริ่มแล้ว (จันทร์หน้า)
-        targetMonday.setDate(now.getDate() + 1);
-    } else {
-        // จันทร์-ศุกร์ → จันทร์ของสัปดาห์นี้
-        const diffToMonday = 1 - dayOfWeek;
-        targetMonday.setDate(now.getDate() + diffToMonday);
-    }
-    
-    const monday = targetMonday;
-            monday.setDate(now.getDate() + diffToMonday);
-            
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            
-            days.forEach((dayName, index) => {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + index);
-                
-                const dayNum = date.getDate();
-                const month = months[date.getMonth()];
-                const year = date.getFullYear();
-                
-                currentWeekDates[dayName] = {
-                    fullDate: date,
-                    display: `${dayName} ${dayNum} ${month} ${year}`,
-                    short: `${dayNum} ${month} ${year}`
-                };
-                
-                const dateEl = document.getElementById('date-' + dayName);
-                if(dateEl) dateEl.textContent = currentWeekDates[dayName].short;
-            });
+        // ─── DATE HELPERS ────────────────────────────────────────────────────────
+
+        /** Return a "clean" Date at midnight local time, no time component side-effects */
+        function localDate(year, month, day) {
+            return new Date(year, month, day, 0, 0, 0, 0);
         }
 
+        /**
+         * Given any Date, return the Monday of its trading week.
+         * Rule: Sun → next Monday (new week already started)
+         *       Mon-Sat → Monday of THIS week
+         */
+        function getMondayOf(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            const dow = d.getDay(); // 0=Sun,1=Mon,...,6=Sat
+
+            if (dow === 0) {
+                // Sunday → new week starts tomorrow
+                d.setDate(d.getDate() + 1);
+            } else {
+                // Mon(1)→+0, Tue(2)→-1, ..., Sat(6)→-5
+                d.setDate(d.getDate() - (dow - 1));
+            }
+            return d;
+        }
+
+        /** "DD Mon YYYY" display string */
+        function fmtDisplay(date) {
+            return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        /** "DD-MM-YY" string matching CSV format */
+        function fmtCSV(date) {
+            const dd = String(date.getDate()).padStart(2,'0');
+            const mm = String(date.getMonth()+1).padStart(2,'0');
+            const yy = String(date.getFullYear()).slice(2);
+            return `${dd}-${mm}-${yy}`;
+        }
+
+        // ─── CALCULATE WEEK DATES ────────────────────────────────────────────────
+        function calculateWeekDates() {
+            const now = new Date();
+
+            const thisMonday = getMondayOf(now);
+            const prevMonday = new Date(thisMonday);
+            prevMonday.setDate(thisMonday.getDate() - 7);
+
+            // Build currentWeekDates
+            WEEK_KEYS.forEach((dayName, i) => {
+                const d = new Date(thisMonday);
+                d.setDate(thisMonday.getDate() + i);
+                currentWeekDates[dayName] = {
+                    fullDate: d,
+                    display:  `${dayName} ${fmtDisplay(d)}`,
+                    short:    fmtDisplay(d),
+                    csv:      fmtCSV(d)
+                };
+                const el = document.getElementById('date-' + dayName);
+                if (el) el.textContent = currentWeekDates[dayName].short;
+            });
+
+            // Build prevWeekDates
+            WEEK_KEYS.forEach((dayName, i) => {
+                const d = new Date(prevMonday);
+                d.setDate(prevMonday.getDate() + i);
+                prevWeekDates[dayName] = {
+                    fullDate: d,
+                    display:  `${dayName} ${fmtDisplay(d)}`,
+                    short:    fmtDisplay(d),
+                    csv:      fmtCSV(d)
+                };
+            });
+
+            // Update "Previous Week" label
+            const pMon = prevWeekDates['Monday'];
+            const pFri = prevWeekDates['Friday'];
+            document.getElementById('prev-week-label').textContent =
+                `${pMon.short} – ${pFri.short}`;
+        }
+
+        // ─── CURRENT WEEK DATA ───────────────────────────────────────────────────
         function initializeSystem() {
             fetch('earnings_board.csv')
                 .then(res => res.ok ? res.text() : Promise.reject())
@@ -737,84 +712,78 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 .catch(() => compileCSV(mockDataCSV));
         }
 
-        function compileCSV(text) {
+        function parseCSVLines(text) {
             const lines = text.split('\n');
-            if(lines.length < 2) return;
+            if (lines.length < 2) return [];
             const headers = lines[0].split(',').map(h => h.trim());
-            const parsed = [];
-
-            for(let i=1; i<lines.length; i++) {
-                if(!lines[i].trim()) continue;
+            const rows = [];
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
                 const cols = lines[i].split(',');
-                if(cols.length < headers.length) continue;
-                let item = {};
-                headers.forEach((h, idx) => item[h] = cols[idx] ? cols[idx].trim() : "");
-                parsed.push(item);
+                if (cols.length < headers.length) continue;
+                const item = {};
+                headers.forEach((h, idx) => item[h] = (cols[idx] || '').trim());
+                rows.push(item);
             }
+            return rows;
+        }
 
+        function stockToTradingDay(stock, weekDatesMap) {
+            const dateStr = stock['Earnings Date']; // "DD-MM-YY"
+            const timeStr = stock['Time'];
+
+            const [d, m, y] = dateStr.split('-').map(Number);
+            const stockDate = localDate(2000 + y, m - 1, d);
+            const dow = stockDate.getDay();
+
+            // Is this date inside the given week?
+            const weekStart = weekDatesMap['Monday'].fullDate;
+            const weekEnd   = new Date(weekDatesMap['Friday'].fullDate);
+            weekEnd.setHours(23, 59, 59);
+
+            if (stockDate < weekStart || stockDate > weekEnd) return 'N/A';
+
+            if (timeStr === 'Before Market') {
+                return DAY_NAMES[dow]; // same day
+            } else {
+                // After Market → trading day is next trading day
+                const next = new Date(stockDate);
+                next.setDate(stockDate.getDate() + 1);
+                const nextDow = next.getDay();
+                if (nextDow === 6) return 'Monday'; // Friday AMC → Monday next week (edge case, won't appear in this week's pills)
+                if (nextDow === 0) return 'Monday'; // shouldn't happen for normal earnings
+                return DAY_NAMES[nextDow];
+            }
+        }
+
+        function compileCSV(text) {
+            const parsed = parseCSVLines(text);
             activeStocks = parsed.map(stock => {
-                const dateStr = stock["Earnings Date"];
-                const timeStr = stock["Time"];
-                let mappedDay = "N/A";
-
-                const [day, month, year] = dateStr.split('-').map(Number);
-                const stockDate = new Date(2000 + year, month - 1, day);
-                
-                const dayOfWeek = stockDate.getDay();
-                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const stockDayName = dayNames[dayOfWeek];
-
-                const weekStart = currentWeekDates['Monday'].fullDate;
-                const weekEnd = currentWeekDates['Friday'].fullDate;
-                weekEnd.setHours(23, 59, 59);
-
-                if(stockDate >= weekStart && stockDate <= weekEnd) {
-                    if(timeStr === "Before Market") {
-                        mappedDay = stockDayName;
-                    } else if(timeStr === "After Market") {
-                        const nextDay = new Date(stockDate);
-                        nextDay.setDate(stockDate.getDate() + 1);
-                        const nextDayOfWeek = nextDay.getDay();
-                        const nextDayName = dayNames[nextDayOfWeek];
-                        
-                        if(nextDayOfWeek === 6) {
-                            mappedDay = "Monday";
-                        } else {
-                            mappedDay = nextDayName;
-                        }
-                    }
-                }
-
-                stock.TradingDisplayDay = mappedDay;
+                stock.TradingDisplayDay = stockToTradingDay(stock, currentWeekDates);
                 return stock;
             });
-
             populateCalendarPills();
         }
 
         function populateCalendarPills() {
-            const days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
-            days.forEach(d => {
-                const el = document.getElementById('pills-'+d);
-                if(el) el.innerHTML = "";
+            WEEK_KEYS.forEach(d => {
+                const el = document.getElementById('pills-' + d);
+                if (el) el.innerHTML = '';
             });
 
             activeStocks.forEach(stock => {
                 const day = stock.TradingDisplayDay;
-                if(!days.includes(day)) return;
-                
-                const block = document.getElementById('pills-'+day);
-                const isBMO = stock["Time"] === "Before Market";
-                
+                if (!WEEK_KEYS.includes(day)) return;
+                const block = document.getElementById('pills-' + day);
+                const isBMO = stock['Time'] === 'Before Market';
                 const pill = document.createElement('div');
-                pill.className = "pill";
-                pill.innerHTML = `<span class="pill-dot ${isBMO ? 'dot-bmo' : 'dot-amc'}"></span>${stock["Symbol"]}`;
+                pill.className = 'pill';
+                pill.innerHTML = `<span class="pill-dot ${isBMO ? 'dot-bmo' : 'dot-amc'}"></span>${stock['Symbol']}`;
                 block.appendChild(pill);
             });
         }
 
-        // ========== PREVIOUS WEEK FUNCTIONS ==========
-
+        // ─── PREVIOUS WEEK DATA ──────────────────────────────────────────────────
         function loadPreviousData() {
             fetch('previous_board.csv')
                 .then(res => res.ok ? res.text() : Promise.reject())
@@ -823,64 +792,45 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         }
 
         function parsePreviousCSV(text) {
-            const lines = text.split('\n');
-            if(lines.length < 2) return;
-            const headers = lines[0].split(',').map(h => h.trim());
-            
-            for(let i=1; i<lines.length; i++) {
-                if(!lines[i].trim()) continue;
-                const cols = lines[i].split(',');
-                if(cols.length < headers.length) continue;
-                let item = {};
-                headers.forEach((h, idx) => item[h] = cols[idx] ? cols[idx].trim() : "");
-                previousStocks.push(item);
-            }
-
+            previousStocks = parseCSVLines(text);
             renderPreviousSection();
         }
 
         function renderPreviousSection() {
             const container = document.getElementById('previous-content');
-            const currentMonday = currentWeekDates['Monday'].fullDate;
-const prevMonday = new Date(currentMonday);
-prevMonday.setDate(currentMonday.getDate() - 7);
 
-const days = [
-    { key: 'mon', name: 'Monday', date: formatDate(prevMonday), csvDate: formatCSVDate(prevMonday) },
-    // ... บวกวันละ 1 ไปจนถึงศุกร์
-];
-
+            const days = WEEK_KEYS.map(dayName => ({
+                key:     dayName.toLowerCase().slice(0, 3),
+                name:    dayName,
+                short:   prevWeekDates[dayName].short,
+                csvDate: prevWeekDates[dayName].csv
+            }));
 
             container.innerHTML = days.map(day => {
                 const dayStocks = getPreviousDayStocks(day.csvDate);
-                
+
                 let stocksHTML = '';
-                if(dayStocks.length === 0) {
-                    stocksHTML = '<div class="no-data">No Earning Stock</div>';
+                if (dayStocks.length === 0) {
+                    stocksHTML = '<div class="no-data">No Earnings Stock</div>';
                 } else {
-                    stocksHTML = '<div class="prev-pills">' + 
+                    stocksHTML = '<div class="prev-pills">' +
                         dayStocks.map(stock => {
                             const pct = stock['%Today'] || '';
-                            const num = pct ? parseFloat(pct.replace('%','')) : 0;
-                            
+                            const num = pct ? parseFloat(pct.replace('%','')) : NaN;
+
                             let pillClass = 'chop';
                             let emoji = '';
-                            
-                            if(num >= 3) { 
-                                pillClass = 'moon'; 
-                                emoji = '🚀'; 
+
+                            if (!isNaN(num)) {
+                                if (num >= 3)  { pillClass = 'moon'; emoji = '🚀'; }
+                                else if (num < 0) { pillClass = 'flop'; emoji = '💀'; }
                             }
-                            else if(num < 0) { 
-                                pillClass = 'flop'; 
-                                emoji = '💀'; 
-                            }
-                            
+
                             const url = `https://www.google.com/finance/quote/${stock.Symbol}:${stock.Exchange || 'NASDAQ'}`;
-                            
                             return `<a href="${url}" target="_blank" class="prev-pill ${pillClass}">
                                 <span class="emoji">${emoji}</span>${stock.Symbol} ${pct}
                             </a>`;
-                        }).join('') + 
+                        }).join('') +
                     '</div>';
                 }
 
@@ -889,15 +839,14 @@ const days = [
                         <div class="prev-day-header" onclick="togglePrevDay('${day.key}')">
                             <div>
                                 <span class="prev-day-name">${day.name}</span>
-                                <span class="prev-day-date">${day.date}</span>
+                                <span class="prev-day-date">${day.short}</span>
                             </div>
                             <i class="fa-solid fa-chevron-down prev-day-icon" id="prev-day-icon-${day.key}"></i>
                         </div>
                         <div class="prev-day-stocks" id="prev-day-stocks-${day.key}">
                             ${stocksHTML}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
 
@@ -905,37 +854,30 @@ const days = [
             return previousStocks.filter(stock => {
                 const dateStr = stock['Earnings Date'];
                 const timeStr = stock['Time'];
-                
-                const [day, month, year] = dateStr.split('-').map(Number);
-                const stockDate = new Date(2000 + year, month - 1, day);
-                const dayOfWeek = stockDate.getDay();
-                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                
-                if(timeStr === 'Before Market') {
+                const [d, m, y] = dateStr.split('-').map(Number);
+                const stockDate = localDate(2000 + y, m - 1, d);
+
+                if (timeStr === 'Before Market') {
                     return dateStr === csvDate;
                 } else {
-                    const nextDay = new Date(stockDate);
-                    nextDay.setDate(stockDate.getDate() + 1);
-                    const nextDayName = dayNames[nextDay.getDay()];
-                    const nextDayStr = String(nextDay.getDate()).padStart(2,'0') + '-' + String(nextDay.getMonth()+1).padStart(2,'0') + '-' + String(nextDay.getFullYear()).slice(2);
-                    return nextDayStr === csvDate;
+                    const next = new Date(stockDate);
+                    next.setDate(stockDate.getDate() + 1);
+                    return fmtCSV(next) === csvDate;
                 }
             });
         }
 
+        // ─── TOGGLES ─────────────────────────────────────────────────────────────
         function togglePrevious() {
-            const header = document.getElementById('prev-header');
+            const header  = document.getElementById('prev-header');
             const content = document.getElementById('previous-content');
-            const icon = document.getElementById('prev-icon');
-            
+            const icon    = document.getElementById('prev-icon');
+
             header.classList.toggle('active');
             content.classList.toggle('show');
-            
-            if(content.classList.contains('show')) {
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                icon.style.transform = 'rotate(0deg)';
-                // ปิดทุกวันเมื่อปิด Previous Week
+
+            if (!content.classList.contains('show')) {
+                // ปิดทุกวันเมื่อปิด accordion หลัก
                 document.querySelectorAll('.prev-day-stocks').forEach(el => el.classList.remove('show'));
                 document.querySelectorAll('.prev-day-header').forEach(el => el.classList.remove('active'));
             }
@@ -943,84 +885,73 @@ const days = [
 
         function togglePrevDay(dayKey) {
             const content = document.getElementById('prev-day-stocks-' + dayKey);
-            const header = content.previousElementSibling;
-            const icon = document.getElementById('prev-day-icon-' + dayKey);
-            
-            // ปิดวันอื่นก่อน (accordion style)
+            const header  = content.previousElementSibling;
+
+            // accordion: ปิดวันอื่น
             document.querySelectorAll('.prev-day-stocks').forEach(el => {
-                if(el.id !== 'prev-day-stocks-' + dayKey) el.classList.remove('show');
+                if (el !== content) el.classList.remove('show');
             });
             document.querySelectorAll('.prev-day-header').forEach(el => {
-                if(el !== header) el.classList.remove('active');
+                if (el !== header) el.classList.remove('active');
             });
-            
+
             content.classList.toggle('show');
             header.classList.toggle('active');
         }
 
-        // ========== DETAIL VIEW FUNCTIONS ==========
-
+        // ─── DETAIL VIEW ─────────────────────────────────────────────────────────
         function navigateToDetail(dayName) {
             const dateInfo = currentWeekDates[dayName];
             document.getElementById('detail-target-date').innerText = dateInfo.display;
-            
             updateExplanation(dayName);
-            
+
             const container = document.getElementById('lotto-items-injector');
-            container.innerHTML = "";
+            container.innerHTML = '';
 
             const targets = activeStocks.filter(s => s.TradingDisplayDay === dayName);
 
-            if(targets.length === 0) {
+            if (targets.length === 0) {
                 container.innerHTML = `
                     <div class="empty">
                         <i class="fa-solid fa-clipboard-list"></i>
                         <div class="mono">NO TICKERS FOR TODAY</div>
                     </div>`;
+                switchView('detail');
                 return;
             }
 
             targets.forEach(stock => {
-                const pct = stock["%Today"] || "";
+                const pct = stock['%Today'] || '';
                 const num = pct ? parseFloat(pct.replace('%','')) : null;
-                
-                let statusLabel = "";
-                let statusClass = "";
-                let glowClass = "";
 
-                if(num !== null) {
-                    if(num >= 3) { 
-                        statusLabel = "MOON 🚀"; 
-                        statusClass = "moon"; 
-                        glowClass = "moon-glow";
-                    }
-                    else if(num < 0) { 
-                        statusLabel = "FLOP 💀"; 
-                        statusClass = "flop"; 
-                        glowClass = "flop-glow";
-                    }
+                let statusLabel = '';
+                let statusClass = '';
+                let glowClass   = '';
+
+                if (num !== null && !isNaN(num)) {
+                    if (num >= 3)  { statusLabel = 'MOON 🚀'; statusClass = 'moon'; glowClass = 'moon-glow'; }
+                    else if (num < 0) { statusLabel = 'FLOP 💀'; statusClass = 'flop'; glowClass = 'flop-glow'; }
                 }
 
-                const url = `https://www.google.com/finance/quote/${stock["Symbol"]}:${stock["Exchange"]||"NASDAQ"}`;
-                const isBMO = stock["Time"] === "Before Market";
-                
+                const url   = `https://www.google.com/finance/quote/${stock['Symbol']}:${stock['Exchange']||'NASDAQ'}`;
+                const isBMO = stock['Time'] === 'Before Market';
+
                 const item = document.createElement('div');
                 item.className = `stock-item fade-in ${glowClass}`;
                 item.innerHTML = `
                     <div class="stock-left">
                         <a href="${url}" target="_blank" class="stock-symbol">
-                            ${stock["Symbol"]} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.5;"></i>
+                            ${stock['Symbol']} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.5;"></i>
                         </a>
                         <div class="stock-info">
-                            <div class="stock-name">${stock["Company"]}</div>
-                            <div class="stock-meta">$${stock["Price"]||'0.00'}</div>
+                            <div class="stock-name">${stock['Company']}</div>
+                            <div class="stock-meta">$${stock['Price']||'0.00'} · ${isBMO ? 'BMO' : 'AMC'}</div>
                         </div>
                     </div>
                     <div class="stock-right">
                         <div class="stock-pct ${statusClass ? 'pct-'+statusClass : 'pct-chop'}">${pct||'--'}</div>
                         ${statusLabel ? `<div class="stock-status status-${statusClass}">${statusLabel}</div>` : ''}
-                    </div>
-                `;
+                    </div>`;
                 container.appendChild(item);
             });
 
@@ -1028,93 +959,80 @@ const days = [
         }
 
         function updateExplanation(dayName) {
-            const explainBox = document.getElementById('explain-text');
-            const dayLabels = {
-                "Monday": {
-                    text: `<strong>วันจันทร์:</strong> มีเฉพาะ <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> (Before Market Open) ของวันจันทร์เท่านั้น`
-                },
-                "Tuesday": {
-                    text: `<strong>วันอังคาร:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันจันทร์ + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันอังคาร`
-                },
-                "Wednesday": {
-                    text: `<strong>วันพุธ:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันอังคาร + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันพุธ`
-                },
-                "Thursday": {
-                    text: `<strong>วันพฤหัส:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันพุธ + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันพฤหัส`
-                },
-                "Friday": {
-                    text: `<strong>วันศุกร์:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันพฤหัส + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันศุกร์`
-                }
+            const map = {
+                Monday:    `<strong>Monday:</strong> BMO ของวันจันทร์เท่านั้น`,
+                Tuesday:   `<strong>Tuesday:</strong> AMC จันทร์ + BMO อังคาร`,
+                Wednesday: `<strong>Wednesday:</strong> AMC อังคาร + BMO พุธ`,
+                Thursday:  `<strong>Thursday:</strong> AMC พุธ + BMO พฤหัส`,
+                Friday:    `<strong>Friday:</strong> AMC พฤหัส + BMO ศุกร์`
             };
-            
-            const info = dayLabels[dayName] || dayLabels["Monday"];
-            explainBox.innerHTML = `<i class="fa-solid fa-circle-info me-2"></i>` + info.text;
+            document.getElementById('explain-text').innerHTML =
+                `<i class="fa-solid fa-circle-info me-2"></i>` + (map[dayName] || '');
         }
 
         function switchView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-'+id).classList.add('active');
-            window.scrollTo(0,0);
+            document.getElementById('view-' + id).classList.add('active');
+            window.scrollTo(0, 0);
         }
 
-        function backToCalendar() {
-            switchView('calendar');
-        }
+        function backToCalendar() { switchView('calendar'); }
 
+        // ─── COUNTDOWN TIMERS ────────────────────────────────────────────────────
         function initCountdownTimers() {
-            setInterval(() => {
-                const now = new Date();
-                let foundUpcoming = false;
+            updateTimers();
+            setInterval(updateTimers, 1000);
+        }
 
-                for(let dayName in currentWeekDates) {
-                    const card = document.getElementById('card-'+dayName);
-                    const timer = document.getElementById('timer-'+dayName);
-                    const box = document.getElementById('timer-box-'+dayName);
-                    const badge = document.getElementById('badge-'+dayName);
-                    
-                    if(!timer || !card) continue;
+        function updateTimers() {
+            const now = new Date();
+            let foundUpcoming = false;
 
-                    const targetDate = currentWeekDates[dayName].fullDate;
-                    targetDate.setHours(20, 30, 0);
-                    
-                    const diff = targetDate - now;
-                    
-                    card.classList.remove('live','upcoming');
+            WEEK_KEYS.forEach(dayName => {
+                const card  = document.getElementById('card-' + dayName);
+                const box   = document.getElementById('timer-box-' + dayName);
+                const badge = document.getElementById('badge-' + dayName);
+                if (!card || !box || !badge) return;
 
-                    if(diff < -23400000) {
-                        box.innerHTML = '<i class="fa-solid fa-check"></i><span>Session Closed</span>';
-                        badge.className = "status-badge badge-done";
-                        badge.textContent = "Done";
-                    }
-                    else if(diff < 0) {
-                        box.innerHTML = '<i class="fa-solid fa-bolt" style="color:var(--green)"></i><span style="color:var(--green);font-weight:700">LIVE NOW</span>';
-                        badge.className = "status-badge badge-live";
-                        badge.textContent = "Live";
-                        card.classList.add('live');
-                    }
-                    else {
-                        if(!foundUpcoming) {
-                            const d = Math.floor(diff/(1000*60*60*24));
-                            const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-                            const m = Math.floor((diff%(1000*60*60))/(1000*60));
-                            const s = Math.floor((diff%(1000*60))/1000);
-                            
-                            let str = d > 0 ? d+'d ' : '';
-                            str += `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                            
-                            box.innerHTML = `<i class="fa-regular fa-clock"></i><span>Opens in <span class="mono">${str}</span></span>`;
-                            badge.className = "status-badge badge-upcoming";
-                            badge.textContent = "Next";
-                            card.classList.add('upcoming');
-                            foundUpcoming = true;
-                        } else {
-                            box.innerHTML = '<i class="fa-solid fa-hourglass"></i><span>Queued</span>';
-                            badge.className = "status-badge badge-done";
-                            badge.textContent = "Queued";
-                        }
-                    }
+                // Market open = 9:30 ET = 20:30 ICT
+                const targetDate = new Date(currentWeekDates[dayName].fullDate);
+                targetDate.setHours(20, 30, 0, 0);
+
+                // Session lasts 6.5 hrs = 23400000 ms
+                const diff = targetDate - now;
+
+                card.classList.remove('live', 'upcoming');
+
+                if (diff < -23400000) {
+                    box.innerHTML = '<i class="fa-solid fa-check"></i><span>Session Closed</span>';
+                    badge.className = 'status-badge badge-done';
+                    badge.textContent = 'Done';
+                } else if (diff <= 0) {
+                    box.innerHTML = '<i class="fa-solid fa-bolt" style="color:var(--green)"></i><span style="color:var(--green);font-weight:700">LIVE NOW</span>';
+                    badge.className = 'status-badge badge-live';
+                    badge.textContent = 'Live';
+                    card.classList.add('live');
+                } else if (!foundUpcoming) {
+                    const totalSec = Math.floor(diff / 1000);
+                    const d = Math.floor(totalSec / 86400);
+                    const h = Math.floor((totalSec % 86400) / 3600);
+                    const m = Math.floor((totalSec % 3600) / 60);
+                    const s = totalSec % 60;
+
+                    const str = (d > 0 ? d + 'd ' : '') +
+                        `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+                    box.innerHTML = `<i class="fa-regular fa-clock"></i><span>Opens in <span class="mono">${str}</span></span>`;
+                    badge.className = 'status-badge badge-upcoming';
+                    badge.textContent = 'Next';
+                    card.classList.add('upcoming');
+                    foundUpcoming = true;
+                } else {
+                    box.innerHTML = '<i class="fa-solid fa-hourglass"></i><span>Queued</span>';
+                    badge.className = 'status-badge badge-done';
+                    badge.textContent = 'Queued';
                 }
-            }, 1000);
+            });
         }
     </script>
 </body>
