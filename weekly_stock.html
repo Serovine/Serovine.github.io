@@ -825,6 +825,8 @@ CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         }
 
         function renderPreviousSection() {
+            console.log("previousStocks count:", previousStocks.length);
+            console.log("prevWeekDates Monday csv:", prevWeekDates['Monday']?.csv);
             const container = document.getElementById('previous-content');
 
             const days = WEEK_KEYS.map(dayName => ({
