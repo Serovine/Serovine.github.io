@@ -599,11 +599,11 @@ PLUS,ePlus inc.,28-05-26,After Market,82.39,-9.43%,14.86,,,
 MNSO,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
 
         const mockPreviousCSV = `Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
-TSLA,Tesla Inc.,12-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
-HD,Home Depot,14-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0.50%,Flop
-MSFT,Microsoft Corp.,13-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
-CSCO,Cisco Systems,14-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
-CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
+TSLA,Tesla Inc.,18-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
+HD,Home Depot,19-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0.50%,Flop
+MSFT,Microsoft Corp.,20-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
+CSCO,Cisco Systems,21-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
+CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         // ─── STATE ───────────────────────────────────────────────────────────────
         let activeStocks = [];
@@ -737,14 +737,33 @@ CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
             });
         }
 
+        function parseCSVLine(line) {
+            // รองรับ quoted fields เช่น "BJ's Wholesale Club" ที่มี comma หรือ apostrophe
+            const cols = [];
+            let cur = '', inQuote = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    inQuote = !inQuote;
+                } else if (ch === ',' && !inQuote) {
+                    cols.push(cur.trim());
+                    cur = '';
+                } else {
+                    cur += ch;
+                }
+            }
+            cols.push(cur.trim());
+            return cols;
+        }
+
         function parseCSVLines(text) {
             const lines = text.split('\n');
             if (lines.length < 2) return [];
-            const headers = lines[0].split(',').map(h => h.trim());
+            const headers = parseCSVLine(lines[0]);
             const rows = [];
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                const cols = lines[i].split(',');
+                const cols = parseCSVLine(lines[i]);
                 if (cols.length < headers.length) continue;
                 const item = {};
                 headers.forEach((h, idx) => item[h] = (cols[idx] || '').trim());
@@ -825,8 +844,6 @@ CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         }
 
         function renderPreviousSection() {
-            console.log("previousStocks count:", previousStocks.length);
-            console.log("prevWeekDates Monday csv:", prevWeekDates['Monday']?.csv);
             const container = document.getElementById('previous-content');
 
             const days = WEEK_KEYS.map(dayName => ({
@@ -881,23 +898,18 @@ CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         }
 
         function getPreviousDayStocks(csvDate) {
-            console.log("Looking for:", csvDate);  // ← เพิ่ม
             return previousStocks.filter(stock => {
-            const dateStr = stock['Earnings Date'];
-            const timeStr = stock['Time'];
-            const [d, m, y] = dateStr.split('-').map(Number);
-            const stockDate = localDate(2000 + y, m - 1, d);
+                const dateStr = stock['Earnings Date'];
+                const timeStr = stock['Time'];
+                const [d, m, y] = dateStr.split('-').map(Number);
+                const stockDate = localDate(2000 + y, m - 1, d);
 
-            if (timeStr === 'Before Market') {
-                console.log(stock.Symbol, "BMO →", dateStr, "vs", csvDate);  // ← เพิ่ม
-                return dateStr === csvDate;
-            } else {
-                const next = new Date(stockDate);
-                next.setDate(stockDate.getDate() + 1);
-                const nextFmt = fmtCSV(next);
-                console.log(stock.Symbol, "AMC →", nextFmt, "vs", csvDate);  // ← เพิ่ม
-                console.log(stock.Symbol, "Time:", JSON.stringify(stock['Time']));
-                return nextFmt === csvDate;
+                if (timeStr === 'Before Market') {
+                    return dateStr === csvDate;
+                } else {
+                    const next = new Date(stockDate);
+                    next.setDate(stockDate.getDate() + 1);
+                    return fmtCSV(next) === csvDate;
                 }
             });
         }
