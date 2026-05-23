@@ -819,6 +819,27 @@ CRM,Salesforce Inc.,14-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 .catch(() => parsePreviousCSV(mockPreviousCSV));  // fetch ไม่ได้เลย → mock
         }
 
+function getPreviousDayStocks(csvDate) {
+    console.log("Looking for:", csvDate);  // ← เพิ่ม
+    return previousStocks.filter(stock => {
+        const dateStr = stock['Earnings Date'];
+        const timeStr = stock['Time'];
+        const [d, m, y] = dateStr.split('-').map(Number);
+        const stockDate = localDate(2000 + y, m - 1, d);
+
+        if (timeStr === 'Before Market') {
+            console.log(stock.Symbol, "BMO →", dateStr, "vs", csvDate);  // ← เพิ่ม
+            return dateStr === csvDate;
+        } else {
+            const next = new Date(stockDate);
+            next.setDate(stockDate.getDate() + 1);
+            const nextFmt = fmtCSV(next);
+            console.log(stock.Symbol, "AMC →", nextFmt, "vs", csvDate);  // ← เพิ่ม
+            return nextFmt === csvDate;
+        }
+    });
+}
+
         function parsePreviousCSV(text) {
             previousStocks = parseCSVLines(text);
             renderPreviousSection();
