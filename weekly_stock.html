@@ -124,4 +124,430 @@
             padding: 10px 14px;
             font-size: 0.84rem;
             display: flex;
-            align
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .pill-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .ticker-pill {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #e5e7eb;
+        }
+
+        .time-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .dot-bmo { background-color: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+        .dot-amc { background-color: #c084fc; box-shadow: 0 0 8px #c084fc; }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        .huge-date-header {
+            font-size: 1.95rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        .report-list-box {
+            background-color: var(--bg-glass-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 8px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .stock-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .stock-list-item:last-child { border-bottom: none; }
+
+        .btn-google-fin {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #38bdf8 !important; 
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stock-meta-name {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-text-bold {
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: right;
+        }
+
+        .text-surged { color: var(--color-surged); }
+        .text-plunged { color: var(--color-plunged); }
+        .text-awaiting { color: var(--text-secondary); font-weight: 500; }
+
+        .btn-back-nav {
+            background-color: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="view-calendar" class="view-section active">
+        <div class="app-header d-flex justify-content-between align-items-center">
+            <div class="app-brand"><i class="fa-solid fa-dice-d20 me-2"></i>Earnings Lotto</div>
+        </div>
+
+        <div class="container mt-3 px-3">
+            <div id="card-Monday" class="day-card card-mwf" onclick="navigateToDetail('Monday', 'Monday 25 May 2026')">
+                <div class="day-header-meta">
+                    <div>
+                        <div class="day-title">Monday 25 May 2026</div>
+                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                </div>
+                <div class="countdown-bar">
+                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
+                    <span id="timer-box-Monday">Market Opens In: <span id="timer-Monday" class="mono fw-bold">--:--:--</span></span>
+                </div>
+                <div id="pills-Monday" class="pill-grid"></div>
+            </div>
+
+            <div id="card-Tuesday" class="day-card card-tt" onclick="navigateToDetail('Tuesday', 'Tuesday 26 May 2026')">
+                <div class="day-header-meta">
+                    <div>
+                        <div class="day-title">Tuesday 26 May 2026</div>
+                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                </div>
+                <div class="countdown-bar">
+                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
+                    <span id="timer-box-Tuesday">Market Opens In: <span id="timer-Tuesday" class="mono fw-bold">--:--:--</span></span>
+                </div>
+                <div id="pills-Tuesday" class="pill-grid"></div>
+            </div>
+
+            <div id="card-Wednesday" class="day-card card-mwf" onclick="navigateToDetail('Wednesday', 'Wednesday 27 May 2026')">
+                <div class="day-header-meta">
+                    <div>
+                        <div class="day-title">Wednesday 27 May 2026</div>
+                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                </div>
+                <div class="countdown-bar">
+                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
+                    <span id="timer-box-Wednesday">Market Opens In: <span id="timer-Wednesday" class="mono fw-bold">--:--:--</span></span>
+                </div>
+                <div id="pills-Wednesday" class="pill-grid"></div>
+            </div>
+
+            <div id="card-Thursday" class="day-card card-tt" onclick="navigateToDetail('Thursday', 'Thursday 28 May 2026')">
+                <div class="day-header-meta">
+                    <div>
+                        <div class="day-title">Thursday 28 May 2026</div>
+                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                </div>
+                <div class="countdown-bar">
+                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
+                    <span id="timer-box-Thursday">Market Opens In: <span id="timer-Thursday" class="mono fw-bold">--:--:--</span></span>
+                </div>
+                <div id="pills-Thursday" class="pill-grid"></div>
+            </div>
+
+            <div id="card-Friday" class="day-card card-mwf" onclick="navigateToDetail('Friday', 'Friday 29 May 2026')">
+                <div class="day-header-meta">
+                    <div>
+                        <div class="day-title">Friday 29 May 2026</div>
+                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                </div>
+                <div class="countdown-bar">
+                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
+                    <span id="timer-box-Friday">Market Opens In: <span id="timer-Friday" class="mono fw-bold">--:--:--</span></span>
+                </div>
+                <div id="pills-Friday" class="pill-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-detail" class="view-section">
+        <div class="app-header d-flex justify-content-between align-items-center">
+            <button class="btn btn-back-nav" onclick="backToCalendar()">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back
+            </button>
+            <div class="fw-bold text-warning small mono"><i class="fa-solid fa-receipt me-1"></i> LOTTO REPORT</div>
+        </div>
+
+        <div class="container mt-3 px-3">
+            <h1 id="detail-target-date" class="huge-date-header">Date Placeholder</h1>
+            <p class="text-secondary small mb-4">โพยสรุปผลเรียงเบอร์รายตัวประจำวันตรวจผลประกอบการไตรมาส</p>
+
+            <div class="report-list-box">
+                <div id="lotto-items-injector"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mockDataCSV = `Symbol,Exchange,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+AAPL,NASDAQ,Apple Inc.,25-05-26,After Market,304.84,14.47%,33.16,LONG,+1.25%,Hit!
+BJ,NYSE,BJ's Wholesale Club,25-05-26,Before Market,93.49,2.05%,19.05,LONG,+0.04%,Hit!
+NVDA,NASDAQ,NVIDIA Corporation,26-05-26,After Market,120.50,45.20%,42.10,LONG,-3.40%,Loss!
+PLTR,NYSE,Palantir Technologies,26-05-26,Before Market,24.15,38.10%,65.00,,+5.20%,Long
+OKLO,NYSE,Oklo Inc.,27-05-26,After Market,11.20,120.40%,N/A,LONG,-12.30%,Loss!
+JPM,NYSE,JPMorgan Chase,28-05-26,Before Market,195.30,8.20%,11.40,SHORT,-1.80%,Hit!
+ZETA,NYSE,Zeta Global,28-05-26,After Market,16.80,64.20%,32.10,,+8.45%,Long
+PLUS,NASDAQ,ePlus inc.,28-05-26,After Market,82.39,-9.43%,14.86,,,
+MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
+
+        let activeStocks = [];
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            initCountdownTimers();
+        });
+
+        function initializeSystem() {
+            fetch('earnings_board.csv')
+                .then(function(res) {
+                    if (res.ok) {
+                        return res.text();
+                    }
+                    throw new Error('File not found');
+                })
+                .then(function(text) {
+                    compileCSV(text);
+                })
+                .catch(function() {
+                    compileCSV(mockDataCSV);
+                });
+        }
+
+        function compileCSV(text) {
+            const lines = text.split('\n');
+            if(lines.length < 2) return;
+            const headers = lines[0].split(',').map(h => h.trim());
+            const parsed = [];
+
+            for(let i=1; i<lines.length; i++) {
+                if(!lines[i].trim()) continue;
+                const columns = lines[i].split(',');
+                if(columns.length < headers.length) continue;
+                let item = {};
+                headers.forEach((h, idx) => { item[h] = columns[idx] ? columns[idx].trim() : ""; });
+                parsed.push(item);
+            }
+
+            activeStocks = parsed.map(stock => {
+                const dateStr = stock["Earnings Date"];
+                const timeStr = stock["Time"];
+                let mappedDay = "N/A";
+
+                if (dateStr === "22-05-26" && timeStr === "After Market") mappedDay = "Monday";
+                else if (dateStr === "25-05-26" && timeStr === "Before Market") mappedDay = "Monday";
+                else if (dateStr === "25-05-26" && timeStr === "After Market") mappedDay = "Tuesday";
+                else if (dateStr === "26-05-26" && timeStr === "Before Market") mappedDay = "Tuesday";
+                else if (dateStr === "26-05-26" && timeStr === "After Market") mappedDay = "Wednesday";
+                else if (dateStr === "27-05-26" && timeStr === "Before Market") mappedDay = "Wednesday";
+                else if (dateStr === "27-05-26" && timeStr === "After Market") mappedDay = "Thursday";
+                else if (dateStr === "28-05-26" && timeStr === "Before Market") mappedDay = "Thursday";
+                else if (dateStr === "28-05-26" && timeStr === "After Market") mappedDay = "Friday";
+                else if (dateStr === "29-05-26" && timeStr === "Before Market") mappedDay = "Friday";
+
+                stock.TradingDisplayDay = mappedDay;
+                return stock;
+            });
+
+            populateCalendarPills();
+        }
+
+        function populateCalendarPills() {
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+            days.forEach(d => {
+                const el = document.getElementById('pills-' + d);
+                if (el) el.innerHTML = "";
+            });
+
+            activeStocks.forEach(stock => {
+                const day = stock.TradingDisplayDay;
+                if(days.includes(day)) {
+                    const block = document.getElementById('pills-' + day);
+                    const isBMO = stock["Time"] === "Before Market";
+                    const dotStyle = isBMO ? "dot-bmo" : "dot-amc";
+
+                    const pill = document.createElement('div');
+                    pill.className = "ticker-pill";
+                    pill.innerHTML = '<span class="time-dot ' + dotStyle + '"></span><span class="mono fw-bold">' + stock["Symbol"] + '</span>';
+                    block.appendChild(pill);
+                }
+            });
+        }
+
+        function navigateToDetail(dayName, descriptiveDate) {
+            document.getElementById('detail-target-date').innerText = descriptiveDate;
+            const container = document.getElementById('lotto-items-injector');
+            container.innerHTML = "";
+
+            const targets = activeStocks.filter(s => s.TradingDisplayDay === dayName);
+
+            if(targets.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-5 mono">NO TICKERS FOR TODAY</div>';
+            } else {
+                targets.forEach(stock => {
+                    const pct = stock["%Today"] || "";
+                    let statusLabel = "--";
+                    let statusClass = "text-awaiting";
+
+                    if(pct) {
+                        const numeric = parseFloat(pct.replace('%', ''));
+                        if(numeric > 0) { statusLabel = "SURGED"; statusClass = "text-surged"; }
+                        else if(numeric < 0) { statusLabel = "PLUNGED"; statusClass = "text-plunged"; }
+                        else { statusLabel = "UNCHANGED"; statusClass = "text-awaiting"; }
+                    }
+
+                    const exch = stock["Exchange"] || "NASDAQ";
+                    const googleFinUrl = 'https://www.google.com/finance/quote/' + stock["Symbol"] + ':' + exch;
+                    const priceDisp = stock["Price"] || '0.00';
+                    const pctDisp = pct || '--';
+
+                    const listRow = document.createElement('div');
+                    listRow.className = "stock-list-item";
+                    
+                    let rowHTML = '<div class="d-flex align-items-center gap-3">';
+                    rowHTML += '<a href="' + googleFinUrl + '" target="_blank" class="btn-google-fin">';
+                    rowHTML += stock["Symbol"] + ' <i class="fa-solid fa-arrow-up-right-from-square fs-7 opacity-70"></i></a>';
+                    rowHTML += '<div><div class="fw-bold text-white fs-6 mono">$' + priceDisp + '</div>';
+                    rowHTML += '<div class="stock-meta-name">' + stock["Company"] + '</div></div></div>';
+                    rowHTML += '<div class="text-end"><div class="mono fw-bold ' + statusClass + ' fs-5">' + pctDisp + '</div>';
+                    rowHTML += '<div class="status-text-bold ' + statusClass + '">' + statusLabel + '</div></div>';
+                    
+                    listRow.innerHTML = rowHTML;
+                    container.appendChild(listRow);
+                });
+            }
+
+            switchView('detail');
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function backToCalendar() {
+            switchView('calendar');
+        }
+
+        function initCountdownTimers() {
+            const openings = {
+                "Monday": new Date("May 25, 2026 20:30:00").getTime(),
+                "Tuesday": new Date("May 26, 2026 20:30:00").getTime(),
+                "Wednesday": new Date("May 27, 2026 20:30:00").getTime(),
+                "Thursday": new Date("May 28, 2026 20:30:00").getTime(),
+                "Friday": new Date("May 29, 2026 20:30:00").getTime()
+            };
+
+            setInterval(function() {
+                const now = new Date().getTime();
+                let closestUpcomingFound = false;
+
+                for(let day in openings) {
+                    const cardEl = document.getElementById('card-' + day);
+                    const timerEl = document.getElementById('timer-' + day);
+                    const boxEl = document.getElementById('timer-box-' + day);
+                    
+                    if(!timerEl || !cardEl) continue;
+
+                    const diff = openings[day] - now;
+
+                    cardEl.classList.remove('card-active-highlight');
+
+                    if (diff < -23400000) {
+                        boxEl.innerHTML = '<span style="color: #64748b; font-weight:700;"><i class="fa-solid fa-check-double me-1"></i>CONCLUDED</span>';
+                    } 
+                    else if (diff < 0) {
+                        boxEl.innerHTML = 'Market Status: <span style="color: #10b981; font-weight:800; text-shadow: 0 0 8px rgba(16,185,129,0.3)">SESSION LIVE</span>';
+                        
+                        if (!closestUpcomingFound) {
+                            cardEl.classList.add('card-active-highlight');
+                            closestUpcomingFound = true;
+                        }
+                    } 
+                    else {
+                        if (!closestUpcomingFound) {
+                            cardEl.classList.add('card-active-highlight');
+                            closestUpcomingFound = true;
+
+                            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                            let timeStr = "";
+                            if(d > 0) timeStr += d + 'd '; 
+                            timeStr += h.toString().padStart(2,'0') + 'h ' + m.toString().padStart(2,'0') + 'm ' + s.toString().padStart(2,'0') + 's';
+                            
+                            boxEl.innerHTML = 'Market Opens In: <span id="timer-' + day + '" class="mono fw-bold">' + timeStr + '</span>';
+                        } else {
+                            boxEl.innerHTML = 'Market Status: <span style="color: #4b5563; font-weight:500;">QUEUED</span>';
+                        }
+                    }
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
