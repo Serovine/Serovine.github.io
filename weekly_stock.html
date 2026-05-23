@@ -3,376 +3,725 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Earnings Lotto - Smart Focus</title>
+    <title>Earnings Lotto</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-obsidian: #030712;      
-            --bg-glass-dark: #0f172a;    
-            --bg-mwf: #0f172a;           
-            --accent-cyan: #06b6d4;      
-            --bg-tt: #1e1b4b;            
-            --accent-purple: #c084fc;    
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --color-surged: #10b981;     
-            --color-plunged: #ef4444;    
-            --color-awaiting: #4b5563;   
+            --bg: #0a0e1a;
+            --card: #111827;
+            --card-hover: #1a2236;
+            --border: rgba(255,255,255,0.06);
+            --text: #f3f4f6;
+            --text-muted: #6b7280;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-obsidian);
-            color: var(--text-primary);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
-            padding-bottom: 60px;
+            line-height: 1.5;
         }
 
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
 
-        .app-header {
-            background-color: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 16px;
+        /* Header */
+        .header {
+            background: rgba(10,14,26,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .app-brand {
-            font-size: 1.35rem;
+        .logo {
+            font-size: 1.3rem;
             font-weight: 800;
-            letter-spacing: -0.03em;
-            background: linear-gradient(to right, #06b6d4, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Day Card */
         .day-card {
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 24px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 18px;
-            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 12px;
             cursor: pointer;
-            position: relative;
+            transition: all 0.2s;
         }
 
-        .day-card:active {
-            transform: scale(0.96);
-            opacity: 0.9;
+        .day-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(255,255,255,0.12);
+            transform: translateY(-1px);
         }
 
-        .card-active-highlight {
-            border: 2px solid #f59e0b !important; 
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25) !important;
-            transform: scale(1.01);
+        .day-card:active { transform: scale(0.98); }
+
+        .day-card.live {
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(16,185,129,0.1);
         }
 
-        .card-mwf { background-color: var(--bg-mwf); }
-        .card-mwf .day-title { color: var(--accent-cyan); }
-        .card-mwf .countdown-bar {
-            background: rgba(6, 182, 212, 0.04);
-            border: 1px dashed rgba(6, 182, 212, 0.2);
-            color: #22d3ee;
+        .day-card.upcoming {
+            border-color: var(--yellow);
         }
 
-        .card-tt { background-color: var(--bg-tt); }
-        .card-tt .day-title { color: #d8b4fe; }
-        .card-tt .countdown-bar {
-            background: rgba(168, 85, 247, 0.04);
-            border: 1px dashed rgba(168, 85, 247, 0.2);
-            color: #c084fc;
-        }
-
-        .card-active-highlight .countdown-bar {
-            background: rgba(245, 158, 11, 0.08) !important;
-            border: 1px solid rgba(245, 158, 11, 0.3) !important;
-            color: #fbbf24 !important;
-        }
-
-        .day-header-meta {
+        .day-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+            align-items: flex-start;
+            margin-bottom: 12px;
         }
 
-        .day-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .day-name {
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
-        .day-subtext {
+        .day-date {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .countdown-bar {
-            border-radius: 12px;
-            padding: 10px 14px;
-            font-size: 0.84rem;
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-live { background: rgba(16,185,129,0.15); color: var(--green); }
+        .badge-upcoming { background: rgba(245,158,11,0.15); color: var(--yellow); }
+        .badge-done { background: rgba(107,114,128,0.15); color: var(--text-muted); }
+
+        .countdown {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
-            font-weight: 500;
-            transition: all 0.3s;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
         }
 
-        .pill-grid {
+        .countdown .mono {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .pills {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
         }
 
-        .ticker-pill {
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 6px 12px;
-            font-size: 0.85rem;
+        .pill {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+
+        .dot-bmo { background: #fbbf24; }
+        .dot-amc { background: #a78bfa; }
+
+        /* Previous Week Section */
+        .previous-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .previous-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .previous-header:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .previous-header.active {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom: none;
+        }
+
+        .previous-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .previous-title i {
+            color: var(--text-muted);
+        }
+
+        .previous-title strong {
+            font-size: 1rem;
+        }
+
+        .previous-title span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .prev-icon {
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .previous-header.active .prev-icon {
+            transform: rotate(180deg);
+        }
+
+        .previous-content {
+            display: none;
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            padding: 12px;
+        }
+
+        .previous-content.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Previous Day Accordion */
+        .prev-day-item {
+            margin-bottom: 8px;
+        }
+
+        .prev-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .prev-day-header:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .prev-day-header.active {
+            border-radius: 10px 10px 0 0;
+        }
+
+        .prev-day-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .prev-day-date {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .prev-day-icon {
+            color: var(--text-muted);
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .prev-day-header.active .prev-day-icon {
+            transform: rotate(180deg);
+        }
+
+        .prev-day-stocks {
+            display: none;
+            padding: 10px;
+            background: rgba(255,255,255,0.01);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .prev-day-stocks.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .prev-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .prev-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #e5e7eb;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid transparent;
         }
 
-        .time-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-        .dot-bmo { background-color: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-        .dot-amc { background-color: #c084fc; box-shadow: 0 0 8px #c084fc; }
-
-        .view-section { display: none; }
-        .view-section.active { display: block; }
-
-        .huge-date-header {
-            font-size: 1.95rem;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            color: var(--text-primary);
-            line-height: 1.2;
-            margin-top: 10px;
-            margin-bottom: 4px;
+        .prev-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .report-list-box {
-            background-color: var(--bg-glass-dark);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 8px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        .prev-pill.moon {
+            background: rgba(16,185,129,0.1);
+            color: var(--green);
+            border-color: rgba(16,185,129,0.2);
         }
 
-        .stock-list-item {
+        .prev-pill.moon:hover {
+            background: rgba(16,185,129,0.2);
+            box-shadow: 0 0 15px rgba(16,185,129,0.2);
+        }
+
+        .prev-pill.flop {
+            background: rgba(239,68,68,0.1);
+            color: var(--red);
+            border-color: rgba(239,68,68,0.2);
+        }
+
+        .prev-pill.flop:hover {
+            background: rgba(239,68,68,0.2);
+            box-shadow: 0 0 15px rgba(239,68,68,0.2);
+        }
+
+        .prev-pill.chop {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+
+        .prev-pill.chop:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .prev-pill .emoji {
+            font-size: 0.9rem;
+        }
+
+        .no-data {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* Detail View */
+        .detail-header {
+            padding: 20px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 16px;
+        }
+
+        .detail-sub {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* Stock List */
+        .stock-list { padding: 12px; }
+
+        .stock-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .stock-list-item:last-child { border-bottom: none; }
-
-        .btn-google-fin {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #38bdf8 !important; 
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            font-weight: 700;
-            padding: 8px 14px;
+            padding: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            text-decoration: none;
-            display: inline-flex;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .stock-item:hover {
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .stock-left {
+            display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 14px;
         }
 
-        .stock-meta-name {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            margin-top: 1px;
-            max-width: 140px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .stock-symbol {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #60a5fa;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .status-text-bold {
-            font-size: 1.05rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
+        .stock-symbol:hover {
+            border-color: rgba(96,165,250,0.3);
+        }
+
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stock-name {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .stock-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .stock-right {
             text-align: right;
         }
 
-        .text-surged { color: var(--color-surged); }
-        .text-plunged { color: var(--color-plunged); }
-        .text-awaiting { color: var(--text-secondary); font-weight: 500; }
-
-        .btn-back-nav {
-            background-color: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 10px;
+        .stock-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
+
+        .stock-status {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
+        }
+
+        .pct-moon {
+            color: var(--green);
+            text-shadow: 0 0 20px rgba(16,185,129,0.2);
+        }
+
+        .status-moon { color: var(--green); }
+
+        .moon-glow {
+            box-shadow: 0 0 30px rgba(16,185,129,0.15);
+            border-color: rgba(16,185,129,0.3) !important;
+        }
+
+        .pct-flop {
+            color: var(--red);
+            text-shadow: 0 0 20px rgba(239,68,68,0.2);
+        }
+
+        .status-flop { color: var(--red); }
+
+        .flop-glow {
+            box-shadow: 0 0 30px rgba(239,68,68,0.15);
+            border-color: rgba(239,68,68,0.3) !important;
+        }
+
+        .pct-chop { color: var(--text-muted); }
+        .status-chop { color: var(--text-muted); }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { animation: fadeIn 0.3s ease; }
     </style>
 </head>
 <body>
 
-    <div id="view-calendar" class="view-section active">
-        <div class="app-header d-flex justify-content-between align-items-center">
-            <div class="app-brand"><i class="fa-solid fa-dice-d20 me-2"></i>Earnings Lotto</div>
+    <!-- CALENDAR VIEW -->
+    <div id="view-calendar" class="view active">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">📈</div>
+                <span>Earnings Lotto</span>
+            </div>
         </div>
 
-        <div class="container mt-3 px-3">
-            <div id="card-Monday" class="day-card card-mwf" onclick="navigateToDetail('Monday', 'Monday 25 May 2026')">
-                <div class="day-header-meta">
+        <div class="container py-3 px-3">
+            <div id="card-Monday" class="day-card" onclick="navigateToDetail('Monday')">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">Monday 25 May 2026</div>
-                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                        <div class="day-name">Monday</div>
+                        <div class="day-date" id="date-Monday">--</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                    <span class="status-badge" id="badge-Monday">--</span>
                 </div>
-                <div class="countdown-bar">
-                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
-                    <span id="timer-box-Monday">Market Opens In: <span id="timer-Monday" class="mono fw-bold">--:--:--</span></span>
+                <div class="countdown" id="timer-box-Monday">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Opens in <span class="mono" id="timer-Monday">--:--:--</span></span>
                 </div>
-                <div id="pills-Monday" class="pill-grid"></div>
+                <div id="pills-Monday" class="pills"></div>
             </div>
 
-            <div id="card-Tuesday" class="day-card card-tt" onclick="navigateToDetail('Tuesday', 'Tuesday 26 May 2026')">
-                <div class="day-header-meta">
+            <div id="card-Tuesday" class="day-card" onclick="navigateToDetail('Tuesday')">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">Tuesday 26 May 2026</div>
-                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                        <div class="day-name">Tuesday</div>
+                        <div class="day-date" id="date-Tuesday">--</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                    <span class="status-badge" id="badge-Tuesday">--</span>
                 </div>
-                <div class="countdown-bar">
-                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
-                    <span id="timer-box-Tuesday">Market Opens In: <span id="timer-Tuesday" class="mono fw-bold">--:--:--</span></span>
+                <div class="countdown" id="timer-box-Tuesday">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Opens in <span class="mono" id="timer-Tuesday">--:--:--</span></span>
                 </div>
-                <div id="pills-Tuesday" class="pill-grid"></div>
+                <div id="pills-Tuesday" class="pills"></div>
             </div>
 
-            <div id="card-Wednesday" class="day-card card-mwf" onclick="navigateToDetail('Wednesday', 'Wednesday 27 May 2026')">
-                <div class="day-header-meta">
+            <div id="card-Wednesday" class="day-card" onclick="navigateToDetail('Wednesday')">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">Wednesday 27 May 2026</div>
-                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                        <div class="day-name">Wednesday</div>
+                        <div class="day-date" id="date-Wednesday">--</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                    <span class="status-badge" id="badge-Wednesday">--</span>
                 </div>
-                <div class="countdown-bar">
-                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
-                    <span id="timer-box-Wednesday">Market Opens In: <span id="timer-Wednesday" class="mono fw-bold">--:--:--</span></span>
+                <div class="countdown" id="timer-box-Wednesday">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Opens in <span class="mono" id="timer-Wednesday">--:--:--</span></span>
                 </div>
-                <div id="pills-Wednesday" class="pill-grid"></div>
+                <div id="pills-Wednesday" class="pills"></div>
             </div>
 
-            <div id="card-Thursday" class="day-card card-tt" onclick="navigateToDetail('Thursday', 'Thursday 28 May 2026')">
-                <div class="day-header-meta">
+            <div id="card-Thursday" class="day-card" onclick="navigateToDetail('Thursday')">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">Thursday 28 May 2026</div>
-                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                        <div class="day-name">Thursday</div>
+                        <div class="day-date" id="date-Thursday">--</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                    <span class="status-badge" id="badge-Thursday">--</span>
                 </div>
-                <div class="countdown-bar">
-                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
-                    <span id="timer-box-Thursday">Market Opens In: <span id="timer-Thursday" class="mono fw-bold">--:--:--</span></span>
+                <div class="countdown" id="timer-box-Thursday">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Opens in <span class="mono" id="timer-Thursday">--:--:--</span></span>
                 </div>
-                <div id="pills-Thursday" class="pill-grid"></div>
+                <div id="pills-Thursday" class="pills"></div>
             </div>
 
-            <div id="card-Friday" class="day-card card-mwf" onclick="navigateToDetail('Friday', 'Friday 29 May 2026')">
-                <div class="day-header-meta">
+            <div id="card-Friday" class="day-card" onclick="navigateToDetail('Friday')">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">Friday 29 May 2026</div>
-                        <div class="day-subtext">Yesterday's AMC + Today's BMO</div>
+                        <div class="day-name">Friday</div>
+                        <div class="day-date" id="date-Friday">--</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted opacity-50"></i>
+                    <span class="status-badge" id="badge-Friday">--</span>
                 </div>
-                <div class="countdown-bar">
-                    <i class="fa-solid fa-hourglass-half opacity-75"></i>
-                    <span id="timer-box-Friday">Market Opens In: <span id="timer-Friday" class="mono fw-bold">--:--:--</span></span>
+                <div class="countdown" id="timer-box-Friday">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Opens in <span class="mono" id="timer-Friday">--:--:--</span></span>
                 </div>
-                <div id="pills-Friday" class="pill-grid"></div>
+                <div id="pills-Friday" class="pills"></div>
+            </div>
+
+            <!-- PREVIOUS WEEK SECTION -->
+            <div class="previous-section">
+                <div class="previous-header" id="prev-header" onclick="togglePrevious()">
+                    <div class="previous-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <div>
+                            <strong>Previous Week</strong>
+                            <span>18 - 22 May 2026</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down prev-icon" id="prev-icon"></i>
+                </div>
+                <div class="previous-content" id="previous-content">
+                    <!-- Dropdown 5 วันจะถูกสร้างโดย JS -->
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="view-detail" class="view-section">
-        <div class="app-header d-flex justify-content-between align-items-center">
-            <button class="btn btn-back-nav" onclick="backToCalendar()">
-                <i class="fa-solid fa-arrow-left me-1"></i> Back
+    <!-- DETAIL VIEW -->
+    <div id="view-detail" class="view">
+        <div class="detail-header">
+            <button class="btn-back" onclick="backToCalendar()">
+                <i class="fa-solid fa-arrow-left"></i> Back
             </button>
-            <div class="fw-bold text-warning small mono"><i class="fa-solid fa-receipt me-1"></i> LOTTO REPORT</div>
+            <h1 id="detail-target-date" class="detail-title">Date</h1>
+            <p class="detail-sub">Earnings Lotto Report</p>
         </div>
 
-        <div class="container mt-3 px-3">
-            <h1 id="detail-target-date" class="huge-date-header">Date Placeholder</h1>
-            <p class="text-secondary small mb-4">โพยสรุปผลเรียงเบอร์รายตัวประจำวันตรวจผลประกอบการไตรมาส</p>
+        <div class="stock-list">
+            <div id="lotto-items-injector"></div>
+        </div>
 
-            <div class="report-list-box">
-                <div id="lotto-items-injector"></div>
-            </div>
+        <div class="explain-box-bottom" id="explain-text">
+            <i class="fa-solid fa-circle-info me-2"></i>
+            <strong>วันจันทร์:</strong> มีเฉพาะ <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> 
+            (Before Market Open) ของวันจันทร์เท่านั้น
         </div>
     </div>
 
     <script>
-        const mockDataCSV = `Symbol,Exchange,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
-AAPL,NASDAQ,Apple Inc.,25-05-26,After Market,304.84,14.47%,33.16,LONG,+1.25%,Hit!
-BJ,NYSE,BJ's Wholesale Club,25-05-26,Before Market,93.49,2.05%,19.05,LONG,+0.04%,Hit!
-NVDA,NASDAQ,NVIDIA Corporation,26-05-26,After Market,120.50,45.20%,42.10,LONG,-3.40%,Loss!
-PLTR,NYSE,Palantir Technologies,26-05-26,Before Market,24.15,38.10%,65.00,,+5.20%,Long
-OKLO,NYSE,Oklo Inc.,27-05-26,After Market,11.20,120.40%,N/A,LONG,-12.30%,Loss!
-JPM,NYSE,JPMorgan Chase,28-05-26,Before Market,195.30,8.20%,11.40,SHORT,-1.80%,Hit!
-ZETA,NYSE,Zeta Global,28-05-26,After Market,16.80,64.20%,32.10,,+8.45%,Long
-PLUS,NASDAQ,ePlus inc.,28-05-26,After Market,82.39,-9.43%,14.86,,,
-MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
+        const mockDataCSV = `Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+AAPL,Apple Inc.,25-05-26,After Market,304.84,14.47%,33.16,LONG,+1.25%,
+BJ,BJ's Wholesale Club,25-05-26,Before Market,93.49,2.05%,19.05,LONG,+0.04%,
+NVDA,NVIDIA Corporation,26-05-26,After Market,120.50,45.20%,42.10,LONG,-3.40%,
+PLTR,Palantir Technologies,26-05-26,Before Market,24.15,38.10%,65.00,,+5.20%,
+OKLO,Oklo Inc.,27-05-26,After Market,11.20,120.40%,N/A,LONG,-12.30%,
+JPM,JPMorgan Chase,28-05-26,Before Market,195.30,8.20%,11.40,SHORT,-1.80%,
+ZETA,Zeta Global,28-05-26,After Market,16.80,64.20%,32.10,,+8.45%,
+PLUS,ePlus inc.,28-05-26,After Market,82.39,-9.43%,14.86,,,
+MNSO,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
+
+        const mockPreviousCSV = `Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+TSLA,Tesla Inc.,18-05-26,After Market,245.30,12.50%,42.10,LONG,+4.20%,Moon
+HD,Home Depot,19-05-26,Before Market,345.80,5.20%,22.40,SHORT,-0.50%,Flop
+MSFT,Microsoft Corp.,20-05-26,After Market,420.15,8.30%,32.50,LONG,+1.80%,
+CSCO,Cisco Systems,21-05-26,Before Market,52.30,1.50%,15.20,,+0.30%,
+CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         let activeStocks = [];
+        let previousStocks = [];
+        let currentWeekDates = {};
 
         window.addEventListener('DOMContentLoaded', function() {
+            calculateWeekDates();
             initializeSystem();
+            loadPreviousData();
             initCountdownTimers();
         });
 
+        function calculateWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            
+            const monday = new Date(now);
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            monday.setDate(now.getDate() + diffToMonday);
+            
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            days.forEach((dayName, index) => {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + index);
+                
+                const dayNum = date.getDate();
+                const month = months[date.getMonth()];
+                const year = date.getFullYear();
+                
+                currentWeekDates[dayName] = {
+                    fullDate: date,
+                    display: `${dayName} ${dayNum} ${month} ${year}`,
+                    short: `${dayNum} ${month} ${year}`
+                };
+                
+                const dateEl = document.getElementById('date-' + dayName);
+                if(dateEl) dateEl.textContent = currentWeekDates[dayName].short;
+            });
+        }
+
         function initializeSystem() {
             fetch('earnings_board.csv')
-                .then(function(res) {
-                    if (res.ok) {
-                        return res.text();
-                    }
-                    throw new Error('File not found');
-                })
-                .then(function(text) {
-                    compileCSV(text);
-                })
-                .catch(function() {
-                    compileCSV(mockDataCSV);
-                });
+                .then(res => res.ok ? res.text() : Promise.reject())
+                .then(text => compileCSV(text))
+                .catch(() => compileCSV(mockDataCSV));
         }
 
         function compileCSV(text) {
@@ -383,10 +732,10 @@ MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
 
             for(let i=1; i<lines.length; i++) {
                 if(!lines[i].trim()) continue;
-                const columns = lines[i].split(',');
-                if(columns.length < headers.length) continue;
+                const cols = lines[i].split(',');
+                if(cols.length < headers.length) continue;
                 let item = {};
-                headers.forEach((h, idx) => { item[h] = columns[idx] ? columns[idx].trim() : ""; });
+                headers.forEach((h, idx) => item[h] = cols[idx] ? cols[idx].trim() : "");
                 parsed.push(item);
             }
 
@@ -395,16 +744,33 @@ MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
                 const timeStr = stock["Time"];
                 let mappedDay = "N/A";
 
-                if (dateStr === "22-05-26" && timeStr === "After Market") mappedDay = "Monday";
-                else if (dateStr === "25-05-26" && timeStr === "Before Market") mappedDay = "Monday";
-                else if (dateStr === "25-05-26" && timeStr === "After Market") mappedDay = "Tuesday";
-                else if (dateStr === "26-05-26" && timeStr === "Before Market") mappedDay = "Tuesday";
-                else if (dateStr === "26-05-26" && timeStr === "After Market") mappedDay = "Wednesday";
-                else if (dateStr === "27-05-26" && timeStr === "Before Market") mappedDay = "Wednesday";
-                else if (dateStr === "27-05-26" && timeStr === "After Market") mappedDay = "Thursday";
-                else if (dateStr === "28-05-26" && timeStr === "Before Market") mappedDay = "Thursday";
-                else if (dateStr === "28-05-26" && timeStr === "After Market") mappedDay = "Friday";
-                else if (dateStr === "29-05-26" && timeStr === "Before Market") mappedDay = "Friday";
+                const [day, month, year] = dateStr.split('-').map(Number);
+                const stockDate = new Date(2000 + year, month - 1, day);
+                
+                const dayOfWeek = stockDate.getDay();
+                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const stockDayName = dayNames[dayOfWeek];
+
+                const weekStart = currentWeekDates['Monday'].fullDate;
+                const weekEnd = currentWeekDates['Friday'].fullDate;
+                weekEnd.setHours(23, 59, 59);
+
+                if(stockDate >= weekStart && stockDate <= weekEnd) {
+                    if(timeStr === "Before Market") {
+                        mappedDay = stockDayName;
+                    } else if(timeStr === "After Market") {
+                        const nextDay = new Date(stockDate);
+                        nextDay.setDate(stockDate.getDate() + 1);
+                        const nextDayOfWeek = nextDay.getDay();
+                        const nextDayName = dayNames[nextDayOfWeek];
+                        
+                        if(nextDayOfWeek === 6) {
+                            mappedDay = "Monday";
+                        } else {
+                            mappedDay = nextDayName;
+                        }
+                    }
+                }
 
                 stock.TradingDisplayDay = mappedDay;
                 return stock;
@@ -414,76 +780,265 @@ MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
         }
 
         function populateCalendarPills() {
-            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+            const days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
             days.forEach(d => {
-                const el = document.getElementById('pills-' + d);
-                if (el) el.innerHTML = "";
+                const el = document.getElementById('pills-'+d);
+                if(el) el.innerHTML = "";
             });
 
             activeStocks.forEach(stock => {
                 const day = stock.TradingDisplayDay;
-                if(days.includes(day)) {
-                    const block = document.getElementById('pills-' + day);
-                    const isBMO = stock["Time"] === "Before Market";
-                    const dotStyle = isBMO ? "dot-bmo" : "dot-amc";
+                if(!days.includes(day)) return;
+                
+                const block = document.getElementById('pills-'+day);
+                const isBMO = stock["Time"] === "Before Market";
+                
+                const pill = document.createElement('div');
+                pill.className = "pill";
+                pill.innerHTML = `<span class="pill-dot ${isBMO ? 'dot-bmo' : 'dot-amc'}"></span>${stock["Symbol"]}`;
+                block.appendChild(pill);
+            });
+        }
 
-                    const pill = document.createElement('div');
-                    pill.className = "ticker-pill";
-                    pill.innerHTML = '<span class="time-dot ' + dotStyle + '"></span><span class="mono fw-bold">' + stock["Symbol"] + '</span>';
-                    block.appendChild(pill);
+        // ========== PREVIOUS WEEK FUNCTIONS ==========
+
+        function loadPreviousData() {
+            fetch('previous_board.csv')
+                .then(res => res.ok ? res.text() : Promise.reject())
+                .then(text => parsePreviousCSV(text))
+                .catch(() => parsePreviousCSV(mockPreviousCSV));
+        }
+
+        function parsePreviousCSV(text) {
+            const lines = text.split('\n');
+            if(lines.length < 2) return;
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            for(let i=1; i<lines.length; i++) {
+                if(!lines[i].trim()) continue;
+                const cols = lines[i].split(',');
+                if(cols.length < headers.length) continue;
+                let item = {};
+                headers.forEach((h, idx) => item[h] = cols[idx] ? cols[idx].trim() : "");
+                previousStocks.push(item);
+            }
+
+            renderPreviousSection();
+        }
+
+        function renderPreviousSection() {
+            const container = document.getElementById('previous-content');
+            const days = [
+                { key: 'mon', name: 'Monday', date: '18 May 2026', csvDate: '18-05-26' },
+                { key: 'tue', name: 'Tuesday', date: '19 May 2026', csvDate: '19-05-26' },
+                { key: 'wed', name: 'Wednesday', date: '20 May 2026', csvDate: '20-05-26' },
+                { key: 'thu', name: 'Thursday', date: '21 May 2026', csvDate: '21-05-26' },
+                { key: 'fri', name: 'Friday', date: '22 May 2026', csvDate: '22-05-26' }
+            ];
+
+            container.innerHTML = days.map(day => {
+                const dayStocks = getPreviousDayStocks(day.csvDate);
+                
+                let stocksHTML = '';
+                if(dayStocks.length === 0) {
+                    stocksHTML = '<div class="no-data">No Earning Stock</div>';
+                } else {
+                    stocksHTML = '<div class="prev-pills">' + 
+                        dayStocks.map(stock => {
+                            const pct = stock['%Today'] || '';
+                            const num = pct ? parseFloat(pct.replace('%','')) : 0;
+                            
+                            let pillClass = 'chop';
+                            let emoji = '';
+                            
+                            if(num >= 3) { 
+                                pillClass = 'moon'; 
+                                emoji = '🚀'; 
+                            }
+                            else if(num < 0) { 
+                                pillClass = 'flop'; 
+                                emoji = '💀'; 
+                            }
+                            
+                            const url = `https://www.google.com/finance/quote/${stock.Symbol}:${stock.Exchange || 'NASDAQ'}`;
+                            
+                            return `<a href="${url}" target="_blank" class="prev-pill ${pillClass}">
+                                <span class="emoji">${emoji}</span>${stock.Symbol} ${pct}
+                            </a>`;
+                        }).join('') + 
+                    '</div>';
+                }
+
+                return `
+                    <div class="prev-day-item">
+                        <div class="prev-day-header" onclick="togglePrevDay('${day.key}')">
+                            <div>
+                                <span class="prev-day-name">${day.name}</span>
+                                <span class="prev-day-date">${day.date}</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down prev-day-icon" id="prev-day-icon-${day.key}"></i>
+                        </div>
+                        <div class="prev-day-stocks" id="prev-day-stocks-${day.key}">
+                            ${stocksHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getPreviousDayStocks(csvDate) {
+            return previousStocks.filter(stock => {
+                const dateStr = stock['Earnings Date'];
+                const timeStr = stock['Time'];
+                
+                const [day, month, year] = dateStr.split('-').map(Number);
+                const stockDate = new Date(2000 + year, month - 1, day);
+                const dayOfWeek = stockDate.getDay();
+                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                
+                if(timeStr === 'Before Market') {
+                    return dateStr === csvDate;
+                } else {
+                    const nextDay = new Date(stockDate);
+                    nextDay.setDate(stockDate.getDate() + 1);
+                    const nextDayName = dayNames[nextDay.getDay()];
+                    const nextDayStr = String(nextDay.getDate()).padStart(2,'0') + '-' + String(nextDay.getMonth()+1).padStart(2,'0') + '-' + String(nextDay.getFullYear()).slice(2);
+                    return nextDayStr === csvDate;
                 }
             });
         }
 
-        function navigateToDetail(dayName, descriptiveDate) {
-            document.getElementById('detail-target-date').innerText = descriptiveDate;
+        function togglePrevious() {
+            const header = document.getElementById('prev-header');
+            const content = document.getElementById('previous-content');
+            const icon = document.getElementById('prev-icon');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('show');
+            
+            if(content.classList.contains('show')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+                // ปิดทุกวันเมื่อปิด Previous Week
+                document.querySelectorAll('.prev-day-stocks').forEach(el => el.classList.remove('show'));
+                document.querySelectorAll('.prev-day-header').forEach(el => el.classList.remove('active'));
+            }
+        }
+
+        function togglePrevDay(dayKey) {
+            const content = document.getElementById('prev-day-stocks-' + dayKey);
+            const header = content.previousElementSibling;
+            const icon = document.getElementById('prev-day-icon-' + dayKey);
+            
+            // ปิดวันอื่นก่อน (accordion style)
+            document.querySelectorAll('.prev-day-stocks').forEach(el => {
+                if(el.id !== 'prev-day-stocks-' + dayKey) el.classList.remove('show');
+            });
+            document.querySelectorAll('.prev-day-header').forEach(el => {
+                if(el !== header) el.classList.remove('active');
+            });
+            
+            content.classList.toggle('show');
+            header.classList.toggle('active');
+        }
+
+        // ========== DETAIL VIEW FUNCTIONS ==========
+
+        function navigateToDetail(dayName) {
+            const dateInfo = currentWeekDates[dayName];
+            document.getElementById('detail-target-date').innerText = dateInfo.display;
+            
+            updateExplanation(dayName);
+            
             const container = document.getElementById('lotto-items-injector');
             container.innerHTML = "";
 
             const targets = activeStocks.filter(s => s.TradingDisplayDay === dayName);
 
             if(targets.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted py-5 mono">NO TICKERS FOR TODAY</div>';
-            } else {
-                targets.forEach(stock => {
-                    const pct = stock["%Today"] || "";
-                    let statusLabel = "--";
-                    let statusClass = "text-awaiting";
-
-                    if(pct) {
-                        const numeric = parseFloat(pct.replace('%', ''));
-                        if(numeric > 0) { statusLabel = "SURGED"; statusClass = "text-surged"; }
-                        else if(numeric < 0) { statusLabel = "PLUNGED"; statusClass = "text-plunged"; }
-                        else { statusLabel = "UNCHANGED"; statusClass = "text-awaiting"; }
-                    }
-
-                    const exch = stock["Exchange"] || "NASDAQ";
-                    const googleFinUrl = 'https://www.google.com/finance/quote/' + stock["Symbol"] + ':' + exch;
-                    const priceDisp = stock["Price"] || '0.00';
-                    const pctDisp = pct || '--';
-
-                    const listRow = document.createElement('div');
-                    listRow.className = "stock-list-item";
-                    
-                    let rowHTML = '<div class="d-flex align-items-center gap-3">';
-                    rowHTML += '<a href="' + googleFinUrl + '" target="_blank" class="btn-google-fin">';
-                    rowHTML += stock["Symbol"] + ' <i class="fa-solid fa-arrow-up-right-from-square fs-7 opacity-70"></i></a>';
-                    rowHTML += '<div><div class="fw-bold text-white fs-6 mono">$' + priceDisp + '</div>';
-                    rowHTML += '<div class="stock-meta-name">' + stock["Company"] + '</div></div></div>';
-                    rowHTML += '<div class="text-end"><div class="mono fw-bold ' + statusClass + ' fs-5">' + pctDisp + '</div>';
-                    rowHTML += '<div class="status-text-bold ' + statusClass + '">' + statusLabel + '</div></div>';
-                    
-                    listRow.innerHTML = rowHTML;
-                    container.appendChild(listRow);
-                });
+                container.innerHTML = `
+                    <div class="empty">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <div class="mono">NO TICKERS FOR TODAY</div>
+                    </div>`;
+                return;
             }
+
+            targets.forEach(stock => {
+                const pct = stock["%Today"] || "";
+                const num = pct ? parseFloat(pct.replace('%','')) : null;
+                
+                let statusLabel = "";
+                let statusClass = "";
+                let glowClass = "";
+
+                if(num !== null) {
+                    if(num >= 3) { 
+                        statusLabel = "MOON 🚀"; 
+                        statusClass = "moon"; 
+                        glowClass = "moon-glow";
+                    }
+                    else if(num < 0) { 
+                        statusLabel = "FLOP 💀"; 
+                        statusClass = "flop"; 
+                        glowClass = "flop-glow";
+                    }
+                }
+
+                const url = `https://www.google.com/finance/quote/${stock["Symbol"]}:${stock["Exchange"]||"NASDAQ"}`;
+                const isBMO = stock["Time"] === "Before Market";
+                
+                const item = document.createElement('div');
+                item.className = `stock-item fade-in ${glowClass}`;
+                item.innerHTML = `
+                    <div class="stock-left">
+                        <a href="${url}" target="_blank" class="stock-symbol">
+                            ${stock["Symbol"]} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;opacity:0.5;"></i>
+                        </a>
+                        <div class="stock-info">
+                            <div class="stock-name">${stock["Company"]}</div>
+                            <div class="stock-meta">$${stock["Price"]||'0.00'}</div>
+                        </div>
+                    </div>
+                    <div class="stock-right">
+                        <div class="stock-pct ${statusClass ? 'pct-'+statusClass : 'pct-chop'}">${pct||'--'}</div>
+                        ${statusLabel ? `<div class="stock-status status-${statusClass}">${statusLabel}</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
 
             switchView('detail');
         }
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
+        function updateExplanation(dayName) {
+            const explainBox = document.getElementById('explain-text');
+            const dayLabels = {
+                "Monday": {
+                    text: `<strong>วันจันทร์:</strong> มีเฉพาะ <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> (Before Market Open) ของวันจันทร์เท่านั้น`
+                },
+                "Tuesday": {
+                    text: `<strong>วันอังคาร:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันจันทร์ + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันอังคาร`
+                },
+                "Wednesday": {
+                    text: `<strong>วันพุธ:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันอังคาร + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันพุธ`
+                },
+                "Thursday": {
+                    text: `<strong>วันพฤหัส:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันพุธ + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันพฤหัส`
+                },
+                "Friday": {
+                    text: `<strong>วันศุกร์:</strong> รวม <span class="session-label label-amc"><span class="pill-dot dot-amc"></span>AMC</span> ของวันพฤหัส + <span class="session-label label-bmo"><span class="pill-dot dot-bmo"></span>BMO</span> ของวันศุกร์`
+                }
+            };
+            
+            const info = dayLabels[dayName] || dayLabels["Monday"];
+            explainBox.innerHTML = `<i class="fa-solid fa-circle-info me-2"></i>` + info.text;
+        }
+
+        function switchView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-'+id).classList.add('active');
             window.scrollTo(0,0);
         }
 
@@ -492,57 +1047,55 @@ MNSO,NYSE,MINISO Group Holding,26-05-26,Before Market,13.79,-27.87%,7.79,,,`;
         }
 
         function initCountdownTimers() {
-            const openings = {
-                "Monday": new Date("May 25, 2026 20:30:00").getTime(),
-                "Tuesday": new Date("May 26, 2026 20:30:00").getTime(),
-                "Wednesday": new Date("May 27, 2026 20:30:00").getTime(),
-                "Thursday": new Date("May 28, 2026 20:30:00").getTime(),
-                "Friday": new Date("May 29, 2026 20:30:00").getTime()
-            };
+            setInterval(() => {
+                const now = new Date();
+                let foundUpcoming = false;
 
-            setInterval(function() {
-                const now = new Date().getTime();
-                let closestUpcomingFound = false;
-
-                for(let day in openings) {
-                    const cardEl = document.getElementById('card-' + day);
-                    const timerEl = document.getElementById('timer-' + day);
-                    const boxEl = document.getElementById('timer-box-' + day);
+                for(let dayName in currentWeekDates) {
+                    const card = document.getElementById('card-'+dayName);
+                    const timer = document.getElementById('timer-'+dayName);
+                    const box = document.getElementById('timer-box-'+dayName);
+                    const badge = document.getElementById('badge-'+dayName);
                     
-                    if(!timerEl || !cardEl) continue;
+                    if(!timer || !card) continue;
 
-                    const diff = openings[day] - now;
+                    const targetDate = currentWeekDates[dayName].fullDate;
+                    targetDate.setHours(20, 30, 0);
+                    
+                    const diff = targetDate - now;
+                    
+                    card.classList.remove('live','upcoming');
 
-                    cardEl.classList.remove('card-active-highlight');
-
-                    if (diff < -23400000) {
-                        boxEl.innerHTML = '<span style="color: #64748b; font-weight:700;"><i class="fa-solid fa-check-double me-1"></i>CONCLUDED</span>';
-                    } 
-                    else if (diff < 0) {
-                        boxEl.innerHTML = 'Market Status: <span style="color: #10b981; font-weight:800; text-shadow: 0 0 8px rgba(16,185,129,0.3)">SESSION LIVE</span>';
-                        
-                        if (!closestUpcomingFound) {
-                            cardEl.classList.add('card-active-highlight');
-                            closestUpcomingFound = true;
-                        }
-                    } 
+                    if(diff < -23400000) {
+                        box.innerHTML = '<i class="fa-solid fa-check"></i><span>Session Closed</span>';
+                        badge.className = "status-badge badge-done";
+                        badge.textContent = "Done";
+                    }
+                    else if(diff < 0) {
+                        box.innerHTML = '<i class="fa-solid fa-bolt" style="color:var(--green)"></i><span style="color:var(--green);font-weight:700">LIVE NOW</span>';
+                        badge.className = "status-badge badge-live";
+                        badge.textContent = "Live";
+                        card.classList.add('live');
+                    }
                     else {
-                        if (!closestUpcomingFound) {
-                            cardEl.classList.add('card-active-highlight');
-                            closestUpcomingFound = true;
-
-                            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-                            let timeStr = "";
-                            if(d > 0) timeStr += d + 'd '; 
-                            timeStr += h.toString().padStart(2,'0') + 'h ' + m.toString().padStart(2,'0') + 'm ' + s.toString().padStart(2,'0') + 's';
+                        if(!foundUpcoming) {
+                            const d = Math.floor(diff/(1000*60*60*24));
+                            const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+                            const m = Math.floor((diff%(1000*60*60))/(1000*60));
+                            const s = Math.floor((diff%(1000*60))/1000);
                             
-                            boxEl.innerHTML = 'Market Opens In: <span id="timer-' + day + '" class="mono fw-bold">' + timeStr + '</span>';
+                            let str = d > 0 ? d+'d ' : '';
+                            str += `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                            
+                            box.innerHTML = `<i class="fa-regular fa-clock"></i><span>Opens in <span class="mono">${str}</span></span>`;
+                            badge.className = "status-badge badge-upcoming";
+                            badge.textContent = "Next";
+                            card.classList.add('upcoming');
+                            foundUpcoming = true;
                         } else {
-                            boxEl.innerHTML = 'Market Status: <span style="color: #4b5563; font-weight:500;">QUEUED</span>';
+                            box.innerHTML = '<i class="fa-solid fa-hourglass"></i><span>Queued</span>';
+                            badge.className = "status-badge badge-done";
+                            badge.textContent = "Queued";
                         }
                     }
                 }
