@@ -919,7 +919,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                                 else if (num < 0) { pillClass = 'flop'; emoji = '💀'; }
                             }
 
-                            const url = `https://finance.yahoo.com/quote/${stock.Symbol}/`;
+                            const url = `https://www.google.com/finance/quote/${stock['Symbol']}:${stock['Exchange']||'NASDAQ'}`;
                             return `<a href="${url}" target="_blank" class="prev-pill ${pillClass}">
                                 <span class="emoji">${emoji}</span>${stock.Symbol} ${pct}
                             </a>`;
@@ -1038,7 +1038,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                     else if (num < 0) { statusLabel = 'FLOP 💀'; statusClass = 'flop'; glowClass = 'flop-glow'; }
                 }
 
-                const url   = `https://finance.yahoo.com/quote/${stock['Symbol']}/`;
+                const url = `https://www.google.com/finance/quote/${stock['Symbol']}:${stock['Exchange']||'NASDAQ'}`;
                 const isBMO = stock['Time'] === 'Before Market';
 
                 const item = document.createElement('div');
