@@ -744,15 +744,17 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 .then(text => {
                     const rows = text.split('\n').filter(l => l.trim());
                     if (rows.length <= 1) {
+                        // มีแค่ header → Admin ยังไม่อัพสัปดาห์ใหม่
                         showWaitingBanner();
                     } else {
                         compileCSV(text);
                     }
                 })
-                .catch(() => compileCSV(mockDataCSV)); 
+                .catch(() => compileCSV(mockDataCSV));  // fetch ไม่ได้เลย (local/dev) → ใช้ mock
         }
 
         function showWaitingBanner() {
+            // โชว์ banner บนทุก day-card แทน pills
             WEEK_KEYS.forEach(d => {
                 const el = document.getElementById('pills-' + d);
                 if (el) el.innerHTML = `
@@ -769,7 +771,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
         }
 
         function parseCSVLine(line) {
-            // comma and apostrophe fix
+            // รองรับ quoted fields เช่น "BJ's Wholesale Club" ที่มี comma หรือ apostrophe
             const cols = [];
             let cur = '', inQuote = false;
             for (let i = 0; i < line.length; i++) {
@@ -857,7 +859,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 block.appendChild(pill);
             });
 
-            // count badge
+            // อัปเดต count badge แต่ละวัน
             WEEK_KEYS.forEach(d => {
                 const el = document.getElementById('count-' + d);
                 if (!el) return;
@@ -945,7 +947,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                     </div>`;
             }).join('');
 
-            // previous week header
+            // อัปเดต total badge ที่ previous week header
             const totalEl = document.getElementById('count-prev-total');
             if (totalEl) {
                 totalEl.textContent = totalPrev;
@@ -980,6 +982,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
             content.classList.toggle('show');
 
             if (!content.classList.contains('show')) {
+                // ปิดทุกวันเมื่อปิด accordion หลัก
                 document.querySelectorAll('.prev-day-stocks').forEach(el => el.classList.remove('show'));
                 document.querySelectorAll('.prev-day-header').forEach(el => el.classList.remove('active'));
             }
@@ -989,7 +992,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
             const content = document.getElementById('prev-day-stocks-' + dayKey);
             const header  = content.previousElementSibling;
 
-            // accordion
+            // accordion: ปิดวันอื่น
             document.querySelectorAll('.prev-day-stocks').forEach(el => {
                 if (el !== content) el.classList.remove('show');
             });
@@ -1047,7 +1050,7 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                         </a>
                         <div class="stock-info">
                             <div class="stock-name">${stock['Company']}</div>
-                            <div class="stock-meta">$${stock['Price']||'0.00'} · ${isBMO ? 'BMO' : 'AMC'}</div>
+                            <div class="stock-meta">$${stock['Price']||'0.00'} · <span class="pill-dot ${isBMO ? 'dot-bmo' : 'dot-amc'}" style="display:inline-block;vertical-align:middle;"></span> ${stock['Exchange']||'NASDAQ'}</div>
                         </div>
                     </div>
                     <div class="stock-right">
@@ -1062,11 +1065,11 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         function updateExplanation(dayName) {
             const map = {
-                Monday:    `<strong>Monday:</strong> BMO ของวันจันทร์เท่านั้น`,
-                Tuesday:   `<strong>Tuesday:</strong> AMC จันทร์ + BMO อังคาร`,
-                Wednesday: `<strong>Wednesday:</strong> AMC อังคาร + BMO พุธ`,
-                Thursday:  `<strong>Thursday:</strong> AMC พุธ + BMO พฤหัส`,
-                Friday:    `<strong>Friday:</strong> AMC พฤหัส + BMO ศุกร์`
+                Monday:    `<strong>Monday:</strong> Only Ticker on Monday BMO`,
+                Tuesday:   `<strong>Tuesday:</strong> AMC ticker on Monday & BMO ticker on Tuesday`,
+                Wednesday: `<strong>Wednesday:</strong> AMC ticker on Tuesday & BMO ticker on Wednesday`,
+                Thursday:  `<strong>Thursday:</strong> AMC ticker on Wednesday & BMO ticker on Thursday`,
+                Friday:    `<strong>Friday:</strong> AMC ticker on Thursday & BMO ticker on Friday`
             };
             document.getElementById('explain-text').innerHTML =
                 `<i class="fa-solid fa-circle-info me-2"></i>` + (map[dayName] || '');
@@ -1082,11 +1085,23 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
 
         // ─── COUNTDOWN TIMERS ────────────────────────────────────────────────────
 
+        /**
+         * คืนค่าเวลาตลาด NY เปิด (9:30 AM ET) ของวันที่กำหนด เป็น Date object
+         * รองรับ DST อัตโนมัติผ่าน Intl.DateTimeFormat
+         * EST (Nov-Mar): UTC-5 → 9:30 ET = 14:30 UTC = 21:30 ICT
+         * EDT (Mar-Nov): UTC-4 → 9:30 ET = 13:30 UTC = 20:30 ICT
+         */
         function getMarketOpenTime(date) {
+            // สร้าง Date ที่ตรงกับ 9:30 AM ใน timezone America/New_York ของวันนั้น
+            // วิธี: หา UTC offset ของ NY ณ วันนั้น แล้วบวกกลับ
             const year  = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day   = String(date.getDate()).padStart(2, '0');
+
+            // สร้าง string แบบ NY local time 09:30:00 แล้วแปลงเป็น UTC
             const nyTimeStr = `${year}-${month}-${day}T09:30:00`;
+
+            // ใช้ Intl เพื่อหา offset ของ NY ณ วันนั้น (รองรับ DST อัตโนมัติ)
             const formatter = new Intl.DateTimeFormat('en-US', {
                 timeZone: 'America/New_York',
                 year: 'numeric', month: '2-digit', day: '2-digit',
@@ -1094,11 +1109,14 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 hour12: false
             });
 
-            const approxUTC = new Date(nyTimeStr + 'Z');
+            // หา UTC timestamp ของ 9:30 NY โดย binary search ผ่าน offset
+            // วิธีง่ายกว่า: สร้าง Date UTC แล้วเช็ค NY offset จากมัน
+            const approxUTC = new Date(nyTimeStr + 'Z'); // สมมติเป็น UTC ก่อน
             const nyParts   = formatter.formatToParts(approxUTC);
             const nyHour    = parseInt(nyParts.find(p => p.type === 'hour').value);
-            const offsetHrs = nyHour - 9;
+            const offsetHrs = nyHour - 9; // ต่างจาก 9:30 NY กี่ชั่วโมง
 
+            // ปรับ UTC ให้ตรงกับ 9:30 NY จริงๆ
             const marketOpen = new Date(approxUTC);
             marketOpen.setUTCHours(marketOpen.getUTCHours() - offsetHrs);
             marketOpen.setUTCMinutes(30);
@@ -1122,8 +1140,10 @@ CRM,Salesforce Inc.,22-05-26,After Market,285.90,15.70%,55.30,LONG,+6.80%,Moon`;
                 const badge = document.getElementById('badge-' + dayName);
                 if (!card || !box || !badge) return;
 
+                // คำนวณเวลาตลาดเปิดแบบ DST-aware
                 const marketOpen = getMarketOpenTime(currentWeekDates[dayName].fullDate);
 
+                // Session lasts 6.5 hrs = 23400000 ms
                 const diff = marketOpen - now;
 
                 card.classList.remove('live', 'upcoming');
