@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GM Mine Card - Memory Matching Game</title>
+    <title>Mine Matching Card - Memory Matching Game</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto+Mono:wght@500&display=swap');
 
@@ -221,21 +221,22 @@
         }
 
         .card-back {
-            background: linear-gradient(135deg, #232530 0%, #15161c 100%);
-            border: 1px solid #444;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 15px 15px;
+            background: #111216;
+            border: 1px solid #333;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='105' viewBox='0 0 75 105'%3E%3Crect width='75' height='105' fill='%23111216'/%3E%3Cpath d='M5 5h65v95H5z' fill='none' stroke='%231f2330' stroke-width='1'/%3E%3Cpath d='M8 8h59v89H8z' fill='none' stroke='%2364ffda' stroke-width='1' stroke-opacity='0.15'/%3E%3Ccircle cx='37.5' cy='52.5' r='16' fill='none' stroke='%2364ffda' stroke-width='1' stroke-opacity='0.4' stroke-dasharray='4 2'/%3E%3Ccircle cx='37.5' cy='52.5' r='10' fill='none' stroke='%23ff4d4d' stroke-width='1.5' stroke-opacity='0.6'/%3E%3Cline x1='37.5' y1='25' x2='37.5' y2='80' stroke='%2364ffda' stroke-width='0.5' stroke-opacity='0.2'/%3E%3Cline x1='15' y1='52.5' x2='60' y2='52.5' stroke='%2364ffda' stroke-width='0.5' stroke-opacity='0.2'/%3E%3Cpath d='M4 12 L4 4 L12 4 M71 12 L71 4 L63 4 M4 93 L4 101 L12 101 M71 93 L71 101 L63 101' fill='none' stroke='%2364ffda' stroke-width='1.5' stroke-opacity='0.8'/%3E%3C/svg%3E");
+            background-size: cover;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
         }
 
         .card-back::after {
-            content: 'GM';
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.1);
-            letter-spacing: 2px;
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.3;
         }
 
         .card-front {
@@ -614,7 +615,7 @@
 
     <div class="modal-overlay active" id="start-modal">
         <div class="modal">
-            <h2>GM Mine Card</h2>
+            <h2>Mine Matching Card</h2>
             <p>Tactical Memory Matching<br>Match pairs by Rank & Color. Evade the GM's mines.</p>
 
             <div class="mode-section">
