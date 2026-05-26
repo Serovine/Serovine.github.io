@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Mine Card - Memory Matching Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #0d3320 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stat-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .stat-box .label {
+            color: #aaa;
+            font-size: 0.7rem;
+        }
+
+        .stat-box .value {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .life-display {
+            display: flex;
+            gap: 3px;
+        }
+
+        .life-heart {
+            width: 18px;
+            height: 18px;
+            fill: #ff4444;
+            transition: all 0.3s;
+        }
+
+        .life-heart.lost {
+            fill: #444;
+            opacity: 0.3;
+        }
+
+        .miss-box {
+            background: rgba(255, 102, 0, 0.2);
+            border: 2px solid #ff6600;
+        }
+
+        .miss-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff6600;
+            min-width: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .miss-number.danger {
+            color: #ff0000;
+            animation: missPulse 0.5s infinite;
+        }
+
+        @keyframes missPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .gm-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            min-height: 100px;
+        }
+
+        .gm-label {
+            font-size: 1rem;
+            color: #ff6b6b;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .gm-cards {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            width: 70px;
+            height: 98px;
+            position: relative;
+            cursor: pointer;
+            perspective: 1000px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover:not(.flipped):not(.matched):not(.pinned) {
+            transform: translateY(-4px);
+        }
+
+        .card.flipped {
+            cursor: default;
+        }
+
+        .card.matched {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .card.pinned {
+            cursor: default;
+        }
+
+        .card.pinned .card-front {
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .card.pinned::after {
+            content: '🗡️';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 18px;
+            z-index: 10;
+            animation: stab 0.3s ease-out;
+        }
+
+        @keyframes stab {
+            0% { transform: rotate(-45deg) translateY(-20px); opacity: 0; }
+            100% { transform: rotate(0deg) translateY(0); opacity: 1; }
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped .card-inner,
+        .card.pinned .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: 2px solid #4a90e2;
+        }
+
+        .card-back::before {
+            content: '';
+            width: 60%;
+            height: 60%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(255, 255, 255, 0.1) 5px,
+                rgba(255, 255, 255, 0.1) 10px
+            );
+            border-radius: 4px;
+        }
+
+        .card-front {
+            background: #fff;
+            transform: rotateY(180deg);
+            border: 2px solid #ddd;
+            color: #000;
+        }
+
+        .card-front.red {
+            color: #d32f2f;
+        }
+
+        .card-front.black {
+            color: #212121;
+        }
+
+        .card-rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .card-suit {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .card-corner {
+            position: absolute;
+            font-size: 0.6rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .card-corner.top-left {
+            top: 3px;
+            left: 3px;
+        }
+
+        .card-corner.bottom-right {
+            bottom: 3px;
+            right: 3px;
+            transform: rotate(180deg);
+        }
+
+        .game-board {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .cards-grid {
+            display: grid;
+            gap: 8px;
+            max-width: 100%;
+            justify-items: center;
+            align-content: start;
+        }
+
+        .empty-slot {
+            width: 70px;
+            height: 98px;
+            visibility: hidden;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
+        }
+
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .modal p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .difficulty-select {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .diff-btn {
+            padding: 10px 20px;
+            border: 2px solid #4a90e2;
+            background: transparent;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .diff-btn:hover,
+        .diff-btn.selected {
+            background: #4a90e2;
+            transform: translateY(-2px);
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .explode {
+            animation: explode 0.6s forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .score-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            pointer-events: none;
+            animation: scoreFloat 1s forwards;
+            z-index: 500;
+        }
+
+        @keyframes scoreFloat {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -80%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -120%) scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .card, .empty-slot {
+                width: 58px;
+                height: 81px;
+            }
+            .cards-grid {
+                gap: 5px;
+            }
+            .stat-box {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+            .game-header {
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card, .empty-slot {
+                width: 50px;
+                height: 70px;
+            }
+            .card-rank {
+                font-size: 1rem;
+            }
+            .card-suit {
+                font-size: 1.3rem;
+            }
+        }
+
+        .tutorial-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .tutorial-box strong {
+            color: #ffd700;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="stat-box">
+                <span class="label">Level</span>
+                <span class="value" id="level-display">1</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Life</span>
+                <div class="life-display" id="life-display">
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+            </div>
+            <div class="stat-box">
+                <span class="label">Score</span>
+                <span class="value" id="score-display">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Pairs Left</span>
+                <span class="value" id="pairs-display">-</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">On Table</span>
+                <span class="value" id="table-display">-</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">GM</span>
+                <span class="value" id="gm-display">-</span>
+            </div>
+            <div class="stat-box miss-box">
+                <span class="label">Miss</span>
+                <span class="miss-number" id="miss-display">3</span>
+            </div>
+        </div>
+
+        <div class="tutorial-box" id="tutorial" style="display: none;">
+            <strong>How to Play:</strong> Flip 2 cards to find a matching pair. ⚠️ <strong>DANGER!</strong> If your <strong>first flip</strong> matches GM's hand = 💥 INSTANT EXPLOSION! (Life -1) — No second card needed!
+            | Match a pair = +1 Point | Spend 3 Points to pin a mine card 🗡️ | Miss 3 times = GM steals a card!
+        </div>
+
+        <div class="gm-area">
+            <div class="gm-label">👹 GM HOLDING</div>
+            <div class="gm-cards" id="gm-cards"></div>
+        </div>
+
+        <div class="game-board">
+            <div class="cards-grid" id="game-board"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-success" id="skill-btn" onclick="useSkill()" disabled>
+                🗡️ Pin Mine (3 pts)
+            </button>
+            <button class="btn btn-danger" onclick="restartGame()">
+                🔄 Restart
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay active" id="start-modal">
+        <div class="modal">
+            <h2>🃏 GM Mine Card</h2>
+            <p>The ultimate memory matching card game!<br>Match all pairs, but beware of GM's mines!</p>
+            <p style="color: #ffd700; font-size: 0.9rem;">Select Difficulty:</p>
+            <div class="difficulty-select">
+                <button class="diff-btn selected" data-lives="7" onclick="selectDifficulty(this)">Easy (7 Life)</button>
+                <button class="diff-btn" data-lives="5" onclick="selectDifficulty(this)">Normal (5 Life)</button>
+                <button class="diff-btn" data-lives="3" onclick="selectDifficulty(this)">Hard (3 Life)</button>
+            </div>
+            <button class="btn btn-primary" onclick="startGame()" style="width: 100%;">Start Game!</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="gameover-modal">
+        <div class="modal">
+            <h2>💀 Game Over</h2>
+            <p>Out of lives!<br>You reached Level <span id="final-level">1</span><br>Total Score: <span id="final-score">0</span></p>
+            <button class="btn btn-primary" onclick="closeModal('gameover-modal'); showStartModal()" style="width: 100%;">Play Again</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="level-modal">
+        <div class="modal">
+            <h2>🎉 Level Complete!</h2>
+            <p>Congratulations! You cleared Level <span id="completed-level">1</span></p>
+            <p>Total Score: <span id="level-score">0</span></p>
+            <button class="btn btn-primary" onclick="nextLevel()" style="width: 100%;">Next Level ➔</button>
+        </div>
+    </div>
+
+    <script>
+        const SUITS = ['♠', '♥', '♦', '♣'];
+        const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const RED_SUITS = ['♥', '♦'];
+
+        let gameState = {
+            level: 1,
+            lives: 7,
+            maxLives: 7,
+            score: 0,
+            missStreak: 0,
+            cards: [],
+            gmCards: [],
+            flippedCards: [],
+            matchedPairs: 0,
+            totalPairs: 0,
+            normalPairs: 0,
+            isProcessing: false
+        };
+
+        let selectedLives = 7;
+
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function createDeck() {
+            const deck = [];
+            for (const suit of SUITS) {
+                for (const rank of RANKS) {
+                    deck.push({ suit, rank, id: `${rank}${suit}` });
+                }
+            }
+            return shuffle(deck);
+        }
+
+        function getLevelConfig(level) {
+            const pairs = level === 1 ? 4 : 
+                         level === 2 ? 6 : 
+                         level === 3 ? 8 :
+                         level === 4 ? 10 :
+                         level === 5 ? 12 :
+                         level === 6 ? 14 :
+                         level === 7 ? 16 :
+                         level === 8 ? 18 :
+                         level === 9 ? 20 :
+                         level === 10 ? 22 :
+                         level === 11 ? 24 :
+                         level === 12 ? 26 : 26;
+
+            const gmCards = level === 1 ? 1 : Math.floor(pairs / 5) + 1;
+            return { pairs, gmCards };
+        }
+
+        function selectDifficulty(btn) {
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedLives = parseInt(btn.dataset.lives);
+        }
+
+        function showStartModal() {
+            document.getElementById('start-modal').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function startGame() {
+            closeModal('start-modal');
+            gameState = {
+                level: 1,
+                lives: selectedLives,
+                maxLives: selectedLives,
+                score: 0,
+                missStreak: 0,
+                cards: [],
+                gmCards: [],
+                flippedCards: [],
+                matchedPairs: 0,
+                totalPairs: 0,
+                normalPairs: 0,
+                isProcessing: false
+            };
+            initLevel();
+        }
+
+        function initLevel() {
+            const config = getLevelConfig(gameState.level);
+            const deck = createDeck();
+
+            const levelCards = deck.slice(0, config.pairs * 2);
+
+            const pairs = [];
+            for (let i = 0; i < config.pairs; i++) {
+                const card = levelCards[i * 2];
+                pairs.push([
+                    { ...card, uniqueId: `${card.id}-1`, pairId: card.id },
+                    { ...card, uniqueId: `${card.id}-2`, pairId: card.id }
+                ]);
+            }
+
+            const shuffledPairs = shuffle([...pairs]);
+            const gmPairs = shuffledPairs.slice(0, config.gmCards);
+            const normalPairs = shuffledPairs.slice(config.gmCards);
+
+            gameState.gmCards = gmPairs.map(pair => ({ 
+                ...pair[0], 
+                isMine: true,
+                uniqueId: `gm-${pair[0].uniqueId}`
+            }));
+
+            const tableCards = [];
+            gmPairs.forEach(pair => {
+                tableCards.push({ 
+                    ...pair[1], 
+                    isMine: true, 
+                    isNormal: false,
+                    minePair: pair[0].uniqueId 
+                });
+            });
+            normalPairs.forEach(pair => {
+                tableCards.push({ ...pair[0], isNormal: true, isMine: false });
+                tableCards.push({ ...pair[1], isNormal: true, isMine: false });
+            });
+
+            gameState.cards = shuffle(tableCards);
+            gameState.totalPairs = config.pairs;
+            gameState.normalPairs = normalPairs.length;
+            gameState.matchedPairs = 0;
+            gameState.flippedCards = [];
+            gameState.missStreak = 0;
+            gameState.isProcessing = false;
+
+            updateUI();
+            renderBoard();
+            renderGMCards();
+
+            document.getElementById('tutorial').style.display = gameState.level === 1 ? 'block' : 'none';
+        }
+
+        function getGridColumns(cardCount) {
+            if (cardCount <= 8) return 4;
+            if (cardCount <= 12) return 4;
+            if (cardCount <= 16) return 4;
+            if (cardCount <= 20) return 5;
+            if (cardCount <= 24) return 6;
+            if (cardCount <= 30) return 6;
+            if (cardCount <= 36) return 6;
+            if (cardCount <= 42) return 7;
+            return 8;
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+
+            const totalCards = gameState.cards.length;
+            const cols = getGridColumns(totalCards);
+            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            gameState.cards.forEach((card, index) => {
+                if (card.matched) {
+                    const empty = document.createElement('div');
+                    empty.className = 'empty-slot';
+                    board.appendChild(empty);
+                    return;
+                }
+
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.dataset.index = index;
+
+                if (card.flipped) cardEl.classList.add('flipped');
+                if (card.pinned) cardEl.classList.add('pinned');
+
+                const isRed = RED_SUITS.includes(card.suit);
+
+                cardEl.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-back"></div>
+                        <div class="card-face card-front ${isRed ? 'red' : 'black'}">
+                            <div class="card-corner top-left">
+                                <span>${card.rank}</span>
+                                <span>${card.suit}</span>
+                            </div>
+                            <div class="card-suit">${card.suit}</div>
+                            <div class="card-corner bottom-right">
+                                <span>${card.rank}</span>
+                                <span>${card.suit}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', () => handleCardClick(index));
+                board.appendChild(cardEl);
+            });
+        }
+
+        function renderGMCards() {
+            const gmArea = document.getElementById('gm-cards');
+            gmArea.innerHTML = '';
+
+            gameState.gmCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card flipped';
+                const isRed = RED_SUITS.includes(card.suit);
+
+                cardEl.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-back"></div>
+                        <div class="card-face card-front ${isRed ? 'red' : 'black'}">
+                            <div class="card-corner top-left">
+                                <span>${card.rank}</span>
+                                <span>${card.suit}</span>
+                            </div>
+                            <div class="card-suit">${card.suit}</div>
+                            <div class="card-corner bottom-right">
+                                <span>${card.rank}</span>
+                                <span>${card.suit}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                gmArea.appendChild(cardEl);
+            });
+        }
+
+        function handleCardClick(index) {
+            if (gameState.isProcessing) return;
+            const card = gameState.cards[index];
+            if (card.flipped || card.matched || card.pinned) return;
+            if (gameState.flippedCards.length >= 2) return;
+
+            card.flipped = true;
+            gameState.flippedCards.push(index);
+            renderBoard();
+
+            // FIRST CARD: Check for INSTANT MINE EXPLOSION
+            if (gameState.flippedCards.length === 1) {
+                const isMine = card.isMine === true && gameState.gmCards.some(gm => gm.pairId === card.pairId);
+                if (isMine) {
+                    // 💥 BOOM! Instant explosion — no second card needed!
+                    gameState.isProcessing = true;
+                    setTimeout(() => handleSingleMineExplosion(index), 600);
+                }
+                // If not mine, wait patiently for second card
+            } else if (gameState.flippedCards.length === 2) {
+                gameState.isProcessing = true;
+                setTimeout(() => checkMatch(), 800);
+            }
+        }
+
+        function handleSingleMineExplosion(idx) {
+            const el = document.querySelector(`.card[data-index="${idx}"]`);
+            if (el) el.classList.add('explode');
+
+            gameState.lives--;
+            updateUI();
+
+            const pairId = gameState.cards[idx].pairId;
+            gameState.gmCards = gameState.gmCards.filter(gm => gm.pairId !== pairId);
+
+            gameState.cards[idx].matched = true;
+            gameState.cards[idx].flipped = false;
+            gameState.flippedCards = [];
+
+            setTimeout(() => {
+                if (gameState.lives <= 0) {
+                    gameOver();
+                    return;
+                }
+
+                shuffleRemainingCards();
+                renderBoard();
+                renderGMCards();
+                gameState.isProcessing = false;
+
+                checkWinCondition();
+            }, 600);
+        }
+
+        function checkMatch() {
+            const [idx1, idx2] = gameState.flippedCards;
+            const card1 = gameState.cards[idx1];
+            const card2 = gameState.cards[idx2];
+
+            // Card 1 is guaranteed NOT a mine (would have exploded instantly)
+            // But check card 2 for mine
+            const isMine2 = card2.isMine === true && gameState.gmCards.some(gm => gm.pairId === card2.pairId);
+
+            if (isMine2) {
+                handleMineExplosion(idx1, idx2);
+            } else if (card1.pairId === card2.pairId) {
+                handleNormalMatch(idx1, idx2);
+            } else {
+                handleNoMatch(idx1, idx2);
+            }
+        }
+
+        function handleMineExplosion(idx1, idx2) {
+            const el2 = document.querySelector(`.card[data-index="${idx2}"]`);
+            if (el2) el2.classList.add('explode');
+
+            gameState.lives--;
+            updateUI();
+
+            const pairId = gameState.cards[idx2].pairId;
+            gameState.gmCards = gameState.gmCards.filter(gm => gm.pairId !== pairId);
+
+            gameState.cards[idx2].matched = true;
+            gameState.cards[idx2].flipped = false;
+            gameState.cards[idx1].flipped = false;
+
+            gameState.flippedCards = [];
+
+            setTimeout(() => {
+                if (gameState.lives <= 0) {
+                    gameOver();
+                    return;
+                }
+
+                shuffleRemainingCards();
+                renderBoard();
+                renderGMCards();
+                gameState.isProcessing = false;
+
+                checkWinCondition();
+            }, 600);
+        }
+
+        function handleNormalMatch(idx1, idx2) {
+            gameState.cards[idx1].matched = true;
+            gameState.cards[idx2].matched = true;
+            gameState.matchedPairs++;
+            gameState.score++;
+            gameState.missStreak = 0;
+            gameState.flippedCards = [];
+
+            showScorePopup('+1');
+            updateUI();
+
+            setTimeout(() => {
+                renderBoard();
+                gameState.isProcessing = false;
+                checkWinCondition();
+            }, 500);
+        }
+
+        function handleNoMatch(idx1, idx2) {
+            gameState.cards[idx1].flipped = false;
+            gameState.cards[idx2].flipped = false;
+            gameState.flippedCards = [];
+            gameState.missStreak++;
+
+            updateUI();
+
+            setTimeout(() => {
+                renderBoard();
+
+                if (gameState.missStreak >= 3) {
+                    handleMissPenalty();
+                } else {
+                    gameState.isProcessing = false;
+                }
+            }, 500);
+        }
+
+        function handleMissPenalty() {
+            const availableIndices = [];
+            gameState.cards.forEach((c, i) => {
+                if (!c.matched && c.isMine !== true && !c.pinned) {
+                    availableIndices.push(i);
+                }
+            });
+
+            if (availableIndices.length === 0) {
+                gameState.missStreak = 0;
+                updateUI();
+                gameState.isProcessing = false;
+                return;
+            }
+
+            const pickIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            const pickedCard = gameState.cards[pickIndex];
+
+            gameState.cards[pickIndex].matched = true;
+            gameState.cards[pickIndex].flipped = false;
+
+            gameState.gmCards.push({
+                suit: pickedCard.suit,
+                rank: pickedCard.rank,
+                id: pickedCard.id,
+                pairId: pickedCard.pairId,
+                uniqueId: `gm-${Date.now()}-${Math.random()}`,
+                isMine: true
+            });
+
+            gameState.cards.forEach((c, i) => {
+                if (!c.matched && i !== pickIndex && c.pairId === pickedCard.pairId) {
+                    c.isMine = true;
+                    c.isNormal = false;
+                }
+            });
+
+            gameState.missStreak = 0;
+            updateUI();
+            renderBoard();
+            renderGMCards();
+            gameState.isProcessing = false;
+
+            checkWinCondition();
+        }
+
+        function shuffleRemainingCards() {
+            const pinnedList = [];
+            const unpinnedList = [];
+
+            gameState.cards.forEach((card, index) => {
+                if (card.matched) return;
+                if (card.pinned) {
+                    pinnedList.push({ index, card });
+                } else {
+                    unpinnedList.push({ index, card });
+                }
+            });
+
+            const shuffledUnpinned = shuffle(unpinnedList.map(item => item.card));
+
+            const newCards = [...gameState.cards];
+
+            let shuffleIdx = 0;
+            newCards.forEach((card, index) => {
+                if (card.matched) return;
+                const isPinned = pinnedList.some(p => p.index === index);
+                if (!isPinned) {
+                    newCards[index] = shuffledUnpinned[shuffleIdx++];
+                }
+            });
+
+            gameState.cards = newCards;
+        }
+
+        function checkWinCondition() {
+            const remainingNormal = gameState.cards.filter(c => !c.matched && c.isNormal === true).length;
+
+            if (remainingNormal === 0) {
+                levelComplete();
+            }
+        }
+
+        function levelComplete() {
+            document.getElementById('completed-level').textContent = gameState.level;
+            document.getElementById('level-score').textContent = gameState.score;
+            document.getElementById('level-modal').classList.add('active');
+        }
+
+        function nextLevel() {
+            closeModal('level-modal');
+            gameState.level++;
+            initLevel();
+        }
+
+        function gameOver() {
+            document.getElementById('final-level').textContent = gameState.level;
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('gameover-modal').classList.add('active');
+        }
+
+        function useSkill() {
+            if (gameState.score < 3) return;
+            if (gameState.isProcessing) return;
+
+            const mineIndices = [];
+            gameState.cards.forEach((card, index) => {
+                if (card.isMine === true && !card.matched && !card.flipped && !card.pinned) {
+                    mineIndices.push(index);
+                }
+            });
+
+            if (mineIndices.length === 0) return;
+
+            gameState.score -= 3;
+            const randomMine = mineIndices[Math.floor(Math.random() * mineIndices.length)];
+            gameState.cards[randomMine].pinned = true;
+            gameState.cards[randomMine].flipped = true;
+
+            updateUI();
+            renderBoard();
+        }
+
+        function showScorePopup(text) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.textContent = text;
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 1000);
+        }
+
+        function updateUI() {
+            document.getElementById('level-display').textContent = gameState.level;
+            document.getElementById('score-display').textContent = gameState.score;
+
+            const remainingPairs = Math.floor(gameState.cards.filter(c => !c.matched && c.isNormal === true).length / 2);
+            document.getElementById('pairs-display').textContent = remainingPairs;
+
+            const tableCount = gameState.cards.filter(c => !c.matched).length;
+            document.getElementById('table-display').textContent = tableCount;
+
+            document.getElementById('gm-display').textContent = gameState.gmCards.length;
+
+            const hearts = document.querySelectorAll('.life-heart');
+            hearts.forEach((heart, i) => {
+                heart.classList.toggle('lost', i >= gameState.lives);
+            });
+
+            const missNum = document.getElementById('miss-display');
+            const remainingMiss = Math.max(0, 3 - gameState.missStreak);
+            missNum.textContent = remainingMiss;
+            missNum.classList.toggle('danger', remainingMiss === 1);
+
+            const skillBtn = document.getElementById('skill-btn');
+            skillBtn.disabled = gameState.score < 3;
+        }
+
+        function restartGame() {
+            if (confirm('Restart the game? All progress will be lost.')) {
+                showStartModal();
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
