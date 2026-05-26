@@ -1,18 +1,16 @@
 name: Daily Auto Lotto Checker
 
 on:
-  schedule:
-    - cron: '45 13,14 * * 1-5'
-  
+  repository_dispatch:
+    types: [wakeup_bot]
   workflow_dispatch: 
 
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   check-lotto:
     runs-on: ubuntu-latest
-
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
