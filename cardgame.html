@@ -356,7 +356,7 @@
             padding: 30px;
             border-radius: 16px;
             text-align: center;
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
             border: 2px solid #4a90e2;
             box-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
@@ -369,33 +369,79 @@
         }
 
         .modal p {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             line-height: 1.6;
             color: #ccc;
         }
 
-        .difficulty-select {
+        .mode-section {
+            margin-bottom: 15px;
+        }
+
+        .mode-title {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-select {
             display: flex;
             gap: 10px;
             justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
 
-        .diff-btn {
-            padding: 10px 20px;
+        .mode-btn {
+            padding: 12px 24px;
             border: 2px solid #4a90e2;
             background: transparent;
             color: #fff;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
 
-        .diff-btn:hover,
-        .diff-btn.selected {
+        .mode-btn:hover,
+        .mode-btn.selected {
             background: #4a90e2;
             transform: translateY(-2px);
+        }
+
+        .life-select {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .life-btn {
+            padding: 8px 16px;
+            border: 2px solid #ff6b6b;
+            background: transparent;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .life-btn:hover,
+        .life-btn.selected {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .mode-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+            min-height: 20px;
         }
 
         .shake {
@@ -452,6 +498,10 @@
             }
             .game-header {
                 padding: 6px;
+            }
+            .mode-btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
             }
         }
 
@@ -526,7 +576,7 @@
         </div>
 
         <div class="tutorial-box" id="tutorial" style="display: none;">
-            <strong>How to Play:</strong> Flip 2 cards to find a matching pair. ⚠️ <strong>DANGER!</strong> If your <strong>first flip</strong> matches GM's hand = 💥 INSTANT EXPLOSION! (Life -1) — No second card needed!
+            <strong>How to Play:</strong> Flip 2 cards to find a matching pair. ⚠️ <strong>DANGER!</strong> If your <strong>first flip</strong> matches GM's hand = 💥 INSTANT EXPLOSION! (Life -1)
             | Match a pair = +1 Point | Spend 3 Points to pin a mine card 🗡️ | Miss 3 times = GM steals a card!
         </div>
 
@@ -553,12 +603,29 @@
         <div class="modal">
             <h2>🃏 GM Mine Card</h2>
             <p>The ultimate memory matching card game!<br>Match all pairs, but beware of GM's mines!</p>
-            <p style="color: #ffd700; font-size: 0.9rem;">Select Difficulty:</p>
-            <div class="difficulty-select">
-                <button class="diff-btn selected" data-lives="7" onclick="selectDifficulty(this)">Easy (7 Life)</button>
-                <button class="diff-btn" data-lives="5" onclick="selectDifficulty(this)">Normal (5 Life)</button>
-                <button class="diff-btn" data-lives="3" onclick="selectDifficulty(this)">Hard (3 Life)</button>
+
+            <div class="mode-section">
+                <div class="mode-title">Select Game Mode</div>
+                <div class="mode-select">
+                    <button class="mode-btn selected" data-mode="easy" onclick="selectMode(this)">
+                        🟢 EASY MODE
+                    </button>
+                    <button class="mode-btn" data-mode="challenge" onclick="selectMode(this)">
+                        🔴 CHALLENGE MODE
+                    </button>
+                </div>
+                <div class="mode-desc" id="mode-desc">Life refills to max at the start of each new level</div>
             </div>
+
+            <div class="mode-section">
+                <div class="mode-title">Starting Life</div>
+                <div class="life-select">
+                    <button class="life-btn" data-lives="3" onclick="selectLives(this)">3</button>
+                    <button class="life-btn selected" data-lives="5" onclick="selectLives(this)">5</button>
+                    <button class="life-btn" data-lives="7" onclick="selectLives(this)">7</button>
+                </div>
+            </div>
+
             <button class="btn btn-primary" onclick="startGame()" style="width: 100%;">Start Game!</button>
         </div>
     </div>
@@ -587,8 +654,8 @@
 
         let gameState = {
             level: 1,
-            lives: 7,
-            maxLives: 7,
+            lives: 5,
+            maxLives: 5,
             score: 0,
             missStreak: 0,
             cards: [],
@@ -597,10 +664,17 @@
             matchedPairs: 0,
             totalPairs: 0,
             normalPairs: 0,
-            isProcessing: false
+            isProcessing: false,
+            gameMode: 'easy' // 'easy' or 'challenge'
         };
 
-        let selectedLives = 7;
+        let selectedLives = 5;
+        let selectedMode = 'easy';
+
+        const MODE_DESCRIPTIONS = {
+            easy: 'Life refills to max at the start of each new level',
+            challenge: 'Life carries over between levels — manage carefully!'
+        };
 
         function shuffle(array) {
             const arr = [...array];
@@ -639,8 +713,15 @@
             return { pairs, gmCards };
         }
 
-        function selectDifficulty(btn) {
-            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+        function selectMode(btn) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedMode = btn.dataset.mode;
+            document.getElementById('mode-desc').textContent = MODE_DESCRIPTIONS[selectedMode];
+        }
+
+        function selectLives(btn) {
+            document.querySelectorAll('.life-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             selectedLives = parseInt(btn.dataset.lives);
         }
@@ -667,7 +748,8 @@
                 matchedPairs: 0,
                 totalPairs: 0,
                 normalPairs: 0,
-                isProcessing: false
+                isProcessing: false,
+                gameMode: selectedMode
             };
             initLevel();
         }
@@ -675,6 +757,11 @@
         function initLevel() {
             const config = getLevelConfig(gameState.level);
             const deck = createDeck();
+
+            // EASY MODE: Refill life to max at start of each level
+            if (gameState.gameMode === 'easy') {
+                gameState.lives = gameState.maxLives;
+            }
 
             const levelCards = deck.slice(0, config.pairs * 2);
 
@@ -824,15 +911,12 @@
             gameState.flippedCards.push(index);
             renderBoard();
 
-            // FIRST CARD: Check for INSTANT MINE EXPLOSION
             if (gameState.flippedCards.length === 1) {
                 const isMine = card.isMine === true && gameState.gmCards.some(gm => gm.pairId === card.pairId);
                 if (isMine) {
-                    // 💥 BOOM! Instant explosion — no second card needed!
                     gameState.isProcessing = true;
                     setTimeout(() => handleSingleMineExplosion(index), 600);
                 }
-                // If not mine, wait patiently for second card
             } else if (gameState.flippedCards.length === 2) {
                 gameState.isProcessing = true;
                 setTimeout(() => checkMatch(), 800);
@@ -873,8 +957,6 @@
             const card1 = gameState.cards[idx1];
             const card2 = gameState.cards[idx2];
 
-            // Card 1 is guaranteed NOT a mine (would have exploded instantly)
-            // But check card 2 for mine
             const isMine2 = card2.isMine === true && gameState.gmCards.some(gm => gm.pairId === card2.pairId);
 
             if (isMine2) {
