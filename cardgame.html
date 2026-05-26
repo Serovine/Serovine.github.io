@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GM Mine Card - Memory Matching Game</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto+Mono:wght@500&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,17 +14,17 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a472a 0%, #0d3320 100%);
+            font-family: 'Rajdhani', sans-serif;
+            background: radial-gradient(circle at center, #1a1a24 0%, #0a0a0f 100%);
             min-height: 100vh;
-            color: #fff;
+            color: #e0e0e0;
             overflow-x: hidden;
         }
 
         .game-container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,60 +34,69 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            margin-bottom: 10px;
+            padding: 12px 20px;
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid #333;
+            border-radius: 6px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         .stat-box {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            font-size: 1rem;
         }
 
         .stat-box .label {
-            color: #aaa;
-            font-size: 0.7rem;
+            color: #8892b0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .stat-box .value {
+            font-family: 'Roboto Mono', monospace;
             font-weight: bold;
-            color: #ffd700;
+            color: #64ffda;
         }
 
         .life-display {
             display: flex;
-            gap: 3px;
+            gap: 4px;
         }
 
         .life-heart {
-            width: 18px;
-            height: 18px;
-            fill: #ff4444;
+            width: 16px;
+            height: 16px;
+            fill: #ff4d4d;
+            filter: drop-shadow(0 0 4px rgba(255, 77, 77, 0.6));
             transition: all 0.3s;
         }
 
         .life-heart.lost {
-            fill: #444;
-            opacity: 0.3;
+            fill: #333;
+            filter: none;
+            opacity: 0.5;
         }
 
         .miss-box {
-            background: rgba(255, 102, 0, 0.2);
-            border: 2px solid #ff6600;
+            background: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
         }
 
         .miss-number {
-            font-size: 1.2rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.1rem;
             font-weight: bold;
-            color: #ff6600;
+            color: #ff4d4d;
             min-width: 20px;
             text-align: center;
             transition: all 0.3s;
@@ -93,43 +104,51 @@
 
         .miss-number.danger {
             color: #ff0000;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
             animation: missPulse 0.5s infinite;
         }
 
         @keyframes missPulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            50% { transform: scale(1.2); }
         }
 
         .gm-area {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            min-height: 100px;
+            gap: 20px;
+            padding: 15px;
+            background: rgba(20, 0, 0, 0.4);
+            border: 1px solid #660000;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            min-height: 110px;
+            box-shadow: inset 0 0 20px rgba(100, 0, 0, 0.2);
         }
 
         .gm-label {
-            font-size: 1rem;
-            color: #ff6b6b;
+            font-size: 1.1rem;
+            color: #ff4d4d;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
         }
 
         .gm-cards {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .card {
-            width: 70px;
-            height: 98px;
+            width: 75px;
+            height: 105px;
             position: relative;
             cursor: pointer;
             perspective: 1000px;
@@ -137,7 +156,7 @@
         }
 
         .card:hover:not(.flipped):not(.matched):not(.pinned) {
-            transform: translateY(-4px);
+            transform: translateY(-5px);
         }
 
         .card.flipped {
@@ -147,7 +166,7 @@
         .card.matched {
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s;
+            transition: opacity 0.4s ease-out;
         }
 
         .card.pinned {
@@ -155,23 +174,24 @@
         }
 
         .card.pinned .card-front {
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+            border: 2px solid #ff4d4d;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
         }
 
         .card.pinned::after {
-            content: '🗡️';
+            content: '📌';
             position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 18px;
+            top: -10px;
+            right: -10px;
+            font-size: 16px;
             z-index: 10;
-            animation: stab 0.3s ease-out;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+            animation: stab 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes stab {
-            0% { transform: rotate(-45deg) translateY(-20px); opacity: 0; }
-            100% { transform: rotate(0deg) translateY(0); opacity: 1; }
+            0% { transform: scale(3) rotate(-45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
         .card-inner {
@@ -179,7 +199,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.6s;
+            transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
         }
 
         .card.flipped .card-inner,
@@ -192,38 +212,37 @@
             height: 100%;
             position: absolute;
             backface-visibility: hidden;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
 
         .card-back {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border: 2px solid #4a90e2;
+            background: linear-gradient(135deg, #232530 0%, #15161c 100%);
+            border: 1px solid #444;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 15px 15px;
         }
 
-        .card-back::before {
-            content: '';
-            width: 60%;
-            height: 60%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 5px,
-                rgba(255, 255, 255, 0.1) 5px,
-                rgba(255, 255, 255, 0.1) 10px
-            );
-            border-radius: 4px;
+        .card-back::after {
+            content: 'GM';
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            letter-spacing: 2px;
         }
 
         .card-front {
-            background: #fff;
+            background: #e8e8e8;
             transform: rotateY(180deg);
-            border: 2px solid #ddd;
-            color: #000;
+            border: 1px solid #ccc;
+            color: #111;
         }
 
         .card-front.red {
@@ -235,34 +254,36 @@
         }
 
         .card-rank {
-            font-size: 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
             font-weight: bold;
             line-height: 1;
         }
 
         .card-suit {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             line-height: 1;
+            margin: 5px 0;
         }
 
         .card-corner {
             position: absolute;
-            font-size: 0.6rem;
+            font-size: 0.75rem;
             font-weight: bold;
             display: flex;
             flex-direction: column;
             align-items: center;
-            line-height: 1;
+            line-height: 1.1;
         }
 
         .card-corner.top-left {
-            top: 3px;
-            left: 3px;
+            top: 4px;
+            left: 5px;
         }
 
         .card-corner.bottom-right {
-            bottom: 3px;
-            right: 3px;
+            bottom: 4px;
+            right: 5px;
             transform: rotate(180deg);
         }
 
@@ -276,58 +297,82 @@
 
         .cards-grid {
             display: grid;
-            gap: 8px;
+            gap: 10px;
             max-width: 100%;
             justify-items: center;
             align-content: start;
         }
 
         .empty-slot {
-            width: 70px;
-            height: 98px;
+            width: 75px;
+            height: 105px;
             visibility: hidden;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding: 10px;
+            gap: 15px;
+            padding: 15px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 10px 24px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             color: #fff;
+            background: #2a2a35;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1a4a38;
+            border-color: #2e8b57;
+            color: #64ffda;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        .btn-primary:hover:not(:disabled) {
+            background: #235c47;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #4a1a1a;
+            border-color: #8b2e2e;
+            color: #ff8a8a;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #5c2323;
+            box-shadow: 0 0 15px rgba(255, 138, 138, 0.2);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: #1a3a4a;
+            border-color: #2e6c8b;
+            color: #8ad4ff;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #234c5c;
+            box-shadow: 0 0 15px rgba(138, 212, 255, 0.2);
         }
 
         .btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
-            transform: none !important;
+            filter: grayscale(100%);
         }
 
         .modal-overlay {
@@ -336,7 +381,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -352,116 +398,98 @@
         }
 
         .modal {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 30px;
-            border-radius: 16px;
+            background: #15161c;
+            padding: 35px;
+            border-radius: 8px;
             text-align: center;
-            max-width: 420px;
+            max-width: 450px;
             width: 90%;
-            border: 2px solid #4a90e2;
-            box-shadow: 0 0 30px rgba(74, 144, 226, 0.3);
+            border: 1px solid #333;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(100, 255, 218, 0.1);
         }
 
         .modal h2 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 15px;
-            color: #ffd700;
+            color: #e0e0e0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .modal p {
-            margin-bottom: 15px;
+            margin-bottom: 25px;
             line-height: 1.6;
-            color: #ccc;
+            color: #8892b0;
+            font-size: 1.1rem;
         }
 
         .mode-section {
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #222;
         }
 
         .mode-title {
             font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 8px;
+            color: #64ffda;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .mode-select {
+        .mode-select, .life-select {
             display: flex;
             gap: 10px;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        .mode-btn {
-            padding: 12px 24px;
-            border: 2px solid #4a90e2;
-            background: transparent;
-            color: #fff;
-            border-radius: 8px;
+        .mode-btn, .life-btn {
+            padding: 10px 20px;
+            border: 1px solid #444;
+            background: #1a1a24;
+            color: #8892b0;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.9rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
-        .mode-btn:hover,
-        .mode-btn.selected {
-            background: #4a90e2;
-            transform: translateY(-2px);
+        .mode-btn:hover, .life-btn:hover {
+            border-color: #64ffda;
+            color: #64ffda;
         }
 
-        .life-select {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 20px;
+        .mode-btn.selected, .life-btn.selected {
+            background: rgba(100, 255, 218, 0.1);
+            border-color: #64ffda;
+            color: #64ffda;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.1);
         }
 
         .life-btn {
-            padding: 8px 16px;
-            border: 2px solid #ff6b6b;
-            background: transparent;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1rem;
-            font-weight: bold;
-            min-width: 50px;
-        }
-
-        .life-btn:hover,
-        .life-btn.selected {
-            background: #ff6b6b;
-            transform: translateY(-2px);
+            min-width: 60px;
         }
 
         .mode-desc {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #5a647c;
             min-height: 20px;
         }
 
-        .shake {
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
         .explode {
-            animation: explode 0.6s forwards;
+            animation: explode 0.5s forwards;
         }
 
         @keyframes explode {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.8; }
-            100% { transform: scale(0); opacity: 0; }
+            0% { transform: scale(1); filter: brightness(1) drop-shadow(0 0 0 red); opacity: 1; }
+            50% { transform: scale(1.2); filter: brightness(2) drop-shadow(0 0 20px red); opacity: 0.8; }
+            100% { transform: scale(0); filter: brightness(3); opacity: 0; }
         }
 
         .score-popup {
@@ -469,67 +497,58 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 3.5rem;
             font-weight: bold;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            color: #64ffda;
+            text-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
             pointer-events: none;
-            animation: scoreFloat 1s forwards;
+            animation: scoreFloat 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
             z-index: 500;
         }
 
         @keyframes scoreFloat {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
-            50% { opacity: 1; transform: translate(-50%, -80%) scale(1.2); }
-            100% { opacity: 0; transform: translate(-50%, -120%) scale(1); }
+            0% { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -100%) scale(1); }
         }
 
         @media (max-width: 600px) {
             .card, .empty-slot {
-                width: 58px;
-                height: 81px;
+                width: 60px;
+                height: 84px;
             }
             .cards-grid {
-                gap: 5px;
+                gap: 6px;
             }
             .stat-box {
-                font-size: 0.75rem;
-                padding: 4px 8px;
+                font-size: 0.85rem;
+                padding: 4px 10px;
             }
             .game-header {
-                padding: 6px;
-            }
-            .mode-btn {
-                padding: 10px 16px;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .card, .empty-slot {
-                width: 50px;
-                height: 70px;
-            }
-            .card-rank {
-                font-size: 1rem;
-            }
-            .card-suit {
-                font-size: 1.3rem;
+                padding: 10px;
+                gap: 8px;
             }
         }
 
         .tutorial-box {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid #ffd700;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-left: 4px solid #64ffda;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
             line-height: 1.5;
+            color: #a8b2d1;
         }
 
         .tutorial-box strong {
-            color: #ffd700;
+            color: #e0e0e0;
+        }
+        
+        .tutorial-box .highlight-red {
+            color: #ff4d4d;
         }
     </style>
 <base target="_blank">
@@ -538,50 +557,44 @@
     <div class="game-container">
         <div class="game-header">
             <div class="stat-box">
-                <span class="label">Level</span>
+                <span class="label">LVL</span>
                 <span class="value" id="level-display">1</span>
             </div>
             <div class="stat-box">
-                <span class="label">Life</span>
+                <span class="label">HP</span>
                 <div class="life-display" id="life-display">
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="life-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                </div>
+                    </div>
             </div>
             <div class="stat-box">
                 <span class="label">Score</span>
                 <span class="value" id="score-display">0</span>
             </div>
             <div class="stat-box">
-                <span class="label">Pairs Left</span>
+                <span class="label">Pairs</span>
                 <span class="value" id="pairs-display">-</span>
             </div>
             <div class="stat-box">
-                <span class="label">On Table</span>
+                <span class="label">Table</span>
                 <span class="value" id="table-display">-</span>
             </div>
             <div class="stat-box">
-                <span class="label">GM</span>
-                <span class="value" id="gm-display">-</span>
+                <span class="label">Threat</span>
+                <span class="value" style="color: #ff4d4d;" id="gm-display">-</span>
             </div>
             <div class="stat-box miss-box">
-                <span class="label">Miss</span>
+                <span class="label" style="color: #ff4d4d;">Miss</span>
                 <span class="miss-number" id="miss-display">3</span>
             </div>
         </div>
 
         <div class="tutorial-box" id="tutorial" style="display: none;">
-            <strong>How to Play:</strong> Flip 2 cards to find a matching pair. ⚠️ <strong>DANGER!</strong> If your <strong>first flip</strong> matches GM's hand = 💥 INSTANT EXPLOSION! (Life -1)
-            | Match a pair = +1 Point | Spend 3 Points to pin a mine card 🗡️ | Miss 3 times = GM steals a card!
+            <strong>RULE:</strong> Match cards by <strong>SAME RANK + SAME COLOR</strong> (e.g., A♠ matches A♣, A♥ matches A♦).<br>
+            <span class="highlight-red">⚠️ DANGER:</span> If your <strong>first flip</strong> matches GM's hand = EXPLOSION (HP -1).<br>
+            Miss 3 times = GM steals a card into the Threat Zone.
         </div>
 
         <div class="gm-area">
-            <div class="gm-label">👹 GM HOLDING</div>
+            <div class="gm-label">Threat Zone</div>
             <div class="gm-cards" id="gm-cards"></div>
         </div>
 
@@ -591,34 +604,34 @@
 
         <div class="controls">
             <button class="btn btn-success" id="skill-btn" onclick="useSkill()" disabled>
-                🗡️ Pin Mine (3 pts)
+                [ PIN MINE - 3 PTS ]
             </button>
             <button class="btn btn-danger" onclick="restartGame()">
-                🔄 Restart
+                [ ABORT MISSION ]
             </button>
         </div>
     </div>
 
     <div class="modal-overlay active" id="start-modal">
         <div class="modal">
-            <h2>🃏 GM Mine Card</h2>
-            <p>The ultimate memory matching card game!<br>Match all pairs, but beware of GM's mines!</p>
+            <h2>GM Mine Card</h2>
+            <p>Tactical Memory Matching<br>Match pairs by Rank & Color. Evade the GM's mines.</p>
 
             <div class="mode-section">
-                <div class="mode-title">Select Game Mode</div>
+                <div class="mode-title">System Mode</div>
                 <div class="mode-select">
                     <button class="mode-btn selected" data-mode="easy" onclick="selectMode(this)">
-                        🟢 EASY MODE
+                        Standard
                     </button>
                     <button class="mode-btn" data-mode="challenge" onclick="selectMode(this)">
-                        🔴 CHALLENGE MODE
+                        Hardcore
                     </button>
                 </div>
-                <div class="mode-desc" id="mode-desc">Life refills to max at the start of each new level</div>
+                <div class="mode-desc" id="mode-desc">HP Restores upon level completion.</div>
             </div>
 
             <div class="mode-section">
-                <div class="mode-title">Starting Life</div>
+                <div class="mode-title">Initial HP</div>
                 <div class="life-select">
                     <button class="life-btn" data-lives="3" onclick="selectLives(this)">3</button>
                     <button class="life-btn selected" data-lives="5" onclick="selectLives(this)">5</button>
@@ -626,31 +639,31 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" onclick="startGame()" style="width: 100%;">Start Game!</button>
+            <button class="btn btn-primary" onclick="startGame()" style="width: 100%; padding: 15px; font-size: 1.2rem;">INITIALIZE</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="gameover-modal">
         <div class="modal">
-            <h2>💀 Game Over</h2>
-            <p>Out of lives!<br>You reached Level <span id="final-level">1</span><br>Total Score: <span id="final-score">0</span></p>
-            <button class="btn btn-primary" onclick="closeModal('gameover-modal'); showStartModal()" style="width: 100%;">Play Again</button>
+            <h2 style="color: #ff4d4d;">SYSTEM FAILURE</h2>
+            <p>HP Depleted.<br>Max Level Reached: <span class="value" style="color: #fff; font-family: 'Roboto Mono', monospace;" id="final-level">1</span><br>Final Score: <span class="value" style="color: #64ffda; font-family: 'Roboto Mono', monospace;" id="final-score">0</span></p>
+            <button class="btn btn-primary" onclick="closeModal('gameover-modal'); showStartModal()" style="width: 100%;">REBOOT SYSTEM</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="level-modal">
         <div class="modal">
-            <h2>🎉 Level Complete!</h2>
-            <p>Congratulations! You cleared Level <span id="completed-level">1</span></p>
-            <p>Total Score: <span id="level-score">0</span></p>
-            <button class="btn btn-primary" onclick="nextLevel()" style="width: 100%;">Next Level ➔</button>
+            <h2 style="color: #64ffda;">AREA CLEARED</h2>
+            <p>Level <span class="value" style="color: #fff; font-family: 'Roboto Mono', monospace;" id="completed-level">1</span> Complete.</p>
+            <p>Total Score: <span class="value" style="color: #64ffda; font-family: 'Roboto Mono', monospace;" id="level-score">0</span></p>
+            <button class="btn btn-primary" onclick="nextLevel()" style="width: 100%;">PROCEED ➔</button>
         </div>
     </div>
 
     <script>
-        const SUITS = ['♠', '♥', '♦', '♣'];
         const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         const RED_SUITS = ['♥', '♦'];
+        const BLACK_SUITS = ['♠', '♣'];
 
         let gameState = {
             level: 1,
@@ -665,15 +678,15 @@
             totalPairs: 0,
             normalPairs: 0,
             isProcessing: false,
-            gameMode: 'easy' // 'easy' or 'challenge'
+            gameMode: 'easy'
         };
 
         let selectedLives = 5;
         let selectedMode = 'easy';
 
         const MODE_DESCRIPTIONS = {
-            easy: 'Life refills to max at the start of each new level',
-            challenge: 'Life carries over between levels — manage carefully!'
+            easy: 'HP Restores upon level completion.',
+            challenge: 'No HP restoration between levels. Survive.'
         };
 
         function shuffle(array) {
@@ -685,14 +698,22 @@
             return arr;
         }
 
-        function createDeck() {
-            const deck = [];
-            for (const suit of SUITS) {
-                for (const rank of RANKS) {
-                    deck.push({ suit, rank, id: `${rank}${suit}` });
-                }
+        // Logic ใหม่: สร้าง Pool การจับคู่โดยอิงจาก Rank + Color
+        function createDeckPairs() {
+            const pairs = [];
+            for (const rank of RANKS) {
+                // จับคู่สีแดง
+                pairs.push([
+                    { suit: '♥', rank: rank, id: `${rank}♥`, pairId: `${rank}-red` },
+                    { suit: '♦', rank: rank, id: `${rank}♦`, pairId: `${rank}-red` }
+                ]);
+                // จับคู่สีดำ
+                pairs.push([
+                    { suit: '♠', rank: rank, id: `${rank}♠`, pairId: `${rank}-black` },
+                    { suit: '♣', rank: rank, id: `${rank}♣`, pairId: `${rank}-black` }
+                ]);
             }
-            return shuffle(deck);
+            return shuffle(pairs);
         }
 
         function getLevelConfig(level) {
@@ -731,7 +752,9 @@
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            document.getElementById('start-modal').classList.remove('active');
+            document.getElementById('gameover-modal').classList.remove('active');
+            document.getElementById('level-modal').classList.remove('active');
         }
 
         function startGame() {
@@ -756,27 +779,22 @@
 
         function initLevel() {
             const config = getLevelConfig(gameState.level);
-            const deck = createDeck();
-
-            // EASY MODE: Refill life to max at start of each level
+            
             if (gameState.gameMode === 'easy') {
                 gameState.lives = gameState.maxLives;
             }
 
-            const levelCards = deck.slice(0, config.pairs * 2);
+            const allPairsPool = createDeckPairs();
+            const levelPairs = allPairsPool.slice(0, config.pairs);
 
-            const pairs = [];
-            for (let i = 0; i < config.pairs; i++) {
-                const card = levelCards[i * 2];
-                pairs.push([
-                    { ...card, uniqueId: `${card.id}-1`, pairId: card.id },
-                    { ...card, uniqueId: `${card.id}-2`, pairId: card.id }
-                ]);
-            }
+            // เซ็ต Unique ID ให้แต่ละใบในคู่
+            const pairsWithID = levelPairs.map(pair => [
+                { ...pair[0], uniqueId: `${pair[0].id}-1` },
+                { ...pair[1], uniqueId: `${pair[1].id}-2` }
+            ]);
 
-            const shuffledPairs = shuffle([...pairs]);
-            const gmPairs = shuffledPairs.slice(0, config.gmCards);
-            const normalPairs = shuffledPairs.slice(config.gmCards);
+            const gmPairs = pairsWithID.slice(0, config.gmCards);
+            const normalPairs = pairsWithID.slice(config.gmCards);
 
             gameState.gmCards = gmPairs.map(pair => ({ 
                 ...pair[0], 
@@ -962,6 +980,7 @@
             if (isMine2) {
                 handleMineExplosion(idx1, idx2);
             } else if (card1.pairId === card2.pairId) {
+                // จับคู่ด้วย pairId (อิงตาม Rank + สี แล้ว)
                 handleNormalMatch(idx1, idx2);
             } else {
                 handleNoMatch(idx1, idx2);
@@ -1096,7 +1115,6 @@
             });
 
             const shuffledUnpinned = shuffle(unpinnedList.map(item => item.card));
-
             const newCards = [...gameState.cards];
 
             let shuffleIdx = 0;
@@ -1179,10 +1197,17 @@
 
             document.getElementById('gm-display').textContent = gameState.gmCards.length;
 
-            const hearts = document.querySelectorAll('.life-heart');
-            hearts.forEach((heart, i) => {
-                heart.classList.toggle('lost', i >= gameState.lives);
-            });
+            const lifeDisplay = document.getElementById('life-display');
+            lifeDisplay.innerHTML = '';
+            for(let i=0; i<gameState.maxLives; i++) {
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('class', `life-heart ${i >= gameState.lives ? 'lost' : ''}`);
+                svg.setAttribute('viewBox', '0 0 24 24');
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('d', 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+                svg.appendChild(path);
+                lifeDisplay.appendChild(svg);
+            }
 
             const missNum = document.getElementById('miss-display');
             const remainingMiss = Math.max(0, 3 - gameState.missStreak);
@@ -1194,7 +1219,7 @@
         }
 
         function restartGame() {
-            if (confirm('Restart the game? All progress will be lost.')) {
+            if (confirm('SYSTEM REBOOT: Are you sure you want to abort the current mission?')) {
                 showStartModal();
             }
         }
