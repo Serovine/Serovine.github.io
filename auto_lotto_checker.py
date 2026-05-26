@@ -7,7 +7,6 @@ import concurrent.futures
 
 BOARD_FILE = "earnings_board.csv"
 
-
 def get_display_day(date_str, time_str):
     """
     แมปวันที่ประกาศงบ → วันที่ตลาดจะซื้อขาย
@@ -23,7 +22,6 @@ def get_display_day(date_str, time_str):
     except Exception:
         return "N/A"
 
-
 def fetch_current_price(symbol):
     """ดึงราคาปัจจุบันด้วย yfinance"""
     try:
@@ -35,7 +33,6 @@ def fetch_current_price(symbol):
         pass
     return symbol, None
 
-
 def is_value_empty(val):
     """เช็คว่าช่องนั้น 'ว่าง' จริงๆ ไม่ว่าจะเป็น NaN, '', หรือ string 'nan'"""
     if val is None:
@@ -43,7 +40,6 @@ def is_value_empty(val):
     if pd.isna(val):
         return True
     return str(val).strip().lower() in ("", "nan")
-
 
 def main():
     # ─── DST Guard: เช็คว่าตลาด NY เปิดแล้วหรือยัง ───────────────────────────
@@ -67,13 +63,9 @@ def main():
         if col in df.columns:
             df[col] = df[col].astype(object)
 
-    # ─── หาวันปัจจุบัน (เวลาไทย) ────────────────────────────────────────────────
-    thai_tz     = pytz.timezone('Asia/Bangkok')
-    thai_now    = datetime.datetime.now(thai_tz)
-    current_day = thai_now.strftime('%A')
-
-    print(f"🕒 เวลาไทย: {thai_now.strftime('%Y-%m-%d %H:%M:%S')} ({current_day})")
-    print(f"🗽 เวลา NY:  {ny_now.strftime('%Y-%m-%d %H:%M:%S')}")
+    # ─── หาวันปัจจุบัน (เวลา NY เท่านั้น) ────────────────────────────────────────────────
+    current_day = ny_now.strftime('%A')
+    print(f"🗽 เวลาปัจจุบัน (นิวยอร์ก):  {ny_now.strftime('%Y-%m-%d %H:%M:%S')} ({current_day})")
 
     # ─── กรองหุ้นที่ต้องอัปเดตวันนี้ ────────────────────────────────────────────
     targets = []
@@ -124,20 +116,4 @@ def main():
         else:
             result = "Long" if pct_change > 0 else ("Short" if pct_change < 0 else "Even")
 
-        df.at[idx, 'Result'] = result
-
-        print(f"🎯 {symbol}: ${pre_price:.2f} → ${current_price:.2f} ({pct_change:+.2f}%) [{result}]")
-        updated_count += 1
-
-    # ─── เซฟไฟล์ ──────────────────────────────────────────────────────────────
-    df.to_csv(BOARD_FILE, index=False)
-    print(f"💾 เซฟเรียบร้อย! อัปเดตไป {updated_count} ตัว")
-
-    # ─── Git Push (เปิดใช้ตอน deploy บน GitHub Actions) ──────────────────────
-    # os.system("git add earnings_board.csv")
-    # os.system('git commit -m "🤖 Auto-update lotto results"')
-    # os.system("git push")
-
-
-if __name__ == "__main__":
-    main()
+        df.at[idx, '
