@@ -1,95 +1,529 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Apps</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .menu-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        .menu-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .menu-subtitle {
-            color: #666;
-            margin-bottom: 30px;
-        }
-        .app-btn {
-            display: block;
-            width: 100%;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s;
-        }
-        .app-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .btn-calc { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .btn-todo { background: linear-gradient(135deg, #48bb78, #38a169); }
-        .btn-current { background: linear-gradient(135deg, #ed8936, #dd6b20); }
-        .btn-stock { background: linear-gradient(135deg, #e53e3e, #c53030); }
-		.btn-cardg { background: linear-gradient(135deg, #3E7510, #7BDE28); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>serinc's lab — serovine.github.io</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #060c18;
+    --surface:     #0b1628;
+    --surface2:    #0f1e38;
+    --border:      rgba(28, 100, 200, 0.22);
+    --border-h:    rgba(0, 170, 255, 0.55);
+    --accent:      #00aaff;
+    --accent2:     #00dfa0;
+    --red:         #ff4d6d;
+    --text:        #b0cce8;
+    --text-dim:    #304e6e;
+    --text-muted:  #5a7a9a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* subtle grid overlay on body */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      linear-gradient(rgba(0,140,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,140,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* star canvas */
+  #stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── TICKER BAR ─────────────────────────── */
+  .ticker-bar {
+    position: relative;
+    z-index: 20;
+    background: rgba(4, 12, 28, 0.92);
+    border-bottom: 1px solid var(--border);
+    height: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(8px);
+  }
+  .ticker-label {
+    flex-shrink: 0;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent2);
+    padding: 0 14px 0 16px;
+    border-right: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: rgba(0,220,160,0.04);
+  }
+  .ticker-scroll { flex: 1; overflow: hidden; }
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 36s linear infinite;
+    width: max-content;
+  }
+  .ti { display: inline-flex; align-items: center; gap: 6px; padding: 0 20px; font-size: 10px; color: var(--text-muted); }
+  .ti .sym { color: var(--accent); font-weight: 500; letter-spacing: 0.05em; }
+  .ti .up  { color: var(--accent2); }
+  .ti .dn  { color: var(--red); }
+  .tsep { display: inline-block; width: 1px; height: 10px; background: var(--border); margin: 0; align-self: center; }
+
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── HERO ───────────────────────────────── */
+  .hero {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+  }
+  .hero-img-wrap {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+    opacity: 0.65;
+    filter: brightness(0.85) saturate(1.3);
+  }
+  .hero-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(6,12,24,0.15)  0%,
+      rgba(6,12,24,0.0)   35%,
+      rgba(6,12,24,0.6)   75%,
+      rgba(6,12,24,1.0)  100%
+    );
+  }
+
+  /* ── SITE HEADER ────────────────────────── */
+  .site-header {
+    position: relative;
+    z-index: 10;
+    padding: 0 36px 32px;
+    margin-top: -56px;
+  }
+  .site-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: #e8f4ff;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(0,160,255,0.35);
+  }
+  .site-title .acc { color: var(--accent); }
+
+  .site-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .site-meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent2);
+    border: 1px solid rgba(0,224,160,0.28);
+    padding: 4px 12px;
+    border-radius: 2px;
+    background: rgba(0,224,160,0.05);
+  }
+  .dot-blink {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: blink 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .meta-note {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.09em;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+  }
+
+  /* ── SECTION DIVIDER ───────────────────── */
+  .sec-divider {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 36px 24px;
+  }
+  .dl { flex: 1; height: 1px; background: var(--border); }
+  .dlabel {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* ── CARD GRID ──────────────────────────── */
+  /* ↓ เพิ่ม .card ใหม่ใน div.card-grid ด้านล่างได้เลย */
+  .grid-section {
+    position: relative;
+    z-index: 10;
+    padding: 0 28px 56px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── CARD ───────────────────────────────── */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 20px 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
+    overflow: hidden;
+  }
+  /* top accent line */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+  .card:hover {
+    border-color: var(--border-h);
+    background: var(--surface2);
+    transform: translateY(-3px);
+  }
+  .card:hover::after { opacity: 1; }
+
+  /* tag */
+  .ctag {
+    display: inline-block;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+    width: fit-content;
+    font-weight: 500;
+  }
+  .t-fin { background: rgba(0,180,100,0.12); color: #00dfa0; border: 1px solid rgba(0,180,100,0.3); }
+  .t-gam { background: rgba(110,50,210,0.14); color: #bb88ff; border: 1px solid rgba(110,50,210,0.35); }
+  .t-tol { background: rgba(0,120,200,0.12); color: #60c0ff; border: 1px solid rgba(0,120,200,0.3); }
+  .t-sim { background: rgba(255,130,0,0.12);  color: #ffaa55; border: 1px solid rgba(255,130,0,0.3); }
+
+  .card-icon { font-size: 30px; margin-bottom: 12px; display: block; line-height: 1; }
+  .card-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ddeeff;
+    letter-spacing: 0.04em;
+    margin-bottom: 7px;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .card-cta {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.14em;
+    margin-top: 14px;
+    transition: color 0.18s;
+  }
+  .card:hover .card-cta { color: var(--accent); }
+
+  /* ── FOOTER ─────────────────────────────── */
+  .site-footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 18px 36px 28px;
+    font-size: 9.5px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    border-top: 1px solid var(--border);
+  }
+  .footer-sub { margin-top: 5px; opacity: 0.45; font-size: 9px; }
+
+  /* ── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 560px) {
+    .site-header  { padding: 0 18px 24px; margin-top: -40px; }
+    .grid-section { padding: 0 14px 36px; }
+    .sec-divider  { padding: 0 18px 20px; }
+    .hero-img-wrap { max-height: 180px; }
+    .ticker-label { display: none; }
+  }
+</style>
 </head>
 <body>
-    <div class="menu-card">
-        <div class="menu-title">🚀 My Web Apps</div>
-        <div class="menu-subtitle">เลือกแอพที่ต้องการใช้งาน</div>
 
-		<a href="weekly_stock.html" class="app-btn btn-stock">
-		    💹 Earning Calender<br>
-    		<small style="font-size: 0.9rem; opacity: 0.9;">ดูผลหุันอเมริกา</small>
-		</a>
-		
-        <a href="currency.html" class="app-btn btn-current">
-		    💱 Currency Converter<br>
-    		<small style="font-size: 0.9rem; opacity: 0.9;">แปลงสกุลเงิน</small>
-		</a>
-		
-        <a href="snake.html" class="app-btn btn-todo">
-            🐍 SNAKE GAME<br>
-            <small style="font-size: 0.9rem; opacity: 0.9;">เกมงู</small>
-        </a>
-        
-        <a href="arkaneon.html" class="app-btn btn-calc">
-             💥 Neon Arkanoid<br>
-            <small style="font-size: 0.9rem; opacity: 0.9;">เกมยิงหินใส่อิฐ</small>
-        </a>
-                
-		<a href="cardgame.html" class="app-btn btn-cardg">
-             💥 Matching Card Game<br>
-            <small style="font-size: 0.9rem; opacity: 0.9;">เกมจับคู่แบบกฏพิเศษ</small>
-        </a>
-        
-        <div style="margin-top: 20px; color: #999; font-size: 0.9rem;">
-            💡 รอทำแอพเพิ่มเติม
-        </div>
+<canvas id="stars"></canvas>
+
+<!-- ── TICKER BAR ─────────────────────── 
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-scroll">
+    <div class="ticker-track" id="tt">
+      <span class="ti"><span class="sym">AAPL</span>182.34<span class="up">▲1.24%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">NVDA</span>892.11<span class="up">▲3.07%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">TSLA</span>245.60<span class="dn">▼0.88%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">MSFT</span>415.22<span class="up">▲0.55%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">META</span>498.77<span class="up">▲1.90%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">AMZN</span>189.44<span class="dn">▼0.32%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">SPY</span>&nbsp;521.08<span class="up">▲0.41%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">USD/THB</span>35.42<span class="dn">▼0.12%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">GOOG</span>175.90<span class="up">▲0.76%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">BTCUSD</span>68,210<span class="up">▲2.14%</span></span><span class="tsep"></span>
+      <!-- duplicate for seamless loop 
+      <span class="ti"><span class="sym">AAPL</span>182.34<span class="up">▲1.24%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">NVDA</span>892.11<span class="up">▲3.07%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">TSLA</span>245.60<span class="dn">▼0.88%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">MSFT</span>415.22<span class="up">▲0.55%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">META</span>498.77<span class="up">▲1.90%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">AMZN</span>189.44<span class="dn">▼0.32%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">SPY</span>&nbsp;521.08<span class="up">▲0.41%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">USD/THB</span>35.42<span class="dn">▼0.12%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">GOOG</span>175.90<span class="up">▲0.76%</span></span><span class="tsep"></span>
+      <span class="ti"><span class="sym">BTCUSD</span>68,210<span class="up">▲2.14%</span></span>
     </div>
+  </div>
+</div>
+
+<!-- ── HERO IMAGE ──────────────────────── -->
+<div class="hero">
+  <div class="hero-img-wrap">
+    <img class="hero-img" src="assets/header.png" alt="serinc's lab header">
+    <div class="hero-fade"></div>
+  </div>
+</div>
+
+<!-- ── SITE TITLE ─────────────────────── -->
+<header class="site-header">
+  <h1 class="site-title">serinc<span class="acc">'s</span> lab</h1>
+  <p class="site-sub">experiments &amp; ai-assisted code · serovine.github.io</p>
+  <div class="site-meta">
+    <div class="status-pill">
+      <div class="dot-blink"></div>
+      SYSTEM ONLINE
+    </div>
+    <span class="meta-note">// 8 modules active &nbsp;·&nbsp; html / js / css</span>
+  </div>
+</header>
+
+<!-- ── SECTION LABEL ─────────────────── -->
+<div class="sec-divider">
+  <div class="dl"></div>
+  <div class="dlabel">modules</div>
+  <div class="dl"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CARD GRID  —  เพิ่ม / ลบ .card ใน div นี้ได้เลย
+     copy pattern:
+       <a href="FILE.html" class="card">
+         <span class="ctag t-???">TAG</span>
+         <span class="card-icon">EMOJI</span>
+         <div class="card-name">NAME</div>
+         <div class="card-desc">คำอธิบาย</div>
+         <div class="card-cta">OPEN MODULE →</div>
+       </a>
+     tags: t-fin  t-gam  t-tol  t-sim
+════════════════════════════════════════════════════ -->
+<section class="grid-section">
+  <div class="card-grid">
+
+    <!-- FINANCE -->
+    <a href="weekly_stock.html" class="card">
+      <span class="ctag t-fin">FINANCE</span>
+      <span class="card-icon">📈</span>
+      <div class="card-name">Earning Calendar</div>
+      <div class="card-desc">ตารางประกาศผลหุ้นสหรัฐฯ รายสัปดาห์</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <a href="currency.html" class="card">
+      <span class="ctag t-fin">FINANCE</span>
+      <span class="card-icon">💱</span>
+      <div class="card-name">Currency Converter</div>
+      <div class="card-desc">แปลงสกุลเงินแบบ real-time</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <!-- SIMULATION -->
+    <a href="solarsystem.html" class="card">
+      <span class="ctag t-sim">SIMULATION</span>
+      <span class="card-icon">☀️</span>
+      <div class="card-name">Solar System</div>
+      <div class="card-desc">จำลองระบบสุริยะแบบ interactive</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <!-- TOOLS -->
+    <a href="calculator.html" class="card">
+      <span class="ctag t-tol">TOOL</span>
+      <span class="card-icon">🧮</span>
+      <div class="card-name">Calculator</div>
+      <div class="card-desc">เครื่องคิดเลข</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <a href="2doApp.html" class="card">
+      <span class="ctag t-tol">TOOL</span>
+      <span class="card-icon">✅</span>
+      <div class="card-name">2do App</div>
+      <div class="card-desc">จัดการงานและ to-do list</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <!-- GAMES -->
+    <a href="snake.html" class="card">
+      <span class="ctag t-gam">GAME</span>
+      <span class="card-icon">🐍</span>
+      <div class="card-name">Snake Game</div>
+      <div class="card-desc">เกมงูคลาสสิก</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <a href="arkaneon.html" class="card">
+      <span class="ctag t-gam">GAME</span>
+      <span class="card-icon">🎮</span>
+      <div class="card-name">Neon Arkanoid</div>
+      <div class="card-desc">เกมยิงก้อนหินทลายอิฐ สไตล์ neon</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+    <a href="cardgame.html" class="card">
+      <span class="ctag t-gam">GAME</span>
+      <span class="card-icon">🃏</span>
+      <div class="card-name">Matching Card Game</div>
+      <div class="card-desc">เกมจับคู่ไพ่แบบกฎพิเศษ</div>
+      <div class="card-cta">OPEN MODULE →</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────── -->
+<footer class="site-footer">
+  <div>serovine.github.io &nbsp;·&nbsp; serinc's lab &nbsp;·&nbsp; built with ai assistance</div>
+  <div class="footer-sub">// รอทำแอพเพิ่มเติม</div>
+</footer>
+
+<!-- ── STAR PARTICLE CANVAS ───────────── -->
+<script>
+(function() {
+  const cv = document.getElementById('stars');
+  const cx = cv.getContext('2d');
+
+  function resize() {
+    cv.width  = window.innerWidth;
+    cv.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // generate stars
+  const N = 180;
+  const stars = [];
+  for (let i = 0; i < N; i++) {
+    stars.push({
+      x:     Math.random(),
+      y:     Math.random(),
+      r:     Math.random() * 1.1 + 0.15,
+      base:  Math.random() * 0.4 + 0.08,
+      phase: Math.random() * Math.PI * 2,
+      freq:  Math.random() * 0.0008 + 0.0003
+    });
+  }
+
+  // a handful of larger "bright" stars
+  for (let i = 0; i < 12; i++) {
+    stars.push({
+      x:     Math.random(),
+      y:     Math.random() * 0.6,        // keep to upper area
+      r:     Math.random() * 1.8 + 1.2,
+      base:  Math.random() * 0.25 + 0.15,
+      phase: Math.random() * Math.PI * 2,
+      freq:  Math.random() * 0.0005 + 0.0002
+    });
+  }
+
+  function draw(t) {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    stars.forEach(s => {
+      const flicker = s.base + Math.sin(t * s.freq + s.phase) * 0.12;
+      cx.beginPath();
+      cx.arc(s.x * cv.width, s.y * cv.height, s.r, 0, Math.PI * 2);
+      cx.fillStyle = `rgba(140, 190, 255, ${Math.max(0, flicker)})`;
+      cx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+
 </body>
 </html>
