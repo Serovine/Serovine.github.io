@@ -71,9 +71,6 @@ def main():
         day = get_display_day(str(row['Earnings Date']), str(row['Time']))
         if day != current_day:
             continue
-        # One-and-Done:
-        if not is_value_empty(row.get('%Today')):
-            continue
             
         targets.append((idx, str(row['Symbol']).strip()))
 
