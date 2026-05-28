@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System — HTML5 Canvas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;700&family=Space+Mono:ital@0;1&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    overflow: hidden;
+    font-family: 'Space Mono', monospace;
+    color: #fff;
+  }
+
+  canvas { display: block; }
+
+  /* ─── HUD overlay ─── */
+  #hud {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  #title {
+    position: fixed;
+    top: 28px; left: 38px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+  }
+  #title span {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(255,200,80,0.6);
+    margin-top: 4px;
+  }
+
+  #info-panel {
+    position: fixed;
+    bottom: 32px; left: 38px;
+    font-size: 10px;
+    line-height: 2;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1px;
+  }
+
+  #planet-tooltip {
+    position: fixed;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(255,200,80,0.4);
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 11px;
+    line-height: 1.8;
+    pointer-events: none;
+    display: none;
+    backdrop-filter: blur(8px);
+    color: #fff;
+    min-width: 150px;
+  }
+  #planet-tooltip .p-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    color: #ffc85a;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  #speed-control {
+    position: fixed;
+    top: 28px; right: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    pointer-events: all;
+  }
+  #speed-control label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(255,200,80,0.5);
+  }
+  #speed-slider {
+    -webkit-appearance: none;
+    width: 120px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    outline: none;
+  }
+  #speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffc85a;
+    cursor: pointer;
+  }
+
+  #pause-btn {
+    background: transparent;
+    border: 1px solid rgba(255,200,80,0.4);
+    color: rgba(255,200,80,0.8);
+    padding: 6px 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    pointer-events: all;
+    transition: all 0.2s;
+  }
+  #pause-btn:hover { background: rgba(255,200,80,0.1); }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div id="title">Solar System<span>HTML5 CANVAS SIMULATION</span></div>
+
+  <div id="speed-control">
+    <label>SPEED</label>
+    <input type="range" id="speed-slider" min="0.1" max="5" step="0.1" value="1">
+    <button id="pause-btn" id="pause-btn">⏸ PAUSE</button>
+  </div>
+
+  <div id="info-panel">
+    CLICK PLANET TO FOCUS &nbsp;|&nbsp; SCROLL TO ZOOM &nbsp;|&nbsp; DRAG TO PAN
+  </div>
+</div>
+
+<div id="planet-tooltip"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   🌌  SOLAR SYSTEM — HTML5 Canvas
+   เทคนิคหลัก:
+   1. Canvas 2D API  — วาด/animate
+   2. requestAnimationFrame — loop ที่ smooth
+   3. Trigonometry  — คำนวณตำแหน่งวงโคจร
+   4. Camera/Viewport Transform — zoom & pan
+   5. Glow effect   — shadowBlur
+   6. Particle Stars — starfield background
+════════════════════════════════════════════ */
+
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const tooltip = document.getElementById('planet-tooltip');
+const pauseBtn = document.getElementById('pause-btn');
+const speedSlider = document.getElementById('speed-slider');
+
+// ─── Resize ──────────────────────────────
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ─── Camera state (zoom & pan) ───────────
+const cam = { x: 0, y: 0, zoom: 1 };
+
+// ─── Planet data ─────────────────────────
+//   radius   = รัศมีวงโคจร (pixel ที่ zoom=1)
+//   size     = รัศมีของดาว
+//   speed    = ความเร็วเชิงมุม (rad/frame)
+//   color    = สี base
+//   glow     = สีออร่า
+//   angle    = มุมเริ่มต้น (random)
+const planets = [
+  { name:'Mercury', radius: 72,  size: 4,   speed:0.047, color:'#b5b5b5', glow:'#d0d0d0', angle: 0,    fact:'ดาวพุธ — ใกล้ดวงอาทิตย์ที่สุด' },
+  { name:'Venus',   radius: 108, size: 7,   speed:0.035, color:'#e8cda0', glow:'#f5e0b0', angle: 1.2,  fact:'ดาวศุกร์ — ร้อนที่สุดในระบบ' },
+  { name:'Earth',   radius: 148, size: 7.5, speed:0.030, color:'#4fa3e0', glow:'#7ec8f5', angle: 2.1,  fact:'โลก — บ้านของเรา 🌍' },
+  { name:'Mars',    radius: 196, size: 5.5, speed:0.024, color:'#c1440e', glow:'#e8623a', angle: 0.7,  fact:'ดาวอังคาร — ดาวแดง' },
+  { name:'Jupiter', radius: 272, size: 20,  speed:0.013, color:'#c88b3a', glow:'#e0a84a', angle: 3.5,  fact:'ดาวพฤหัส — ใหญ่ที่สุด' },
+  { name:'Saturn',  radius: 352, size: 16,  speed:0.009, color:'#e4d191', glow:'#f0e0a0', angle: 1.8,  fact:'ดาวเสาร์ — มีวงแหวน 💍' },
+  { name:'Uranus',  radius: 422, size: 11,  speed:0.006, color:'#7de8e8', glow:'#a0f0f0', angle: 5.0,  fact:'ดาวยูเรนัส — หมุนตะแคง' },
+  { name:'Neptune', radius: 488, size: 10,  speed:0.005, color:'#3f54ba', glow:'#5070d8', angle: 4.2,  fact:'ดาวเนปจูน — ไกลที่สุด' },
+];
+
+// Moon สำหรับโลก
+const moon = { name:'Moon', parent: 2, radius: 18, size: 2, speed: 0.12, color:'#aaa', glow:'#ccc', angle: 0 };
+
+// ─── Star field ───────────────────────────
+const STAR_COUNT = 500;
+const stars = Array.from({ length: STAR_COUNT }, () => ({
+  x: Math.random() * 4000 - 2000,
+  y: Math.random() * 4000 - 2000,
+  r: Math.random() * 1.4 + 0.2,
+  a: Math.random(),
+  twinkle: Math.random() * Math.PI * 2,
+}));
+
+// ─── Asteroid belt (simplified) ───────────
+const asteroids = Array.from({ length: 280 }, () => ({
+  r: 225 + Math.random() * 30,
+  angle: Math.random() * Math.PI * 2,
+  speed: 0.004 + Math.random() * 0.004,
+  size:  0.5 + Math.random() * 1.2,
+}));
+
+// ─── State ────────────────────────────────
+let paused   = false;
+let t        = 0;      // global time
+let speedMul = 1;
+let focused  = null;   // focused planet index
+let dragging = false;
+let dragStart = { x: 0, y: 0 };
+let camStart  = { x: 0, y: 0 };
+let mouseWorld = { x: 0, y: 0 };
+
+// ─── Helpers ──────────────────────────────
+// แปลง world → screen
+function toScreen(wx, wy) {
+  const cx = canvas.width  / 2 + cam.x;
+  const cy = canvas.height / 2 + cam.y;
+  return { x: cx + wx * cam.zoom, y: cy + wy * cam.zoom };
+}
+// แปลง screen → world
+function toWorld(sx, sy) {
+  const cx = canvas.width  / 2 + cam.x;
+  const cy = canvas.height / 2 + cam.y;
+  return { x: (sx - cx) / cam.zoom, y: (sy - cy) / cam.zoom };
+}
+
+// คำนวณตำแหน่งดาวใน world space
+function planetPos(p) {
+  return {
+    x: Math.cos(p.angle) * p.radius,
+    y: Math.sin(p.angle) * p.radius,
+  };
+}
+
+// ─── Draw Functions ───────────────────────
+
+/* ดาวพื้นหลัง */
+function drawStars() {
+  for (const s of stars) {
+    const sc = toScreen(s.x, s.y);
+    const alpha = s.a * (0.5 + 0.5 * Math.sin(s.twinkle + t * 0.02));
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(sc.x, sc.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* วงโคจร */
+function drawOrbit(radius, alpha = 0.15) {
+  const center = toScreen(0, 0);
+  ctx.beginPath();
+  ctx.arc(center.x, center.y, radius * cam.zoom, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+}
+
+/* ดวงอาทิตย์ */
+function drawSun() {
+  const sc = toScreen(0, 0);
+  const r  = 28 * cam.zoom;
+
+  // corona glow layers
+  [
+    { r: r * 4.5, a: 0.03, c: '#fff8d0' },
+    { r: r * 3.0, a: 0.07, c: '#ffe080' },
+    { r: r * 1.8, a: 0.15, c: '#ffaa00' },
+  ].forEach(g => {
+    const grad = ctx.createRadialGradient(sc.x, sc.y, 0, sc.x, sc.y, g.r);
+    grad.addColorStop(0, `rgba(255,230,100,${g.a})`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(sc.x, sc.y, g.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // body
+  const grad = ctx.createRadialGradient(sc.x - r*0.3, sc.y - r*0.3, r*0.1, sc.x, sc.y, r);
+  grad.addColorStop(0, '#fffde0');
+  grad.addColorStop(0.4, '#ffd040');
+  grad.addColorStop(1, '#ff6a00');
+  ctx.fillStyle = grad;
+  ctx.shadowColor = '#ffcc00';
+  ctx.shadowBlur  = 40;
+  ctx.beginPath();
+  ctx.arc(sc.x, sc.y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+/* แถบดาวเคราะห์น้อย */
+function drawAsteroids() {
+  ctx.fillStyle = 'rgba(180,170,150,0.55)';
+  for (const a of asteroids) {
+    const sc = toScreen(Math.cos(a.angle) * a.r, Math.sin(a.angle) * a.r);
+    ctx.beginPath();
+    ctx.arc(sc.x, sc.y, a.size * cam.zoom * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* วงแหวนดาวเสาร์ */
+function drawSaturnRing(sc, planetRadius) {
+  const pr = planetRadius * cam.zoom;
+  ctx.save();
+  ctx.translate(sc.x, sc.y);
+  ctx.scale(1, 0.35);
+  const grad = ctx.createRadialGradient(0, 0, pr * 1.3, 0, 0, pr * 2.6);
+  grad.addColorStop(0, 'rgba(220,210,160,0.0)');
+  grad.addColorStop(0.2, 'rgba(220,210,160,0.55)');
+  grad.addColorStop(0.6, 'rgba(200,190,130,0.35)');
+  grad.addColorStop(1, 'rgba(200,190,130,0.0)');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = pr * 1.3;
+  ctx.beginPath();
+  ctx.arc(0, 0, pr * 1.95, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ดาวเคราะห์ */
+function drawPlanet(p, index) {
+  const pos = planetPos(p);
+  const sc  = toScreen(pos.x, pos.y);
+  const r   = p.size * cam.zoom;
+
+  // glow
+  ctx.shadowColor = p.glow;
+  ctx.shadowBlur  = r * 4;
+
+  // วงแหวนดาวเสาร์
+  if (p.name === 'Saturn') drawSaturnRing(sc, p.size);
+
+  // body gradient
+  const grad = ctx.createRadialGradient(
+    sc.x - r * 0.3, sc.y - r * 0.35, r * 0.05,
+    sc.x, sc.y, r
+  );
+  grad.addColorStop(0, lighten(p.color, 60));
+  grad.addColorStop(0.5, p.color);
+  grad.addColorStop(1, darken(p.color, 50));
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(sc.x, sc.y, Math.max(r, 1.5), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // focus ring
+  if (focused === index) {
+    ctx.strokeStyle = 'rgba(255,200,80,0.8)';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.arc(sc.x, sc.y, r + 5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // label (เมื่อ zoom สูง)
+  if (cam.zoom > 0.7) {
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = `${9 / cam.zoom * 0.8 + 9}px "Space Mono"`;
+    ctx.fillText(p.name, sc.x + r + 5, sc.y + 4);
+  }
+
+  return sc;  // return screen pos for moon
+}
+
+/* ดวงจันทร์ */
+function drawMoon(parentSc) {
+  const mx = parentSc.x + Math.cos(moon.angle) * moon.radius * cam.zoom;
+  const my = parentSc.y + Math.sin(moon.angle) * moon.radius * cam.zoom;
+  const r  = moon.size * cam.zoom;
+
+  ctx.shadowColor = moon.glow;
+  ctx.shadowBlur  = r * 3;
+  ctx.fillStyle   = moon.color;
+  ctx.beginPath();
+  ctx.arc(mx, my, Math.max(r, 1), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+// ─── Color utilities ──────────────────────
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
+function lighten(hex, amt) {
+  const [r,g,b] = hexToRgb(hex);
+  return `rgb(${Math.min(255,r+amt)},${Math.min(255,g+amt)},${Math.min(255,b+amt)})`;
+}
+function darken(hex, amt) {
+  const [r,g,b] = hexToRgb(hex);
+  return `rgb(${Math.max(0,r-amt)},${Math.max(0,g-amt)},${Math.max(0,b-amt)})`;
+}
+
+// ─── Main Loop ────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Space background gradient
+  const bg = ctx.createRadialGradient(
+    canvas.width/2, canvas.height/2, 0,
+    canvas.width/2, canvas.height/2, canvas.width * 0.7
+  );
+  bg.addColorStop(0, '#05050f');
+  bg.addColorStop(1, '#000005');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawStars();
+
+  // Orbits
+  planets.forEach(p => drawOrbit(p.radius));
+
+  // Asteroid belt
+  drawAsteroids();
+
+  // Sun
+  drawSun();
+
+  // Planets
+  let earthSc;
+  planets.forEach((p, i) => {
+    const sc = drawPlanet(p, i);
+    if (i === 2) earthSc = sc;  // Earth
+  });
+
+  // Moon
+  if (earthSc) drawMoon(earthSc);
+
+  // Update angles
+  if (!paused) {
+    t += speedMul;
+    planets.forEach(p => { p.angle += p.speed * speedMul; });
+    moon.angle += moon.speed * speedMul;
+    asteroids.forEach(a => { a.angle += a.speed * speedMul; });
+  }
+
+  // Focus camera on selected planet
+  if (focused !== null) {
+    const p   = planets[focused];
+    const pos = planetPos(p);
+    cam.x = -pos.x * cam.zoom;
+    cam.y = -pos.y * cam.zoom;
+  }
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ─── Interaction ──────────────────────────
+
+/* Tooltip on hover */
+canvas.addEventListener('mousemove', e => {
+  const w = toWorld(e.clientX, e.clientY);
+  mouseWorld = w;
+  let hit = null;
+
+  for (let i = 0; i < planets.length; i++) {
+    const p = planets[i];
+    const pos = planetPos(p);
+    const dx = w.x - pos.x;
+    const dy = w.y - pos.y;
+    if (Math.sqrt(dx*dx + dy*dy) < p.size * 3) { hit = i; break; }
+  }
+
+  if (hit !== null) {
+    const p = planets[hit];
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 16) + 'px';
+    tooltip.style.top  = (e.clientY - 10) + 'px';
+    tooltip.innerHTML  = `<div class="p-name">${p.name.toUpperCase()}</div>${p.fact}`;
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.display = 'none';
+    canvas.style.cursor = dragging ? 'grabbing' : 'grab';
+  }
+
+  if (dragging && focused === null) {
+    cam.x = camStart.x + (e.clientX - dragStart.x);
+    cam.y = camStart.y + (e.clientY - dragStart.y);
+  }
+});
+
+/* Click to focus */
+canvas.addEventListener('click', e => {
+  const w = toWorld(e.clientX, e.clientY);
+  let hit = null;
+  for (let i = 0; i < planets.length; i++) {
+    const p = planets[i];
+    const pos = planetPos(p);
+    const dx = w.x - pos.x;
+    const dy = w.y - pos.y;
+    if (Math.sqrt(dx*dx + dy*dy) < p.size * 3) { hit = i; break; }
+  }
+  if (hit !== null) {
+    focused = (focused === hit) ? null : hit;
+    if (focused === null) { cam.x = 0; cam.y = 0; }
+  }
+});
+
+/* Drag to pan */
+canvas.addEventListener('mousedown', e => {
+  dragging = true;
+  dragStart = { x: e.clientX, y: e.clientY };
+  camStart  = { x: cam.x,     y: cam.y     };
+  canvas.style.cursor = 'grabbing';
+  focused = null;
+});
+canvas.addEventListener('mouseup',   () => { dragging = false; canvas.style.cursor = 'grab'; });
+canvas.addEventListener('mouseleave',() => { dragging = false; });
+
+/* Scroll to zoom */
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  cam.zoom = Math.min(4, Math.max(0.2, cam.zoom * factor));
+}, { passive: false });
+
+/* Pause button */
+pauseBtn.addEventListener('click', () => {
+  paused = !paused;
+  pauseBtn.textContent = paused ? '▶ RESUME' : '⏸ PAUSE';
+});
+
+/* Speed slider */
+speedSlider.addEventListener('input', () => {
+  speedMul = parseFloat(speedSlider.value);
+});
+
+canvas.style.cursor = 'grab';
+</script>
+</body>
+</html>
