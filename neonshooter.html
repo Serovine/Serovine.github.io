@@ -107,10 +107,10 @@ canvas{display:block;width:100%;height:100%;}
     <div class="ov-t cy-t">NEON<br>ASSAULT</div>
     <div class="ov-sub">DESTROY · SURVIVE · ASCEND</div>
     <div id="kbGuide">
-      <div class="kg-key">← →</div><div class="kg-val">Move your Turret</div>
+      <div class="kg-key">← →</div><div class="kg-val">Move the turret</div>
       <div class="kg-key">SPACE</div><div class="kg-val">Shot</div>
       <div class="kg-key">X</div><div class="kg-val">Bomb</div>
-      <div class="kg-key">⚠</div><div class="kg-val">Don't let the blocks drop to the base!</div>
+      <div class="kg-key">⚠</div><div class="kg-val">Don't Let the blocks fallen to your base !</div>
     </div>
     <button class="ov-btn" id="btnStart">▶ START GAME</button>
   </div>
@@ -334,7 +334,7 @@ function updatePUHud(){
 function applyPU(type){
   if(type==='bomb'){G.bombs=Math.min(G.bombs+1,BOMB_MAX);updateHUD();floatText('+1 BOMB','#ff6600');return;}
   if(type==='rainbow'){activateRainbow();return;}
-  if(type==='stop'){G.stopBlocksTimer=3;floatText('BLOCKS STOPPED! 3s','#00ccff');updatePUHud();return;}
+  if(type==='stop'){G.stopBlocksTimer=3;floatText('SLOW DOWN! 3s','#00ccff');updatePUHud();return;}
   if(type==='accel'){G.accelPlayer=true;G.accelTimer=5;floatText('SPEED BOOST! 5s','#ffcc00');updatePUHud();return;}
   const shots={double:30,chain:20,triple:20,laser:10};
   G.powerup={type,shotsLeft:shots[type]||10};
@@ -411,19 +411,20 @@ function updateSideGuns(dt){
 // ── Goal ball ──
 function spawnGoalBall(){
   if(!isBossStage())return;
-  const angle=-Math.PI/4+(Math.random()-.5)*Math.PI/3;
-  const spd=180;
+  const angle=-Math.PI/4+(Math.random()-.5)*Math.PI/2;
+  const spd=260+G.stage*8; // faster, scales with stage
   goalBall={
     x:goal.x+goal.w/2,y:goal.y+goal.h,
-    vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,
-    timer:10,r:8
+    vx:Math.cos(angle)*spd,vy:Math.abs(Math.sin(angle)*spd)+60,
+    timer:10,r:10,
+    pulse:0 // for pulsing glow animation
   };
 }
 function isBossStage(){return G.stage%3===0;}
 function updateGoalBall(dt){
   if(!goalBall)return;
   goalBall.timer-=dt;
-  if(goalBall.timer<=0){goalBall=null;setTimeout(()=>{if(G.phase==='playing')spawnGoalBall();},2000);return;}
+  if(goalBall.timer<=0){goalBall=null;setTimeout(()=>{if(G.phase==='playing')spawnGoalBall();},800);return;}
   goalBall.x+=goalBall.vx*dt;
   goalBall.y+=goalBall.vy*dt;
   // Bounce off walls
@@ -438,7 +439,7 @@ function updateGoalBall(dt){
     dmgFlash();
     floatText('STUNNED!','#ff0033');
     updatePUHud();
-    setTimeout(()=>{if(G.phase==='playing')spawnGoalBall();},3000);
+    setTimeout(()=>{if(G.phase==='playing')spawnGoalBall();},1500);
   }
 }
 
@@ -485,10 +486,13 @@ function initStage(){
   spawnInterval=Math.max(.55,1.4-G.stage*.04);
   calcBS();
   initPlayer();
-  // Goal size: 2 blocks wide, 3 blocks tall (approx)
-  goal.w=BW*2+MAR;goal.h=BH*3;
+  // Goal size — boss: 2×3 blocks (rect/GIF), normal: circle diameter = BW*2
+  if(isBossStage()){goal.w=BW*2+MAR;goal.h=BH*3;}
+  else{goal.w=BW*2;goal.h=BW*2;} // square bounding box for circle
   goal.speed=80+G.stage*6;
   goal.x=cv.width/2-goal.w/2;goal.hitTimer=0;goal.flickerTimer=0;
+  goalFace=GOAL_FACES[Math.floor(Math.random()*GOAL_FACES.length)];
+  goalFaceHit=GOAL_FACES_HIT[Math.floor(Math.random()*GOAL_FACES_HIT.length)];
   // Init side gun positions
   sideGun1.x=30;sideGun1.dir=1;
   sideGun2.x=cv.width-50;sideGun2.dir=-1;
@@ -501,7 +505,11 @@ function initStage(){
 // ── Screens ──
 function showClear(){
   G.phase='stageclear';
-  goalImgEl.style.display='none';
+  // Keep goal visible in hurt state during stage clear screen
+  goalImgEl.src=GOAL_HURT_SRC;
+  goalImgEl.setAttribute('data-cur',GOAL_HURT_SRC);
+  goalImgEl.style.display='block';
+  goalImgEl.style.filter='drop-shadow(0 0 8px #ff0033) drop-shadow(0 0 14px #ff0033)';
   document.getElementById('cScore').textContent=G.score;
   document.getElementById('cStage').textContent=G.stage;
   document.getElementById('cBombs').textContent=G.bombs;
@@ -533,6 +541,12 @@ function drawDarkfire(dt){
   for(let i=0;i<cv.height;i+=4){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(cv.width,i);ctx.stroke();}
 }
 
+// Normal-stage goal faces
+const GOAL_FACES=['😎','😏','🤖','👾','😤','🤨'];
+const GOAL_FACES_HIT=['😖','😫','🤕','💥','😵','🤯'];
+let goalFace=GOAL_FACES[0];
+let goalFaceHit=GOAL_FACES_HIT[0];
+
 function drawGoal(dt){
   // Move
   goal.x+=goal.dir*goal.speed*dt;
@@ -542,41 +556,76 @@ function drawGoal(dt){
   if(goal.flickerTimer>0)goal.flickerTimer-=dt;
 
   const isHit=goal.hitTimer>0;
+  const flicker=isHit&&Math.floor(goal.flickerTimer*20)%2===0;
 
-  // Swap GIF src when hit state changes
-  const wantSrc=isHit?GOAL_HURT_SRC:GOAL_NORMAL_SRC;
-  if(goalImgEl.getAttribute('data-cur')!==wantSrc){
-    goalImgEl.src=wantSrc;
-    goalImgEl.setAttribute('data-cur',wantSrc);
+  if(isBossStage()){
+    // ── Boss stage: use animated GIF ──
+    const wantSrc=isHit?GOAL_HURT_SRC:GOAL_NORMAL_SRC;
+    if(goalImgEl.getAttribute('data-cur')!==wantSrc){
+      goalImgEl.src=wantSrc;goalImgEl.setAttribute('data-cur',wantSrc);
+    }
+    goalImgEl.style.display=flicker?'none':'block';
+    const sx=gcDiv.clientWidth/cv.width,sy=gcDiv.clientHeight/cv.height;
+    goalImgEl.style.left=(goal.x*sx)+'px';goalImgEl.style.top=(goal.y*sy)+'px';
+    goalImgEl.style.width=(goal.w*sx)+'px';goalImgEl.style.height=(goal.h*sy)+'px';
+    goalImgEl.style.filter=isHit
+      ?'drop-shadow(0 0 8px #ff0033) drop-shadow(0 0 14px #ff0033)'
+      :'drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 14px #00ffff)';
+  } else {
+    // ── Normal stage: circle + emoji — solid, drawn above blocks ──
+    goalImgEl.style.display='none';
+    if(flicker)return;
+    const cx=goal.x+goal.w/2, cy=goal.y+goal.h/2;
+    const r=goal.w/2;
+    const col=isHit?'#ff0033':'#00ffff';
+    ctx.save();
+    // Solid fill body
+    ctx.shadowColor=col;ctx.shadowBlur=24;
+    ctx.fillStyle=isHit?'#330008':'#002233';
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+    // Outer ring — thick bright
+    ctx.strokeStyle=col;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    // Inner ring decoration
+    ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(cx,cy,r*.72,0,Math.PI*2);ctx.stroke();
+    // Emoji face — full size
+    ctx.shadowBlur=0;
+    ctx.font=`${Math.round(r*1.15)}px serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(isHit?goalFaceHit:goalFace,cx,cy);
+    ctx.restore();
   }
-
-  // Flicker when hit — toggle visibility
-  const visible=!(isHit&&Math.floor(goal.flickerTimer*20)%2===0);
-  goalImgEl.style.display=visible?'block':'none';
-
-  // Position and size via CSS (canvas coordinate space)
-  // gcDiv offset = 0,0 relative to canvas
-  const scaleX=gcDiv.clientWidth/cv.width;
-  const scaleY=gcDiv.clientHeight/cv.height;
-  goalImgEl.style.left=(goal.x*scaleX)+'px';
-  goalImgEl.style.top=(goal.y*scaleY)+'px';
-  goalImgEl.style.width=(goal.w*scaleX)+'px';
-  goalImgEl.style.height=(goal.h*scaleY)+'px';
-
-  // Neon glow via filter
-  goalImgEl.style.filter=isHit
-    ?'drop-shadow(0 0 8px #ff0033) drop-shadow(0 0 14px #ff0033)'
-    :'drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 14px #00ffff)';
 }
 
 function drawGoalBall(){
   if(!goalBall)return;
+  goalBall.pulse=(goalBall.pulse||0)+0.15;
+  const r=goalBall.r;
+  const px=goalBall.x,py=goalBall.y;
   ctx.save();
-  ctx.shadowColor='#ff6600';ctx.shadowBlur=20;
-  ctx.fillStyle='#ff6600';
-  ctx.beginPath();ctx.arc(goalBall.x,goalBall.y,goalBall.r,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(255,200,0,.6)';
-  ctx.beginPath();ctx.arc(goalBall.x-goalBall.r*.3,goalBall.y-goalBall.r*.3,goalBall.r*.4,0,Math.PI*2);ctx.fill();
+  // Outer pulse ring 1
+  const ring1=r+6+Math.sin(goalBall.pulse)*4;
+  ctx.beginPath();ctx.arc(px,py,ring1,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,0,0,0.25)';ctx.lineWidth=3;ctx.shadowColor='#ff0000';ctx.shadowBlur=20;ctx.stroke();
+  // Outer pulse ring 2
+  const ring2=r+12+Math.sin(goalBall.pulse+1)*5;
+  ctx.beginPath();ctx.arc(px,py,ring2,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,0,80,0.12)';ctx.lineWidth=2;ctx.shadowBlur=30;ctx.stroke();
+  // Main ball radial gradient
+  const grd=ctx.createRadialGradient(px-r*.3,py-r*.3,r*.05,px,py,r*1.2);
+  grd.addColorStop(0,'#ffffff');
+  grd.addColorStop(0.15,'#ff4488');
+  grd.addColorStop(0.5,'#ff0022');
+  grd.addColorStop(1,'rgba(200,0,0,0)');
+  ctx.beginPath();ctx.arc(px,py,r*1.2,0,Math.PI*2);
+  ctx.fillStyle=grd;ctx.shadowColor='#ff0033';ctx.shadowBlur=35;ctx.fill();
+  // Core bright center
+  ctx.beginPath();ctx.arc(px,py,r*.45,0,Math.PI*2);
+  ctx.fillStyle='#ffffff';ctx.shadowColor='#ffffff';ctx.shadowBlur=18;ctx.fill();
+  // Inner hot glow
+  ctx.beginPath();ctx.arc(px,py,r*.8,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,60,60,0.55)';ctx.shadowBlur=8;ctx.fill();
   ctx.restore();
 }
 
@@ -695,9 +744,16 @@ function update(dt){
   spawnTimer-=dt;
   if(spawnTimer<=0){spawnTimer=spawnInterval;spawnRow(-BH-2);}
 
-  // Move blocks (skip if stopped)
+  // Move blocks (slow to stage-1 speed when stop active)
   if(G.stopBlocksTimer<=0){
     const spd=stageSpeed(G.stage);
+    for(let i=blocks.length-1;i>=0;i--){
+      if(G.phase!=='playing')return;
+      blocks[i].y+=spd*dt;
+      if(blocks[i].y+blocks[i].h>=player.y-2){dmgFlash();showOver();return;}
+    }
+  } else {
+    const spd=stageSpeed(1); // stage-1 speed during stop
     for(let i=blocks.length-1;i>=0;i--){
       if(G.phase!=='playing')return;
       blocks[i].y+=spd*dt;
@@ -719,9 +775,14 @@ function update(dt){
     }
     if(b.y<-40||b.y>cv.height+40||b.x<-60||b.x>cv.width+60){bullets.splice(i,1);continue;}
 
-    // hit goal — use image bounding box
-    if(b.x>goal.x&&b.x<goal.x+goal.w&&b.y>goal.y&&b.y<goal.y+goal.h){
+    // hit goal
+    const gcx=goal.x+goal.w/2,gcy=goal.y+goal.h/2,gr=goal.w/2;
+    const inGoal=isBossStage()
+      ?(b.x>goal.x&&b.x<goal.x+goal.w&&b.y>goal.y&&b.y<goal.y+goal.h)
+      :(Math.hypot(b.x-gcx,b.y-gcy)<gr+4);
+    if(inGoal){
       goal.hitTimer=.45;goal.flickerTimer=.45;
+      goalFaceHit=GOAL_FACES_HIT[Math.floor(Math.random()*GOAL_FACES_HIT.length)];
       spawnParts(b.x,b.y,'#00ffff',3);
       if(addPts(1))return;
       if(!b.pierce)bullets.splice(i,1);
