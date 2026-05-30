@@ -149,6 +149,13 @@ const SFX={
       o.type='sine';o.frequency.value=f;const t=ac.currentTime+i*0.1;
       g.gain.setValueAtTime(0.12,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
       o.start(t);o.stop(t+0.2);});}catch(e){}},
+  hollow:()=>{if(muted)return;try{const ac=getAudio();
+    const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);
+    o.type='sine';o.frequency.setValueAtTime(600,ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(200,ac.currentTime+0.35);
+    g.gain.setValueAtTime(0.13,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.4);
+    o.start(ac.currentTime);o.stop(ac.currentTime+0.4);
+    playNoise(0.2,0.06,1200);}catch(e){}},
   goal:()=>{if(muted)return;try{const ac=getAudio();
     [523,659,784,1047].forEach((f,i)=>{
       const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);
@@ -278,30 +285,30 @@ const WALL_H=()=>14;
 let rgbAnimBricks=[];
 let blackoutTimer=0,blackoutPhase=0;
 
-// BLOCK TYPES:
-// normal, steel, steel2, rgb, switch, multiply, dead, repair, resetspeed, bigball, smoke, toilet
-const BLOCK_ICONS={multiply:'✕',dead:'☠',repair:'✚',resetspeed:'❄',bigball:'◉',smoke:'≋',toilet:'🚽'};
+// BLOCK TYPES: normal,steel,steel2,rgb,switch,multiply,dead,repair,resetspeed,bigball,smoke,toilet,hollow
+
+// hollow paddle state
+let hollowPaddleTimer=0;
+const HOLLOW_DUR=3;
 
 function makeBricks(){
   const list=[],bw=(canvas.width-BRICK_PAD*(BRICK_COLS+1))/BRICK_COLS;
   const bh=BRICK_H(),topOff=WALL_H()+BRICK_H()*4+BRICK_PAD*5;
   const occupied=new Set();
 
-  // Dead block only on levels 5,10,15,20...
-  const hasDeadLevel=(level%5===0);
+  // Dead block every 3 levels
+  const hasDeadLevel=(level%3===0);
   let deadPlaced=false;
-  // RGB guarantee: track if any rgb placed
+  // hollow: max 1 per level
+  let hollowPlaced=false;
+  // RGB guarantee
   let rgbPlaced=false;
 
-  // Build candidate pool without guaranteed ones first
   const cells=[];
   for(let r=0;r<BRICK_ROWS;r++)for(let c=0;c<BRICK_COLS;c++)cells.push({r,c});
-  // shuffle cells for random dead placement
   for(let i=cells.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cells[i],cells[j]]=[cells[j],cells[i]];}
 
-  // Pre-assign dead to a random cell if applicable
-  let deadCell=null;
-  if(hasDeadLevel) deadCell=cells[0];
+  let deadCell=hasDeadLevel?cells[0]:null;
 
   for(let r=0;r<BRICK_ROWS;r++){
     for(let c=0;c<BRICK_COLS;c++){
@@ -309,7 +316,6 @@ function makeBricks(){
       const x=BRICK_PAD+c*(bw+BRICK_PAD),y=topOff+r*(bh+BRICK_PAD);
       let type='normal';
 
-      // dead block slot?
       if(hasDeadLevel&&!deadPlaced&&deadCell&&deadCell.r===r&&deadCell.c===c){
         type='dead';deadPlaced=true;
       } else {
@@ -322,8 +328,9 @@ function makeBricks(){
         else if(rand<0.23) type='repair';
         else if(rand<0.26) type='resetspeed';
         else if(rand<0.29) type='bigball';
-        else if(level>5&&rand<0.35&&c<BRICK_COLS-1&&!occupied.has(`${r},${c+1}`)) type='steel2';
-        else if(rand<0.42) type='steel';
+        else if(!hollowPlaced&&rand<0.32){type='hollow';hollowPlaced=true;}
+        else if(level>5&&rand<0.38&&c<BRICK_COLS-1&&!occupied.has(`${r},${c+1}`)) type='steel2';
+        else if(rand<0.45) type='steel';
       }
 
       if(type==='rgb') rgbPlaced=true;
@@ -340,13 +347,9 @@ function makeBricks(){
     }
   }
 
-  // Guarantee at least 1 rgb per level
   if(!rgbPlaced){
     const normals=list.filter(b=>b.type==='normal');
-    if(normals.length>0){
-      const pick=normals[Math.floor(Math.random()*normals.length)];
-      pick.type='rgb';pick.hp=3;pick.maxHp=3;
-    }
+    if(normals.length>0){const pick=normals[Math.floor(Math.random()*normals.length)];pick.type='rgb';pick.hp=3;pick.maxHp=3;}
   }
   return list;
 }
@@ -390,9 +393,11 @@ function drawHUD(){
   const zoneY=wh,zoneH=bh*4+BRICK_PAD*5,cy=zoneY+zoneH/2;
   const col=theme.main;
   ctx.save();ctx.textBaseline='middle';
+  // separator line
   glow(col,3);ctx.strokeStyle=col+'1a';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(4,zoneY+zoneH-2);ctx.lineTo(canvas.width-4,zoneY+zoneH-2);ctx.stroke();
   noGlow();
+  // score / level / balls / time
   const secs=[
     {lbl:'SCORE',val:String(score)},
     {lbl:'LVL',val:String(level)},
@@ -401,22 +406,46 @@ function drawHUD(){
   ];
   const cw=canvas.width/secs.length;
   secs.forEach((s,i)=>{
-    const cx=cw*i+cw/2;
+    const cx2=cw*i+cw/2;
     glow(col,3);ctx.font=`7px 'Share Tech Mono',monospace`;ctx.fillStyle=col+'55';ctx.textAlign='center';
-    ctx.fillText(s.lbl,cx,cy-10);
+    ctx.fillText(s.lbl,cx2,cy-10);
     glow(col,12);ctx.font=`bold 14px 'Orbitron',monospace`;ctx.fillStyle=col;
-    ctx.fillText(s.val,cx,cy+5);noGlow();
+    ctx.fillText(s.val,cx2,cy+5);noGlow();
   });
+
+  // ── Vertical bars on side walls ──
+  const barX=1, barW=4;
+  const barTop=wh+8, barBot=canvas.height-60, barH=barBot-barTop;
+
+  // LEFT: Power bar (gold)
   if(paddlePowerTimer>0){
-    const pct=paddlePowerTimer/POWER_DURATION,barY=zoneY+zoneH-6,barW=(canvas.width-8)*pct;
-    glow('#ffd700',8);ctx.fillStyle='#ffd70033';ctx.fillRect(4,barY,canvas.width-8,4);
-    ctx.fillStyle='#ffd700';ctx.fillRect(4,barY,barW,4);noGlow();
+    const pct=paddlePowerTimer/POWER_DURATION;
+    glow('#ffd700',8);
+    ctx.fillStyle='#ffd70020';ctx.fillRect(barX,barTop,barW,barH);
+    ctx.fillStyle='#ffd700';ctx.fillRect(barX,barBot-barH*pct,barW,barH*pct);
+    // label
+    ctx.save();ctx.translate(barX+barW+7,barTop+barH/2);ctx.rotate(-Math.PI/2);
+    ctx.font=`6px 'Share Tech Mono',monospace`;ctx.fillStyle='#ffd70088';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('PWR',0,0);
+    ctx.restore();
+    noGlow();
   }
+
+  // RIGHT: Big ball bar (pink/purple)
   if(bigBallTimer>0){
-    const pct=bigBallTimer/BIG_BALL_DUR,barY=zoneY+2;
-    glow('#ff88ff',6);ctx.fillStyle='#ff88ff44';ctx.fillRect(4,barY,canvas.width-8,3);
-    ctx.fillStyle='#ff88ff';ctx.fillRect(4,barY,(canvas.width-8)*pct,3);noGlow();
+    const pct=bigBallTimer/BIG_BALL_DUR;
+    const rx=canvas.width-1-barW;
+    glow('#ff88ff',8);
+    ctx.fillStyle='#ff88ff20';ctx.fillRect(rx,barTop,barW,barH);
+    ctx.fillStyle='#ff88ff';ctx.fillRect(rx,barBot-barH*pct,barW,barH*pct);
+    // label
+    ctx.save();ctx.translate(rx-7,barTop+barH/2);ctx.rotate(-Math.PI/2);
+    ctx.font=`6px 'Share Tech Mono',monospace`;ctx.fillStyle='#ff88ff88';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('BIG',0,0);
+    ctx.restore();
+    noGlow();
   }
+
   ctx.restore();
 }
 function updateHUD(){
@@ -438,7 +467,7 @@ function initLevel(){
   bricks=makeBricks();rgbAnimBricks=[];smokePatches=[];
   blackoutTimer=0;blackoutPhase=0;
   goalAchieved=false;goalOpen=true;goalHideTimer=0;
-  paddlePowerTimer=0;bigBallTimer=0;
+  paddlePowerTimer=0;bigBallTimer=0;hollowPaddleTimer=0;
   // LAUNCH button: not hot on level init
   document.getElementById('btn-shoot').classList.remove('launch-hot');
   resetPaddle();balls=[];spawnBall();
@@ -529,6 +558,7 @@ function drawBrick(b){
     case 'resetspeed': drawUniqueBlock(b,'#88ddff','#aaeeff','❄'); break;
     case 'bigball':  drawUniqueBlock(b,'#cc88ff','#dd99ff','◉'); break;
     case 'smoke':    drawUniqueBlock(b,'#aaaaaa','#cccccc','≋'); break;
+    case 'hollow':   drawUniqueBlock(b,'#ffffff','#ddddff','?'); break;
     case 'toilet':   drawUniqueBlock(b,'#88ccff','#aaddff','🚽'); break;
     default:{
       const flashCol=b._flashCol;
@@ -543,7 +573,17 @@ function drawBrick(b){
 }
 
 function drawPaddle(){
-  const col=theme.main;glow(col,20);
+  const col=theme.main;
+  if(hollowPaddleTimer>0){
+    // invisible paddle - just show ??? text
+    glow('#ffffff',12);
+    ctx.font=`bold 11px 'Orbitron',monospace`;
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('???',paddle.x+paddle.w/2,paddle.y+paddle.h/2);
+    noGlow();return;
+  }
+  glow(col,20);
   ctx.fillStyle=col+'20';ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.strokeRect(paddle.x,paddle.y,paddle.w,paddle.h);
   ctx.fillStyle=col+'88';ctx.fillRect(paddle.x+4,paddle.y+2,paddle.w-8,3);noGlow();
@@ -558,13 +598,15 @@ function drawBall(b){
 }
 function drawSmoke(){
   smokePatches.forEach(p=>{
-    const alpha=Math.min(0.75,(p.life/p.maxLife)*0.75);
+    const lifePct=p.life/p.maxLife;
     ctx.save();
-    ctx.globalAlpha=alpha;
+    // Dense white smoke - fade out in last 40% of life
+    const alpha=lifePct>0.4?0.96:lifePct/0.4*0.96;
     const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
-    grad.addColorStop(0,'rgba(220,220,230,0.9)');
-    grad.addColorStop(0.5,'rgba(180,180,200,0.6)');
-    grad.addColorStop(1,'rgba(150,150,170,0)');
+    grad.addColorStop(0,`rgba(255,255,255,${alpha})`);
+    grad.addColorStop(0.4,`rgba(240,240,248,${alpha*0.92})`);
+    grad.addColorStop(0.75,`rgba(220,220,235,${alpha*0.6})`);
+    grad.addColorStop(1,'rgba(200,200,220,0)');
     ctx.fillStyle=grad;
     ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     ctx.restore();
@@ -633,15 +675,18 @@ function applyBlockEffect(b,ball){
       SFX.bigball();
       break;}
     case 'smoke':{
-      // add smoke patch at brick location
       const bw3=(canvas.width-BRICK_PAD*(BRICK_COLS+1))/BRICK_COLS;
-      const r=bw3*1.6;
-      smokePatches.push({x:b.x+b.w/2,y:b.y+b.h/2,r,life:3.5,maxLife:3.5});
+      const r=bw3*2.2; // wider coverage
+      smokePatches.push({x:b.x+b.w/2,y:b.y+b.h/2,r,life:3,maxLife:3});
       SFX.smoke();
       break;}
     case 'toilet':{
       goalOpen=false;goalHideTimer=10;
       SFX.toilet();
+      break;}
+    case 'hollow':{
+      hollowPaddleTimer=HOLLOW_DUR;
+      SFX.hollow();
       break;}
     case 'rgb':{
       if(!rgbAnimBricks.find(a=>a.b===b)){rgbAnimBricks.push({b,timer:2,flashIdx:0});}
@@ -670,10 +715,10 @@ function brickHit(ball,b){
   if(b.type!=='switch'&&b.type!=='toilet'&&b.type!=='smoke') setTheme(THEMES[b.colorKey]);
 
   // Apply effect on first hit or on death depending on type
-  const effectOnFirstHit=['multiply','dead','repair','resetspeed','bigball','smoke','toilet','switch'];
+  const effectOnFirstHit=['multiply','dead','repair','resetspeed','bigball','smoke','toilet','switch','hollow'];
   const effectOnDeath=['rgb'];
   if(effectOnFirstHit.includes(b.type)&&b.hp<=0) applyBlockEffect(b,ball);
-  else if(effectOnDeath.includes(b.type)&&b.hp===b.maxHp-1) applyBlockEffect(b,ball); // rgb: first hit
+  else if(effectOnDeath.includes(b.type)&&b.hp===b.maxHp-1) applyBlockEffect(b,ball);
   else if(!effectOnFirstHit.includes(b.type)&&!effectOnDeath.includes(b.type)){
     if(b.type==='steel'||b.type==='steel2') SFX.steel();
     else SFX.normal();
@@ -862,6 +907,8 @@ function loop(ts){
       bigBallTimer-=dt;
       if(bigBallTimer<=0){bigBallTimer=0;balls.forEach(ba=>ba.r=Math.max(7,canvas.width*0.018));}
     }
+    // Hollow paddle timer
+    if(hollowPaddleTimer>0){hollowPaddleTimer-=dt;if(hollowPaddleTimer<0)hollowPaddleTimer=0;}
     // Blackout
     if(blackoutPhase>0){
       blackoutTimer-=dt;
