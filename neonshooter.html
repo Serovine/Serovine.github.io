@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--cy:#00ffff;--pk:#ff00ff;--ye:#ffff00;--gr:#00ff88;--or:#ff6600;--re:#ff0033;--bg:#06001a;}
 body{background:#020008;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;touch-action:none;font-family:'Share Tech Mono',monospace;}
-#gw{position:relative;width:420px;height:780px;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 28px var(--cy),0 0 55px rgba(0,255,255,.12),inset 0 0 40px rgba(0,0,60,.55);overflow:hidden;user-select:none;transform-origin:top left;}
+#gw{position:relative;width:420px;height:780px;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 28px var(--cy),0 0 55px rgba(0,255,255,.12),inset 0 0 40px rgba(0,0,60,.55);overflow:hidden;user-select:none;transform-origin:center center;flex-shrink:0;}
 #gw::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);}
 #gw::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,255,.025) 1px,transparent 1px);background-size:40px 40px;}
 /* HUD */
@@ -80,7 +80,11 @@ canvas{display:block;width:100%;height:100%;}
     <div class="hb"><div class="hl">BOMBS</div><div class="hv bm" id="bVal">3</div></div>
   </div>
   <div id="puHud">⚡ READY</div>
-  <div id="gc"><canvas id="cv"></canvas></div>
+  <div id="gc"><canvas id="cv"></canvas>
+    <!-- Goal GIF overlay — positioned by JS -->
+    <img id="goalImg" src="https://raw.githubusercontent.com/Serovine/Serovine.github.io/refs/heads/main/assets/neon_debi.gif"
+      style="position:absolute;top:0;left:0;image-rendering:pixelated;pointer-events:none;display:none;">
+  </div>
   <div id="prog">
     <div class="pl">TARGET</div>
     <div id="pbo"><div id="pbi"></div></div>
@@ -136,15 +140,12 @@ const gcDiv=document.getElementById('gc');
 function resizeCv(){cv.width=gcDiv.clientWidth;cv.height=gcDiv.clientHeight;}
 resizeCv();
 
-// Scale to viewport
+// Scale to viewport — body stays flex-center, we just scale
 (function scaleGame(){
   const gw=document.getElementById('gw');
   function doScale(){
-    const vw=window.innerWidth,vh=window.innerHeight;
-    const s=Math.min(vw/420,vh/780,1);
+    const s=Math.min(window.innerWidth/420,window.innerHeight/780,1);
     gw.style.transform=`scale(${s})`;
-    gw.style.left=`${(vw-420*s)/2}px`;
-    gw.style.top=`${(vh-780*s)/2}px`;
   }
   doScale();window.addEventListener('resize',doScale);
 })();
@@ -201,10 +202,10 @@ const BT={
   pu_accel:  {hp:1,sc:1,label:'⚡⚡',pu:'accel'},
 };
 
-// ── Goal images ──
-const imgNormal=new Image(),imgHurt=new Image();
-imgNormal.src='https://raw.githubusercontent.com/Serovine/Serovine.github.io/refs/heads/main/assets/neon_debi.gif';
-imgHurt.src='https://raw.githubusercontent.com/Serovine/Serovine.github.io/refs/heads/main/assets/neon_debi_hurt.gif';
+// ── Goal image element (GIF animates in DOM, not canvas) ──
+const goalImgEl=document.getElementById('goalImg');
+const GOAL_NORMAL_SRC='https://raw.githubusercontent.com/Serovine/Serovine.github.io/refs/heads/main/assets/neon_debi.gif';
+const GOAL_HURT_SRC='https://raw.githubusercontent.com/Serovine/Serovine.github.io/refs/heads/main/assets/neon_debi_hurt.gif';
 
 // ── Entities ──
 let player={x:0,y:0,w:60,h:26};
@@ -494,6 +495,7 @@ function initStage(){
 // ── Screens ──
 function showClear(){
   G.phase='stageclear';
+  goalImgEl.style.display='none';
   document.getElementById('cScore').textContent=G.score;
   document.getElementById('cStage').textContent=G.stage;
   document.getElementById('cBombs').textContent=G.bombs;
@@ -502,6 +504,7 @@ function showClear(){
 function showOver(){
   if(G.phase==='gameover'||G.phase==='clearing'||G.phase==='stageclear')return;
   G.phase='gameover';
+  goalImgEl.style.display='none';
   document.getElementById('oScore').textContent=G.score;
   document.getElementById('oStage').textContent=G.stage;
   document.getElementById('scrOver').classList.remove('hidden');
@@ -533,31 +536,31 @@ function drawGoal(dt){
   if(goal.flickerTimer>0)goal.flickerTimer-=dt;
 
   const isHit=goal.hitTimer>0;
-  // Flicker when hit — skip draw on alternate frames
-  if(isHit&&Math.floor(goal.flickerTimer*20)%2===0)return;
 
-  const img=isHit?imgHurt:imgNormal;
-  if(img.complete&&img.naturalWidth>0){
-    ctx.save();
-    ctx.shadowColor=isHit?'#ff0033':'#00ffff';ctx.shadowBlur=16;
-    ctx.drawImage(img,goal.x,goal.y,goal.w,goal.h);
-    ctx.restore();
-  } else {
-    // Fallback stickman if image not loaded yet
-    const col=isHit?'#ff0033':'#00ffff';
-    ctx.save();ctx.translate(goal.x+goal.w/2,goal.y);
-    ctx.shadowColor=col;ctx.shadowBlur=14;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineCap='round';
-    const sc=goal.w/56;
-    const hR=12*sc,hY=hR+2,nY=hY+hR,bL=18*sc,hipY=nY+bL,lL=16*sc,aL=14*sc,aA=Math.PI/3;
-    ctx.beginPath();ctx.moveTo(0,hipY);ctx.lineTo(-10*sc,hipY+lL);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,hipY);ctx.lineTo(10*sc,hipY+lL);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,nY);ctx.lineTo(0,hipY);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,nY+bL*.3);ctx.lineTo(-Math.cos(aA)*aL,nY+bL*.3+Math.sin(aA)*aL);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,nY+bL*.3);ctx.lineTo(Math.cos(aA)*aL,nY+bL*.3+Math.sin(aA)*aL);ctx.stroke();
-    ctx.beginPath();ctx.arc(0,hY,hR,0,Math.PI*2);
-    ctx.fillStyle=isHit?'rgba(255,0,51,.2)':'rgba(0,255,255,.12)';ctx.fill();ctx.stroke();
-    ctx.restore();
+  // Swap GIF src when hit state changes
+  const wantSrc=isHit?GOAL_HURT_SRC:GOAL_NORMAL_SRC;
+  if(goalImgEl.getAttribute('data-cur')!==wantSrc){
+    goalImgEl.src=wantSrc;
+    goalImgEl.setAttribute('data-cur',wantSrc);
   }
+
+  // Flicker when hit — toggle visibility
+  const visible=!(isHit&&Math.floor(goal.flickerTimer*20)%2===0);
+  goalImgEl.style.display=visible?'block':'none';
+
+  // Position and size via CSS (canvas coordinate space)
+  // gcDiv offset = 0,0 relative to canvas
+  const scaleX=gcDiv.clientWidth/cv.width;
+  const scaleY=gcDiv.clientHeight/cv.height;
+  goalImgEl.style.left=(goal.x*scaleX)+'px';
+  goalImgEl.style.top=(goal.y*scaleY)+'px';
+  goalImgEl.style.width=(goal.w*scaleX)+'px';
+  goalImgEl.style.height=(goal.h*scaleY)+'px';
+
+  // Neon glow via filter
+  goalImgEl.style.filter=isHit
+    ?'drop-shadow(0 0 8px #ff0033) drop-shadow(0 0 14px #ff0033)'
+    :'drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 14px #00ffff)';
 }
 
 function drawGoalBall(){
