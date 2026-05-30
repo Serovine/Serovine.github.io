@@ -8,8 +8,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--cy:#00ffff;--pk:#ff00ff;--ye:#ffff00;--gr:#00ff88;--or:#ff6600;--re:#ff0033;--bg:#06001a;}
-body{background:#020008;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;touch-action:none;font-family:'Share Tech Mono',monospace;}
-#gw{position:relative;width:420px;height:780px;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 28px var(--cy),0 0 55px rgba(0,255,255,.12),inset 0 0 40px rgba(0,0,60,.55);overflow:hidden;user-select:none;transform-origin:center center;flex-shrink:0;}
+body{background:#020008;margin:0;padding:0;width:100vw;height:100dvh;overflow:hidden;touch-action:none;font-family:'Share Tech Mono',monospace;}
+#gw{position:absolute;width:420px;height:780px;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 28px var(--cy),0 0 55px rgba(0,255,255,.12),inset 0 0 40px rgba(0,0,60,.55);overflow:hidden;user-select:none;transform-origin:top left;}
 #gw::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);}
 #gw::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,255,.025) 1px,transparent 1px);background-size:40px 40px;}
 /* HUD */
@@ -107,10 +107,10 @@ canvas{display:block;width:100%;height:100%;}
     <div class="ov-t cy-t">NEON<br>ASSAULT</div>
     <div class="ov-sub">DESTROY · SURVIVE · ASCEND</div>
     <div id="kbGuide">
-      <div class="kg-key">← →</div><div class="kg-val">เลื่อนป้อมปืน</div>
-      <div class="kg-key">SPACE</div><div class="kg-val">ยิงกระสุน</div>
-      <div class="kg-key">X</div><div class="kg-val">ยิงบอมบ์</div>
-      <div class="kg-key">⚠</div><div class="kg-val">อย่าให้บล็อกถึงฐาน!</div>
+      <div class="kg-key">← →</div><div class="kg-val">Move your Turret</div>
+      <div class="kg-key">SPACE</div><div class="kg-val">Shot</div>
+      <div class="kg-key">X</div><div class="kg-val">Bomb</div>
+      <div class="kg-key">⚠</div><div class="kg-val">Don't let the blocks drop to the base!</div>
     </div>
     <button class="ov-btn" id="btnStart">▶ START GAME</button>
   </div>
@@ -140,14 +140,20 @@ const gcDiv=document.getElementById('gc');
 function resizeCv(){cv.width=gcDiv.clientWidth;cv.height=gcDiv.clientHeight;}
 resizeCv();
 
-// Scale to viewport — body stays flex-center, we just scale
+// Scale to viewport — absolute position, top-left origin
 (function scaleGame(){
   const gw=document.getElementById('gw');
   function doScale(){
-    const s=Math.min(window.innerWidth/420,window.innerHeight/780,1);
-    gw.style.transform=`scale(${s})`;
+    const vw=window.innerWidth;
+    const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    const s=Math.min(vw/420,vh/780,1);
+    const ox=(vw-420*s)/2;
+    const oy=(vh-780*s)/2;
+    gw.style.transform=`translate(${ox}px,${oy}px) scale(${s})`;
   }
-  doScale();window.addEventListener('resize',doScale);
+  doScale();
+  window.addEventListener('resize',doScale);
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',doScale);
 })();
 
 const COLS=8,MAR=3;
