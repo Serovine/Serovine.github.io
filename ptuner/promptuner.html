@@ -1,1 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Tuner 1.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+<base target="_blank">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon">◈</span>
+        <span class="brand-text">Prompt Tuner <span class="version">1.0</span></span>
+      </div>
+      <div class="header-actions">
+        <button id="btnLoadPngHeader" class="btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Load PNG
+        </button>
+        <button id="btnSavePngHeader" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save PNG
+        </button>
+        <input type="file" id="fileOpenPng" accept="image/png" hidden>
+      </div>
+    </header>
 
+    <!-- Positive Prompt -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-icon">✦</span>
+          <h2 class="card-title">Positive Prompt</h2>
+        </div>
+        <button id="btnDanbooru" class="btn-ghost btn-sm">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+          Danbooru Paste
+        </button>
+      </div>
+      <textarea id="promptInput" aria-label="Positive Prompt Input" class="input-area" placeholder="Paste your prompt here, comma separated..."></textarea>
+      <button id="btnCopyPositive" class="btn-copy-under">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy Positive Prompt
+      </button>
+    </section>
+
+    <!-- Negative Prompt -->
+    <section class="card">
+      <textarea id="negativeInput" aria-label="Negative Prompt Input" class="input-area" placeholder="Paste negative prompt here..."></textarea>
+      <button id="btnCopyNegative" class="btn-copy-under">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy Negative Prompt
+      </button>
+    </section>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <button id="btnScreen" class="btn-action btn-green">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        Screen
+      </button>
+      <button id="btnAdjust" class="btn-action btn-red">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Adjust
+      </button>
+    </div>
+
+    <!-- Tag Workspace -->
+    <section class="card workspace">
+      <div class="workspace-toolbar">
+        <div class="toolbar-left">
+          <h3 class="panel-title">Prompt Editor Panel</h3>
+          <div class="counter-pill">
+            <span class="counter-label">Tags</span>
+            <span id="tagCount" class="counter-value">0</span>
+          </div>
+        </div>
+
+        <div class="workspace-actions">
+          <button id="btnStructure" class="btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Structure
+          </button>
+          <button id="btnArrange" class="btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l5 5"/><path d="M4 4l5 5"/></svg>
+            Arrange
+          </button>
+          <button id="btnAddPrompt" class="btn-ghost btn-accent">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Tag
+          </button>
+
+        </div>
+      </div>
+      <!-- Add Tag Inline (under toolbar, toggleable) -->
+      <div id="addPromptPanel" class="add-tag-inline hidden">
+        <input type="text" id="inputAddTag" aria-label="Add new tag" placeholder="Type tag and press Enter or click + ..." autocomplete="off">
+        <div class="add-tag-actions">
+          <button id="btnConfirmAddTag" class="btn-add-confirm" title="Add tag">+</button>
+          <button id="btnCancelAddTag" class="btn-add-cancel" title="Cancel">×</button>
+        </div>
+        <div id="autocompleteList" class="autocomplete-dropdown hidden"></div>
+      </div>
+      <div id="tagDisplayArea" class="tag-canvas">
+        <span class="canvas-placeholder">Processed tags will appear here after screening</span>
+      </div>
+    </section>
+
+    <!-- Structure Panel (collapsible) -->
+    <section id="structurePanel" class="card structure-panel hidden">
+      <div class="structure-grid">
+        <div class="structure-cate" id="struct-quality">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#f59e0b"></span>
+            <span class="cate-name">Quality</span>
+            <button class="btn-template hidden" data-cate="quality">+ Template</button>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-style">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#a78bfa"></span>
+            <span class="cate-name">Style</span>
+            <button class="btn-template hidden" data-cate="style">+ Template</button>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-image_composition">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#22d3ee"></span>
+            <span class="cate-name">Image Composition</span>
+            <button class="btn-template hidden" data-cate="image_composition">+ Template</button>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-character">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#f472b6"></span>
+            <span class="cate-name">Character</span>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-background">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#34d399"></span>
+            <span class="cate-name">Background</span>
+            <button class="btn-template hidden" data-cate="background">+ Template</button>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-lora">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#fb923c"></span>
+            <span class="cate-name">LoRA</span>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-general">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#94a3b8"></span>
+            <span class="cate-name">No Category</span>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate structure-negative" id="struct-negative">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#ef4444"></span>
+            <span class="cate-name">Negative</span>
+            <button class="btn-template hidden" data-cate="negative">+ Template</button>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Save Panel -->
+    <div id="savePanel" class="settings-form hidden" style="margin-bottom: 20px;">
+      <div class="form-group" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div>
+          <label class="form-label">Model</label>
+          <label for="metaModel" class="form-label">Model</label>
+          <input type="text" id="metaModel" class="input-area" style="min-height: 40px; padding: 8px 12px;" placeholder="e.g. WAI-illustrious">
+        </div>
+        <div>
+          <label class="form-label">Method</label>
+          <label for="metaMethod" class="form-label">Method</label>
+          <input type="text" id="metaMethod" class="input-area" style="min-height: 40px; padding: 8px 12px;" placeholder="e.g. Euler A">
+        </div>
+        <div>
+          <label class="form-label">Sampling Steps</label>
+          <label for="metaSteps" class="form-label">Sampling Steps</label>
+          <input type="number" id="metaSteps" class="input-area" style="min-height: 40px; padding: 8px 12px;" placeholder="e.g. 25">
+        </div>
+        <div>
+          <label class="form-label">CFG Scale</label>
+          <label for="metaCFG" class="form-label">CFG Scale</label>
+          <input type="number" id="metaCFG" class="input-area" style="min-height: 40px; padding: 8px 12px;" placeholder="e.g. 7">
+        </div>
+      </div>
+
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label class="form-label">Image Source</label>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button id="btnPasteClipboard" class="btn-action btn-blue" style="flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Paste from Clipboard
+          </button>
+
+          <button id="btnBrowseImage" class="btn-action btn-outline" style="flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Browse Device
+          </button>
+
+          <input type="file" id="fileInputImage" accept="image/*" class="hidden">
+        </div>
+
+        <div id="pasteImageArea" class="dropzone" tabindex="0">
+          <div class="dropzone-content">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <p>Image Preview</p>
+          </div>
+          <img id="previewImage" class="hidden" alt="Preview">
+        </div>
+      </div>
+
+      <div class="form-actions" style="grid-column: 1 / -1; justify-content: flex-end;">
+        <button id="btnDoSavePng" class="btn-action btn-blue">Save PNG with Data</button>
+      </div>
+    </div>
+
+  <!-- Badge Editor Modal -->
+  <div id="modalBadge" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Tag</h3>
+        <button id="btnEditCancel" class="btn-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="tag-preview" id="editTagName"></div>
+        <div class="form-row">
+          <label>Category</label>
+          <select id="editTagCate" aria-label="Edit Tag Category">
+            <option value="quality">Quality</option>
+            <option value="style">Style</option>
+            <option value="image_composition">Image Composition</option>
+            <option value="character">Character</option>
+            <option value="background">Background</option>
+            <option value="lora">LoRA</option>
+            <option value="general">No Category</option>
+            <option value="negative">Negative</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Weight</label>
+          <div class="weight-control">
+            <input type="number" id="editTagWeight" aria-label="Edit Tag Weight" step="0.05" value="1.0" min="0.1" max="2.0">
+            <div class="weight-presets">
+              <button type="button" class="preset" data-w="0.5">0.5</button>
+              <button type="button" class="preset" data-w="0.8">0.8</button>
+              <button type="button" class="preset active" data-w="1.0">1.0</button>
+              <button type="button" class="preset" data-w="1.2">1.2</button>
+              <button type="button" class="preset" data-w="1.5">1.5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnEditApply" class="btn-action btn-green">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danbooru Modal -->
+  <div id="modalDanbooru" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Danbooru Paste</h3>
+        <button id="btnDanbooruCancel" class="btn-close">×</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="danbooruInput" aria-label="Danbooru Tag Input" class="input-area" placeholder="Paste danbooru tag list here...
+Example:
+1girl 7.9M
+bear hair ornament 4.0k
+big hair 13k
+blonde hair 2.1M"></textarea>
+        <div id="danbooruPreview" class="convert-preview hidden"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnDanbooruConvert" class="btn-action btn-blue">Convert</button>
+        <button id="btnDanbooruAdd" class="btn-action btn-green" disabled>Add to Prompt</button>
+      </div>
+    </div>
+  </div>
+
+    <div id="modalLoadPng" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card" style="max-width: 850px;">
+      <div class="modal-header">
+        <h3>Load Prompt Data</h3>
+        <button id="btnLoadCancelHeader" class="btn-close">×</button>
+      </div>
+      <div class="modal-body load-preview-layout">
+        <div class="load-image-container">
+          <img id="loadPreviewImg" src="" alt="Loaded Image">
+        </div>
+        <div class="load-data-container">
+          <div class="data-group">
+            <h4>Metadata</h4>
+            <div id="loadMetadata" class="meta-grid"></div>
+          </div>
+          <div class="data-group">
+            <h4>Positive Prompt</h4>
+            <div id="loadPositivePrompt" class="prompt-scroll-box"></div>
+          </div>
+          <div class="data-group">
+            <h4>Negative Prompt</h4>
+            <div id="loadNegativePrompt" class="prompt-scroll-box"></div>
+          </div>
+          <div class="warning-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Warning: Loading this will overwrite your current workspace!
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnLoadCancel" class="btn-action btn-outline">Cancel</button>
+        <button id="btnLoadConfirm" class="btn-action btn-blue">Yes, Overwrite & Load</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="js/app.js"></script>
+  <script src="js/tagmanager.js"></script>
+  <script src="js/promptprocessor.js"></script>
+  <script src="js/danbooruProcessor.js"></script>
+  <script src="js/structureviewer.js"></script>
+  <script src="js/pnghandler.js"></script>
+</body>
+</html>
