@@ -25,6 +25,7 @@ M,Macy's Inc,03-06-26,Before Market,21.76,-2.83%,NYSE,+0.02%
 MDT,Medtronic plc.,03-06-26,Before Market,73.81,-27.46%,NYSE,+5.32%
 MMED,MiniMed Group Inc.,03-06-26,Before Market,12.04,-34.88%,NASDAQ,+15.77%
 OLLI,Ollie's Bargain Outlet Holdings,03-06-26,Before Market,81.63,-32.90%,NASDAQ,-0.55%
+AVGO,Broadcom Inc.,03-06-26,Before Market,446.77,16.18%,NASDAQ,+5.66%
 THO,Thor Industries Inc.,03-06-26,Before Market,79.08,-25.66%,NYSE,+0.34%
 VBNK,VersaBank,03-06-26,Before Market,18.04,49.13%,NASDAQ,+10.67%
 AI,C3.ai Inc.,03-06-26,After Market,10.77,-23.56%,NYSE,+3.36%
@@ -39,6 +40,7 @@ WOOF,Petco Health and Wellness Compa,03-06-26,After Market,3.01,-0.99%,NASDAQ,-1
 CAL,Caleres Inc.,04-06-26,Before Market,14.56,18.52%,NYSE,+5.17%
 CIEN,Ciena Corporation,04-06-26,Before Market,580.23,188.79%,NYSE,-13.22%
 CMCO,Columbus McKinnon Corporation,04-06-26,Before Market,15.96,-1.13%,NASDAQ,-12.28%
+BF.B,BF.B,04-06-26,Before Market,0.0,-14.08%,NASDAQ,+3.33%
 OESX,Orion Energy Systems Inc.,04-06-26,Before Market,9.5,-42.35%,NASDAQ,+0.66%
 TTC,Toro Company (The),04-06-26,Before Market,89.88,28.62%,NYSE,+1.20%
 XE,X-Energy Inc.,04-06-26,Before Market,26.91,-7.84%,NASDAQ,-6.28%
@@ -52,8 +54,6 @@ NX,Quanex Building Products Corpor,04-06-26,After Market,18.61,43.53%,NYSE,
 PL,Planet Labs PBC,04-06-26,After Market,51.14,337.09%,NYSE,
 RBRK,Rubrik Inc.,04-06-26,After Market,78.63,14.62%,NYSE,
 TTAN,ServiceTitan Inc.,04-06-26,After Market,72.36,-18.38%,NASDAQ,
+LULU,lululemon athletica inc.,04-06-26,After Market,131.18,-28.09%,NASDAQ,
 ABM,ABM Industries Incorporated,05-06-26,Before Market,39.06,-8.04%,NYSE,
 GIII,G-III Apparel Group LTD.,05-06-26,Before Market,32.33,10.39%,NASDAQ,
-AVGO,Broadcom Inc.,03-06-2026,After Market,446.77,16.18%,NASDAQ,+5.66%
-BF.B,BF.B,04-06-2026,Before Market,0.0,-14.08%,NASDAQ,+3.33%
-LULU,lululemon athletica inc.,04-06-2026,After Market,131.18,-28.09%,NASDAQ,
