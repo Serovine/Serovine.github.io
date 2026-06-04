@@ -378,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Structure Panel
   els.btnStructure.addEventListener('click', () => {
     els.structurePanel.classList.toggle('hidden');
+els.btnStructure.classList.toggle('active');
 
     if (!els.structurePanel.classList.contains('hidden')) {
       StructureViewer.render(positiveTags, negativeTags, createBadge);
