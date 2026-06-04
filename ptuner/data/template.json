@@ -1,0 +1,30 @@
+{
+  "background": [
+    "random background",
+    "detailed background"
+  ],
+  "image_composition": [
+    "dutch angle",
+    "portrait"
+  ],
+  "negative": [
+    "lowres",
+    "bad anatomy",
+    "bad hands",
+    "bad quality",
+    "worst quality",
+    "worst detail",
+    "sketch",
+    "censor"
+  ],
+  "quality": [
+    "masterpiece",
+    "best quality",
+    "amazing quality",
+    "hires"
+  ],
+  "style": [
+    "anime style",
+    "newest"
+  ]
+}
