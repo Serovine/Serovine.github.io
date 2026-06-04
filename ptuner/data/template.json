@@ -3,5 +3,5 @@
   "image_composition": ["dutch angle","portrait"],
   "negative": ["lowres","bad anatomy","bad hands","bad quality","worst quality","worst detail","sketch","censor"],
   "quality": ["masterpiece","best quality","amazing quality"],
-  "style": ["anime style","newest"],
+  "style": ["anime style","newest"]
 }
