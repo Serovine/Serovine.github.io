@@ -199,7 +199,7 @@
         </div>
         <div>
           <label class="form-label">CFG Scale</label>
-          <label for="metaCFG" class="form-label">CFG Scale</label>
+          <label for="metaCFG" class="form-label"></label>
           <input type="number" id="metaCFG" class="input-area" style="min-height: 40px; padding: 8px 12px;" placeholder="e.g. 7">
         </div>
       </div>
@@ -207,17 +207,22 @@
       <div class="form-group" style="grid-column: 1 / -1;">
         <label class="form-label">Image Source</label>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-          <button id="btnPasteClipboard" class="btn-action btn-blue" style="flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button id="btnPasteClipboard" class="btn-action btn-blue" style="flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Paste from Clipboard
+            Paste
           </button>
-
-          <button id="btnBrowseImage" class="btn-action btn-outline" style="flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          
+          <button id="btnBrowseImage" class="btn-action btn-outline" style="flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Browse Device
+            Browse
           </button>
-
+          
+          <button id="btnDoSavePng" class="btn-action" style="flex: 1; min-width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-green); color: white; border: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save PNG with Data
+          </button>
+          
           <input type="file" id="fileInputImage" accept="image/*" class="hidden">
         </div>
 
@@ -228,10 +233,6 @@
           </div>
           <img id="previewImage" class="hidden" alt="Preview">
         </div>
-      </div>
-
-      <div class="form-actions" style="grid-column: 1 / -1; justify-content: flex-end;">
-        <button id="btnDoSavePng" class="btn-action btn-blue">Save PNG with Data</button>
       </div>
     </div>
 
