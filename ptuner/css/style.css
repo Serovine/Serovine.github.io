@@ -977,3 +977,30 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 .tag-badge.drag-over-right {
   box-shadow: inset -3px 0 0 0 var(--accent-blue) !important;
 }
+
+
+/* --- Fix Image Preview Size --- */
+#pasteImageArea {
+  max-height: 350px; /* จำกัดความสูงของกรอบให้อยู่ในระยะพอดีหน้าจอ */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#previewImage {
+  max-width: 100%;
+  max-height: 330px; /* จำกัดความสูงของรูปภาพ ไม่ให้ทะลุจอ */
+  object-fit: contain; /* บีบรูปให้พอดีกรอบโดยไม่ผิดสัดส่วน */
+  border-radius: var(--radius-sm);
+}
+
+/* --- Structure Button Active State --- */
+.btn-ghost.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+.btn-ghost.active svg {
+  stroke: #fff;
+}
