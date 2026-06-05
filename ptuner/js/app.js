@@ -301,14 +301,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   els.btnEditApply.addEventListener('click', () => {
-    const arr = editingType === 'positive' ? positiveTags : negativeTags;
-    if (arr[editingIndex]) {
-      arr[editingIndex].cate = els.editTagCate.value;
-      arr[editingIndex].weight = parseFloat(els.editTagWeight.value) || 1.0;
+  const isCurrentlyPositive = editingType === 'positive';
+  const sourceArr = isCurrentlyPositive ? positiveTags : negativeTags;
+
+  if (sourceArr[editingIndex]) {
+    const tag = sourceArr[editingIndex];
+    const newCate = els.editTagCate.value;
+
+    tag.cate = newCate;
+    tag.weight = parseFloat(els.editTagWeight.value) || 1.0;
+
+    if (isCurrentlyPositive && newCate === 'negative') {
+      sourceArr.splice(editingIndex, 1);
+      negativeTags.push(tag);
+
+    } else if (!isCurrentlyPositive && newCate !== 'negative') {
+      sourceArr.splice(editingIndex, 1);
+      positiveTags.push(tag);
     }
-    toggleVisibility(els.modalBadge, false);
-    renderTags();
-  });
+  }
+
+  toggleVisibility(els.modalBadge, false); // ปิดหน้าต่าง Modal
+  renderTags();
+});
 
   els.btnEditCancel.addEventListener('click', () => toggleVisibility(els.modalBadge, false));
 
@@ -322,13 +337,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add Tag Panel
   function addManualTag() {
-    const text = els.inputAddTag.value.trim();
-    if (!text) return;
-    PromptProcessor.process(text).forEach(t => {
-      const info = TagManager.getInfo(t.text);
-      positiveTags.push({ ...t, cate: info.category, subcate: info.subcategory });
-    });
-    els.inputAddTag.value = '';
+    const inputEl = els.inputAddTag;
+    const newTagText = inputEl.value.trim();
+
+    if (!newTagText) return;
+
+    const isDuplicatePos = positiveTags.some(t => t.text.toLowerCase() === newTagText.toLowerCase());
+    const isDuplicateNeg = negativeTags.some(t => t.text.toLowerCase() === newTagText.toLowerCase());
+
+    if (isDuplicatePos || isDuplicateNeg) {
+      const alertModal = $('#modalAlert');
+      const alertMsg = $('#alertMessage');
+
+      if (alertModal && alertMsg) {
+        alertMsg.textContent = `Tag "${newTagText}" already added !!`;
+        alertModal.classList.remove('hidden');
+      } else {
+        window.alert(`Tag "${newTagText}" already added !!`);
+      }
+      inputEl.value = '';
+      return;
+    }
+
+    const tagInfo = TagManager.getInfo(newTagText);
+
+    const isTemplateNegative = templates.negative && templates.negative.includes(newTagText.toLowerCase());
+
+    const newTagObj = {
+      text: newTagText,
+      weight: 1.0,
+      cate: tagInfo.category,
+      subcate: tagInfo.subcategory
+    };
+
+    if (tagInfo.category === 'negative' || isTemplateNegative) {
+      newTagObj.cate = 'negative';
+      negativeTags.push(newTagObj);
+    } else {
+      positiveTags.push(newTagObj);
+    }
+
+    inputEl.value = '';
     renderTags();
   }
 
@@ -387,6 +436,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!els.addPromptPanel.contains(e.target)) {
       toggleVisibility(els.autocompleteList, false);
     }
+  });
+
+  // ── Alert Modal Logic ──
+  $('#btnAlertOk').addEventListener('click', () => {
+    $('#modalAlert').classList.add('hidden'); // สั่งซ่อนหน้าต่างแบบชัวร์ๆ
   });
 
   // Structure Panel
