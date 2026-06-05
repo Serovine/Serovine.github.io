@@ -1,8 +1,15 @@
 ﻿tag,category,subcategory,no
-high detailed,quality,qc,1
-high quality,quality,qc,1
+masterpiece,quality,Score,1
+score_9,quality,Score,1
+score_8_up,quality,Score,1
+score_7_up,quality,Score,1
+score_6_up,quality,Score,1
+score_5_up,quality,Score,1
+score_4_up,quality,Score,1
 best quality,quality,qc,1
 amazing quality,quality,qc,1
+high detailed,quality,qc,1
+high quality,quality,qc,1
 insanely detailed,quality,qc,1
 ultra detailed,quality,qc,1
 high definition,quality,qc,1
@@ -13,17 +20,11 @@ perfect anatomy,quality,qc,1
 correct anatomy,quality,qc,1
 detailed eyes,quality,qc,1
 highly detailed,quality,qc,1
-masterpiece,quality,Score,1
-score_9,quality,Score,1
-score_8_up,quality,Score,1
-score_7_up,quality,Score,1
-score_6_up,quality,Score,1
-score_5_up,quality,Score,1
-score_4_up,quality,Score,1
 hires,quality,size,1
 absurdres,quality,size,1
 increadibly absurdres,quality,size,1
 highres,quality,size,1
+nsfw,quality,,1
 sfw,quality,,1
 sensitive,quality,,1
 explicit,quality,,1
@@ -418,6 +419,371 @@ multiple views,image composition,angle,3
 sideways,image composition,angle,3
 three-quarter view,image composition,angle,3
 straight-on,image composition,angle,3
+facing viewer,image composition,angle,3
+male focus,image composition,,3
+solo focus,image composition,,3
+bunny ears,character,body,4
+ears down,character,body,4
+ears through headwear,character,body,4
+ear wiggle,character,body,4
+extra ears,character,body,4
+long pointy ears,character,body,4
+fin ears,character,body,4
+robot ears,character,body,4
+glowing eye,character,body,4
+looking away,character,body,4
+pie-cut eyes,character,body,4
+eyeliner,character,body,4
+eyeshadow,character,body,4
+mascara,character,body,4
+half-closed eyes,character,body,4
+narrowed eyes,character,body,4
+wide eyes,character,body,4
+sleepy eyes,character,body,4
+glint eyes,character,body,4
+sparkle eyes,character,body,4
+cocked eyebrow,character,body,4
+short eyebrows,character,body,4
+long eyebrows,character,body,4
+thick eyebrows,character,body,4
+huge eyebrows,character,body,4
+unibrow,character,body,4
+forked eyebrows,character,body,4
+curly eyebrows,character,body,4
+eyebrow cut,character,body,4
+scar across eyebrow,character,body,4
+m eyebrows,character,body,4
+eye lashes,character,body,4
+long eye lashes,character,body,4
+eye shadow,character,body,4
+colored eyelashes,character,body,4
+snowflakes-shaped_pupils,character,body,4
+white sclera,character,body,4
+meganekko,character,body,4
+wink,character,body,4
+eyelashes,character,body,4
+bright pupils,character,body,4
+colored sclera,character,body,4
+multiple braids,character,body,4
+braid,character,body,4
+hair bun,character,body,4
+eyes visible through hair,character,body,4
+forehead,character,body,4
+multiple tails,character,body,4
+half updo,character,body,4
+floating hair,character,body,4
+alternate hairstyle,character,body,4
+hair over shoulder,character,body,4
+demon horns,character,body,4
+oni horns,character,body,4
+single horn,character,body,4
+multiple horns,character,body,4
+curled horns,character,body,4
+straight horns,character,body,4
+broken horn,character,body,4
+mole,character,body,4
+lips,character,body,4
+thick lips,character,body,4
+lipstick,character,body,4
+tongue,character,body,4
+tongue out,character,body,4
+saliva,character,body,4
+drooling,character,body,4
+mouth hold,character,body,4
+mouth drool ,character,body,4
+biting lip,character,body,4
+animal tail,character,body,4
+kitsune tail,character,body,4
+prehensile tail,character,body,4
+tail wag,character,body,4
+tail raised,character,body,4
+tail between legs,character,body,4
+single wing,character,body,4
+multiple wings,character,body,4
+multiple ear piercings,character,cloth,4
+dangle earrings,character,cloth,4
+aqua ribbon,character,cloth,4
+black ribbon,character,cloth,4
+blonde ribbon,character,cloth,4
+blue ribbon,character,cloth,4
+brown ribbon,character,cloth,4
+green ribbon,character,cloth,4
+grey ribbon,character,cloth,4
+orange ribbon,character,cloth,4
+pink ribbon,character,cloth,4
+purple ribbon,character,cloth,4
+red ribbon,character,cloth,4
+white ribbon,character,cloth,4
+aqua nail,character,cloth,4
+black nail,character,cloth,4
+blonde nail,character,cloth,4
+blue nail,character,cloth,4
+brown nail,character,cloth,4
+green nail,character,cloth,4
+grey nail,character,cloth,4
+orange nail,character,cloth,4
+pink nail,character,cloth,4
+purple nail,character,cloth,4
+red nail,character,cloth,4
+white nail,character,cloth,4
+multiple girls,character,cloth,4
+jewelry,character,cloth,4
+penis,character,cloth,4
+pussy,character,cloth,4
+speech bubble,character,cloth,4
+nail polish,character,cloth,4
+english text,character,cloth,4
+bag,character,cloth,4
+piercing,character,cloth,4
+headgear,character,cloth,4
+bound,character,cloth,4
+scrunchie,character,cloth,4
+x hair ornament,character,cloth,4
+pink bow,character,cloth,4
+black nails,character,cloth,4
+red nails,character,cloth,4
+sheath,character,cloth,4
+toenails,character,cloth,4
+beard,character,cloth,4
+waist apron,character,cloth,4
+dot nose,character,cloth,4
+blue nails,character,cloth,4
+pink nails,character,cloth,4
+pom pom (clothes),character,cloth,4
+covering privates,character,cloth,4
+single earring,character,cloth,4
+restrained,character,cloth,4
+aqua serafuku,character,cloth,4
+black serafuku,character,cloth,4
+blonde serafuku,character,cloth,4
+blue serafuku,character,cloth,4
+brown serafuku,character,cloth,4
+green serafuku,character,cloth,4
+grey serafuku,character,cloth,4
+orange serafuku,character,cloth,4
+pink serafuku,character,cloth,4
+purple serafuku,character,cloth,4
+red serafuku,character,cloth,4
+white serafuku,character,cloth,4
+blonde skirt,character,cloth,4
+aqua shorts,character,cloth,4
+black shorts,character,cloth,4
+blonde shorts,character,cloth,4
+blue shorts,character,cloth,4
+brown shorts,character,cloth,4
+green shorts,character,cloth,4
+grey shorts,character,cloth,4
+orange shorts,character,cloth,4
+pink shorts,character,cloth,4
+purple shorts,character,cloth,4
+red shorts,character,cloth,4
+white shorts,character,cloth,4
+aqua pant,character,cloth,4
+black pant,character,cloth,4
+blonde pant,character,cloth,4
+blue pant,character,cloth,4
+green pant,character,cloth,4
+grey pant,character,cloth,4
+orange pant,character,cloth,4
+pink pant,character,cloth,4
+purple pant,character,cloth,4
+red pant,character,cloth,4
+white pant,character,cloth,4
+skindentation,character,cloth,4
+eyepatch,character,cloth,4
+grass,character,cloth,4
+eyewear on head,character,cloth,4
+covered navel,character,cloth,4
+clothes pull,character,cloth,4
+denim,character,cloth,4
+multicolored clothes,character,cloth,4
+wet clothes,character,cloth,4
+clothes writing,character,cloth,4
+blonde shoes,character,cloth,4
+black footwear,character,cloth,4
+brown footwear,character,cloth,4
+soles,character,cloth,4
+white footwear,character,cloth,4
+red footwear,character,cloth,4
+blonde jumpsuit,character,cloth,4
+blonde leotard,character,cloth,4
+blonde bodysuit,character,cloth,4
+aqua swimsuit,character,cloth,4
+black swimsuit,character,cloth,4
+blonde swimsuit,character,cloth,4
+blue swimsuit,character,cloth,4
+brown swimsuit,character,cloth,4
+green swimsuit,character,cloth,4
+grey swimsuit,character,cloth,4
+orange swimsuit,character,cloth,4
+pink swimsuit,character,cloth,4
+purple swimsuit,character,cloth,4
+red swimsuit,character,cloth,4
+white swimsuit,character,cloth,4
+white bikini,character,cloth,4
+blonde gloves,character,cloth,4
+interlocked fingers,character,cloth,4
+halo,character,cloth,4
+black hairband,character,cloth,4
+white socks,character,cloth,4
+black socks,character,cloth,4
+thigh gap,character,cloth,4
+single thighhigh,character,cloth,4
+striped thighhighs,character,cloth,4
+white pantyhose,character,cloth,4
+blonde necktie,character,cloth,4
+purple necktie,character,cloth,4
+blonde bowtie,character,cloth,4
+purple bowtie,character,cloth,4
+aqua chocker,character,cloth,4
+black chocker,character,cloth,4
+blonde chocker,character,cloth,4
+blue chocker,character,cloth,4
+brown chocker,character,cloth,4
+green chocker,character,cloth,4
+grey chocker,character,cloth,4
+orange chocker,character,cloth,4
+pink chocker,character,cloth,4
+purple chocker,character,cloth,4
+red chocker,character,cloth,4
+white chocker,character,cloth,4
+blonde neckerchief,character,cloth,4
+purple neckerchief,character,cloth,4
+blonde scarf,character,cloth,4
+purple scarf,character,cloth,4
+red bow,character,cloth,4
+black bow,character,cloth,4
+blue bow,character,cloth,4
+blue sailor collar,character,cloth,4
+white sailor collar,character,cloth,4
+yellow bow,character,cloth,4
+scar,character,cloth,4
+tattoo,character,cloth,4
+stomach,character,cloth,4
+thighs,character,cloth,4
+feet,character,cloth,4
+toes,character,cloth,4
+pectorals,character,cloth,4
+back,character,cloth,4
+ass visible through thighs,character,cloth,4
+large pectorals,character,cloth,4
+between breasts,character,cloth,4
+aqua blazer,character,cloth,4
+black blazer,character,cloth,4
+blonde blazer,character,cloth,4
+blue blazer,character,cloth,4
+brown blazer,character,cloth,4
+green blazer,character,cloth,4
+grey blazer,character,cloth,4
+orange blazer,character,cloth,4
+pink blazer,character,cloth,4
+purple blazer,character,cloth,4
+red blazer,character,cloth,4
+white blazer,character,cloth,4
+blonde sweater,character,cloth,4
+pink sweater,character,cloth,4
+aqua vest,character,cloth,4
+black vest,character,cloth,4
+blonde vest,character,cloth,4
+blue vest,character,cloth,4
+brown vest,character,cloth,4
+green vest,character,cloth,4
+grey vest,character,cloth,4
+orange vest,character,cloth,4
+pink vest,character,cloth,4
+purple vest,character,cloth,4
+red vest,character,cloth,4
+blonde shirt,character,cloth,4
+aqua jacket,character,cloth,4
+black jacket,character,cloth,4
+blonde jacket,character,cloth,4
+blue jacket,character,cloth,4
+brown jacket,character,cloth,4
+green jacket,character,cloth,4
+grey jacket,character,cloth,4
+orange jacket,character,cloth,4
+pink jacket,character,cloth,4
+purple jacket,character,cloth,4
+red jacket,character,cloth,4
+aqua coat,character,cloth,4
+black coat,character,cloth,4
+blonde coat,character,cloth,4
+blue coat,character,cloth,4
+brown coat,character,cloth,4
+green coat,character,cloth,4
+grey coat,character,cloth,4
+orange coat,character,cloth,4
+pink coat,character,cloth,4
+purple coat,character,cloth,4
+red coat,character,cloth,4
+white coat,character,cloth,4
+blonde cardigan,character,cloth,4
+aqua camisole,character,cloth,4
+black camisole,character,cloth,4
+blonde camisole,character,cloth,4
+blue camisole,character,cloth,4
+brown camisole,character,cloth,4
+green camisole,character,cloth,4
+grey camisole,character,cloth,4
+orange camisole,character,cloth,4
+pink camisole,character,cloth,4
+purple camisole,character,cloth,4
+red camisole,character,cloth,4
+sweatdrop,character,cloth,4
+strapless,character,cloth,4
+cameltoe,character,cloth,4
+bed sheet,character,cloth,4
+shoulder armor,character,cloth,4
+hood up,character,cloth,4
+bride,character,cloth,4
+brown pant,character,cloth,4
+blonde bra,character,cloth,4
+blonde panties,character,cloth,4
+black bikini,character,cloth,4
+no bra,character,cloth,4
+towel,character,cloth,4
+magical girl costume,character,cloth,4
+race queen,character,cloth,4
+bunny girl,character,cloth,4
+cat girl,character,cloth,4
+dog girl,character,cloth,4
+tracksuit,character,cloth,4
+aqua apron,character,cloth,4
+black apron,character,cloth,4
+blonde apron,character,cloth,4
+blue apron,character,cloth,4
+brown apron,character,cloth,4
+green apron,character,cloth,4
+grey apron,character,cloth,4
+orange apron,character,cloth,4
+pink apron,character,cloth,4
+purple apron,character,cloth,4
+red apron,character,cloth,4
+white apron,character,cloth,4
+aqua gym uniform,character,cloth,4
+black gym uniform,character,cloth,4
+blonde gym uniform,character,cloth,4
+blue gym uniform,character,cloth,4
+brown gym uniform,character,cloth,4
+green gym uniform,character,cloth,4
+grey gym uniform,character,cloth,4
+orange gym uniform,character,cloth,4
+pink gym uniform,character,cloth,4
+purple gym uniform,character,cloth,4
+red gym uniform,character,cloth,4
+white gym uniform,character,cloth,4
+white vest,character,cloth,4
+blonde cloak,character,cloth,4
+blonde cape,character,cloth,4
+blonde suit,character,cloth,4
+alternate costume,character,cloth,4
+official alternate costume,character,cloth,4
+cloud,character,cloth,4
+white bow,character,cloth,4
+adapted costume,character,cloth,4
+rope,character,cloth,4
+maid apron,character,cloth,4
+alternate breast size,character,cloth,4
 pointy ears,character,body,4
 elf ears,character,body,4
 elven ears,character,body,4
@@ -935,6 +1301,194 @@ leg wings,character,body,4
 winged arms,character,body,4
 mini wings,character,body,4
 oversized wings,character,body,4
+toned,character,body,4
+toned female,character,body,4
+flat breasts,character,body,4
+small breasts,character,body,4
+medium breasts,character,body,4
+large breasts,character,body,4
+huge breasts,character,body,4
+abs,character,body,4
+warts,character,body,4
+breasts,character,body,4
+fewer digits,character,body,4
+teenage,character,body,4
+mature,character,body,4
+loli,character,body,4
+young mature,character,body,4
+mesugaki,character,body,4
+actor,character,body,4
+actress,character,body,4
+artist painter,character,body,4
+astronaut,character,body,4
+barber,character,body,4
+bartender,character,body,4
+bodyguard,character,body,4
+butler,character,body,4
+cashier,character,body,4
+chauffeur,character,body,4
+chef,character,body,4
+chemist,character,body,4
+conductor,character,body,4
+construction worker,character,body,4
+cyclist,character,body,4
+dentist,character,body,4
+dj,character,body,4
+doctor,character,body,4
+engineer,character,body,4
+farmer,character,body,4
+firefighter,character,body,4
+fisherman,character,body,4
+flight attendant,character,body,4
+florist,character,body,4
+geisha,character,body,4
+guard,character,body,4
+hikikomori,character,body,4
+idol,character,body,4
+janitor,character,body,4
+judge,character,body,4
+librarian,character,body,4
+lifeguard,character,body,4
+lumberjack,character,body,4
+mechanic,character,body,4
+merchant,character,body,4
+miner,character,body,4
+nurse,character,body,4
+school nurse,character,body,4
+office lady,character,body,4
+pilot,character,body,4
+salaryman,character,body,4
+scientist,character,body,4
+shepherd,character,body,4
+slave,character,body,4
+spy,character,body,4
+teacher,character,body,4
+trucker,character,body,4
+train attendant,character,body,4
+train conductor,character,body,4
+voice actor,character,body,4
+waiter,character,body,4
+alchemist,character,body,4
+bard,character,body,4
+druid,character,body,4
+cowboy,character,body,4
+cowgirl,character,body,4
+knight,character,body,4
+knights templar,character,body,4
+ninja,character,body,4
+paladin,character,body,4
+samurai,character,body,4
+sheriff,character,body,4
+warrior,character,body,4
+gladiator,character,body,4
+wizard/witch,character,body,4
+law enforcement,character,body,4
+park ranger,character,body,4
+police,character,body,4
+policeman,character,body,4
+policewoman,character,body,4
+security guard,character,body,4
+military,character,body,4
+drill instructor,character,body,4
+frogman,character,body,4
+mercenary,character,body,4
+military medic,character,body,4
+military operator,character,body,4
+military police,character,body,4
+sniper team,character,body,4
+soldier,character,body,4
+paratrooper,character,body,4
+standard-bearer,character,body,4
+outlaws,character,body,4
+arson,character,body,4
+bandit,character,body,4
+burglar,character,body,4
+dealer,character,body,4
+gangster,character,body,4
+hacker,character,body,4
+mafia,character,body,4
+yakuza,character,body,4
+pedophile,character,body,4
+prisoner,character,body,4
+terrorist,character,body,4
+religious,character,body,4
+cleric,character,body,4
+monk,character,body,4
+pope,character,body,4
+sexual,character,body,4
+dominator,character,body,4
+dominatrix,character,body,4
+prostitution,character,body,4
+stripper,character,body,4
+high school student,character,body,4
+virtual youtuber,character,body,4
+angel,character,body,4
+catgirl,character,body,4
+nekomata,character,body,4
+bunnygirl,character,body,4
+centaur,character,body,4
+Elf,character,body,4
+furry,character,body,4
+chimera,character,body,4
+Vampire,character,body,4
+cupid,character,body,4
+demon,character,body,4
+succubus,character,body,4
+dwarf,character,body,4
+dark Elf,character,body,4
+gnome,character,body,4
+salamander,character,body,4
+sylph,character,body,4
+undine,character,body,4
+fairy,character,body,4
+ghost,character,body,4
+hitodama,character,body,4
+giant,character,body,4
+goblin,character,body,4
+golem,character,body,4
+kisune,character,body,4
+mermaid,character,body,4
+undead,character,body,4
+shinigami,character,body,4
+ghoul,character,body,4
+jiangshi,character,body,4
+mummy,character,body,4
+zombie,character,body,4
+fox girl,character,body,4
+dragon girl,character,body,4
+mouse girl,character,body,4
+flat chest,Character,body,4
+gigantic breasts,Character,body,4
+tall,Character,body,4
+short,Character,body,4
+minigirl,Character,body,4
+giantess,Character,body,4
+shota,Character,body,4
+thick thighs,Character,body,4
+slender thighs,Character,body,4
+muscular arms,Character,body,4
+toned arms,Character,body,4
+claws,Character,body,4
+pale skin,Character,body,4
+dark skin,Character,body,4
+tan,Character,body,4
+body ,Character,body,4
+glowing skin,Character,body,4
+shiny skin,Character,body,4
+slender,Character,body,4
+petite,Character,body,4
+skinny,Character,body,4
+plump,Character,body,4
+chubby,Character,body,4
+curvy,Character,body,4
+hourglass,Character,body,4
+muscular,Character,body,4
+muscular female,Character,body,4
+dark-skinned female,Character,body,4
+colored skin,Character,body,4
+dark-skinned male,Character,body,4
+breasts apart,Character,Body,4
+mecha,Character,body,4
 ear covers,character,cloth,4
 ear cuffs,character,cloth,4
 earrings,character,cloth,4
@@ -3899,168 +4453,42 @@ scout uniform,character,cloth,4
 shinsengumi,character,cloth,4
 sturmabteilung,character,cloth,4
 white military uniform,character,cloth,4
-toned,character,body,4
-toned female,character,body,4
-flat breasts,character,body,4
-small breasts,character,body,4
-medium breasts,character,body,4
-large breasts,character,body,4
-huge breasts,character,body,4
-abs,character,body,4
-warts,character,body,4
-breasts,character,body,4
-fewer digits,character,body,4
-teenage,character,body,4
-mature,character,body,4
-loli,character,body,4
-young mature,character,body,4
-mesugaki,character,body,4
-actor,character,body,4
-actress,character,body,4
-artist painter,character,body,4
-astronaut,character,body,4
-barber,character,body,4
-bartender,character,body,4
-bodyguard,character,body,4
-butler,character,body,4
-cashier,character,body,4
-chauffeur,character,body,4
-chef,character,body,4
-chemist,character,body,4
-conductor,character,body,4
-construction worker,character,body,4
-cyclist,character,body,4
-dentist,character,body,4
-dj,character,body,4
-doctor,character,body,4
-engineer,character,body,4
-farmer,character,body,4
-firefighter,character,body,4
-fisherman,character,body,4
-flight attendant,character,body,4
-florist,character,body,4
-geisha,character,body,4
-guard,character,body,4
-hikikomori,character,body,4
-idol,character,body,4
-janitor,character,body,4
-judge,character,body,4
-librarian,character,body,4
-lifeguard,character,body,4
-lumberjack,character,body,4
-mechanic,character,body,4
-merchant,character,body,4
-miner,character,body,4
-nurse,character,body,4
-school nurse,character,body,4
-office lady,character,body,4
-pilot,character,body,4
-salaryman,character,body,4
-scientist,character,body,4
-shepherd,character,body,4
-slave,character,body,4
-spy,character,body,4
-teacher,character,body,4
-trucker,character,body,4
-train attendant,character,body,4
-train conductor,character,body,4
-voice actor,character,body,4
-waiter,character,body,4
-alchemist,character,body,4
-bard,character,body,4
-druid,character,body,4
-cowboy,character,body,4
-cowgirl,character,body,4
-knight,character,body,4
-knights templar,character,body,4
-ninja,character,body,4
-paladin,character,body,4
-samurai,character,body,4
-sheriff,character,body,4
-warrior,character,body,4
-gladiator,character,body,4
-wizard/witch,character,body,4
-law enforcement,character,body,4
-park ranger,character,body,4
-police,character,body,4
-policeman,character,body,4
-policewoman,character,body,4
-security guard,character,body,4
-military,character,body,4
-drill instructor,character,body,4
-frogman,character,body,4
-mercenary,character,body,4
-military medic,character,body,4
-military operator,character,body,4
-military police,character,body,4
-sniper team,character,body,4
-soldier,character,body,4
-paratrooper,character,body,4
-standard-bearer,character,body,4
-outlaws,character,body,4
-arson,character,body,4
-bandit,character,body,4
-burglar,character,body,4
-dealer,character,body,4
-gangster,character,body,4
-hacker,character,body,4
-mafia,character,body,4
-yakuza,character,body,4
-pedophile,character,body,4
-prisoner,character,body,4
-terrorist,character,body,4
-religious,character,body,4
-cleric,character,body,4
-monk,character,body,4
-pope,character,body,4
-sexual,character,body,4
-dominator,character,body,4
-dominatrix,character,body,4
-prostitution,character,body,4
-stripper,character,body,4
-high school student,character,body,4
-virtual youtuber,character,body,4
+otoko no ko,Character,looks,4
+bishounen,Character,looks,4
+reverse trap,Character,looks,4
+girly boy,Character,looks,4
+josou seme,Character,looks,4
+crossdressing,Character,looks,4
+teenager,Character,looks,4
+adult mature,Character,looks,4
+old man,Character,looks,4
+old woman,Character,looks,4
+tsundere,Character,looks,4
+yandere,Character,looks,4
+kuudere,Character,looks,4
+dandere,Character,looks,4
+aged down,Character,looks,4
+sisters,Character,looks,4
+child,Character,looks,4
+genderswap,Character,looks,4
+fungus,Character,Occupation,4
+student,Character,Occupation,4
+jk,Character,Occupation,4
+magical girl,Character,Occupation,4
 1boy,character,person,4
 1girl,character,person,4
 2boys,character,person,4
 2girls,character,person,4
 solo,character,person,4
 multiply,character,person,4
-angel,character,body,4
-catgirl,character,body,4
-nekomata,character,body,4
-bunnygirl,character,body,4
-centaur,character,body,4
-Elf,character,body,4
-furry,character,body,4
-chimera,character,body,4
-Vampire,character,body,4
-cupid,character,body,4
-demon,character,body,4
-succubus,character,body,4
-dwarf,character,body,4
-dark Elf,character,body,4
-gnome,character,body,4
-salamander,character,body,4
-sylph,character,body,4
-undine,character,body,4
-fairy,character,body,4
-ghost,character,body,4
-hitodama,character,body,4
-giant,character,body,4
-goblin,character,body,4
-golem,character,body,4
-kisune,character,body,4
-mermaid,character,body,4
-undead,character,body,4
-shinigami,character,body,4
-ghoul,character,body,4
-jiangshi,character,body,4
-mummy,character,body,4
-zombie,character,body,4
-fox girl,character,body,4
-dragon girl,character,body,4
-mouse girl,character,body,4
+multiple boys,Character,Person Count,4
+3girls,Character,Person Count,4
+4girls,Character,Person Count,4
+6+girls,Character,Person Count,4
+3boys,Character,Person Count,4
+1other,Character,Person Count,4
+couple,Character,Person Count,4
+5girls,Character,Person Count,4
 ._.,character,pose,4
 :/,character,pose,4
 :|,character,pose,4
@@ -4109,7 +4537,6 @@ T_T,character,pose,4
 uwu,character,pose,4
 x3,character,pose,4
 XD,character,pose,4
-:d,character,pose,4
 ^^^,character,pose,4
 anger vein,character,pose,4
 angry,character,pose,4
@@ -4200,6 +4627,7 @@ clenched teeth,character,pose,4
 closed mouth,character,pose,4
 diamond mouth,character,pose,4
 dot mouth,character,pose,4
+writing,character,pose,4
 glowing mouth,character,pose,4
 heart in mouth,character,pose,4
 heart-shaped mouth,character,pose,4
@@ -4227,10 +4655,24 @@ evil smile,character,pose,4
 fingersmile,character,pose,4
 forced smile,character,pose,4
 glasgow smile,character,pose,4
+full blush,character,body,4
+crying,character,body,4
+shocked,character,body,4
 grin,character,pose,4
 light smile,character,pose,4
 sad smile,character,pose,4
 seductive smile,character,pose,4
+button nose,character,body,4
+pointy nose,character,body,4
+cheek bulge,character,body,4
+cheek pinching,character,body,4
+cheek tattoo,character,body,4
+cleft chin,character,body,4
+pointy chin,character,body,4
+jawline,character,body,4
+sharp jawline,character,body,4
+forehead jewel,character,body,4
+forehead markbindi,character,body,4
 smile,character,pose,4
 smirk,character,pose,4
 smug,character,pose,4
@@ -4483,6 +4925,35 @@ child carry,character,pose,4
 fireman's carry,character,pose,4
 piggyback,character,pose,4
 princess carry,character,pose,4
+teeth,character,body,4
+holding weapon,character,pose,4
+clothes lift,character,pose,4
+upper teeth only,character,body,4
+legs,character,pose,4
+makeup,character,pose,4
+facial hair,character,body,4
+on bed,character,pose,4
+^ ^,character,body,4
+facial mark,character,body,4
+holding food,character,pose,4
+flying sweatdrops,character,body,4
+eating,character,pose,4
+trembling,character,pose,4
+skirt lift,character,pose,4
+sleeping,character,pose,4
+holding cup,character,pose,4
+lifting own clothes,character,pose,4
+holding gun,character,pose,4
+> <,character,body,4
+kiss,character,pose,4
+scar on face,character,body,4
+holding phone,character,pose,4
+breath,character,pose,4
+panty pull,character,pose,4
+spoken heart,character,body,4
+holding book,character,pose,4
+faceless,character,body,4
+tearing up,character,body,4
 sitting on shoulder,character,pose,4
 standing on shoulder,character,pose,4
 dorsiflexion,character,pose,4
@@ -4558,6 +5029,45 @@ leaning forward,character,pose,4
 slouching,character,pose,4
 sway back,character,pose,4
 twisted torso,character,pose,4
+human,Character,body,4
+half-elf,Character,body,4
+halfling,Character,body,4
+orc,Character,body,4
+hobgoblin,Character,body,4
+troll,Character,body,4
+ogre,Character,body,4
+pixie,Character,body,4
+sprite,Character,body,4
+incubus,Character,body,4
+fallen angel,Character,body,4
+devil,Character,body,4
+oni,Character,body,4
+tengu,Character,body,4
+yokai,Character,body,4
+phantom,Character,body,4
+werewolf,Character,body,4
+harpy,Character,body,4
+lamia,Character,body,4
+slime,Character,body,4
+goo girl,Character,body,4
+kemonomimi,Character,body,4
+kitsunemimi,Character,body,4
+usagimimi,Character,body,4
+ookamimimi,Character,body,4
+kumamimi,Character,body,4
+nezumimimi,Character,body,4
+alien,Character,body,4
+monster girl,Character,body,4
+dullahan,Character,body,4
+bird girl,Character,body,4
+insect girl,Character,body,4
+plant girl,Character,body,4
+horse girl,Character,body,4
+demon girl,Character,body,4
+robot,Character,body,4
+hand on own chest,Character,pose,4
+hands up,Character,pose,4
+own hands together,Character,pose,4
 abstract background,background,,5
 blurry background,background,,5
 bright background,background,,5
@@ -4886,6 +5396,11 @@ seafloor,background,,5
 stream,background,,5
 waterfall,background,,5
 wasteland,background,,5
+blue sky,background,,5
+cloudy sky,background,,5
+building,background,,5
+star (sky),background,,5
+night sky,background,,5
 <lora:lcmturbomix2fix:1>,lora,,6
 dmd2,lora,,6
 dynamic pose,lora,,6
@@ -5604,28 +6119,1150 @@ psychogun,general,,7
 sheathed,general,,7
 katana at hip,general,,7
 Unknown,general,,7
-oldest,negative,,8
-anime coloring,negative,,8
-nostrils,negative,,8
-nose,negative,,8
-multiply views,negative,,8
-cum on face,negative,,8
-cum on mouth,negative,,8
-worst detail,negative,,8
-censor,negative,,8
-bad quality,negative,,8
-worst quality,negative,,8
-bad anatomy,negative,,8
-jpeg artifacts,negative,,8
-ugly,negative,,8
-poorly drawn,negative,,8
-blurry,negative,,8
-censored,negative,,8
-artist name,negative,,8
-signature,negative,,8
-watermark,negative,,8
-sweat,negative,,8
-wet,negative,,8
-hand with less 4 finger,negative,,8
-hand with more 5 finger,negative,,8
-lowres,Negative ,,8
+akebia fruit,general,,7
+apple,general,,7
+apple core,general,,7
+apple peel,general,,7
+apple rabbit,general,,7
+bitten apple,general,,7
+candy apple,general,,7
+golden apple,general,,7
+green apple,general,,7
+yellow apple,general,,7
+apricot,general,,7
+avocado,general,,7
+banana,general,,7
+banana boat,general,,7
+banana peel,general,,7
+banana popsicle,general,,7
+banana slice,general,,7
+chocolate banana,general,,7
+gel banana,general,,7
+on banana,general,,7
+berry,general,,7
+blackberry,general,,7
+blueberry,general,,7
+mulberry,general,,7
+pineberry,general,,7
+raspberry,general,,7
+strawberry,general,,7
+chocolate strawberry,general,,7
+strawberry slice,general,,7
+white strawberry,general,,7
+breadfruit,general,,7
+cacao fruit / cocoa fruit,general,,7
+cherry,general,,7
+chokecherry,general,,7
+chinese lantern / ground cherry,general,,7
+custard apple,general,,7
+date,general,,7
+dragon fruit / pitaya,general,,7
+fig,general,,7
+fruit bowl,general,,7
+fruit as cup,general,,7
+gooseberry,general,,7
+grapefruit,general,,7
+grapes,general,,7
+currant,general,,7
+grape stomping,general,,7
+raisin,general,,7
+guava,general,,7
+jackfruit,general,,7
+java apple,general,,7
+kiwi,general,,7
+kiwi slice,general,,7
+lemon,general,,7
+lemon slice,general,,7
+lime,general,,7
+lime slice,general,,7
+longan,general,,7
+loquat,general,,7
+lychee,general,,7
+mango,general,,7
+mangosteen,general,,7
+melon,general,,7
+cantaloupe,general,,7
+yuubari king melon,general,,7
+galia melon,general,,7
+honeydew,general,,7
+horned melon,general,,7
+watermelon,general,,7
+cectarine,general,,7
+olive,general,,7
+orange,general,,7
+dekopon,general,,7
+mandarin orange / satsuma,general,,7
+orangette,general,,7
+orange slice,general,,7
+papaya / papaw / pawpaw,general,,7
+passion fruit,general,,7
+peach,general,,7
+peach slice,general,,7
+pear,general,,7
+nashi pear,general,,7
+persimmon,general,,7
+pineapple,general,,7
+pineapple slice,general,,7
+plum,general,,7
+pomegranate,general,,7
+rambutan,general,,7
+shanzha,general,,7
+snakefruit,general,,7
+starfruit,general,,7
+sudachi,general,,7
+tamarind,general,,7
+umeboshi,general,,7
+yuzu,general,,7
+asparagus,general,,7
+bacon-wrapped asparagus,general,,7
+beans,general,,7
+green bean,general,,7
+red bean paste,general,,7
+nattou,general,,7
+bell pepper,general,,7
+bell pepper plant,general,,7
+bell pepper slice,general,,7
+green bell pepper,general,,7
+orange pepper,general,,7
+red pepper,general,,7
+yellow pepper,general,,7
+bitter melon,general,,7
+broccoli,general,,7
+cabbage,general,,7
+bok choy,general,,7
+carrot,general,,7
+carrot slice,general,,7
+carrot sticks,general,,7
+cauliflower,general,,7
+chili pepper,general,,7
+habanero pepper,general,,7
+jalapeno pepper,general,,7
+coconut,general,,7
+corn,general,,7
+cucumber,general,,7
+pickle,general,,7
+eggplant,general,,7
+garlic,general,,7
+kimchi,general,,7
+lettuce,general,,7
+lotus root,general,,7
+mint,general,,7
+mushroom,general,,7
+shiitake,general,,7
+nuts,general,,7
+almond,general,,7
+cashew,general,,7
+chestnut,general,,7
+hazelnut,general,,7
+peanut,general,,7
+pecan,general,,7
+pistachio,general,,7
+walnut,general,,7
+okra,general,,7
+onion,general,,7
+onion rings,general,,7
+parsley,general,,7
+peas,general,,7
+pea pod,general,,7
+potato,general,,7
+mashed potatoes,general,,7
+radish,general,,7
+daikon,general,,7
+seaweed,general,,7
+hijiki,general,,7
+nori,general,,7
+spring onion / leek,general,,7
+chopped spring onion,general,,7
+squash,general,,7
+pumpkin,general,,7
+jack-o'-lantern,general,,7
+sweet potato,general,,7
+roasted sweet potato,general,,7
+tomato,general,,7
+cherry tomato,general,,7
+tomato plant,general,,7
+turnip,general,,7
+warabi,general,,7
+bacon,general,,7
+boned meat,general,,7
+chicken,general,,7
+chicken leg,general,,7
+chicken nuggets,general,,7
+fried chicken,general,,7
+yakitori,general,,7
+chicken wing,general,,7
+crab,general,,7
+egg,general,,7
+broken egg,general,,7
+egg yolk,general,,7
+eggshell,general,,7
+fried egg,general,,7
+century egg,general,,7
+hardboiled egg,general,,7
+softboiled egg,general,,7
+oyakodon,general,,7
+scrambled egg,general,,7
+sliced egg,general,,7
+raw egg,general,,7
+roe,general,,7
+caviar,general,,7
+ikura,general,,7
+karashi mentaiko,general,,7
+eel,general,,7
+kabayaki,general,,7
+fish skeleton,general,,7
+sashimi,general,,7
+katsuo no tataki,general,,7
+gyuudon,general,,7
+hamburger steak,general,,7
+kamaboko,general,,7
+shish kebab,general,,7
+lobster,general,,7
+meatball,general,,7
+pork,general,,7
+ham,general,,7
+raw meat,general,,7
+tartare,general,,7
+yokhoe,general,,7
+sausage,general,,7
+pepperoni,general,,7
+doner kebab,general,,7
+shrimp,general,,7
+sliced meat,general,,7
+steak,general,,7
+tako-san wiener,general,,7
+kani-san wiener,general,,7
+turkey,general,,7
+turkey leg,general,,7
+bread ,general,,7
+bagel,general,,7
+baguette,general,,7
+biscuit,general,,7
+bread bun,general,,7
+bread crust,general,,7
+bread eating race,general,,7
+bread slice,general,,7
+toast,general,,7
+croissant,general,,7
+japari bun,general,,7
+loaf of bread,general,,7
+cereal,general,,7
+cracker,general,,7
+arare,general,,7
+senbei,general,,7
+empanada,general,,7
+noodles,general,,7
+occhahoi,general,,7
+pasta,general,,7
+lasagne,general,,7
+spaghetti,general,,7
+black spaghetti,general,,7
+spaghetti and meatballs,general,,7
+ramen,general,,7
+instant ramen,general,,7
+jirou,general,,7
+soba,general,,7
+instant soba,general,,7
+yakisoba,general,,7
+italian niigata,general,,7
+yakisobapan,general,,7
+soumen,general,,7
+udon,general,,7
+instant udon,general,,7
+kitsune udon,general,,7
+rice,general,,7
+fried rice,general,,7
+jumeok-bap,general,,7
+onigiri,general,,7
+rice on face,general,,7
+rice porridge,general,,7
+nanakusa-gayu,general,,7
+risotto,general,,7
+scone,general,,7
+butter,general,,7
+cheese,general,,7
+blue cheese,general,,7
+cheesestick,general,,7
+cheese wheel,general,,7
+cream cheese,general,,7
+parmesan cheese,general,,7
+sliced cheese,general,,7
+smoked cheese,general,,7
+swiss cheese,general,,7
+cream,general,,7
+whipped cream,general,,7
+eggnog,general,,7
+kefir,general,,7
+baby bottle,general,,7
+condensed milk,general,,7
+chocolate milk,general,,7
+milk bag,general,,7
+milk bottle,general,,7
+milk carton,general,,7
+milk churn,general,,7
+milk mustache,general,,7
+milkshake,general,,7
+strawberry milk,general,,7
+yogurt,general,,7
+anmitsu,general,,7
+mitsumame,general,,7
+manjuu,general,,7
+anman,general,,7
+longevity peach bun,general,,7
+momiji manjuu,general,,7
+usagi manjuu,general,,7
+batter,general,,7
+anpan,general,,7
+cinnamon roll,general,,7
+hot cross bun,general,,7
+melon bread,general,,7
+noppo bread,general,,7
+pastry box,general,,7
+brownie,general,,7
+cosmic brownies,general,,7
+cake,general,,7
+angel food cake,general,,7
+baumkuchen,general,,7
+birthday cake,general,,7
+black forest cake,general,,7
+bundt cake,general,,7
+cake batter,general,,7
+cake pop,general,,7
+carrot cake,general,,7
+castella,general,,7
+charlotte cake,general,,7
+cheesecake,general,,7
+rare cheesecake,general,,7
+chocolate cake,general,,7
+chocolate framboise,general,,7
+chiffon cake,general,,7
+cherry blossom chiffon cake,general,,7
+christmas cake,general,,7
+crepe cake,general,,7
+cupcake,general,,7
+fondant au chocolat,general,,7
+fruitcake,general,,7
+funfetti cake,general,,7
+heart-shaped cake,general,,7
+ice cream cake,general,,7
+jar cake,general,,7
+lava cake,general,,7
+layer cake,general,,7
+lemon cake,general,,7
+madeleine,general,,7
+marble cake,general,,7
+mille-feuille,general,,7
+mont blanc,general,,7
+opera cake,general,,7
+pancake,general,,7
+pancake stack,general,,7
+souffle pancake,general,,7
+pound cake,general,,7
+rainbow cake,general,,7
+red velvet cake,general,,7
+shortcake,general,,7
+sponge cake,general,,7
+stollen,general,,7
+strawberry cake,general,,7
+strawberry shortcake,general,,7
+sweet potato cake,general,,7
+swiss roll,general,,7
+strawberry swiss roll,general,,7
+tiramisu,general,,7
+upside-down cake,general,,7
+wedding cake,general,,7
+yule log,general,,7
+candy,general,,7
+candy cane,general,,7
+chitose ame,general,,7
+cigarette candy,general,,7
+creme egg,general,,7
+chewing gum,general,,7
+gumball,general,,7
+jelly bean,general,,7
+kitkat,general,,7
+konpeitou,general,,7
+lollipop,general,,7
+chupa chups,general,,7
+shaped lollipop,general,,7
+swirl lollipop,general,,7
+m&m's,general,,7
+marble chocolate,general,,7
+nerunerunerune,general,,7
+pinata,general,,7
+tootsweets,general,,7
+cannoli,general,,7
+caramel,general,,7
+chocolate,general,,7
+apollo chocolate,general,,7
+chocolate almond,general,,7
+chocolate bar,general,,7
+chocolate chip,general,,7
+chocolate coin,general,,7
+chocolate curls,general,,7
+chocolate egg,general,,7
+chocolate fondue,general,,7
+chocolate fountain,general,,7
+chocolate icing,general,,7
+chocolate marquise,general,,7
+chocolate rabbit,general,,7
+chocolate syrup,general,,7
+chocolate truffle,general,,7
+dark chocolate,general,,7
+heart-shaped chocolate,general,,7
+kinoko no yama,general,,7
+morinaga chocoball,general,,7
+strawberry chocolate,general,,7
+takenoko no sato,general,,7
+white chocolate,general,,7
+chocolate bread,general,,7
+choco pie,general,,7
+churro,general,,7
+cookie,general,,7
+checkerboard cookie,general,,7
+chocolate chip cookie,general,,7
+country ma'am,general,,7
+gingerbread cookie,general,,7
+gingerbread house,general,,7
+gingerbread man,general,,7
+pocky,general,,7
+sandwich cookie,general,,7
+oreo,general,,7
+thumbprint cookie,general,,7
+toppo,general,,7
+wafer,general,,7
+wafer stick,general,,7
+cotton candy,general,,7
+bavarois,general,,7
+icing,general,,7
+mirror glaze,general,,7
+crepe,general,,7
+croquembouche,general,,7
+dorayaki,general,,7
+dough,general,,7
+donut,general,,7
+chocolate donut,general,,7
+french cruller,general,,7
+sakura french,general,,7
+glazed donut,general,,7
+honey cake donut,general,,7
+jelly donut,general,,7
+old-fashioned donut,general,,7
+choco fashion,general,,7
+pon de ring,general,,7
+pon de chocolat,general,,7
+pon de strawberry,general,,7
+fudge,general,,7
+gelatin,general,,7
+ice cream,general,,7
+affogato,general,,7
+banana split,general,,7
+choco monaka jumbo,general,,7
+coolish,general,,7
+dondurma,general,,7
+gelato,general,,7
+ice cream cone,general,,7
+waffle cone,general,,7
+ice cream float,general,,7
+ice cream sandwich,general,,7
+parfait,general,,7
+strawberry parfait,general,,7
+multiple scoops,general,,7
+too many scoops,general,,7
+soft serve,general,,7
+sprinkles,general,,7
+sundae,general,,7
+imagawayaki,general,,7
+marshmallow,general,,7
+mooncake,general,,7
+muffin,general,,7
+osmanthus cake,general,,7
+pastry,general,,7
+canele,general,,7
+chocolate cornet,general,,7
+cream cornet,general,,7
+cream puff,general,,7
+eclair,general,,7
+macaron,general,,7
+maritozzo,general,,7
+pie,general,,7
+cherry pie,general,,7
+chocolate pie,general,,7
+apple pie,general,,7
+red bean pie,general,,7
+popsicle,general,,7
+popsicle stick,general,,7
+tupet,general,,7
+watermelon bar,general,,7
+suika bar,general,,7
+pudding,general,,7
+custard,general,,7
+pudding a la mode,general,,7
+souffle,general,,7
+shaved ice,general,,7
+kakigoori,general,,7
+slushie,general,,7
+tanghulu,general,,7
+tart,general,,7
+chocolate tart,general,,7
+egg tart,general,,7
+fruit tart,general,,7
+blueberry tart,general,,7
+strawberry tart,general,,7
+pumpkin pie,general,,7
+waffle,general,,7
+wagashi,general,,7
+mochi,general,,7
+dango,general,,7
+daifuku,general,,7
+ichigo daifuku,general,,7
+kashiwa mochi,general,,7
+namagashi,general,,7
+raindrop cake,general,,7
+sakura mochi,general,,7
+songpyeon,general,,7
+suama,general,,7
+taiyaki,general,,7
+uirou,general,,7
+warabimochi,general,,7
+youkan,general,,7
+cheese puffs,general,,7
+cheese curls,general,,7
+cheetos,general,,7
+chikuwa,general,,7
+chips,general,,7
+bugles,general,,7
+doritos,general,,7
+potato chips,general,,7
+pringles,general,,7
+tortilla chips,general,,7
+cheese fries,general,,7
+popcorn,general,,7
+pretzel,general,,7
+tohato caramel corn,general,,7
+umaibou,general,,7
+weapon,general,,7
+heart,general,,7
+food,general,,7
+day,general,,7
+star (symbol),general,,7
+tree,general,,7
+gun,general,,7
+pillow,general,,7
+book,general,,7
+window,general,,7
+petals,general,,7
+blood,general,,7
+fruit,general,,7
+holding sword,general,,7
+bed,general,,7
+rose,general,,7
+leaf,general,,7
+chain,general,,7
+animal,general,,7
+phone,general,,7
+white flower,general,,7
+chair,general,,7
+stuffed toy,general,,7
+table,general,,7
+cellphone,general,,7
+feathers,general,,7
+red flower,general,,7
+plant,general,,7
+fire,general,,7
+cross,general,,7
+stuffed animal,general,,7
+curtains,general,,7
+crossover,general,,7
+staff,general,,7
+pink flower,general,,7
+cherry blossoms,general,,7
+box,general,,7
+steam,general,,7
+butterfly,general,,7
+crescent,general,,7
+wind,general,,7
+smartphone,general,,7
+meme,general,,7
+dated,general,,7
+siblings,general,,7
+androgynous,general,,7
+motor vehicle,general,,7
+plate,general,,7
+christmas,general,,7
+blue flower,general,,7
+presenting own body,NSFW,Before Sex,8
+take your pick,NSFW,Before Sex,8
+completely nude,NSFW,nude,8
+"breast out, one",NSFW,nude,8
+breast slip,NSFW,nude,8
+breasts out,NSFW,nude,8
+bra lift,NSFW,nude,8
+ no bra,NSFW,nude,8
+bra pull,NSFW,nude,8
+topless female,NSFW,nude,8
+naked apron,NSFW,nude,8
+nearly naked apron,NSFW,nude,8
+naked bandage,NSFW,nude,8
+naked capelet,NSFW,nude,8
+naked chocolate,NSFW,nude,8
+naked coat,NSFW,nude,8
+naked hoodie,NSFW,nude,8
+naked jacket,NSFW,nude,8
+naked overalls,NSFW,nude,8
+naked ribbon,NSFW,nude,8
+naked robe,NSFW,nude,8
+naked scarf,NSFW,nude,8
+naked sheet,NSFW,nude,8
+naked suspenders,NSFW,nude,8
+naked tabard,NSFW,nude,8
+naked towel,NSFW,nude,8
+footjob,NSFW,Stimulation,8
+double footjob,NSFW,Stimulation,8
+implied footjob,NSFW,Stimulation,8
+cooperative footjob,NSFW,Stimulation,8
+footjob with footwear,NSFW,Stimulation,8
+footjob with shoes,NSFW,Stimulation,8
+footjob with boots,NSFW,Stimulation,8
+footjob with sandals,NSFW,Stimulation,8
+footjob with legwear,NSFW,Stimulation,8
+two-footed footjob,NSFW,Stimulation,8
+reverse footjob,NSFW,Stimulation,8
+footjob from behind,NSFW,Stimulation,8
+female footjob,NSFW,Stimulation,8
+footjob under table,NSFW,Stimulation,8
+simulated footjob,NSFW,Stimulation,8
+after footjob,NSFW,Stimulation,8
+licking foot,NSFW,Stimulation,8
+foot worship,NSFW,Stimulation,8
+smelling feet,NSFW,Stimulation,8
+frottage (dry humping),NSFW,Stimulation,8
+armpit sex,NSFW,Stimulation,8
+pussyjob,NSFW,Stimulation,8
+backjob,NSFW,Stimulation,8
+buttjob,NSFW,Stimulation,8
+cooperative pussyjob,NSFW,Stimulation,8
+kneepit sex,NSFW,Stimulation,8
+paizuri (tittyfuck),NSFW,Stimulation,8
+autopaizuri (done on oneself),NSFW,Stimulation,8
+cooperative paizuri,NSFW,Stimulation,8
+handsfree paizuri,NSFW,Stimulation,8
+naizuri (flatchested paizuri),NSFW,Stimulation,8
+paizuri over clothes,NSFW,Stimulation,8
+paizuri on lap,NSFW,Stimulation,8
+paizuri under clothes,NSFW,Stimulation,8
+pecjob (done with a male's pectorals),NSFW,Stimulation,8
+perpendicular paizuri,NSFW,Stimulation,8
+stealth paizuri,NSFW,Stimulation,8
+straddling paizuri,NSFW,Stimulation,8
+thigh sex,NSFW,Stimulation,8
+glansjob,NSFW,Stimulation,8
+cloth glansjob,NSFW,Stimulation,8
+groping,NSFW,Stimulation,8
+grabbing another's ass,NSFW,Stimulation,8
+grabbing another's breast,NSFW,Stimulation,8
+guided breast grab,NSFW,Stimulation,8
+pectoral grab,NSFW,Stimulation,8
+guided pectoral grab,NSFW,Stimulation,8
+nipple tweak,NSFW,Stimulation,8
+crotch grab,NSFW,Stimulation,8
+guided crotch grab,NSFW,Stimulation,8
+grabbing own breast,NSFW,Stimulation,8
+torso grab,NSFW,Stimulation,8
+hairjob,NSFW,Stimulation,8
+handjob,NSFW,Stimulation,8
+caressing testicles,NSFW,Stimulation,8
+double handjob,NSFW,Stimulation,8
+cooperative handjob,NSFW,Stimulation,8
+nursing handjob,NSFW,Stimulation,8
+cuddling handjob,NSFW,Stimulation,8
+reverse nursing handjob,NSFW,Stimulation,8
+reach-around,NSFW,Stimulation,8
+two-handed handjob,NSFW,Stimulation,8
+masturbation,NSFW,Stimulation,8
+crotch rub,NSFW,Stimulation,8
+building sex,NSFW,Stimulation,8
+pillow humping,NSFW,Stimulation,8
+teddy bear sex,NSFW,Stimulation,8
+table humping,NSFW,Stimulation,8
+female masturbation,NSFW,Stimulation,8
+futanari masturbation,NSFW,Stimulation,8
+implied masturbation,NSFW,Stimulation,8
+male masturbation,NSFW,Stimulation,8
+masturbation through clothes,NSFW,Stimulation,8
+masturbation under clothes,NSFW,Stimulation,8
+mutual masturbation,NSFW,Stimulation,8
+stealth masturbation,NSFW,Stimulation,8
+tail masturbation,NSFW,Stimulation,8
+tail insertion,NSFW,Stimulation,8
+tailjob,NSFW,Stimulation,8
+anilingus,NSFW,Stimulation,8
+rusty trombone,NSFW,Stimulation,8
+breast sucking,NSFW,Stimulation,8
+cunnilingus,NSFW,Stimulation,8
+autocunnilingus,NSFW,Stimulation,8
+implied cunnilingus,NSFW,Stimulation,8
+fellatio,NSFW,Stimulation,8
+autofellatio,NSFW,Stimulation,8
+cum swap (snowballing),NSFW,Stimulation,8
+deepthroat,NSFW,Stimulation,8
+implied fellatio,NSFW,Stimulation,8
+irrumatio,NSFW,Stimulation,8
+cooperative fellatio,NSFW,Stimulation,8
+multiple penis fellatio,NSFW,Stimulation,8
+hug and suck,NSFW,Stimulation,8
+licking testicle,NSFW,Stimulation,8
+sitting on face (facesitting),NSFW,Stimulation,8
+testicle sucking,NSFW,Stimulation,8
+licking armpit,NSFW,Stimulation,8
+group sex,NSFW,group sex,8
+bisexual,NSFW,group sex,8
+bisexual female,NSFW,group sex,8
+bisexual male,NSFW,group sex,8
+oral sandwich,NSFW,group sex,8
+daisy chain,NSFW,group sex,8
+gangbang,NSFW,group sex,8
+double penetration,NSFW,group sex,8
+triple penetration,NSFW,group sex,8
+love train,NSFW,group sex,8
+cooperative breast smother,NSFW,group sex,8
+orgy,NSFW,group sex,8
+reverse spitroast,NSFW,group sex,8
+spitroast,NSFW,group sex,8
+threesome,NSFW,group sex,8
+MMF threesome,NSFW,group sex,8
+FFM threesome,NSFW,group sex,8
+MMM threesome,NSFW,group sex,8
+FFF threesome,NSFW,group sex,8
+FDD threesome,NSFW,group sex,8
+MDD threesome,NSFW,group sex,8
+FFD threesome,NSFW,group sex,8
+MMD threesome,NSFW,group sex,8
+DDD threesome,NSFW,group sex,8
+MFD threesome,NSFW,group sex,8
+MMC threesome,NSFW,group sex,8
+FFC threesome,NSFW,group sex,8
+MCC threesome,NSFW,group sex,8
+CCC threesome,NSFW,group sex,8
+MMO threesome,NSFW,group sex,8
+FFO threesome,NSFW,group sex,8
+OOF threesome,NSFW,group sex,8
+OOM threesome,NSFW,group sex,8
+MFO threesome,NSFW,group sex,8
+foursome,NSFW,group sex,8
+fivesome,NSFW,group sex,8
+animal insertion,NSFW,Penetration,8
+cervical penetration,NSFW,Penetration,8
+covered penetration,NSFW,Penetration,8
+deep penetration,NSFW,Penetration,8
+food insertion,NSFW,Penetration,8
+inflation,NSFW,Penetration,8
+cum inflation,NSFW,Penetration,8
+big belly,NSFW,Penetration,8
+enema,NSFW,Penetration,8
+large insertion,NSFW,Penetration,8
+stomach bulge,NSFW,Penetration,8
+male penetrated,NSFW,Penetration,8
+multiple insertions,NSFW,Penetration,8
+nipple penetration,NSFW,Penetration,8
+nosejob,NSFW,Penetration,8
+object insertion,NSFW,Penetration,8
+vaginal object insertion,NSFW,Penetration,8
+anal object insertion,NSFW,Penetration,8
+urethral insertion,NSFW,Penetration,8
+sounding,NSFW,Penetration,8
+fingering,NSFW,Penetration,8
+anal fingering,NSFW,Penetration,8
+prostate milking,NSFW,Penetration,8
+fingering through clothes,NSFW,Penetration,8
+fingering through panties,NSFW,Penetration,8
+implied fingering,NSFW,Penetration,8
+fisting,NSFW,Penetration,8
+anal fisting,NSFW,Penetration,8
+self fisting,NSFW,Penetration,8
+double fisting,NSFW,Penetration,8
+sex,NSFW,Penetration,8
+after sex,NSFW,Penetration,8
+after anal,NSFW,Penetration,8
+after buttjob,NSFW,Penetration,8
+after fellatio,NSFW,Penetration,8
+after fingering,NSFW,Penetration,8
+after frottage,NSFW,Penetration,8
+after insertion,NSFW,Penetration,8
+after masturbation,NSFW,Penetration,8
+after oral,NSFW,Penetration,8
+after paizuri,NSFW,Penetration,8
+after rape,NSFW,Penetration,8
+after urethral,NSFW,Penetration,8
+after vaginal,NSFW,Penetration,8
+clothed after sex,NSFW,Penetration,8
+anal,NSFW,Penetration,8
+double anal,NSFW,Penetration,8
+imminent anal,NSFW,Penetration,8
+pegging,NSFW,Penetration,8
+triple anal,NSFW,Penetration,8
+multiple anal,NSFW,Penetration,8
+clothed sex,NSFW,Penetration,8
+guided penetration,NSFW,Penetration,8
+happy sex,NSFW,Penetration,8
+imminent penetration,NSFW,Penetration,8
+implied sex,NSFW,Penetration,8
+navel sex,NSFW,Penetration,8
+rough sex,NSFW,Penetration,8
+sex from behind,NSFW,Penetration,8
+skull fucking,NSFW,Penetration,8
+ear sex,NSFW,Penetration,8
+penis in eye,NSFW,Penetration,8
+tentacle sex,NSFW,Penetration,8
+underwater sex,NSFW,Penetration,8
+vaginal,NSFW,Penetration,8
+double vaginal,NSFW,Penetration,8
+imminent vaginal,NSFW,Penetration,8
+triple vaginal,NSFW,Penetration,8
+yaoi,NSFW,Same-sex Acts,8
+bara,NSFW,Same-sex Acts,8
+implied yaoi,NSFW,Same-sex Acts,8
+bulges touching,NSFW,Same-sex Acts,8
+penises touching,NSFW,Same-sex Acts,8
+testicles touching,NSFW,Same-sex Acts,8
+yuri,NSFW,Same-sex Acts,8
+implied yuri,NSFW,Same-sex Acts,8
+tribadism,NSFW,Same-sex Acts,8
+diaper,NSFW,Fetishes,8
+adult baby,NSFW,Fetishes,8
+toddlercon,NSFW,Fetishes,8
+mature female,NSFW,Fetishes,8
+mature male,NSFW,Fetishes,8
+leash pull,NSFW,Fetishes,8
+pet play,NSFW,Fetishes,8
+human dog,NSFW,Fetishes,8
+pony play,NSFW,Fetishes,8
+miniboy,NSFW,Fetishes,8
+muscular male,NSFW,Fetishes,8
+muscular other,NSFW,Fetishes,8
+fat,NSFW,Fetishes,8
+obese,NSFW,Fetishes,8
+breast expansion,NSFW,Fetishes,8
+breast smother,NSFW,Fetishes,8
+lactation,NSFW,Fetishes,8
+breastfeeding,NSFW,Fetishes,8
+lactation through clothes,NSFW,Fetishes,8
+milking machine,NSFW,Fetishes,8
+breast pump,NSFW,Fetishes,8
+bdsm,NSFW,bdsm,8
+asphyxiation,NSFW,bdsm,8
+strangling,NSFW,bdsm,8
+bondage,NSFW,bdsm,8
+bound together,NSFW,bdsm,8
+breast bondage,NSFW,bdsm,8
+predicament bondage,NSFW,bdsm,8
+public bondage,NSFW,bdsm,8
+self bondage,NSFW,bdsm,8
+shibari,NSFW,bdsm,8
+shibari over clothes,NSFW,bdsm,8
+shibari under clothes,NSFW,bdsm,8
+spreader bar,NSFW,bdsm,8
+suspension,NSFW,bdsm,8
+femdom ,NSFW,bdsm,8
+assertive female,NSFW,bdsm,8
+clothed female nude male,NSFW,bdsm,8
+sitting on face,NSFW,bdsm,8
+facesitting,NSFW,bdsm,8
+humiliation,NSFW,bdsm,8
+body writing,NSFW,bdsm,8
+masochism,NSFW,bdsm,8
+neglect play,NSFW,bdsm,8
+public use,NSFW,bdsm,8
+tally,NSFW,bdsm,8
+rope walking,NSFW,bdsm,8
+sadism,NSFW,bdsm,8
+spanked,NSFW,bdsm,8
+torture,NSFW,bdsm,8
+clitoris torture,NSFW,bdsm,8
+nipple torture,NSFW,bdsm,8
+nipple clamps,NSFW,bdsm,8
+nipple pull,NSFW,bdsm,8
+ball busting,NSFW,bdsm,8
+tickle torture,NSFW,bdsm,8
+temperature play,NSFW,bdsm,8
+fire play,NSFW,bdsm,8
+ice play,NSFW,bdsm,8
+wax play,NSFW,bdsm,8
+cum,NSFW,cum play,8
+bukkake,NSFW,cum play,8
+cumdump,NSFW,cum play,8
+cum bath,NSFW,cum play,8
+cumdrip,NSFW,cum play,8
+cum pool,NSFW,cum play,8
+cum in ass,NSFW,cum play,8
+cum in clothes,NSFW,cum play,8
+cum in cup,NSFW,cum play,8
+cum in throat,NSFW,cum play,8
+cum on tongue,NSFW,cum play,8
+cum in pussy,NSFW,cum play,8
+cum in urethra,NSFW,cum play,8
+cum on body,NSFW,cum play,8
+cum on armpits,NSFW,cum play,8
+cum on ass,NSFW,cum play,8
+cum on back,NSFW,cum play,8
+cum on breasts,NSFW,cum play,8
+cum on chest,NSFW,cum play,8
+cum on feet,NSFW,cum play,8
+cum on fingers,NSFW,cum play,8
+cum on hair,NSFW,cum play,8
+cum on pectorals,NSFW,cum play,8
+cum on pussy,NSFW,cum play,8
+cum on stomach,NSFW,cum play,8
+cum in navel,NSFW,cum play,8
+cum on clothes,NSFW,cum play,8
+cum on eyewear,NSFW,cum play,8
+cum on food,NSFW,cum play,8
+ejaculation,NSFW,cum play,8
+ejaculating while penetrated,NSFW,cum play,8
+pull out,NSFW,cum play,8
+facial,NSFW,cum play,8
+autofacial,NSFW,cum play,8
+felching,NSFW,cum play,8
+gokkun,NSFW,cum play,8
+exhibitionism,NSFW,Exhibitionism,8
+public indecency,NSFW,Exhibitionism,8
+public nudity,NSFW,Exhibitionism,8
+zenra,NSFW,Exhibitionism,8
+public vibrator,NSFW,Exhibitionism,8
+stealth bondage,NSFW,Exhibitionism,8
+stealth sex,NSFW,Exhibitionism,8
+cheating,NSFW,Exhibitionism,8
+netorare,NSFW,Exhibitionism,8
+reverse netorare,NSFW,Exhibitionism,8
+voyeurism,NSFW,Exhibitionism,8
+caught,NSFW,Exhibitionism,8
+peeking,NSFW,Exhibitionism,8
+walk-in,NSFW,Exhibitionism,8
+crossdressing (mtf),NSFW,Intersex,8
+crossdressing (ftm),NSFW,Intersex,8
+trap,NSFW,Intersex,8
+cuntboy,NSFW,Intersex,8
+cuntboy with cuntboy,NSFW,Intersex,8
+cuntboy with female,NSFW,Intersex,8
+cuntboy with male,NSFW,Intersex,8
+futanari,NSFW,Intersex,8
+implied futanari,NSFW,Intersex,8
+full-package futanari,NSFW,Intersex,8
+futa with cuntboy,NSFW,Intersex,8
+futa with female,NSFW,Intersex,8
+female on futa,NSFW,Intersex,8
+futa with futa,NSFW,Intersex,8
+futa with male,NSFW,Intersex,8
+futa on male,NSFW,Intersex,8
+male on futa,NSFW,Intersex,8
+futa without pussy,NSFW,Intersex,8
+futa with newhalf,NSFW,Intersex,8
+newhalf with female,NSFW,Intersex,8
+newhalf with male,NSFW,Intersex,8
+newhalf with newhalf,NSFW,Intersex,8
+no testicles,NSFW,Intersex,8
+male futanari,NSFW,Intersex,8
+incest,NSFW,Miscellaneous ,8
+twincest,NSFW,Miscellaneous ,8
+inseki,NSFW,Miscellaneous ,8
+rape,NSFW,Miscellaneous ,8
+assisted rape,NSFW,Miscellaneous ,8
+femdom rape,NSFW,Miscellaneous ,8
+reverse rape,NSFW,Miscellaneous ,8
+imminent rape,NSFW,Miscellaneous ,8
+molestation,NSFW,Miscellaneous ,8
+chikan,NSFW,Miscellaneous ,8
+compensated molestation,NSFW,Miscellaneous ,8
+Smother,NSFW,Miscellaneous ,8
+cross-section,NSFW,Miscellaneous ,8
+internal cumshot,NSFW,Miscellaneous ,8
+x-ray,NSFW,Miscellaneous ,8
+Roles,NSFW,Miscellaneous ,8
+power bottom,NSFW,Miscellaneous ,8
+futasub,NSFW,Miscellaneous ,8
+conjoined,NSFW,Miscellaneous ,8
+extra arms,NSFW,Miscellaneous ,8
+extra breasts,NSFW,Miscellaneous ,8
+extra penises,NSFW,Miscellaneous ,8
+bestiality,NSFW,Miscellaneous ,8
+knotting,NSFW,Miscellaneous ,8
+condom,NSFW,Miscellaneous ,8
+used condom on penis,NSFW,Miscellaneous ,8
+condom left inside,NSFW,Miscellaneous ,8
+used condom,NSFW,Miscellaneous ,8
+defloration,NSFW,Miscellaneous ,8
+uncensored,quality,,1
+dirty talk,NSFW,Miscellaneous ,8
+nantaimori,NSFW,Miscellaneous ,8
+nyotaimori,NSFW,Miscellaneous ,8
+wakamezake,NSFW,Miscellaneous ,8
+bust cup,NSFW,Miscellaneous ,8
+female ejaculation,NSFW,Miscellaneous ,8
+Pussy juice,NSFW,Miscellaneous ,8
+glory hole,NSFW,Miscellaneous ,8
+glory wall,NSFW,Miscellaneous ,8
+human furniture,NSFW,Miscellaneous ,8
+forniphilia,NSFW,Miscellaneous ,8
+human toilet,NSFW,Miscellaneous ,8
+mating (animal),NSFW,Miscellaneous ,8
+mecha on girl,NSFW,Miscellaneous ,8
+necrophilia,NSFW,Miscellaneous ,8
+pregnant,NSFW,Miscellaneous ,8
+giving birth,NSFW,Miscellaneous ,8
+impregnation,NSFW,Miscellaneous ,8
+unbirthing,NSFW,Miscellaneous ,8
+selfcest,NSFW,Miscellaneous ,8
+smelling,NSFW,Miscellaneous ,8
+smelling clothes,NSFW,Miscellaneous ,8
+smelling underwear,NSFW,Miscellaneous ,8
+smelling pantyhose,NSFW,Miscellaneous ,8
+tentacles,NSFW,Miscellaneous ,8
+consensual tentacles,NSFW,Miscellaneous ,8
+mechanical tentacles,NSFW,Miscellaneous ,8
+penis tentacle,NSFW,Miscellaneous ,8
+pussy tentacle,NSFW,Miscellaneous ,8
+tentacle clothes,NSFW,Miscellaneous ,8
+tentacle gagged,NSFW,Miscellaneous ,8
+tentacle on penis,NSFW,Miscellaneous ,8
+tentacle pit,NSFW,Miscellaneous ,8
+kankaku shadan,NSFW,Miscellaneous ,8
+tentacles in thighhighs,NSFW,Miscellaneous ,8
+tentacles under clothes,NSFW,Miscellaneous ,8
+tentacles on male,NSFW,Miscellaneous ,8
+too many tentacles,NSFW,Miscellaneous ,8
+vore,NSFW,Miscellaneous ,8
+69,NSFW,sexual positions,8
+doggystyle,NSFW,sexual positions,8
+prone bone,NSFW,sexual positions,8
+standing sex,NSFW,sexual positions,8
+spooning,NSFW,sexual positions,8
+girl on top,NSFW,sexual positions,8
+amazon position,NSFW,sexual positions,8
+cowgirl position,NSFW,sexual positions,8
+squatting cowgirl position,NSFW,sexual positions,8
+reverse cowgirl position,NSFW,sexual positions,8
+reverse squatting cowgirl position,NSFW,sexual positions,8
+reverse upright straddle,NSFW,sexual positions,8
+boy on top,NSFW,sexual positions,8
+anvil position,NSFW,sexual positions,8
+missionary,NSFW,sexual positions,8
+mating press,NSFW,sexual positions,8
+suspended congress,NSFW,sexual positions,8
+reverse suspended congress,NSFW,sexual positions,8
+full nelson,NSFW,sexual positions,8
+piledriver,NSFW,sexual positions,8
+mounting,NSFW,sexual positions,8
+standing missionary,NSFW,sexual positions,8
+anal beads,NSFW,Sex Toys,8
+anal tail,NSFW,Sex Toys,8
+onahole,NSFW,Sex Toys,8
+ass onahole,NSFW,Sex Toys,8
+tenga,NSFW,Sex Toys,8
+butt plug,NSFW,Sex Toys,8
+aneros,NSFW,Sex Toys,8
+jewel butt plug,NSFW,Sex Toys,8
+cock ring,NSFW,Sex Toys,8
+dildo,NSFW,Sex Toys,8
+dildo gag,NSFW,Sex Toys,8
+dildo under mask,NSFW,Sex Toys,8
+dildo harness,NSFW,Sex Toys,8
+dildo under panties,NSFW,Sex Toys,8
+double dildo,NSFW,Sex Toys,8
+huge dildo,NSFW,Sex Toys,8
+dragon dildo,NSFW,Sex Toys,8
+horse dildo,NSFW,Sex Toys,8
+spiked dildo,NSFW,Sex Toys,8
+strap-on,NSFW,Sex Toys,8
+suction cup dildo,NSFW,Sex Toys,8
+dildo riding,NSFW,Sex Toys,8
+prostate massager,NSFW,Sex Toys,8
+Pump,NSFW,Sex Toys,8
+clitoris pump,NSFW,Sex Toys,8
+penis pump,NSFW,Sex Toys,8
+sex doll,NSFW,Sex Toys,8
+sex machine,NSFW,Sex Toys,8
+sex toy,NSFW,Sex Toys,8
+too many sex toys,NSFW,Sex Toys,8
+catheter,NSFW,Sex Toys,8
+urethral beads,NSFW,Sex Toys,8
+vibrator,NSFW,Sex Toys,8
+butterfly vibrator,NSFW,Sex Toys,8
+clitoral suction vibrator,NSFW,Sex Toys,8
+egg vibrator,NSFW,Sex Toys,8
+hitachi magic wand,NSFW,Sex Toys,8
+rabbit vibrator,NSFW,Sex Toys,8
+remote control vibrator,NSFW,Sex Toys,8
+riding machine,NSFW,Sex Toys,8
+sybian,NSFW,Sex Toys,8
+vibrator under clothes,NSFW,Sex Toys,8
+vibrator in thigh strap,NSFW,Sex Toys,8
+vibrator in thighhighs,NSFW,Sex Toys,8
+vibrator under panties,NSFW,Sex Toys,8
+vibrator under pantyhose,NSFW,Sex Toys,8
+vibrator in anus,NSFW,Sex Toys,8
+vibrator on nipple,NSFW,Sex Toys,8
+vibrator on penis,NSFW,Sex Toys,8
+aphrodisiac,NSFW,Sex Toys,8
+lotion,NSFW,Sex Toys,8
+lotion bottle,NSFW,Sex Toys,8
+lube,NSFW,Sex Toys,8
+scat,NSFW,Extreme,8
+peeing,NSFW,Extreme,8
+drinking pee,NSFW,Extreme,8
+golden shower,NSFW,Extreme,8
+peeing on viewer,NSFW,Extreme,8
+have to pee,NSFW,Extreme,8
+peeing self,NSFW,Extreme,8
+mutilation,NSFW,Extreme,8
+guro,NSFW,Extreme,8
+amputee,NSFW,Extreme,8
+double amputee,NSFW,Extreme,8
+quadruple amputee,NSFW,Extreme,8
+triple amputee,NSFW,Extreme,8
+ass,NSFW,nude,8
+covered nipples,NSFW,nude,8
+groin,NSFW,Nude,8
+pubic hair,NSFW,Nude,8
+anus,NSFW,nude,8
+erection,NSFW,Sex Act,8
+bottomless,NSFW,Nude,8
+testicles,NSFW,nude,8
+female pubic hair,NSFW,nude,8
+oral,NSFW,Sex Act,8
+topless,NSFW,Nude,8
+breast press,NSFW,Sex Act,8
+male pubic hair,NSFW,nude,8
+areola slip,NSFW,nude,8
+oldest,Negative ,,99
+anime coloring,Negative ,,99
+nostrils,Negative ,,99
+nose,Negative ,,99
+multiply views,Negative ,,99
+cum on face,Negative ,,99
+cum on mouth,Negative ,,99
+worst detail,Negative ,,99
+shadow,Style,Light Effect,2
+censor,Negative ,,99
+bad quality,Negative ,,99
+worst quality,Negative ,,99
+bad anatomy,Negative ,,99
+jpeg artifacts,Negative ,,99
+ugly,Negative ,,99
+poorly drawn,Negative ,,99
+blurry,Negative ,,99
+glowing,Style,Light Effect,2
+censored,Negative ,,99
+artist name,Negative ,,99
+signature,Negative ,,99
+watermark,Negative ,,99
+parody,Style,art,2
+sweat,Negative ,,99
+light blush,Style,Light Effect,2
+wet,Negative ,,99
+light particles,Style,Light Effect,2
+hand with less 4 finger,Negative ,,99
+hand with more 5 finger,Negative ,,99
+lowres,Negative ,,99
+mosaic censoring,Negative ,,99
+bar censor,Negative ,,99
+copyright name,Negative ,,99
