@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prompt Tuner 1.0</title>
+  <title>Prompt Tuner 1.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -275,6 +275,7 @@
             <option value="character">Character</option>
             <option value="background">Background</option>
             <option value="lora">LoRA</option>
+            <option value="nsfw">NSFW</option>
             <option value="general">No Category</option>
             <option value="negative">Negative</option>
           </select>
@@ -378,6 +379,19 @@ Example:
       <div class="modal-footer" style="justify-content: center; gap: 15px; border-top: none;">
         <button id="btnDeleteCancel" class="btn-action btn-outline" style="min-width: 100px;">No</button>
         <button id="btnDeleteConfirm" class="btn-action" style="min-width: 100px; background: var(--accent-red); color: white; border: none;">Yes</button>
+      </div>
+    </div>
+  </div>
+
+    <div id="modalAlert" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card" style="max-width: 320px; text-align: center;">
+      <div class="modal-body" style="padding-top: 30px; padding-bottom: 20px;">
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 10px;">Notice</p>
+        <p><strong id="alertMessage" style="color: var(--accent-yellow); font-size: 1.2rem; word-break: break-all;"></strong></p>
+      </div>
+      <div class="modal-footer" style="justify-content: center; border-top: none;">
+        <button id="btnAlertOk" class="btn-action btn-blue" style="min-width: 100px;">OK</button>
       </div>
     </div>
   </div>
