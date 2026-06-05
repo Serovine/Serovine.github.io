@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let danbooruConverted = '';
   let currentImageBlob = null;
   let templates = {};
+  let tagToDelete = null;
+  let skipDeleteConfirm = false;
 
   const toggleVisibility = (el, show) => el.classList.toggle('hidden', !show);
 
@@ -112,9 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
     remove.textContent = '×';
     remove.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (type === 'positive') positiveTags.splice(index, 1);
-      else negativeTags.splice(index, 1);
-      renderTags();
+
+      // Skip Warning Modal
+      if (skipDeleteConfirm) {
+        if (type === 'positive') positiveTags.splice(index, 1);
+        else negativeTags.splice(index, 1);
+        renderTags();
+        return;
+      }
+
+      // Warning Modal
+      tagToDelete = { index, type, text: tag.text };
+      $('#deleteTargetName').textContent = tag.text;
+      toggleVisibility($('#modalConfirmDelete'), true);
     });
     badge.appendChild(remove);
 
@@ -277,10 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Badge Editor
   function openBadgeEditor(type, index) {
     const tag = type === 'positive' ? positiveTags[index] : negativeTags[index];
+    const formattedTag = tag.text.trim().replace(/ /g, '_');
     if (!tag) return;
     editingIndex = index;
     editingType = type;
     els.editTagName.textContent = tag.text;
+    $('#btnDanbooruInfo').href = `https://danbooru.donmai.us/wiki_pages/${encodeURIComponent(formattedTag)}`;
     els.editTagCate.value = tag.cate || 'general';
     els.editTagWeight.value = tag.weight;
     toggleVisibility(els.modalBadge, true);
@@ -378,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Structure Panel
   els.btnStructure.addEventListener('click', () => {
     els.structurePanel.classList.toggle('hidden');
-els.btnStructure.classList.toggle('active');
 
     if (!els.structurePanel.classList.contains('hidden')) {
       StructureViewer.render(positiveTags, negativeTags, createBadge);
@@ -442,6 +455,7 @@ els.btnStructure.classList.toggle('active');
 
   els.btnSavePngHeader.addEventListener('click', () => {
     els.savePanel.classList.toggle('hidden');
+    els.btnSavePngHeader.classList.toggle('active');
     if (!els.savePanel.classList.contains('hidden')) {
       setTimeout(() => els.savePanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     }
@@ -633,5 +647,46 @@ els.btnStructure.classList.toggle('active');
       });
       renderTags();
     });
+
+    // ── Delete Confirmation Logic ──
+  const modalConfirmDelete = $('#modalConfirmDelete');
+  const chkDontAskDelete = $('#chkDontAskDelete');
+
+  $('#btnDeleteCancel').addEventListener('click', () => {
+    toggleVisibility(modalConfirmDelete, false);
+    tagToDelete = null;
+    chkDontAskDelete.checked = false;
+  });
+
+  $('#btnDeleteConfirm').addEventListener('click', () => {
+    if (chkDontAskDelete.checked) {
+      skipDeleteConfirm = true;
+    }
+
+    if (tagToDelete) {
+      if (tagToDelete.type === 'positive') {
+        positiveTags.splice(tagToDelete.index, 1);
+      } else {
+        negativeTags.splice(tagToDelete.index, 1);
+      }
+
+      renderTags();
+
+      toggleVisibility(modalConfirmDelete, false);
+      tagToDelete = null;
+      chkDontAskDelete.checked = false;
+    }
+  });
+  });
+  // ── x Structure Panel ──
+  $('#btnCloseStructure').addEventListener('click', () => {
+    els.structurePanel.classList.add('hidden');
+    els.btnStructure.classList.remove('active');
+  });
+
+  // ── x Save Panel ──
+  $('#btnCloseSave').addEventListener('click', () => {
+    els.savePanel.classList.add('hidden');
+    els.btnSavePngHeader.classList.remove('active');
   });
 });
