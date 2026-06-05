@@ -16,14 +16,14 @@
     <header class="app-header">
       <div class="brand">
         <span class="brand-icon">◈</span>
-        <span class="brand-text">Prompt Tuner <span class="version">1.0</span></span>
+        <span class="brand-text">Prompt Tuner <span class="version">1.2</span></span>
       </div>
       <div class="header-actions">
         <button id="btnLoadPngHeader" class="btn-outline">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Load Preset
         </button>
-        <button id="btnSavePngHeader" class="btn-primary">
+        <button id="btnSavePngHeader" class="btn-outline">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Preset
         </button>
@@ -114,6 +114,12 @@
 
     <!-- Structure Panel (collapsible) -->
     <section id="structurePanel" class="card structure-panel hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 class="panel-title">Structure Panel</h3>
+          </div>
+          <button id="btnCloseStructure" class="btn-close" aria-label="Close panel" style="width: 28px; height: 28px; font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        </div>
       <div class="structure-grid">
         <div class="structure-cate" id="struct-quality">
           <div class="cate-header">
@@ -131,18 +137,18 @@
           </div>
           <div class="cate-body"></div>
         </div>
+        <div class="structure-cate structure-long" id="struct-character">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#f472b6"></span>
+            <span class="cate-name">Character</span>
+          </div>
+          <div class="cate-body"></div>
+        </div>
         <div class="structure-cate" id="struct-image_composition">
           <div class="cate-header">
             <span class="cate-dot" style="background:#22d3ee"></span>
             <span class="cate-name">Image Composition</span>
             <button class="btn-template hidden" data-cate="image_composition">+ Template</button>
-          </div>
-          <div class="cate-body"></div>
-        </div>
-        <div class="structure-cate" id="struct-character">
-          <div class="cate-header">
-            <span class="cate-dot" style="background:#f472b6"></span>
-            <span class="cate-name">Character</span>
           </div>
           <div class="cate-body"></div>
         </div>
@@ -154,17 +160,17 @@
           </div>
           <div class="cate-body"></div>
         </div>
-        <div class="structure-cate" id="struct-lora">
-          <div class="cate-header">
-            <span class="cate-dot" style="background:#fb923c"></span>
-            <span class="cate-name">LoRA</span>
-          </div>
-          <div class="cate-body"></div>
-        </div>
         <div class="structure-cate" id="struct-general">
           <div class="cate-header">
             <span class="cate-dot" style="background:#94a3b8"></span>
             <span class="cate-name">No Category</span>
+          </div>
+          <div class="cate-body"></div>
+        </div>
+        <div class="structure-cate" id="struct-lora">
+          <div class="cate-header">
+            <span class="cate-dot" style="background:#fb923c"></span>
+            <span class="cate-name">LoRA</span>
           </div>
           <div class="cate-body"></div>
         </div>
@@ -180,7 +186,13 @@
     </section>
 
     <!-- Save Panel -->
-    <div id="savePanel" class="settings-form hidden" style="margin-bottom: 20px;">
+    <section id="savePanel" class="card structure-panel hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 class="panel-title">Save Panel</h3>
+          </div>
+          <button id="btnCloseSave" class="btn-close" aria-label="Close panel" style="width: 28px; height: 28px; font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        </div>
       <div class="form-group" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
         <div>
           <label class="form-label">Model</label>
@@ -212,17 +224,11 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             Paste
           </button>
-          
+
           <button id="btnBrowseImage" class="btn-action btn-outline" style="flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Browse
           </button>
-          
-          <button id="btnDoSavePng" class="btn-action" style="flex: 1; min-width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-green); color: white; border: none;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-            Save Image with Prompt Data to *.PNG
-          </button>
-          
           <input type="file" id="fileInputImage" accept="image/*" class="hidden">
         </div>
 
@@ -232,9 +238,15 @@
             <p>Image Preview</p>
           </div>
           <img id="previewImage" class="hidden" alt="Preview">
+
+          <button id="btnDoSavePng" class="btn-action" style="flex: 1; min-width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-green); color: white; border: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Image with Prompt Data to *.PNG
+          </button>
         </div>
+
       </div>
-    </div>
+    </section>
 
   <!-- Badge Editor Modal -->
   <div id="modalBadge" class="modal hidden">
@@ -245,7 +257,15 @@
         <button id="btnEditCancel" class="btn-close">×</button>
       </div>
       <div class="modal-body">
-        <div class="tag-preview" id="editTagName"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px;">
+
+          <div class="tag-preview" id="editTagName" style="flex: 1; margin: 0; word-break: break-all;"></div>
+
+          <a id="btnDanbooruInfo" href="#" target="_blank" class="btn-action btn-outline" style="text-decoration: none; padding: 6px 14px !important; width: max-content !important; min-width: auto !important; flex: 0 0 auto !important; height: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Info
+          </a>
+        </div>
         <div class="form-row">
           <label>Category</label>
           <select id="editTagCate" aria-label="Edit Tag Category">
@@ -339,6 +359,29 @@ Example:
       </div>
     </div>
   </div>
+
+    <div id="modalConfirmDelete" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card" style="max-width: 350px; text-align: center;">
+      <div class="modal-body" style="padding-top: 30px; padding-bottom: 10px;">
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 10px;">Delete tag</p>
+        <p><strong id="deleteTargetName" style="color: var(--accent-red); font-size: 1.4rem; word-break: break-all;"></strong></p>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: 10px;">?</p>
+
+        <div style="margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <input type="checkbox" id="chkDontAskDelete" style="width: 16px; height: 16px; cursor: pointer;">
+          <label for="chkDontAskDelete" style="cursor: pointer; font-size: 0.9rem; color: var(--text-muted); user-select: none;">
+            Don't ask me again
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 15px; border-top: none;">
+        <button id="btnDeleteCancel" class="btn-action btn-outline" style="min-width: 100px;">No</button>
+        <button id="btnDeleteConfirm" class="btn-action" style="min-width: 100px; background: var(--accent-red); color: white; border: none;">Yes</button>
+      </div>
+    </div>
+  </div>
+
   </div>
   <script src="js/app.js"></script>
   <script src="js/tagmanager.js"></script>
