@@ -365,13 +365,14 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 .tag-badge .remove:hover { opacity: 1; }
 
 /* Category Colors */
-.tag-badge.cate-quality { background: linear-gradient(135deg, #0b4df5, #0629d9); }
-.tag-badge.cate-style { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
-.tag-badge.cate-image_composition { background: linear-gradient(135deg, #22d3ee, #06b6d4); }
-.tag-badge.cate-character { background: linear-gradient(135deg, #f472b6, #ec4899); }
-.tag-badge.cate-background { background: linear-gradient(135deg, #34d399, #10b981); }
-.tag-badge.cate-lora { background: linear-gradient(135deg, #fb923c, #f97316); }
+.tag-badge.cate-quality { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.tag-badge.cate-style { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.tag-badge.cate-image_composition { background: linear-gradient(135deg, #d946ef, #c026d3); }
+.tag-badge.cate-character { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+.tag-badge.cate-background { background: linear-gradient(135deg, #10b981, #059669); }
+.tag-badge.cate-lora { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .tag-badge.cate-general { background: linear-gradient(135deg, #94a3b8, #64748b); }
+.tag-badge.cate-nsfw { background: linear-gradient(135deg, #f44e8e, #ff0000); }
 .tag-badge.cate-negative { background: linear-gradient(135deg, #202020, #000000); }
 .tag-badge.unknown { background: linear-gradient(135deg, #e74c3c, #c0392b) !important; border: 1px dashed rgba(255,255,255,0.3); }
 
