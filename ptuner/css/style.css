@@ -961,7 +961,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 /* --- Drag and Drop Effects --- */
 .tag-badge {
-  cursor: grab; /* เปลี่ยนเมาส์เป็นรูปมือจับ */
+  cursor: grab;
   user-select: none;
   transition: transform 0.1s ease, opacity 0.1s ease;
 }
@@ -994,4 +994,31 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 #btnSavePngHeader.active svg,
 #btnStructure.active svg {
   stroke: #fff !important;
+}
+
+
+/* --- Fix Image Preview Size --- */
+#pasteImageArea {
+  max-height: 350px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#previewImage {
+  max-width: 100%;
+  max-height: 330px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Structure Button Active State --- */
+.btn-ghost.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+.btn-ghost.active svg {
+  stroke: #fff;
 }
