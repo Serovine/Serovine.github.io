@@ -15,7 +15,8 @@ const TagManager = (function() {
     'character': 4,
     'background': 5,
     'lora': 6,
-    'general': 7
+    'general': 7,
+    'nsfw': 10
   };
 
   const SUBCATEGORY_ORDER = {
@@ -90,6 +91,8 @@ const TagManager = (function() {
       });
     },
 
+
+
     search(query, limit = 10) {
       if (!isLoaded || !query) return [];
       const q = query.toLowerCase().trim();
@@ -101,6 +104,11 @@ const TagManager = (function() {
           if (results.length >= limit) break;
         }
       }
-    }
+      return results;
+    },
+
+    getSize() {
+      return tagDB.size;
+    },
   };
 })();
