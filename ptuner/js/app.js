@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     TagManager.init()
     .then(() => {
       console.log('TagManager is ready.');
-      showToast(`💾 <b>Database Ready</b><br>Loaded ${TagManager.getSize().toLocaleString()} tags successfully.`, 'info');
 
     })
     .catch(err => {
