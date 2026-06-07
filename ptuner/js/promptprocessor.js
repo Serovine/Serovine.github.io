@@ -4,7 +4,7 @@ const PromptProcessor = (function() {
   const WEIGHT_REGEX = /^\((.+?)(?::([\d.]+))?\)$/;
 
   function cleanTag(text) {
-    return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/_/g, ' ');
+    return text.toLowerCase().replace(/_/g, ' ').trim().replace(/\s+/g, ' ');
   }
 
   return {
@@ -34,7 +34,7 @@ const PromptProcessor = (function() {
               if (weight > 2.0) weight = 2.0;
             }
           } else {
-            text = text.replace(/^[\(\)_]+|[\(\)_]+$/g, '');
+            text = text.replace(/^_+|_+$/g, '');
           }
 
           return { text: cleanTag(text), weight };
