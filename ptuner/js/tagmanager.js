@@ -101,10 +101,6 @@ const TagManager = (function() {
           if (results.length >= limit) break;
         }
       }
-    },
-
-    getSize() {
-      return tagDB.size;
-    },
+    }
   };
 })();
