@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demystifying AI Art | คู่มือสร้างภาพ AI ฉบับรวบรัด</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-hover: #5A4FCF;
+            --secondary: #A29BFE;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #2D3436;
+            --text-muted: #636E72;
+            --border: #E2E8F0;
+            --highlight-bg: #F8F9FA;
+            --code-bg: #EDF2F7;
+            --code-color: #E53E3E;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 50px 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        /* Language Toggle Button */
+        .toggle-container {
+            text-align: right;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .lang-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.8em;
+            margin: 0 0 15px 0;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-top: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: var(--text-main);
+            font-size: 1.3em;
+            margin-top: 30px;
+            border-left: 4px solid var(--secondary);
+            padding-left: 15px;
+        }
+
+        p, li {
+            font-size: 1.1em;
+            color: #4A5568;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--highlight-bg);
+            border: 1px solid var(--secondary);
+            padding: 30px 40px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .toc h3 {
+            border: none;
+            padding: 0;
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.5em;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc li {
+            margin-bottom: 15px;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 1.15em;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+            transform: translateX(8px);
+        }
+
+        blockquote {
+            background: #F0F4FF;
+            border-left: 5px solid var(--primary);
+            margin: 25px 0;
+            padding: 20px 25px;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+
+        code {
+            background: var(--code-bg);
+            color: var(--code-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--primary);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 40px 0;
+        }
+
+        /* Language Display Logic */
+        body.lang-th .en { display: none; }
+        body.lang-th .th { display: block; }
+        body.lang-th span.en, body.lang-th a.en { display: none; }
+        body.lang-th span.th, body.lang-th a.th { display: inline; }
+
+        body.lang-en .th { display: none; }
+        body.lang-en .en { display: block; }
+        body.lang-en span.th, body.lang-en a.th { display: none; }
+        body.lang-en span.en, body.lang-en a.en { display: inline; }
+
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; margin: 20px auto; }
+            h1 { font-size: 2.2em; }
+            .toc { padding: 20px; }
+        }
+    </style>
+</head>
+<body class="lang-th">
+
+<div class="container">
+    <div class="toggle-container">
+        <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">
+            <span class="btn-text">🇬🇧 Switch to English</span>
+        </button>
+    </div>
+
+    <header>
+        <h1 class="th">คู่มือสร้างภาพ AI ฉบับรวบรัด</h1>
+        <h1 class="en">Demystifying AI Art</h1>
+        
+        <p class="subtitle th">สุดยอดไกด์สำหรับผู้เริ่มต้น: เข้าใจโมเดล การตั้งค่า และโครงสร้าง Prompt</p>
+        <p class="subtitle en">The Ultimate Beginner's Guide: Models, Settings, and Prompting</p>
+    </header>
+
+    <nav class="toc">
+        <h3 class="th">📑 สารบัญ (Table of Contents)</h3>
+        <h3 class="en">📑 Table of Contents</h3>
+        <ul>
+            <li>
+                <a href="#section-1" class="th">1. ไกด์แบบมักง่ายสำหรับสอนใช้ AI Image Generator</a>
+                <a href="#section-1" class="en">1. The Lazy Guide to AI Image Generation</a>
+            </li>
+            <li>
+                <a href="#section-2" class="th">2. อธิบายประเภทโมเดล AI ภาพแบบคร่าวๆ</a>
+                <a href="#section-2" class="en">2. A Brief Guide to AI Image Models</a>
+            </li>
+            <li>
+                <a href="#section-3" class="th">3. คำศัพท์เฉพาะกิจสำหรับ AI Image</a>
+                <a href="#section-3" class="en">3. A Quick Glossary of AI Image Terms</a>
+            </li>
+            <li>
+                <a href="#section-4" class="th">4. ส่วนสุดท้าย: โครงสร้าง Prompt และเทคนิค</a>
+                <a href="#section-4" class="en">4. The Final Piece: Prompt Structure</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- SECTION 1 -->
+        <section id="section-1">
+            <h2 class="th">1. ไกด์แบบมักง่ายสำหรับสอนใช้ AI Image Generator</h2>
+            <h2 class="en">1. The Lazy Guide to AI Image Generation</h2>
+            
+            <h3 class="th">1. หารูปที่ชอบ แล้วดูโมเดลที่เค้าใช้</h3>
+            <h3 class="en">1. Find Your Inspiration and the Model</h3>
+            <p class="th">เริ่มต้นง่ายๆ ด้วยการหารูป AI ที่คุณถูกใจก่อน เมื่อเจอแล้ว ให้เข้าไปดูรายละเอียดของรูปนั้นว่าศิลปินใช้ Base Model ตัวไหนในการสร้าง</p>
+            <p class="en">Start by finding an AI-generated picture that you really like. Once you find it, check the image details or description to see exactly which base model the artist used to create it.</p>
+
+            <h3 class="th">2. ดูรายละเอียดและการตั้งค่าจากคนทำโมเดล</h3>
+            <h3 class="en">2. Check the Creator's Notes & Grab the Core Settings</h3>
+            <p class="th">เข้าไปดูที่หน้าของโมเดลนั้นๆ โดยปกติคนที่ทำโมเดลแจกมักจะเขียน Template Prompt มาตรฐานและแนะนำการตั้งค่าไว้ให้แล้ว ถ้าหาไม่เจอ ให้คัดลอกการตั้งค่ามาจากคนที่สร้างรูปที่คุณชอบได้เลย โดยให้เน้นโฟกัสที่ <strong>3 ค่าหลัก</strong> ดังนี้:</p>
+            <p class="en">Look at the model page provided by the creator. Usually, the people who share these models will include standard prompt templates and their recommended settings. If you cannot find any instructions, just copy the settings directly from the person who generated the image you liked. Focus strictly on these <strong>three main parameters</strong>:</p>
+            
+            <ul class="th">
+                <li><strong>Sampler Method:</strong> โดยปกติจะเลือก <code>Euler a</code></li>
+                <li><strong>Sampling Steps:</strong> ส่วนใหญ่จะตั้งอยู่ที่ <strong>20 - 30</strong></li>
+                <li><strong>CFG Scale:</strong> ส่วนใหญ่จะอยู่ที่ <strong>5 - 9</strong></li>
+            </ul>
+            <ul class="en">
+                <li><strong>Sampler Method:</strong> Usually set to <code>Euler a</code>.</li>
+                <li><strong>Sampling Steps:</strong> Typically falls between <strong>20 - 30</strong>.</li>
+                <li><strong>CFG Scale:</strong> Generally sits around <strong>5 - 9</strong>.</li>
+            </ul>
+
+            <blockquote class="th">
+                <strong>💡 ข้อควรระวังเรื่อง LoRA:</strong> อย่าลืมเช็คว่าภาพนั้นมีการใช้ LoRA ประเภท <strong>Reduce Cost</strong> (พวกลดต้นทุน/ลดเวลาเจน) ด้วยหรือไม่ ถ้ามีการใช้ คุณสามารถปรับ <strong>Sampling Steps</strong> ให้ต่ำลงเหลือแค่ <strong>8</strong> ก็สามารถสร้างภาพสวยๆ ได้แล้ว
+            </blockquote>
+            <blockquote class="en">
+                <strong>💡 Important LoRA Check:</strong> Always check if the image used any specific LoRAs, especially those designed to reduce generation cost or time. If a speed-boosting LoRA is active, you can drop your <strong>Sampling Steps</strong> all the way down to <strong>8</strong> and still successfully generate the image.
+            </blockquote>
+
+            <h3 class="th">3. ใส่ Prompt เลือกขนาด แล้วลุยเลย!</h3>
+            <h3 class="en">3. Set, Size, and Generate</h3>
+            <p class="th">เมื่อได้ข้อมูลครบแล้ว:</p>
+            <ul class="th">
+                <li>ใส่ Prompt ที่ต้องการลงไป</li>
+                <li>คัดลอกการตั้งค่า 3 อย่างจากด้านบนมาใส่</li>
+                <li>เลือกขนาดรูป (Resolution) ที่ต้องการ</li>
+                <li>กด Generate เจนรูป จบ!</li>
+            </ul>
+            <p class="en">Now, put it all together:</p>
+            <ul class="en">
+                <li>Type or paste in your prompt.</li>
+                <li>Input the three settings you copied from the step above.</li>
+                <li>Choose your desired image size (resolution).</li>
+                <li>Hit generate. You are done!</li>
+            </ul>
+        </section>
+
+        <!-- SECTION 2 -->
+        <section id="section-2">
+            <h2 class="th">2. อธิบายประเภทโมเดล AI ภาพแบบคร่าวๆ</h2>
+            <h2 class="en">2. A Brief Guide to AI Image Models</h2>
+            
+            <p class="th">การเข้าใจประเภทของโมเดลจะช่วยให้คุณเลือกใช้งานได้ตรงจุดมากขึ้น นี่คือสรุปแบบเข้าใจง่าย:</p>
+            <p class="en">Understanding the different types of AI models can be overwhelming, but here is a simplified breakdown of the core concepts and their evolution.</p>
+
+            <h3 class="th">ประเภทของโมเดล</h3>
+            <h3 class="en">Types of AI Image Models</h3>
+            <ul class="th">
+                <li><strong>Base Model / Checkpoint Model:</strong> โมเดลหลักที่เป็นตัวโครงสร้างพื้นฐานสำหรับใช้เจนรูปภาพ</li>
+                <li><strong>LoRA / LyCORIS:</strong> โมเดลขนาดเล็ก (Low Rank Adaptive) ที่ใช้เสริมเพื่อควบคุมรายละเอียดเล็กๆ น้อยๆ เช่น สไตล์ลายเส้นเฉพาะ เสื้อผ้า หรือตัวละคร</li>
+                <li><strong>Embedding:</strong> โมเดลขนาดเล็กที่ส่วนใหญ่มักนำมาใช้เขียน "สั่งห้าม" (Negative) ไม่ให้ AI ทำสิ่งที่เราฝังไว้ (เช่น ห้ามวาดมือเละ ห้ามวาดผิดสัดส่วน)</li>
+                <li><strong>ADetailer Model:</strong> โมเดลที่เอาไว้ใช้แก้ไขรูปที่สร้างมาแล้วโดยเฉพาะ มักใช้แก้พวกใบหน้าหรือมือให้ออกมาดูดี ไม่เบี้ยว ไม่เละ</li>
+            </ul>
+            <ul class="en">
+                <li><strong>Base Model / Checkpoint Model:</strong> The core, foundational model used to generate the overall image.</li>
+                <li><strong>LoRA / LyCORIS:</strong> Smaller, add-on models used to control and tweak fine details, such as character designs, clothing, or art styles.</li>
+                <li><strong>Embedding:</strong> Small models most commonly used as "negative embeddings" to strictly restrict the base model from generating unwanted elements.</li>
+                <li><strong>ADetailer Model:</strong> A specialized model used post-generation to automatically fix and refine specific areas (like faces and hands) so they are not distorted.</li>
+            </ul>
+
+            <hr>
+
+            <h3 class="th">โมเดลยุคบุกเบิก: Stable Diffusion (SD)</h3>
+            <h3 class="en">The Pioneer Era: Stable Diffusion (SD)</h3>
+            <p class="th">เป็นจุดเริ่มต้นที่ทำให้วงการ AI วาดรูปเติบโต</p>
+            <p class="en">The foundational models that kickstarted the open-source AI art community.</p>
+            <ul>
+                <li><strong>SD:</strong> <span class="th">โมเดลแรกเริ่ม</span><span class="en">The original breakthrough model.</span></li>
+                <li><strong>SD 1.5:</strong> <span class="th">โมเดลที่ได้รับความนิยมสูงมากและมีฐานชุมชนนักพัฒนาเยอะที่สุด</span><span class="en">The most widely adopted early model with massive community support.</span></li>
+                <li><strong>SDXL:</strong> <span class="th">โมเดลรุ่นอัปเกรดที่รองรับภาพความละเอียดสูงขึ้นและเข้าใจ Prompt ได้ดีขึ้น</span><span class="en">A higher-resolution upgrade offering better prompt understanding.</span></li>
+            </ul>
+
+            <h3 class="th">โมเดลพื้นฐานสำหรับสายอนิเมะ</h3>
+            <h3 class="en">The Anime-Focused Era</h3>
+            <p class="th">พัฒนามาจากตระกูล SD เป็นยุคที่มีคนเทรนโมเดลเยอะที่สุดและมี LoRA สนับสนุนเยอะสุดเช่นกัน โดยอาศัยคลังภาพจากพวกเว็บรูปภาพต่างๆ เช่น Danbooru</p>
+            <p class="en">Specialized base models derived from the SD family. This era represents the highest number of custom-trained models and LoRAs, relying heavily on imageboard tags (like Danbooru).</p>
+            <ul>
+                <li>Illustrious Model</li>
+                <li>Pony Model</li>
+                <li>Animagine Model</li>
+                <li>NAI Model</li>
+            </ul>
+            <blockquote class="th">
+                <strong>คำแนะนำ:</strong> อย่าลืมอ่านคำแนะนำจากผู้พัฒนาโมเดลเสมอ เพื่อประสิทธิภาพสูงสุดในการใช้งาน เพราะแต่ละโมเดลจะมี Trigger Word ที่ต่างกัน
+            </blockquote>
+            <blockquote class="en">
+                <strong>Crucial Tip:</strong> Always read the instructions provided by the model developers. Using their specific trigger words is essential for best performance.
+            </blockquote>
+
+            <h3 class="th">โมเดลยุค 2026: พิมพ์สั่งด้วยภาษาคน และเน้นความสมจริง</h3>
+            <h3 class="en">The 2026 Era: Natural Language & Realism</h3>
+            <p class="th">ยุคนี้ไม่ต้องมานั่งใส่ Prompt เป็นคำๆ หรือ Tag แล้ว คุณสามารถใช้ภาษาปกติพิมพ์สั่งความต้องการได้เลย และโมเดลมักจะเน้นไปที่รูปแนว Realistic</p>
+            <p class="en">These models have moved away from complex, tag-based "prompt engineering." You can use normal language to instruct them, and they lean heavily toward hyper-realistic images.</p>
+            <ul>
+                <li>Flux 1.0</li>
+                <li>Hunyuan</li>
+                <li>Z-Image-Turbo</li>
+                <li>Chroma1-HD</li>
+                <li>Seedream 4.5</li>
+            </ul>
+
+            <div class="highlight-box">
+                <div class="th">
+                    <strong>🚀 ทางเลือกที่ง่ายที่สุด:</strong> ถ้าไม่อยากยุ่งยากกับการตั้งค่า ลองใช้บริการจาก <strong>ChatGPT, Gemini image Nano Banana หรือ Bing Image</strong> เพราะพวกนี้มีความเข้าใจภาษามนุษย์สูงที่สุด แค่พิมพ์สั่งก็จบ
+                </div>
+                <div class="en">
+                    <strong>🚀 The Ultimate Easy Route:</strong> If dealing with models and parameters is too much hassle, use built-in AI services like <strong>ChatGPT, Gemini image Nano Banana, or Bing Image</strong>. They possess the highest human language understanding and do the heavy lifting for you.
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3 -->
+        <section id="section-3">
+            <h2 class="th">3. คำศัพท์เฉพาะกิจสำหรับ AI Image</h2>
+            <h2 class="en">3. A Quick Glossary of AI Image Terms</h2>
+            
+            <ul class="th">
+                <li><strong>Sampler Method:</strong> อัลกอริทึมที่ใช้ลบจุดรบกวน (Noise) เพื่อสร้างภาพขึ้นมา 
+                    <ul>
+                        <li><em>ตัวอย่างยอดนิยม:</em> <code>Euler a</code> (เจนไว ได้ภาพเร็ว) และ <code>DPM++ 2M Karras</code> (สมดุลเรื่องความเร็วและเก็บรายละเอียดได้ดีมาก)</li>
+                    </ul>
+                </li>
+                <li><strong>Sampling Steps:</strong> จำนวนก้าวในการสุ่มสร้าง ยิ่งใส่เยอะ รายละเอียดภาพยิ่งชัด แต่มักจะใช้เวลาเจนภาพนานขึ้น</li>
+                <li><strong>CFG Scale:</strong> ค่าความยึดติดกับ Prompt ยิ่งค่าน้อย AI ยิ่งมีอิสระ ยิ่งค่ามาก AI จะพยายามทำตามคำสั่งเป๊ะๆ</li>
+                <li><strong>LoRA:</strong> คนมักจะใช้ในเรื่องการดึง <strong>Style ของนักวาด</strong>, ช่วย <strong>ลดต้นทุน/เวลา (Reduce Cost)</strong> หรือล็อคหน้าตา <strong>ตัวละคร</strong></li>
+                <li><strong>Embedding:</strong> โมเดลฝังคำสั่ง มักใช้ห้ามไม่ให้วาดสิ่งที่เราไม่ต้องการ</li>
+                <li><strong>VAE Model:</strong> ตัวปรับสีของภาพ หากภาพดูสีซีดๆ ซีดจาง การใส่ VAE จะช่วยให้สีสดและอิ่มตัวขึ้น</li>
+                <li><strong>ADetailer Model:</strong> ตัวช่วยอัตโนมัติหลังเจนภาพเสร็จ เอาไว้ซ่อมใบหน้าหรือมือที่เบี้ยวให้กลับมาดูดี</li>
+                <li><strong>ControlNet:</strong> เครื่องมือขั้นสูงที่ต้องเพิ่มรูป "Image Control" เข้าไปเสริม เพื่อบังคับให้ AI วาดตามท่าทางหรือโครงสร้างที่เราต้องการเป๊ะๆ</li>
+            </ul>
+            <ul class="en">
+                <li><strong>Sampler Method:</strong> The algorithm the AI uses to clear "noise" and build the image. 
+                    <ul>
+                        <li><em>Popular Examples:</em> <code>Euler a</code> (fast/creative) and <code>DPM++ 2M Karras</code> (great balance of speed and detail).</li>
+                    </ul>
+                </li>
+                <li><strong>Sampling Steps:</strong> The number of iterations to refine the image. Higher means more detail but slower generation.</li>
+                <li><strong>CFG Scale:</strong> How strictly the AI must obey your prompt. Lower = more freedom; Higher = strict adherence.</li>
+                <li><strong>LoRA:</strong> Targeted add-ons used primarily for applying an <strong>artist's style</strong>, generating specific <strong>characters</strong>, or <strong>reducing cost/time</strong>.</li>
+                <li><strong>Embedding:</strong> Small files mostly used as "Negative Embeddings" to easily instruct the AI on what <em>not</em> to draw.</li>
+                <li><strong>VAE Model:</strong> Acts as a color corrector to make washed-out output rich and vibrant.</li>
+                <li><strong>ADetailer Model:</strong> An automatic tool that redraws problematic areas like faces or hands post-generation.</li>
+                <li><strong>ControlNet:</strong> An advanced tool that forces the AI to copy the exact pose or structure of a reference image.</li>
+            </ul>
+
+            <blockquote class="th">
+                <strong>ข้อสรุป:</strong> สุดท้ายหลักๆ แล้ว จำแค่ <strong>4 อันแรก</strong> ก็เพียงพอครับ ส่วนของการตั้งค่าให้ดูคำแนะนำจากคนปล่อยโมเดลเป็นหลัก ถ้าอันไหนคนทำไม่ได้พูดถึง ก็มักจะใช้ <strong>ค่า Default (ค่าเริ่มต้น)</strong> ได้เลย
+            </blockquote>
+            <blockquote class="en">
+                <strong>The Bottom Line:</strong> Ultimately, you really only need to remember the <strong>first four terms</strong>. Always prioritize instructions provided by the model's creator. If a setting isn't mentioned, the <strong>default value</strong> is usually fine.
+            </blockquote>
+        </section>
+
+        <!-- SECTION 4 -->
+        <section id="section-4">
+            <h2 class="th">4. ส่วนสุดท้าย: โครงสร้าง Prompt และเทคนิค</h2>
+            <h2 class="en">4. The Final Piece: Prompt Structure</h2>
+            
+            <p class="th">แต่ละ Base Model มักจะมีโครงสร้างไม่เหมือนกัน แต่อาจจะใกล้เคียงกันไป เช่น:</p>
+            <p class="en">Different base models often require different prompt structures to get the best results:</p>
+            <ul>
+                <li><strong>Pony Model:</strong> <span class="th">มักจะใช้ <code>_</code> (Underscore) แทนการเคาะวรรค เช่น <code>score_9_up, score_8_up</code></span><span class="en">Often uses underscores instead of spaces, like <code>score_9_up, score_8_up</code>.</span></li>
+                <li><strong>Animagine Model:</strong> <span class="th">มักจะมี <code>, BREAK ,</code> เพื่อแบ่งแยกส่วนของ Prompt ออกจากกันอย่างชัดเจน</span><span class="en">Frequently utilizes <code>, BREAK ,</code> to cleanly separate sections.</span></li>
+            </ul>
+            
+            <p class="th">ต่อไปนี้เราจะพูดถึงโครงสร้างของโมเดลตระกูล <strong>Illustrious</strong> ซึ่งมีหลายเวอร์ชัน เช่น <em>WAI-illustrious, ZUKI Anime ILL, Nova illustrious, Perfect illustrious, VXP illustrious, Hassaku XL</em></p>
+            <p class="en">For this guide, we will focus on the <strong>Illustrious</strong> model family (e.g., <em>WAI-illustrious, ZUKI Anime ILL, Nova illustrious, Perfect illustrious, VXP illustrious, Hassaku XL</em>).</p>
+
+            <h3 class="th">โครงสร้างของ Illustrious Prompt</h3>
+            <h3 class="en">The Illustrious Prompt Structure</h3>
+            
+            <div class="highlight-box">
+                <code>[Score], [Year Modifier], [Rating], [Artist], [Person Count], [Character], [General Tags]</code>
+            </div>
+            
+            <ul class="th">
+                <li><strong>Score (คะแนนความสวยงาม):</strong> ควรใส่ไว้ (เช่น <code>masterpiece</code>)</li>
+                <li><strong>Year Modifier (ปี):</strong> ไม่จำเป็นเท่าไหร่ (เช่น <code>newest</code>)</li>
+                <li><strong>Rating (เรทภาพ):</strong> ไม่จำเป็นเท่าไหร่ (เช่น <code>general</code>)</li>
+                <li><strong>Artist (นักวาด):</strong> ไม่บังคับ แต่ถ้าใส่จะได้ลายเส้นที่ดี (เช่น <code>itomugi-kun</code>)</li>
+                <li><strong>Person Count (จำนวนคน):</strong> ควรใส่ให้ชัดเจน (เช่น <code>1girl, 2boys</code>)</li>
+                <li><strong>Character Name (ชื่อตัวละคร):</strong> ไม่ต้องใส่เว้นแต่ต้องการเจาะจง</li>
+                <li><strong>General Tags (รายละเอียดทั่วไป):</strong> คำสั่งอื่นๆ ที่เหลือ (เช่น <code>building, outdoors</code>)</li>
+            </ul>
+            <ul class="en">
+                <li><strong>Score:</strong> Good idea to include (e.g., <code>masterpiece</code>).</li>
+                <li><strong>Year Modifier:</strong> Probably not necessary (e.g., <code>newest</code>).</li>
+                <li><strong>Rating:</strong> Not strictly necessary (e.g., <code>general</code>).</li>
+                <li><strong>Artist:</strong> Good idea to guide the style (e.g., <code>itomugi-kun</code>).</li>
+                <li><strong>Person Count:</strong> Highly recommended (e.g., <code>1girl, 2boys</code>).</li>
+                <li><strong>Character Name:</strong> Only if you want a specific person.</li>
+                <li><strong>General Tags:</strong> Everything else in your scene (e.g., <code>building, outdoors</code>).</li>
+            </ul>
+
+            <p class="th"><strong>ตัวอย่างการเขียน:</strong></p>
+            <p class="en"><strong>Example Prompt:</strong></p>
+            <blockquote>
+                <em>masterpiece, newest, general, itomugi-kun, 1boy, kinoshita hideyoshi, building,</em>
+            </blockquote>
+
+            <h3 class="th">ทริกและเทคนิคเล็กน้อย</h3>
+            <h3 class="en">Essential Tips and Tricks</h3>
+            <ul class="th">
+                <li><strong>ลำดับมีความสำคัญ:</strong> โมเดลจะให้ความสำคัญกับคำสั่งแรกๆ ก่อน จึงมักจะต้องสั่งให้สร้างภาพสวยๆ ไว้ก่อน (พวก Masterpiece) โดยเอาไว้ลำดับแรกๆ</li>
+                <li><strong>หลีกเลี่ยงคำซ้ำซ้อน:</strong> พยายามอย่าใส่คำที่มีความหมายเหมือนกัน เช่น ใส่ทั้ง <code>1girl</code> และ <code>woman</code></li>
+                <li><strong>อย่าล้นเกินไป:</strong> พยายามอย่าให้ Tag เกิน 75 Prompts เพราะจะเริ่มทำให้โมเดลรวน</li>
+                <li><strong>ประหยัดเครดิตด้วย LoRA ลดคอส:</strong> หลายเว็บคิดเครดิตตาม Sampling Step การใช้ LoRA ลดคอส หรือ Hyper Model จะช่วยให้เจนภาพได้ที่ <strong>8 Step และ CFG 1.5</strong> ประหยัดกว่ามาก (ถ้าใช้โมเดลพวกนี้อย่าเผลอใส่ 25 step ภาพจะเละ)</li>
+                <li><strong>ใช้ LoRA สำหรับตัวละครดัง:</strong> การสร้างเจนรูปตัวละครที่มีชื่อเสียง ให้หา Character LoRA มาใช้งานก่อนเลย จะได้รูปที่ตรงปกแน่นอน</li>
+                <li><strong>ใหม่กว่าไม่ได้แปลว่าดีกว่า:</strong> โมเดลเวอร์ชันใหม่ไม่ได้หมายความว่ารูปจะถูกใจคุณเท่าเวอร์ชันแรกๆ ให้ตัดสินด้วยตาคุณเอง</li>
+            </ul>
+            <ul class="en">
+                <li><strong>Order Dictates Priority:</strong> Models prioritize the first few words. Always put your "quality" and "beautification" tags at the very beginning.</li>
+                <li><strong>Avoid Redundancy:</strong> Don't waste space with repeating concepts (e.g., don't use both <code>1girl</code> and <code>woman</code>).</li>
+                <li><strong>Watch Your Tag Limit:</strong> Keep your prompt under 75 tags to avoid confusing the model.</li>
+                <li><strong>Save Your Credits:</strong> Use cost-reducing LoRAs or "Hyper Models" to generate great images at just <strong>8 steps and a CFG of 1.5</strong>. (Warning: leaving steps at 25 with these models will ruin the image).</li>
+                <li><strong>Use Character LoRAs:</strong> For famous characters, look for a dedicated LoRA first to guarantee accurate results.</li>
+                <li><strong>Newer Isn't Always Better:</strong> Always judge a model based on the actual images you generate yourself, regardless of the version number.</li>
+            </ul>
+        </section>
+    </main>
+</div>
+
+<script>
+    function toggleLanguage() {
+        const body = document.body;
+        const btnText = document.querySelector('.btn-text');
+        
+        if (body.classList.contains('lang-th')) {
+            // Switch to English
+            body.classList.replace('lang-th', 'lang-en');
+            btnText.innerHTML = '🇹🇭 เปลี่ยนเป็นภาษาไทย';
+        } else {
+            // Switch to Thai
+            body.classList.replace('lang-en', 'lang-th');
+            btnText.innerHTML = '🇬🇧 Switch to English';
+        }
+    }
+</script>
+
+</body>
+</html>
