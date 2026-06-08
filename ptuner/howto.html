@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Tuner - How to Use</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #e2e8f0;
+      --accent-blue: #3b82f6;
+      --card-bg: #1e293b;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+    }
+    .howto-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    h2 { text-align: center; margin-bottom: 30px; font-size: 2rem; color: #fff; }
+    h3 { color: var(--accent-blue); margin-top: 0; }
+    .step-section {
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .step-section:last-child { border-bottom: none; }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-top: 15px;
+      display: block;
+    }
+    .pro-tip {
+      background-color: rgba(59, 130, 246, 0.15);
+      border-left: 4px solid var(--accent-blue);
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      margin-top: 15px;
+    }
+    .pro-tip a { color: #60a5fa; font-weight: bold; text-decoration: none; }
+
+    /* ระบบสลับภาษาด้วย CSS Class */
+    .lang-en { display: none; }
+    body.show-en .lang-en { display: block; }
+    body.show-en .lang-th { display: none; }
+    body.show-en .lang-en-inline { display: inline; }
+    body.show-en .lang-th-inline { display: none; }
+
+    /* ปุ่มกดสลับภาษา */
+    .lang-toggle-wrapper {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    #btnToggleLang {
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    #btnToggleLang:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+
+  <div class="howto-container">
+
+    <div class="lang-toggle-wrapper">
+      <button id="btnToggleLang">🌐 Switch to English</button>
+    </div>
+
+    <h2>
+      <span class="lang-th-inline">วิธีการใช้งาน Prompt Tuner: คู่มือทีละขั้นตอน</span>
+      <span class="lang-en-inline" style="display:none;">How to Use Prompt Tuner: A Step-by-Step Guide</span>
+    </h2>
+
+    <div style="text-align: center; margin-bottom: 50px;">
+      <iframe width="100%" height="420" style="max-width: 750px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); border: none;"
+              src="https://www.youtube.com/embed/ltdxU7eXsAU"
+              title="Prompt Tuner Tutorial Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 1: เปิดหน้าต่าง Danbooru Paste</h3>
+        <p>เริ่มต้นด้วยการคลิกปุ่ม <strong>Danbooru Paste</strong> ที่มุมขวาบนของพื้นที่ Positive Prompt เพื่อเปิดหน้าต่างสำหรับนำเข้าแท็ก</p>
+        <div class="pro-tip">
+          💡 <strong>เคล็ดลับระดับโปร:</strong> คุณสามารถใช้ <a href="https://gist.github.com/Serovine/8f83ba2216bddec1c8ffb624717dacd4" target="_blank">Tampermonkey script นี้</a> เพื่อดึงและก๊อปปี้แท็กจากหน้าเว็บ Danbooru ได้โดยตรงเลย!
+        </div>
+      </div>
+      <div class="lang-en">
+        <h3>Step 1: Open the Danbooru Importer</h3>
+        <p>Start by clicking the <strong>Danbooru Paste</strong> button located in the top right corner of the Positive Prompt area. This will open a dedicated window for importing tags.</p>
+        <div class="pro-tip">
+          💡 <strong>Pro Tip:</strong> You can use this <a href="https://gist.github.com/Serovine/8f83ba2216bddec1c8ffb624717dacd4" target="_blank">Tampermonkey script</a> to easily extract and copy tags directly from Danbooru pages!
+        </div>
+      </div>
+      <img src="img/edit-01.jpg" alt="Step 1">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 2: ก๊อปปี้แท็กจาก Danbooru</h3>
+        <p>ไปที่เว็บ Danbooru ค้นหารูปภาพที่มีคอนเซปต์ตรงกับที่คุณต้องการ แล้วลากคลุมรายการแท็กที่แถบด้านซ้าย จากนั้นกด <code>Ctrl + C</code> เพื่อก๊อปปี้</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 2: Copy Tags from Danbooru</h3>
+        <p>Go to Danbooru, find an image that matches your desired concept, and highlight the tag list on the left sidebar. Press <code>Ctrl + C</code> to copy the tags.</p>
+      </div>
+      <img src="img/edit-02.jpg" alt="Step 2">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 3: วาง, แปลงค่า, และเพิ่มเข้า Prompt</h3>
+        <p>กลับมาที่ Prompt Tuner แล้ววาง (<code>Ctrl + V</code>) แท็กที่ก๊อปมาลงในหน้าต่าง Danbooru Paste กดปุ่ม <strong>Convert</strong> เพื่อล้างข้อมูลขยะและจัดรูปแบบให้ถูกต้องในพริบตา จากนั้นกด <strong>Add to Prompt</strong> เพื่อส่งแท็กที่คลีนแล้วเข้าสู่พื้นที่ทำงานหลัก</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 3: Paste, Convert, and Add</h3>
+        <p>Return to Prompt Tuner and paste (<code>Ctrl + V</code>) the raw list into the Danbooru Paste window. Click <strong>Convert</strong> to instantly clean up formatting and remove irrelevant characters. Finally, click <strong>Add to Prompt</strong> to send the clean tags directly into your workspace.</p>
+      </div>
+      <img src="img/edit-03.jpg" alt="Step 3">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 4: ตรวจสอบโครงสร้าง Prompt</h3>
+        <p>เมื่อแท็กเข้ามาอยู่ใน Editor แล้ว ให้คลิกปุ่ม <strong>Structure</strong> ระบบจะเปิดแผงควบคุมที่ช่วยจัดกลุ่มแท็กทั้งหมดของคุณ ทำให้เห็นภาพรวมได้ทันทีว่ายังขาดองค์ประกอบส่วนไหนไปบ้าง</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 4: Review Your Prompt Structure</h3>
+        <p>Once your tags are loaded into the editor, click the <strong>Structure</strong> button. This opens a visual panel that categorizes all your current tags, helping you see exactly what elements are missing.</p>
+      </div>
+      <img src="img/edit-04.jpg" alt="Step 4">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 5: เติมเต็มช่องว่างด้วยแท็ก Template</h3>
+        <p>ในแผง Structure ให้ดูหมวดหมู่สำคัญที่ยังว่างอยู่ (เช่น Quality, Style, Image Composition หรือ Negative Prompt) แล้วคลิกปุ่ม <strong>+ Template</strong> เพื่อเติมแท็กพื้นฐานคุณภาพสูงลงในหมวดหมู่นั้นๆ ทันที</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 5: Fill Empty Categories with Templates</h3>
+        <p>Inside the Structure Panel, look for essential categories that are currently empty (e.g., Quality, Style, Image Composition, or Negative Prompt). Click the <strong>+ Template</strong> button to instantly inject optimized baseline tags into those specific categories.</p>
+      </div>
+      <img src="img/edit-05.jpg" alt="Step 5">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 6: แก้ไขหมวดหมู่และเพิ่มแท็กเอง</h3>
+        <p>หากต้องการปรับแต่งด้วยตัวเอง สามารถคลิกที่ป้ายแท็กใดก็ได้เพื่อเปิดหน้าต่าง <strong>Tag Editor</strong> ซึ่งคุณสามารถย้ายแท็กไปยังหมวดหมู่ที่ถูกต้อง หรือปรับค่าน้ำหนัก (Weight) ของแท็กนั้นได้ตามต้องการ</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 6: Edit Categories & Add Custom Tags</h3>
+        <p>Need to make manual adjustments? Simply click on any tag badge to open the <strong>Tag Editor</strong>. From here, you can reassign the tag to a different category or adjust its emphasis weight.</p>
+      </div>
+      <img src="img/edit-category.jpg" alt="Edit Category" style="margin-bottom: 20px;">
+
+      <div class="lang-th">
+        <p>หากมีคอนเซปต์เฉพาะที่ไม่อยู่ในรายการ ให้คลิกปุ่ม <strong>Add Tag</strong> พิมพ์แท็กที่ต้องการเพิ่มได้เลย ระบบจะจับคู่หมวดหมู่อัตโนมัติตามฐานข้อมูล และช่วยป้องกันการพิมพ์แท็กซ้ำให้อีกด้วย</p>
+      </div>
+      <div class="lang-en">
+        <p>If you have specific concepts in mind that aren't in your current list, click the <strong>Add Tag</strong> button. You can manually type your desired tags, and the system will automatically categorize them based on the database while preventing any duplicates.</p>
+      </div>
+      <img src="img/add-tag.jpg" alt="Add Tag">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 7: จัดเรียงเพื่อผลลัพธ์ที่ดีที่สุด</h3>
+        <p>หลังจากปรับแต่งแท็กเสร็จเรียบร้อย ให้กดปุ่ม <strong>Arrange</strong> ระบบจะทำการเรียงลำดับแท็กทั้งหมดของคุณตามโครงสร้างที่เหมาะสมโดยอัตโนมัติ เพื่อให้ AI ให้ความสำคัญกับ Prompt ของคุณได้อย่างแม่นยำ</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 7: Arrange for Optimal Output</h3>
+        <p>Make any final manual adjustments to your tags. When you are ready, hit the <strong>Arrange</strong> button. The system will automatically sort your tags into a logical hierarchy, ensuring the AI model prioritizes your prompt perfectly.</p>
+      </div>
+      <img src="img/edit-07.jpg" alt="Step 7">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 8: นำไปสร้างผลงานศิลปะ</h3>
+        <p>ก๊อปปี้ Positive และ Negative prompt ที่จัดเรียงอย่างสวยงามแล้ว นำไปวางในแพลตฟอร์มสร้างภาพ AI ที่คุณถนัด (เช่น Tensor.art, SeaArt, PixAI, Moescape AI หรือ WebUI บนเครื่องของคุณเอง) แล้วปล่อยให้ AI รังสรรค์ผลงานได้เลย!</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 8: Generate Your Artwork</h3>
+        <p>Copy your polished positive and negative prompts and paste them into your preferred AI image generator (such as Tensor.art, SeaArt, PixAI, Moescape AI, or local WebUI). Let the AI work its magic!</p>
+      </div>
+      <img src="img/edit-08.jpg" alt="Step 8">
+    </div>
+
+    <div class="step-section">
+      <div class="lang-th">
+        <h3>ขั้นตอนที่ 9: เซฟภาพพร้อมฝังข้อมูล Prompt</h3>
+        <p>อย่าปล่อยให้ Prompt ดีๆ สูญหาย! เปิดหน้าต่าง <strong>Save Panel</strong> ใน Prompt Tuner นำรูปภาพที่คุณสร้างเสร็จแล้วมาใส่ กรอกข้อมูลการตั้งค่า แล้วคลิกปุ่ม <strong>Save Image with Prompt Data to *.PNG</strong> ข้อมูล Prompt ของคุณจะถูกฝังไว้ในไฟล์รูปภาพอย่างปลอดภัย และสามารถเรียกคืนมาใช้งานใหม่เมื่อไหร่ก็ได้ผ่านปุ่ม "Load Preset"</p>
+      </div>
+      <div class="lang-en">
+        <h3>Step 9: Save Image with Embedded Prompt Data</h3>
+        <p>Don't lose a great prompt! Open the <strong>Save Panel</strong> in Prompt Tuner. Paste your generated artwork, fill in the generation metadata, and click <strong>Save Image with Prompt Data to *.PNG</strong>. Your prompt is now securely embedded inside the image file, ready to be loaded via the "Load Preset" button anytime.</p>
+      </div>
+      <img src="img/edit-09.jpg" alt="Step 9">
+    </div>
+
+  </div>
+
+  <script>
+    const btnToggle = document.getElementById('btnToggleLang');
+    const body = document.body;
+
+    btnToggle.addEventListener('click', () => {
+      body.classList.toggle('show-en');
+      if (body.classList.contains('show-en')) {
+        btnToggle.innerHTML = '🌐 เปลี่ยนเป็นภาษาไทย';
+      } else {
+        btnToggle.innerHTML = '🌐 Switch to English';
+      }
+    });
+  </script>
+</body>
+</html>
