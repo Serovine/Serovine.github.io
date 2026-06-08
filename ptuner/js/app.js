@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   els.btnDanbooruConvert.addEventListener('click', () => {
-    const raw = els.danbooruInput.value;
+    const raw = els.danbooruInput.value.replace(/[\?¿\u200B-\u200D\uFEFF]/g, '');
     if (!raw.trim()) return;
 
     // Delegate parsing logic to the new module
