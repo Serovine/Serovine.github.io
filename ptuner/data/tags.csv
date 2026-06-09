@@ -5594,6 +5594,35 @@ holding with gesture,character,pose,4
 no (gesture),character,pose,4
 orchid fingers,character,pose,4
 star hands,character,pose,4
+double fox shadow puppet,character,pose,4
+floral print kimono,character,cloth,4
+aqua kimono,character,cloth,4
+black kimono,character,cloth,4
+yellow kimono,character,cloth,4
+blue kimono,character,cloth,4
+brown kimono,character,cloth,4
+green kimono,character,cloth,4
+grey kimono,character,cloth,4
+orange kimono,character,cloth,4
+pink kimono,character,cloth,4
+purple kimono,character,cloth,4
+red kimono,character,cloth,4
+white kimono,character,cloth,4
+print kimono,character,cloth,4
+aqua eyeshadow,character,body,4
+black eyeshadow,character,body,4
+yellow eyeshadow,character,body,4
+blue eyeshadow,character,body,4
+brown eyeshadow,character,body,4
+green eyeshadow,character,body,4
+grey eyeshadow,character,body,4
+orange eyeshadow,character,body,4
+pink eyeshadow,character,body,4
+purple eyeshadow,character,body,4
+red eyeshadow,character,body,4
+white eyeshadow,character,body,4
+single bare shoulder,character,body,4
+pom pom hair ornament,character,cloth,4
 abstract background,background,,5
 blurry background,background,,5
 bright background,background,,5
@@ -7875,6 +7904,7 @@ Hatsune miku,LoRA,,7
 <lora:lcmturbomix2fix:1>,LoRA,,7
 dmd2,LoRA,,7
 dynamic pose,LoRA,,7
+blue archive,LoRA,,7
 bdsm,NSFW,bdsm,8
 asphyxiation,NSFW,bdsm,8
 strangling,NSFW,bdsm,8
@@ -8537,3 +8567,285 @@ score 5,Negative ,,9
 score 4,Negative ,,9
 bad eye,Negative ,,9
 glitch,Negative,,9
+lazyneg,Negative,,9
+lazypos,LoRA,,7
+black sailor collar,character,cloth,4
+hat pin,character,cloth,4
+long sidelocks,character,body,4
+hammer and sickle,general,,6
+ikea shark,general,,6
+stuffed shark,general,,6
+star pin,character,cloth,4
+nurse dress,character,cloth,4
+syringe,general,,6
+drink,general,,6
+holding gift,character,pose,4
+long hair between eyes,character,body,4
+multicolored jacket,character,cloth,4
+two-tone jacket,character,cloth,4
+gift,general,,6
+number tattoo,character,cloth,4
+printed shirt,character,cloth,4
+hands on own hip,character,pose,4
+shirt tucked in,character,cloth,4
+aqua trim,character,cloth,4
+black trim,character,cloth,4
+yellow trim,character,cloth,4
+blue trim,character,cloth,4
+brown trim,character,cloth,4
+green trim,character,cloth,4
+grey trim,character,cloth,4
+orange trim,character,cloth,4
+pink trim,character,cloth,4
+purple trim,character,cloth,4
+red trim,character,cloth,4
+aqua halo,character,cloth,4
+black halo,character,cloth,4
+yellow halo,character,cloth,4
+blue halo,character,cloth,4
+brown halo,character,cloth,4
+green halo,character,cloth,4
+grey halo,character,cloth,4
+orange halo,character,cloth,4
+pink halo,character,cloth,4
+purple halo,character,cloth,4
+red halo,character,cloth,4
+white halo,character,cloth,4
+golden halo,character,cloth,4
+rectangular halo,character,cloth,4
+tiger stripes,character,cloth,4
+invasion stripes,character,cloth,4
+yagasuri,character,cloth,4
+bird print,character,cloth,4
+zebra print,character,cloth,4
+fireworks print,character,cloth,4
+flag print,character,cloth,4
+game controller print,character,cloth,4
+handprint,character,cloth,4
+grid print,character,cloth,4
+print ascot,character,cloth,4
+print boots,character,cloth,4
+print bow,character,cloth,4
+print bowtie,character,cloth,4
+print eyepatch,character,cloth,4
+print hakama,character,cloth,4
+print leggings,character,cloth,4
+print necktie,character,cloth,4
+print neckerchief,character,cloth,4
+print pantyhose,character,cloth,4
+print ribbon,character,cloth,4
+print sandals,character,cloth,4
+print shoes,character,cloth,4
+print shorts,character,cloth,4
+print slippers,character,cloth,4
+print socks,character,cloth,4
+print swimsuit,character,cloth,4
+print bikini,character,cloth,4
+print thighhighs,character,cloth,4
+print umbrella,character,cloth,4
+bleeding,general,,6
+blood on bandages,general,,6
+bruise,general,,6
+cuts,general,,6
+deep wound,general,,6
+exposed teeth,general,,6
+head bump,general,,6
+scratches,general,,6
+stitches,general,,6
+scrape,general,,6
+sprain,general,,6
+stab,general,,6
+impaled,general,,6
+severed limb,general,,6
+track marks,general,,6
+paralysis,general,,6
+bandaid on knee,character,cloth,4
+bandaid on arm,character,cloth,4
+bandaid on leg,character,cloth,4
+bandaid on face,character,cloth,4
+bandaid on cheek,character,cloth,4
+bandaid on ear,character,cloth,4
+bandaid on forehead,character,cloth,4
+bandaid on nose,character,cloth,4
+bandage on face,character,cloth,4
+bandage over one eye,character,cloth,4
+arm sling,character,cloth,4
+bingo card,general,,6
+hanafuda,general,,6
+hyakunin isshu,general,,6
+karuta,general,,6
+iroha karuta,general,,6
+uta-garuta,general,,6
+playing card,general,,6
+ace,general,,6
+blackjack,general,,6
+joker,general,,6
+playing card theme,general,,6
+poker,general,,6
+solitaire,general,,6
+themed playing card,general,,6
+tarot,general,,6
+death,general,,6
+justice,general,,6
+strength,general,,6
+temperance,general,,6
+the chariot,general,,6
+the devil,general,,6
+the emperor,general,,6
+the empress,general,,6
+the fool,general,,6
+the hanged man,general,,6
+the hermit,general,,6
+the hierophant,general,,6
+the high priestess,general,,6
+the lovers,general,,6
+the magician,general,,6
+the moon,general,,6
+the star,general,,6
+the sun,general,,6
+the tower,general,,6
+the world,general,,6
+wheel of fortune,general,,6
+uno,general,,6
+opening door,character,pose,4
+closing door,character,pose,4
+knocking,character,pose,4
+against door,character,pose,4
+holding glass door,character,pose,4
+through door,character,pose,4
+through portal,character,pose,4
+wooden door,background,,5
+glass door,background,,5
+sliding doors,background,,5
+automatic door,background,,5
+security shutter,background,,5
+trap door,background,,5
+shouji,background,,5
+fusuma,background,,5
+wooden gate,background,,5
+portcullis,background,,5
+fare gate,background,,5
+portal (object),background,,5
+torii,background,,5
+paifang,background,,5
+moon gate,background,,5
+against tree,character,pose,4
+in tree,character,pose,4
+sitting in tree,character,pose,4
+under tree,character,pose,4
+autumn,general,,6
+branch,general,,6
+log,general,,6
+plant roots,general,,6
+stick,general,,6
+tree hollow,general,,6
+tree stump,general,,6
+habitats,general,,6
+rainforest,general,,6
+baobab,general,,6
+birch tree,general,,6
+bonsai,general,,6
+christmas tree,general,,6
+fir tree,general,,6
+fruit tree,general,,6
+ginkgo tree,general,,6
+ginkgo nut,general,,6
+maple leaf,general,,6
+palm tree,general,,6
+coconut tree,general,,6
+pine tree,general,,6
+willow,general,,6
+bare tree,general,,6
+fallen tree,general,,6
+giant tree,general,,6
+tree shade,general,,6
+bush,general,,6
+rose bush,general,,6
+carnivorous plant,general,,6
+pitcher plant,general,,6
+venus flytrap,general,,6
+bamboo,general,,6
+herb,general,,6
+cattail,general,,6
+marijuana,general,,6
+holly,general,,6
+lily pad,general,,6
+moss,general,,6
+succulent plant,general,,6
+agave,general,,6
+cactus,general,,6
+vines,general,,6
+ivy,general,,6
+golden pothos,general,,6
+fern,general,,6
+rose petals,general,,6
+plant cell,general,,6
+aerial root,general,,6
+seed,general,,6
+floral arch,general,,6
+foliage (generic),general,,6
+piranha plant,general,,6
+potted plant,general,,6
+flower pot,general,,6
+hanging plant,general,,6
+sprout,general,,6
+topiary,general,,6
+farm,background,,5
+grasslands,background,,5
+farming,character,pose,4
+gardening,character,pose,4
+campfire,general,,6
+fireball,general,,6
+fireworks,general,,6
+fire body,general,,6
+fire on chest,general,,6
+fiery hair,general,,6
+black fire,general,,6
+blue fire,general,,6
+green fire,general,,6
+pink fire,general,,6
+purple fire,general,,6
+white fire,general,,6
+burning building,general,,6
+breathing fire,general,,6
+burning,general,,6
+burning photo,general,,6
+cremation,general,,6
+explosion,general,,6
+firemaking,general,,6
+flaring,general,,6
+lighting match,general,,6
+pyrokinesis,general,,6
+smoking,general,,6
+wildfire,general,,6
+arabesque (pose),character,pose,4
+body roll,character,pose,4
+dabbing,character,pose,4
+flossing,character,pose,4
+griddy,character,pose,4
+moonwalk,character,pose,4
+nae nae,character,pose,4
+the monkey,character,pose,4
+twerking,character,pose,4
+dip (dance move),character,pose,4
+awa odori tokushima,character,pose,4
+ballet,character,pose,4
+belly dancing,character,pose,4
+breakdancing,character,pose,4
+cancan,character,pose,4
+cossack dance (hopak),character,pose,4
+dunhuang dancing,character,pose,4
+flamenco dance,character,pose,4
+folk dancing,character,pose,4
+gato,character,pose,4
+hula,character,pose,4
+lap dance,character,pose,4
+para para,character,pose,4
+pole dancing,character,pose,4
+samba,character,pose,4
+tango,character,pose,4
+tap dancing,character,pose,4
+taue odori,character,pose,4
+waltz,character,pose,4
+wotagei,character,pose,4
+yosakoi,character,pose,4
