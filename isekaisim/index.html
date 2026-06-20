@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Life Simulator in Isekai Tavern - Clean UI</title>
+        <link rel="stylesheet" href="style.css" />
+        <style></style>
+    </head>
+    <body>
+        <div id="game-container">
+            <header>
+                <div>LIFE SIMULATOR IN ISEKAI TAVERN</div>
+                <div>
+                    💰 <span id="ui-gold-count">150</span> | 🌙 DAY:
+                    <span id="ui-day-count">1</span>
+                </div>
+            </header>
+
+            <!-- แผงซ้าย (ข้อมูลผู้เล่น) -->
+            <div id="left-panel" class="hidden-panel">
+                <div class="stat-box">
+                    <!-- รูปโปรไฟล์ -->
+                    <img id="ui-player-avatar" src="" alt="Avatar" />
+
+                    <!-- ชื่อและคลาส -->
+                    <h3
+                        id="ui-player-name"
+                        style="
+                            color: #ffd700;
+                            margin-bottom: 5px;
+                            text-align: center;
+                        "
+                    >
+                        [PLAYER]
+                    </h3>
+                    <p
+                        id="ui-player-class"
+                        style="
+                            margin-bottom: 12px;
+                            text-align: center;
+                            color: #aaa;
+                            font-size: 13px;
+                            font-weight: bold;
+                        "
+                    >
+                        CLASS: WANDERER
+                    </p>
+
+                    <!-- Level และ Rank (จัดให้อยู่คู่กันชัดเจน) -->
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            background: #111;
+                            padding: 8px 12px;
+                            border-radius: 4px;
+                            border: 1px solid #444;
+                            margin-bottom: 12px;
+                        "
+                    >
+                        <span
+                            id="ui-player-level"
+                            style="
+                                color: #ffd700;
+                                font-weight: bold;
+                                font-size: 14px;
+                            "
+                            >Lv. 1</span
+                        >
+                        <span
+                            id="ui-player-rank"
+                            style="
+                                color: #ffaa00;
+                                font-weight: bold;
+                                font-size: 14px;
+                            "
+                            >RANK: F</span
+                        >
+                    </div>
+
+                    <!-- แถบพลังชีวิต (HP) -->
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 12px;
+                            margin-bottom: 4px;
+                        "
+                    >
+                        <span>❤️ HP:</span>
+                        <span id="ui-player-hp-text">0 / 0</span>
+                    </div>
+                    <div
+                        style="
+                            width: 100%;
+                            height: 10px;
+                            background: #222;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                            border: 1px solid #111;
+                            overflow: hidden;
+                        "
+                    >
+                        <div
+                            id="ui-player-hp-bar"
+                            style="
+                                width: 100%;
+                                height: 100%;
+                                background: #ff4c4c;
+                                transition: width 0.3s;
+                            "
+                        ></div>
+                    </div>
+
+                    <!-- ปุ่มดูสเตตัส -->
+                    <button
+                        onclick="togglePlayerStatus()"
+                        class="btn-action"
+                        style="
+                            padding: 6px;
+                            font-size: 12px;
+                            background: #444;
+                            width: 100%;
+                            margin-bottom: 5px;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                        "
+                    >
+                        📊 VIEW STATUS 🔽
+                    </button>
+
+                    <!-- หน้าต่าง Accordion สเตตัสและอุปกรณ์ -->
+                    <div
+                        id="ui-player-status-accordion"
+                        style="
+                            display: none;
+                            background: #1a1a1a;
+                            border: 1px solid #444;
+                            border-radius: 5px;
+                            padding: 10px;
+                            margin-top: 5px;
+                            text-align: left;
+                            font-size: 12px;
+                            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+                        "
+                    >
+                        <!-- หลอด EXP -->
+                        <div
+                            style="
+                                text-align: center;
+                                color: #ffd700;
+                                font-weight: bold;
+                                border-bottom: 1px solid #333;
+                                padding-bottom: 5px;
+                                margin-bottom: 8px;
+                            "
+                        >
+                            <span id="ui-player-exp">EXP: 0 / 30</span>
+                        </div>
+
+                        <!-- ตารางสเตตัสเรียงตามมาตรฐาน RPG -->
+                        <div
+                            style="
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                gap: 6px;
+                                margin-bottom: 10px;
+                                color: #ccc;
+                            "
+                        >
+                            <div id="ui-det-hp" style="grid-column: span 2">
+                                ❤️ Max HP: 0
+                            </div>
+                            <div id="ui-det-atk">⚔️ ATK: 0</div>
+                            <div id="ui-det-def">🛡️ DEF: 0</div>
+                            <div id="ui-det-spd">⚡ SPD: 0</div>
+                            <div id="ui-det-luk">🍀 LUK: 0</div>
+                        </div>
+
+                        <!-- ตารางอุปกรณ์สวมใส่ -->
+                        <div
+                            style="
+                                border-top: 1px solid #333;
+                                padding-top: 8px;
+                                color: #aaa;
+                                line-height: 1.6;
+                            "
+                        >
+                            <div id="ui-eq-weapon">🗡️ WEAPON: Null</div>
+                            <div id="ui-eq-armor">🛡️ ARMOR: Null</div>
+                            <div id="ui-eq-head">🪖 HEAD: Null</div>
+                            <div id="ui-eq-acc">💍 ACC: Null</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 10px">
+                    PARTY (<span id="ui-party-count">1</span>/4)
+                </h4>
+
+                <div class="party-slot" style="display: none">
+                    <div><span id="ui-party-lead-name">[PLAYER]</span></div>
+                </div>
+                <div
+                    class="party-slot"
+                    id="ui-party-slot-0"
+                    style="color: #555; justify-content: center"
+                >
+                    [ EMPTY ]
+                </div>
+                <div
+                    class="party-slot"
+                    id="ui-party-slot-1"
+                    style="color: #555; justify-content: center"
+                >
+                    [ EMPTY ]
+                </div>
+                <div
+                    class="party-slot"
+                    id="ui-party-slot-2"
+                    style="color: #555; justify-content: center"
+                >
+                    [ EMPTY ]
+                </div>
+            </div>
+
+            <!-- ตรงกลาง: พื้นที่หลัก -->
+            <div
+                id="main-panel"
+                style="overflow: hidden; min-height: 0; position: relative"
+            >
+                <!-- STATE 0: Title Screen (หน้าเริ่มต้นเกม) -->
+                <div id="state-0" class="center-state" style="display: flex">
+                    <div class="title-header">
+                        <h1>LIFE SIMULATOR<br />IN ISEKAI TAVERN</h1>
+                        <p>
+                            อัปโหลดรูปภาพของคุณเพื่อสกัดค่าพลังและเริ่มต้นการผจญภัย
+                        </p>
+                    </div>
+
+                    <!-- ปุ่มอัปโหลดรูปภาพ -->
+                    <div style="margin: 20px 0; text-align: center">
+                        <label for="image-upload" class="btn-upload">
+                            🖼️ อัปโหลดรูปภาพเพื่อเริ่มเกม
+                        </label>
+                        <input
+                            type="file"
+                            id="image-upload"
+                            accept="image/*"
+                            style="display: none"
+                            onchange="processImageUpload(this)"
+                        />
+                    </div>
+
+                    <!-- คำอธิบายเกมรอเติมทีหลัง -->
+                    <div class="how-to-play-box">
+                        <p
+                            style="
+                                color: #ffd700;
+                                font-weight: bold;
+                                margin-bottom: 10px;
+                            "
+                        >
+                            --- HOW TO PLAY ---
+                        </p>
+                        <p>
+                            ระบบการเล่นพื้นฐานและคำอธิบายจะถูกเพิ่มเข้ามาที่นี่...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- STATE 1: Quest Board -->
+                <div
+                    id="state-1"
+                    class="center-state"
+                    style="display: none; height: 100%; padding: 20px"
+                >
+                    <div
+                        id="quest-board-area"
+                        style="
+                            width: 100%;
+                            flex-grow: 1;
+                            overflow: hidden;
+                            display: flex;
+                            flex-direction: column;
+                            min-height: 0;
+                        "
+                    >
+                        <h2 style="text-align: center; color: #fff">
+                            📜 QUEST BOARD
+                        </h2>
+                        <div
+                            id="quest-list-container"
+                            style="
+                                flex-grow: 1;
+                                overflow-y: auto;
+                                margin: 15px 0;
+                            "
+                        ></div>
+                    </div>
+                
+                    <div
+                        id="ongoing-quest-area"
+                        class="active-quest-panel"
+                        style="display: none; margin: auto"
+                    >
+                        <h2 style="color: #ffaa00; margin-bottom: 10px">
+                            ⚠️ ONGOING QUEST
+                        </h2>
+                        <p style="margin-bottom: 25px; color: #ccc">
+                            คุณมีภารกิจที่กำลังดำเนินการอยู่
+                        </p>
+                        <button
+                            class="btn-full"
+                            style="
+                                background-color: #4caf50;
+                                margin-bottom: 10px;
+                            "
+                            onclick="switchState(2)"
+                        >
+                            CONTINUE (Tavern)
+                        </button>
+                        <button
+                            class="btn-danger btn-full"
+                            onclick="cancelQuest()"
+                        >
+                            CANCEL QUEST
+                        </button>
+                    </div>
+                
+                    <div
+                        id="quest-controls"
+                        style="
+                            width: 100%;
+                            display: flex;
+                            gap: 10px;
+                            margin-top: auto;
+                        "
+                    >
+                        <button
+                            id="btn-accept-quest"
+                            class="btn-action"
+                            style="display: none; flex: 1; background: #4caf50"
+                            onclick="acceptQuest()"
+                        >
+                            ACCEPT QUEST
+                        </button>
+                        <button
+                            id="btn-rest"
+                            class="btn-action"
+                            style="flex: 1; background: #9c27b0"
+                            onclick="restForToday()"
+                        >
+                            REST ☕
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STATE 2: Tavern (Tinder ระบบหาตี้) -->
+                <div
+                    id="state-2"
+                    class="center-state"
+                    style="
+                        display: none;
+                        flex-direction: column;
+                        overflow-y: auto;
+                        max-height: 100%;
+                        padding-bottom: 10px;
+                    "
+                >
+                    <h2
+                        style="
+                            text-align: center;
+                            color: #ffd700;
+                            margin-bottom: 10px;
+                            margin-top: 5px;
+                        "
+                    >
+                        🍻 ISEKAI TAVERN
+                    </h2>
+
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 15px;
+                            width: 100%;
+                        "
+                    >
+                        <button onclick="browseNPC(-1)" class="nav-arrow">
+                            ◀
+                        </button>
+
+                        <div
+                            id="tinder-card-container"
+                            style="
+                                background: #2a2a30;
+                                border: 2px solid #555;
+                                border-radius: 10px;
+                                padding: 15px;
+                                position: relative;
+                                width: 270px;
+                                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+                            "
+                        >
+                            <div
+                                id="npc-recommended-tag"
+                                style="
+                                    position: absolute;
+                                    top: -15px;
+                                    right: -15px;
+                                    background: #ffd700;
+                                    color: #000;
+                                    padding: 5px 12px;
+                                    font-weight: bold;
+                                    border-radius: 20px;
+                                    border: 2px solid #fff;
+                                    display: none;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                                    transform: rotate(10deg);
+                                    z-index: 10;
+                                "
+                            >
+                                ⭐ RECOMMENDED
+                            </div>
+
+                            <div
+                                id="npc-avatar-container"
+                                style="
+                                    width: 100%;
+                                    height: 160px;
+                                    background: #111;
+                                    border: 2px solid #444;
+                                    border-radius: 8px;
+                                    margin-bottom: 10px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    overflow: hidden;
+                                "
+                            ></div>
+
+                            <h3
+                                id="npc-name"
+                                style="
+                                    text-align: center;
+                                    color: #fff;
+                                    margin-bottom: 5px;
+                                    font-size: 18px;
+                                "
+                            >
+                                กำลังค้นหา...
+                            </h3>
+                            <p
+                                id="npc-class"
+                                style="
+                                    text-align: center;
+                                    color: #aaa;
+                                    margin-bottom: 10px;
+                                    font-weight: bold;
+                                    font-size: 14px;
+                                "
+                            >
+                                Class: -
+                            </p>
+
+                            <div
+                                id="npc-stats"
+                                style="
+                                    background: #111;
+                                    padding: 10px;
+                                    border-radius: 5px;
+                                    font-size: 13px;
+                                    color: #ddd;
+                                    margin-bottom: 10px;
+                                    line-height: 1.6;
+                                "
+                            ></div>
+
+                            <p
+                                id="npc-cost"
+                                style="
+                                    text-align: center;
+                                    color: #ffd700;
+                                    font-weight: bold;
+                                    margin-bottom: 15px;
+                                    font-size: 16px;
+                                "
+                            >
+                                Hire: 💰 0 Gold
+                            </p>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-around;
+                                "
+                            >
+                                <button
+                                    onclick="rejectNPC()"
+                                    style="
+                                        background: #ff4c4c;
+                                        border: 3px solid #b32d2d;
+                                        border-radius: 50%;
+                                        width: 55px;
+                                        height: 55px;
+                                        cursor: pointer;
+                                        box-shadow: 0 4px 10px
+                                            rgba(0, 0, 0, 0.3);
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        transition: 0.2s;
+                                    "
+                                >
+                                    <svg
+                                        width="25"
+                                        height="25"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="#fff"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <line
+                                            x1="18"
+                                            y1="6"
+                                            x2="6"
+                                            y2="18"
+                                        ></line>
+                                        <line
+                                            x1="6"
+                                            y1="6"
+                                            x2="18"
+                                            y2="18"
+                                        ></line>
+                                    </svg>
+                                </button>
+                                <button
+                                    onclick="acceptNPC()"
+                                    style="
+                                        background: #4caf50;
+                                        border: 3px solid #2e7d32;
+                                        border-radius: 50%;
+                                        width: 55px;
+                                        height: 55px;
+                                        cursor: pointer;
+                                        box-shadow: 0 4px 10px
+                                            rgba(0, 0, 0, 0.3);
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        transition: 0.2s;
+                                    "
+                                >
+                                    <svg
+                                        width="25"
+                                        height="25"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="#fff"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <polyline
+                                            points="20 6 9 17 4 12"
+                                        ></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button onclick="browseNPC(1)" class="nav-arrow">
+                            ▶
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STATE 3: Dungeon Expedition (หน้าลงดันเจี้ยน) -->
+                <div
+                    id="state-3"
+                    class="center-state"
+                    style="
+                        display: none;
+                        padding: 0 !important;
+                        width: 100%;
+                        height: 100%;
+                    "
+                >
+                    <!-- โครงสร้าง CSS Grid: ล็อกพื้นที่ 4 แถวตายตัว 100% ของหน้าจอ -->
+                    <div
+                        style="
+                            display: grid;
+                            grid-template-rows: auto auto 1fr auto;
+                            width: 100%;
+                            height: 100%;
+                            padding: 20px;
+                            gap: 15px;
+                            box-sizing: border-box;
+                            overflow: hidden;
+                        "
+                    >
+                        <!-- แถวที่ 1: หัวข้อ -->
+                        <h2
+                            style="
+                                text-align: center;
+                                color: #ff4c4c;
+                                margin: 0;
+                                text-shadow: 2px 2px 0px #000;
+                            "
+                        >
+                            ⚔️ EXPEDITION
+                        </h2>
+
+                        <!-- แถวที่ 2: รายละเอียดเควส -->
+                        <div
+                            style="
+                                background: #222;
+                                border-left: 4px solid #ffd700;
+                                padding: 12px;
+                                border-radius: 0 4px 4px 0;
+                            "
+                        >
+                            <h3
+                                id="dungeon-quest-name"
+                                style="color: #fff; margin: 0 0 5px 0"
+                            >
+                                Quest Name
+                            </h3>
+                            <p
+                                id="dungeon-quest-desc"
+                                style="color: #aaa; font-size: 12px; margin: 0"
+                            >
+                                Quest Desc
+                            </p>
+                        </div>
+
+                        <!-- แถวที่ 3: Terminal Log (ล็อกความสูงด้วย min-height: 0 และ 1fr) -->
+                        <div
+                            id="dungeon-log-box"
+                            style="
+                                background: #0a0a0a;
+                                border: 2px solid #444;
+                                border-radius: 5px;
+                                padding: 15px;
+                                font-family:
+                                    &quot;Courier New&quot;, Courier, monospace;
+                                font-size: 13px;
+                                color: #4caf50;
+                                overflow-y: auto;
+                                box-shadow: inset 0 0 10px #000;
+                                line-height: 1.6;
+                                margin: 0;
+                                min-height: 0;
+                            "
+                        >
+                            > System initialized...<br />
+                            > Ready for expedition.<br />
+                        </div>
+
+                        <!-- แถวที่ 4: แผงปุ่มควบคุม (ล็อกติดพื้นเสมอ) -->
+                        <div
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 15px;
+                            "
+                        >
+                            <!-- Progress Bar -->
+                            <div
+                                style="
+                                    width: 100%;
+                                    height: 12px;
+                                    background: #222;
+                                    border-radius: 6px;
+                                    overflow: hidden;
+                                    border: 1px solid #555;
+                                "
+                            >
+                                <div
+                                    id="dungeon-progress-bar"
+                                    style="
+                                        width: 0%;
+                                        height: 100%;
+                                        background: #ffaa00;
+                                        transition: width 0.5s ease-in-out;
+                                    "
+                                ></div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <button
+                                id="btn-start-expedition"
+                                class="btn-action"
+                                style="
+                                    background: #ff4c4c;
+                                    box-shadow: 0 4px 0 #b32d2d;
+                                    margin: 0;
+                                    width: 100%;
+                                "
+                                onclick="startExpedition()"
+                            >
+                                ▶ START EXPEDITION
+                            </button>
+                            <button
+                                id="btn-claim-reward"
+                                class="btn-action"
+                                style="
+                                    background: #4caf50;
+                                    display: none;
+                                    box-shadow: 0 4px 0 #2e7d32;
+                                    margin: 0;
+                                    width: 100%;
+                                "
+                                onclick="finishExpedition()"
+                            >
+                                💰 RESULT
+                            </button>
+                            <button
+                                id="btn-dungeon-fail"
+                                class="btn-action"
+                                style="
+                                    background: #555;
+                                    display: none;
+                                    box-shadow: 0 4px 0 #333;
+                                    margin: 0;
+                                    width: 100%;
+                                "
+                                onclick="finishExpedition()"
+                            >
+                                🩹 RETREAT TO TOWN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATE 4: Town Menu (เมืองหลวง) -->
+                <div
+                    id="state-4"
+                    class="center-state"
+                    style="display: none; height: 100%; padding-bottom: 10px"
+                >
+                    <div
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            height: 100%;
+                        "
+                    >
+                        <h2
+                            style="
+                                text-align: center;
+                                color: #9c27b0;
+                                margin-bottom: 20px;
+                                margin-top: 5px;
+                                text-shadow: 2px 2px 0px #000;
+                            "
+                        >
+                            🏰 TOWN CENTER
+                        </h2>
+
+                        <!-- เมนูหลัก 3 ปุ่ม -->
+                        <div
+                            id="town-main-menu"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 15px;
+                                width: 100%;
+                                padding: 0 15px;
+                            "
+                        >
+                            <button
+                                class="btn-action"
+                                style="
+                                    background: #4caf50;
+                                    padding: 20px;
+                                    font-size: 16px;
+                                    box-shadow: 0 4px 0 #2e7d32;
+                                "
+                                onclick="openTownSubMenu('status')"
+                            >
+                                🏋️ STATUS UPGRADE
+                            </button>
+                            <button
+                                class="btn-action"
+                                style="
+                                    background: #008cba;
+                                    padding: 20px;
+                                    font-size: 16px;
+                                    box-shadow: 0 4px 0 #006b8f;
+                                "
+                                onclick="openTownSubMenu('shop')"
+                            >
+                                🛒 EQUIPMENT SHOP
+                            </button>
+                            <button
+                                class="btn-action"
+                                style="
+                                    background: #ff9800;
+                                    padding: 20px;
+                                    font-size: 16px;
+                                    box-shadow: 0 4px 0 #c66900;
+                                "
+                                onclick="openTownSubMenu('inn')"
+                            >
+                                🍲 INN (REST & MEAL)
+                            </button>
+                        </div>
+
+                        <!-- เมนูย่อย 1: STATUS -->
+                        <div
+                            id="town-status-menu"
+                            style="
+                                display: none;
+                                flex-direction: column;
+                                height: 100%;
+                            "
+                        >
+                            <h3
+                                style="
+                                    color: #4caf50;
+                                    text-align: center;
+                                    margin-bottom: 10px;
+                                "
+                            >
+                                🏋️ UPGRADE STATUS
+                            </h3>
+                            <div
+                                id="town-upgrade-list"
+                                style="
+                                    flex: 1;
+                                    overflow-y: auto;
+                                    background: #111;
+                                    border-radius: 8px;
+                                    padding: 10px;
+                                    margin-bottom: 15px;
+                                    border: 2px solid #444;
+                                "
+                            >
+                                <!-- JS จะสร้างรายการอัปเกรดตรงนี้ -->
+                            </div>
+                            <button
+                                class="btn-action"
+                                style="background: #555"
+                                onclick="openTownSubMenu('main')"
+                            >
+                                🔙 BACK TO TOWN
+                            </button>
+                        </div>
+
+                        <!-- เมนูย่อย 2: SHOP -->
+                        <div
+                            id="town-shop-menu"
+                            style="
+                                display: none;
+                                flex-direction: column;
+                                height: 100%;
+                            "
+                        >
+                            <h3
+                                style="
+                                    color: #008cba;
+                                    text-align: center;
+                                    margin-bottom: 10px;
+                                "
+                            >
+                                🛒 EQUIPMENT SHOP
+                            </h3>
+                            <div
+                                id="town-shop-list"
+                                style="
+                                    flex: 1;
+                                    overflow-y: auto;
+                                    background: #111;
+                                    border-radius: 8px;
+                                    padding: 10px;
+                                    margin-bottom: 15px;
+                                    border: 2px solid #444;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 10px;
+                                "
+                            >
+                                <!-- JS จะสุ่มของ 5 ชิ้นมาวางตรงนี้ -->
+                            </div>
+                            <button
+                                class="btn-action"
+                                style="background: #555"
+                                onclick="openTownSubMenu('main')"
+                            >
+                                🔙 BACK TO TOWN
+                            </button>
+                        </div>
+
+                        <!-- เมนูย่อย 3: INN -->
+                        <div
+                            id="town-inn-menu"
+                            style="
+                                display: none;
+                                flex-direction: column;
+                                height: 100%;
+                            "
+                        >
+                            <h3
+                                style="
+                                    color: #ff9800;
+                                    text-align: center;
+                                    margin-bottom: 10px;
+                                "
+                            >
+                                🍲 INN
+                            </h3>
+                            <p
+                                style="
+                                    text-align: center;
+                                    color: #aaa;
+                                    font-size: 12px;
+                                    margin-bottom: 15px;
+                                "
+                            >
+                                ทานอาหารและพักผ่อนเพื่อเริ่มวันใหม่
+                            </p>
+                            <div
+                                id="town-inn-list"
+                                style="
+                                    flex: 1;
+                                    overflow-y: auto;
+                                    background: #111;
+                                    border-radius: 8px;
+                                    padding: 10px;
+                                    margin-bottom: 15px;
+                                    border: 2px solid #444;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 10px;
+                                "
+                            >
+                                <!-- JS จะสร้างเมนูอาหารตรงนี้ -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- แผงขวา (ข้อมูลเควส) -->
+            <div id="right-panel" class="hidden-panel">
+                <div class="quest-detail-box">
+                    <h3
+                        style="
+                            color: #ffd700;
+                            border-bottom: 1px solid #555;
+                            padding-bottom: 5px;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        QUEST DETAIL
+                    </h3>
+
+                    <div id="right-quest-info">
+                        <p
+                            style="
+                                color: #888;
+                                text-align: center;
+                                margin-top: 50px;
+                            "
+                        >
+                            เลือกเควสเพื่อดูรายละเอียด
+                        </p>
+                    </div>
+                </div>
+                <button
+                    id="btn-back-board"
+                    class="btn-action"
+                    style="display: none; background: #555; margin-bottom: 10px"
+                    onclick="switchState(1)"
+                >
+                    🔙 BACK TO QUEST BOARD
+                </button>
+                <button
+                    id="btn-go-dungeon"
+                    class="btn-action"
+                    style="display: none; background: #008cba"
+                    onclick="enterDungeon()"
+                >
+                    GO TO DUNGEON ⚔️
+                </button>
+            </div>
+        </div>
+
+        <script src="js/constants.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/generator.js"></script>
+        <script src="js/quest.js"></script>
+        <script src="js/tinder.js"></script>
+        <script src="js/battle.js"></script>
+        <script src="js/dungeon.js"></script>
+        <script src="js/town.js"></script>
+    </body>
+</html>
