@@ -67,7 +67,7 @@ function generateDailyQuests() {
       type: "RankUp",
       reqClass: null,
       reqParty: 1,
-      reqPow: playerRankData.weight * 120 + 250,
+      reqPow: playerRankData.weight * 150 + 500,
       rank: playerRankData.rank,
       reward: playerRankData.weight * 300,
       exp: 0,
