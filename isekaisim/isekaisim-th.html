@@ -5,25 +5,131 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Life Simulator in Isekai Tavern - Clean UI</title>
         <link rel="stylesheet" href="style.css" />
-        <style></style>
     </head>
     <body>
         <div id="game-container">
-            <header>
-                <div>LIFE SIMULATOR IN ISEKAI TAVERN</div>
-                <div>
-                    💰 <span id="ui-gold-count">150</span> | 🌙 DAY:
-                    <span id="ui-day-count">1</span>
+            <header
+                style="
+                    background: linear-gradient(180deg, #1f1c18, #12100e);
+                    border-bottom: 3px solid #8c7355;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+                    padding: 0 20px;
+                    height: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-sizing: border-box;
+                "
+            >
+                <div
+                    style="
+                        font-size: 17px;
+                        font-weight: 900;
+                        background: linear-gradient(
+                            135deg,
+                            #fff,
+                            #ffd700,
+                            #ffaa00
+                        );
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        letter-spacing: 1.5px;
+                        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    "
+                >
+                    LIFE SIMULATOR
+                    <span style="color: #8c7355; font-weight: normal">|</span>
+                    ISEKAI TAVERN
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center">
+                    <div
+                        style="
+                            background: linear-gradient(
+                                145deg,
+                                #2a2216,
+                                #16120b
+                            );
+                            border: 2px solid #d4af37;
+                            padding: 4px 14px;
+                            border-radius: 20px;
+                            box-shadow:
+                                inset 0 0 10px rgba(212, 175, 55, 0.15),
+                                0 2px 6px rgba(0, 0, 0, 0.7);
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                        "
+                    >
+                        <span style="font-size: 15px">🪙</span>
+                        <span
+                            style="
+                                color: #a89274;
+                                font-size: 11px;
+                                font-weight: bold;
+                            "
+                            >GOLD:</span
+                        >
+                        <span
+                            id="ui-gold-count"
+                            style="
+                                color: #ffd700;
+                                font-size: 15px;
+                                font-weight: 900;
+                                letter-spacing: 0.5px;
+                            "
+                            >150</span
+                        >
+                    </div>
+
+                    <div
+                        style="
+                            background: linear-gradient(
+                                145deg,
+                                #1f1624,
+                                #100a14
+                            );
+                            border: 2px solid #9c27b0;
+                            padding: 4px 14px;
+                            border-radius: 20px;
+                            box-shadow:
+                                inset 0 0 10px rgba(156, 39, 176, 0.2),
+                                0 2px 6px rgba(0, 0, 0, 0.7);
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                        "
+                    >
+                        <span style="font-size: 15px">🌙</span>
+                        <span
+                            style="
+                                color: #cda8e5;
+                                font-size: 11px;
+                                font-weight: bold;
+                            "
+                            >DAY:</span
+                        >
+                        <span
+                            id="ui-day-count"
+                            style="
+                                color: #e1bee7;
+                                font-size: 15px;
+                                font-weight: 900;
+                                letter-spacing: 0.5px;
+                            "
+                            >1</span
+                        >
+                    </div>
                 </div>
             </header>
 
-            <!-- แผงซ้าย (ข้อมูลผู้เล่น) -->
+            <!-- Left Panel -->
             <div id="left-panel" class="hidden-panel">
                 <div class="stat-box">
-                    <!-- รูปโปรไฟล์ -->
                     <img id="ui-player-avatar" src="" alt="Avatar" />
-
-                    <!-- ชื่อและคลาส -->
                     <h3
                         id="ui-player-name"
                         style="
@@ -47,17 +153,20 @@
                         CLASS: WANDERER
                     </p>
 
-                    <!-- Level และ Rank (จัดให้อยู่คู่กันชัดเจน) -->
+                    <!-- Level & Rank -->
                     <div
+                        onclick="togglePlayerStatus()"
+                        title="คลิกเพื่อกาง/พับ Status"
                         style="
                             display: flex;
                             justify-content: space-between;
                             align-items: center;
-                            background: #111;
+                            background: #141210;
                             padding: 8px 12px;
                             border-radius: 4px;
-                            border: 1px solid #444;
-                            margin-bottom: 12px;
+                            border: 1px solid #362f28;
+                            margin-bottom: 14px;
+                            cursor: pointer;
                         "
                     >
                         <span
@@ -70,6 +179,14 @@
                             >Lv. 1</span
                         >
                         <span
+                            style="
+                                color: #665544;
+                                font-size: 9px;
+                                letter-spacing: 1px;
+                            "
+                            >▼</span
+                        >
+                        <span
                             id="ui-player-rank"
                             style="
                                 color: #ffaa00;
@@ -80,7 +197,7 @@
                         >
                     </div>
 
-                    <!-- แถบพลังชีวิต (HP) -->
+                    <!-- HP bar -->
                     <div
                         style="
                             display: flex;
@@ -96,10 +213,10 @@
                         style="
                             width: 100%;
                             height: 10px;
-                            background: #222;
+                            background: #141210;
                             border-radius: 4px;
                             margin-bottom: 15px;
-                            border: 1px solid #111;
+                            border: 1px solid #362f28;
                             overflow: hidden;
                         "
                     >
@@ -108,89 +225,175 @@
                             style="
                                 width: 100%;
                                 height: 100%;
-                                background: #ff4c4c;
+                                background: linear-gradient(
+                                    90deg,
+                                    #800000,
+                                    #ff4c4c
+                                );
                                 transition: width 0.3s;
                             "
                         ></div>
                     </div>
 
-                    <!-- ปุ่มดูสเตตัส -->
-                    <button
-                        onclick="togglePlayerStatus()"
-                        class="btn-action"
-                        style="
-                            padding: 6px;
-                            font-size: 12px;
-                            background: #444;
-                            width: 100%;
-                            margin-bottom: 5px;
-                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-                        "
-                    >
-                        📊 VIEW STATUS 🔽
-                    </button>
-
-                    <!-- หน้าต่าง Accordion สเตตัสและอุปกรณ์ -->
+                    <!-- Accordion Status & Equipment -->
                     <div
                         id="ui-player-status-accordion"
                         style="
                             display: none;
-                            background: #1a1a1a;
-                            border: 1px solid #444;
-                            border-radius: 5px;
+                            background: #141210;
+                            border: 1px solid #362f28;
+                            border-radius: 4px;
                             padding: 10px;
-                            margin-top: 5px;
-                            text-align: left;
-                            font-size: 12px;
-                            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+                            margin-top: 10px;
+                            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9);
                         "
                     >
-                        <!-- หลอด EXP -->
                         <div
                             style="
                                 text-align: center;
-                                color: #ffd700;
+                                font-size: 11px;
                                 font-weight: bold;
-                                border-bottom: 1px solid #333;
-                                padding-bottom: 5px;
+                                color: #ffaa00;
+                                border-bottom: 1px solid #2a241e;
+                                padding-bottom: 6px;
                                 margin-bottom: 8px;
                             "
                         >
-                            <span id="ui-player-exp">EXP: 0 / 30</span>
+                            <span id="ui-player-exp">EXP: 0 / 35</span>
                         </div>
 
-                        <!-- ตารางสเตตัสเรียงตามมาตรฐาน RPG -->
                         <div
                             style="
-                                display: grid;
-                                grid-template-columns: 1fr 1fr;
-                                gap: 6px;
-                                margin-bottom: 10px;
-                                color: #ccc;
+                                display: flex;
+                                justify-content: space-around;
+                                width: 100%;
+                                background: #0a0806;
+                                padding: 8px 4px;
+                                border-radius: 3px;
+                                border: 1px solid #241e18;
+                                margin-bottom: 8px;
                             "
                         >
-                            <div id="ui-det-hp" style="grid-column: span 2">
-                                ❤️ Max HP: 0
+                            <span
+                                id="ui-det-hp"
+                                style="
+                                    color: #ff6b6b;
+                                    display: inline-block;
+                                    width: 38px;
+                                    text-align: center;
+                                    line-height: 1.3;
+                                "
+                                title="Max HP"
+                                >❤️ 0</span
+                            >
+                            <span
+                                id="ui-det-atk"
+                                style="
+                                    color: #ffaa00;
+                                    display: inline-block;
+                                    width: 38px;
+                                    text-align: center;
+                                    line-height: 1.3;
+                                "
+                                title="Attack"
+                                >⚔️ 0</span
+                            >
+                            <span
+                                id="ui-det-def"
+                                style="
+                                    color: #69db7c;
+                                    display: inline-block;
+                                    width: 38px;
+                                    text-align: center;
+                                    line-height: 1.3;
+                                "
+                                title="Defense"
+                                >🛡️ 0</span
+                            >
+                            <span
+                                id="ui-det-spd"
+                                style="
+                                    color: #4dabf7;
+                                    display: inline-block;
+                                    width: 38px;
+                                    text-align: center;
+                                    line-height: 1.3;
+                                "
+                                title="Speed"
+                                >⚡ 0</span
+                            >
+                            <span
+                                id="ui-det-luk"
+                                style="
+                                    color: #cc5de8;
+                                    display: inline-block;
+                                    width: 38px;
+                                    text-align: center;
+                                    line-height: 1.3;
+                                "
+                                title="Luck"
+                                >🍀 0</span
+                            >
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 4px;
+                                font-size: 10px;
+                                color: #d4c4b4;
+                                background: #0e0c0a;
+                                padding: 6px 8px;
+                                border-radius: 3px;
+                                border: 1px solid #241e18;
+                            "
+                            align="left"
+                        >
+                            <div
+                                id="ui-eq-weapon"
+                                style="
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                "
+                                title="Weapon Slot"
+                            >
+                                🗡️ None
                             </div>
-                            <div id="ui-det-atk">⚔️ ATK: 0</div>
-                            <div id="ui-det-def">🛡️ DEF: 0</div>
-                            <div id="ui-det-spd">⚡ SPD: 0</div>
-                            <div id="ui-det-luk">🍀 LUK: 0</div>
-                        </div>
-
-                        <!-- ตารางอุปกรณ์สวมใส่ -->
-                        <div
-                            style="
-                                border-top: 1px solid #333;
-                                padding-top: 8px;
-                                color: #aaa;
-                                line-height: 1.6;
-                            "
-                        >
-                            <div id="ui-eq-weapon">🗡️ WEAPON: Null</div>
-                            <div id="ui-eq-armor">🛡️ ARMOR: Null</div>
-                            <div id="ui-eq-head">🪖 HEAD: Null</div>
-                            <div id="ui-eq-acc">💍 ACC: Null</div>
+                            <div
+                                id="ui-eq-armor"
+                                style="
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                "
+                                title="Armor Slot"
+                            >
+                                🛡️ None
+                            </div>
+                            <div
+                                id="ui-eq-head"
+                                style="
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                "
+                                title="Headgear Slot"
+                            >
+                                🪖 None
+                            </div>
+                            <div
+                                id="ui-eq-acc"
+                                style="
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                "
+                                title="Accessory Slot"
+                            >
+                                💍 None
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,12 +428,12 @@
                 </div>
             </div>
 
-            <!-- ตรงกลาง: พื้นที่หลัก -->
+            <!-- Main Panel -->
             <div
                 id="main-panel"
                 style="overflow: hidden; min-height: 0; position: relative"
             >
-                <!-- STATE 0: Title Screen (หน้าเริ่มต้นเกม) -->
+                <!-- STATE 0: Title Screen -->
                 <div id="state-0" class="center-state" style="display: flex">
                     <div class="title-header">
                         <h1>LIFE SIMULATOR<br />IN ISEKAI TAVERN</h1>
@@ -239,10 +442,11 @@
                         </p>
                     </div>
 
-                    <!-- ปุ่มอัปโหลดรูปภาพ -->
+                    <!-- Upload Image -->
                     <div style="margin: 20px 0; text-align: center">
                         <label for="image-upload" class="btn-upload">
-                            🖼️ อัปโหลดรูปภาพเพื่อเริ่มเกม
+                            🖼️ อัปโหลดรูปภาพเพื่อเริ่มเกม <br />(New Game / Load
+                            Data)
                         </label>
                         <input
                             type="file"
@@ -253,7 +457,7 @@
                         />
                     </div>
 
-                    <!-- คำอธิบายเกมรอเติมทีหลัง -->
+                    <!-- how to play -->
                     <div class="how-to-play-box">
                         <p
                             style="
@@ -299,7 +503,7 @@
                             "
                         ></div>
                     </div>
-                
+
                     <div
                         id="ongoing-quest-area"
                         class="active-quest-panel"
@@ -319,7 +523,7 @@
                             "
                             onclick="switchState(2)"
                         >
-                            CONTINUE (Tavern)
+                            CONTINUE
                         </button>
                         <button
                             class="btn-danger btn-full"
@@ -328,7 +532,7 @@
                             CANCEL QUEST
                         </button>
                     </div>
-                
+
                     <div
                         id="quest-controls"
                         style="
@@ -357,7 +561,7 @@
                     </div>
                 </div>
 
-                <!-- STATE 2: Tavern (Tinder ระบบหาตี้) -->
+                <!-- STATE 2: Tavern -->
                 <div
                     id="state-2"
                     class="center-state"
@@ -377,7 +581,7 @@
                             margin-top: 5px;
                         "
                     >
-                        🍻 ISEKAI TAVERN
+                        🍻 RECRUITMENT DESK
                     </h2>
 
                     <div
@@ -580,7 +784,7 @@
                     </div>
                 </div>
 
-                <!-- STATE 3: Dungeon Expedition (หน้าลงดันเจี้ยน) -->
+                <!-- STATE 3: Dungeon Expedition -->
                 <div
                     id="state-3"
                     class="center-state"
@@ -591,7 +795,7 @@
                         height: 100%;
                     "
                 >
-                    <!-- โครงสร้าง CSS Grid: ล็อกพื้นที่ 4 แถวตายตัว 100% ของหน้าจอ -->
+                    <!--  CSS Grid -->
                     <div
                         style="
                             display: grid;
@@ -604,7 +808,7 @@
                             overflow: hidden;
                         "
                     >
-                        <!-- แถวที่ 1: หัวข้อ -->
+                        <!-- Subject -->
                         <h2
                             style="
                                 text-align: center;
@@ -616,7 +820,7 @@
                             ⚔️ EXPEDITION
                         </h2>
 
-                        <!-- แถวที่ 2: รายละเอียดเควส -->
+                        <!-- Quest Details -->
                         <div
                             style="
                                 background: #222;
@@ -639,7 +843,7 @@
                             </p>
                         </div>
 
-                        <!-- แถวที่ 3: Terminal Log (ล็อกความสูงด้วย min-height: 0 และ 1fr) -->
+                        <!-- Terminal Log -->
                         <div
                             id="dungeon-log-box"
                             style="
@@ -662,7 +866,7 @@
                             > Ready for expedition.<br />
                         </div>
 
-                        <!-- แถวที่ 4: แผงปุ่มควบคุม (ล็อกติดพื้นเสมอ) -->
+                        <!-- Lower Control Grid -->
                         <div
                             style="
                                 display: flex;
@@ -738,216 +942,138 @@
                     </div>
                 </div>
 
-                <!-- STATE 4: Town Menu (เมืองหลวง) -->
+                <!-- STATE 4: Town Menu -->
                 <div
                     id="state-4"
                     class="center-state"
-                    style="display: none; height: 100%; padding-bottom: 10px"
+                    style="display: none; height: 100%; padding: 20px"
                 >
-                    <div
-                        style="
-                            display: flex;
-                            flex-direction: column;
-                            height: 100%;
-                        "
-                    >
-                        <h2
-                            style="
-                                text-align: center;
-                                color: #9c27b0;
-                                margin-bottom: 20px;
-                                margin-top: 5px;
-                                text-shadow: 2px 2px 0px #000;
-                            "
-                        >
-                            🏰 TOWN CENTER
-                        </h2>
+                    <div id="town-main-menu" class="town-menu-container">
+                        <div class="town-header">
+                            <span style="font-size: 28px">🏰</span>
+                            <h2>TOWN CENTER</h2>
+                            <p>
+                                จัตุรัสการค้าหลวง
+                                เลือกสถานที่ที่ต้องการใช้บริการ
+                            </p>
+                        </div>
 
-                        <!-- เมนูหลัก 3 ปุ่ม -->
-                        <div
-                            id="town-main-menu"
-                            style="
-                                display: flex;
-                                flex-direction: column;
-                                gap: 15px;
-                                width: 100%;
-                                padding: 0 15px;
-                            "
-                        >
+                        <!-- ตาราง 2x2 -->
+                        <div class="town-grid-2x2">
+                            <!-- 1: GYM -->
                             <button
-                                class="btn-action"
-                                style="
-                                    background: #4caf50;
-                                    padding: 20px;
-                                    font-size: 16px;
-                                    box-shadow: 0 4px 0 #2e7d32;
-                                "
+                                class="town-grid-card gym-card"
                                 onclick="openTownSubMenu('status')"
                             >
-                                🏋️ STATUS UPGRADE
+                                <div class="card-icon-box">📶</div>
+                                <div class="card-label-box">
+                                    <h3>TRAINING</h3>
+                                    <p>ฝึกฝน เพื่อเพิ่มค่าสเตตัส</p>
+                                </div>
                             </button>
+
+                            <!-- 2: SHOP -->
                             <button
-                                class="btn-action"
-                                style="
-                                    background: #008cba;
-                                    padding: 20px;
-                                    font-size: 16px;
-                                    box-shadow: 0 4px 0 #006b8f;
-                                "
+                                class="town-grid-card shop-card"
                                 onclick="openTownSubMenu('shop')"
                             >
-                                🛒 EQUIPMENT SHOP
+                                <div class="card-icon-box">⚔️</div>
+                                <div class="card-label-box">
+                                    <h3>SHOP</h3>
+                                    <p>เลือกซื้ออาวุธชุดเกราะ</p>
+                                </div>
                             </button>
+
+                            <!-- 3: SAVE -->
                             <button
-                                class="btn-action"
-                                style="
-                                    background: #ff9800;
-                                    padding: 20px;
-                                    font-size: 16px;
-                                    box-shadow: 0 4px 0 #c66900;
-                                "
+                                class="town-grid-card save-card"
+                                onclick="saveGameToFile()"
+                            >
+                                <div class="card-icon-box">💾</div>
+                                <div class="card-label-box">
+                                    <h3>SAVE ADVENTURE</h3>
+                                    <p>บันทึกการผจญภัย</p>
+                                </div>
+                            </button>
+
+                            <!-- 4: INN -->
+                            <button
+                                class="town-grid-card inn-card"
                                 onclick="openTownSubMenu('inn')"
                             >
-                                🍲 INN (REST & MEAL)
+                                <div class="card-icon-box">🍽️</div>
+                                <div class="card-label-box">
+                                    <h3>INN</h3>
+                                    <p>ทานอาหารและพักผ่อน</p>
+                                    <p>
+                                        *** โปรดเลือกเมนูนี้เพื่อเข้าสู่วันถัดไป
+                                        ***
+                                    </p>
+                                </div>
                             </button>
                         </div>
+                    </div>
 
-                        <!-- เมนูย่อย 1: STATUS -->
+                    <div id="town-status-menu" class="town-submenu-panel">
                         <div
-                            id="town-status-menu"
-                            style="
-                                display: none;
-                                flex-direction: column;
-                                height: 100%;
-                            "
+                            class="submenu-header"
+                            style="border-bottom-color: #ff4c4c"
                         >
-                            <h3
-                                style="
-                                    color: #4caf50;
-                                    text-align: center;
-                                    margin-bottom: 10px;
-                                "
-                            >
-                                🏋️ UPGRADE STATUS
-                            </h3>
-                            <div
-                                id="town-upgrade-list"
-                                style="
-                                    flex: 1;
-                                    overflow-y: auto;
-                                    background: #111;
-                                    border-radius: 8px;
-                                    padding: 10px;
-                                    margin-bottom: 15px;
-                                    border: 2px solid #444;
-                                "
-                            >
-                                <!-- JS จะสร้างรายการอัปเกรดตรงนี้ -->
-                            </div>
-                            <button
-                                class="btn-action"
-                                style="background: #555"
-                                onclick="openTownSubMenu('main')"
-                            >
-                                🔙 BACK TO TOWN
-                            </button>
-                        </div>
-
-                        <!-- เมนูย่อย 2: SHOP -->
-                        <div
-                            id="town-shop-menu"
-                            style="
-                                display: none;
-                                flex-direction: column;
-                                height: 100%;
-                            "
-                        >
-                            <h3
-                                style="
-                                    color: #008cba;
-                                    text-align: center;
-                                    margin-bottom: 10px;
-                                "
-                            >
-                                🛒 EQUIPMENT SHOP
-                            </h3>
-                            <div
-                                id="town-shop-list"
-                                style="
-                                    flex: 1;
-                                    overflow-y: auto;
-                                    background: #111;
-                                    border-radius: 8px;
-                                    padding: 10px;
-                                    margin-bottom: 15px;
-                                    border: 2px solid #444;
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: 10px;
-                                "
-                            >
-                                <!-- JS จะสุ่มของ 5 ชิ้นมาวางตรงนี้ -->
-                            </div>
-                            <button
-                                class="btn-action"
-                                style="background: #555"
-                                onclick="openTownSubMenu('main')"
-                            >
-                                🔙 BACK TO TOWN
-                            </button>
-                        </div>
-
-                        <!-- เมนูย่อย 3: INN -->
-                        <div
-                            id="town-inn-menu"
-                            style="
-                                display: none;
-                                flex-direction: column;
-                                height: 100%;
-                            "
-                        >
-                            <h3
-                                style="
-                                    color: #ff9800;
-                                    text-align: center;
-                                    margin-bottom: 10px;
-                                "
-                            >
-                                🍲 INN
-                            </h3>
-                            <p
-                                style="
-                                    text-align: center;
-                                    color: #aaa;
-                                    font-size: 12px;
-                                    margin-bottom: 15px;
-                                "
-                            >
-                                ทานอาหารและพักผ่อนเพื่อเริ่มวันใหม่
+                            <h3 style="color: #ff4c4c">𝑳𝐕𝑳🆙 TRAINING</h3>
+                            <p style="color: #aaa; font-size: 11px">
+                                อัปเกรดสเตตัส
                             </p>
-                            <div
-                                id="town-inn-list"
-                                style="
-                                    flex: 1;
-                                    overflow-y: auto;
-                                    background: #111;
-                                    border-radius: 8px;
-                                    padding: 10px;
-                                    margin-bottom: 15px;
-                                    border: 2px solid #444;
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: 10px;
-                                "
-                            >
-                                <!-- JS จะสร้างเมนูอาหารตรงนี้ -->
-                            </div>
                         </div>
+                        <div
+                            id="town-upgrade-list"
+                            class="submenu-item-list"
+                        ></div>
+                        <button
+                            class="btn-classic-back"
+                            onclick="openTownSubMenu('main')"
+                        >
+                            🔙 BACK TO TOWN SQUARE
+                        </button>
+                    </div>
+
+                    <div id="town-shop-menu" class="town-submenu-panel">
+                        <div
+                            class="submenu-header"
+                            style="border-bottom-color: #008cba"
+                        >
+                            <h3 style="color: #008cba">⚔️ SHOP</h3>
+                            <p style="color: #aaa; font-size: 11px">
+                                ซื้ออุปกรณ์สวมใส่
+                            </p>
+                        </div>
+                        <div
+                            id="town-shop-list"
+                            class="submenu-item-list"
+                        ></div>
+                        <button
+                            class="btn-classic-back"
+                            onclick="openTownSubMenu('main')"
+                        >
+                            🔙 BACK TO TOWN SQUARE
+                        </button>
+                    </div>
+
+                    <div id="town-inn-menu" class="town-submenu-panel">
+                        <div
+                            class="submenu-header"
+                            style="border-bottom-color: #ff9800"
+                        >
+                            <h3 style="color: #ff9800">🍲 INN</h3>
+                            <p style="color: #aaa; font-size: 11px">
+                                เลือกเมนูอาหารเพื่อฟื้นค่า HP ก่อนนอน
+                            </p>
+                        </div>
+                        <div id="town-inn-list" class="submenu-item-list"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- แผงขวา (ข้อมูลเควส) -->
+            <!-- Right Panel (Quest Detail) -->
             <div id="right-panel" class="hidden-panel">
                 <div class="quest-detail-box">
                     <h3
@@ -993,6 +1119,7 @@
         </div>
 
         <script src="js/constants.js"></script>
+        <script src="js/bg.js"></script>
         <script src="js/main.js"></script>
         <script src="js/generator.js"></script>
         <script src="js/quest.js"></script>
