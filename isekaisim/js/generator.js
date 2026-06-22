@@ -1,5 +1,9 @@
 // js/generator.js
 
+let rawImageBlob = null;
+let tempBaseStats = null;
+let currentSelectedClass = null;
+
 function calculatePower(stats) {
   if (!stats) return 0;
   return Math.floor(
@@ -34,12 +38,71 @@ function calculatePlayerLevel() {
   return { level: level, power: power };
 }
 
-let tempBaseStats = null;
-let currentSelectedClass = null;
+function findSaveMarker(bytes, marker) {
+  for (let i = bytes.length - marker.length; i >= 0; i--) {
+    let found = true;
+    for (let j = 0; j < marker.length; j++) {
+      if (bytes[i + j] !== marker[j]) {
+        found = false;
+        break;
+      }
+    }
+    if (found) return i;
+  }
+  return -1;
+}
 
-function processImageUpload(fileInput) {
+async function processImageUpload(fileInput) {
   const file = fileInput.files[0];
   if (!file) return;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const bytes = new Uint8Array(arrayBuffer);
+  const marker = new TextEncoder().encode("===ISEKAI_SAVE_V1===");
+  const markerIndex = findSaveMarker(bytes, marker);
+
+  // ─── โหมด A: ตรวจพบว่าเป็น "ไฟล์ Save จากอดีต" ───
+  if (markerIndex !== -1) {
+    try {
+      const jsonBytes = bytes.subarray(markerIndex + marker.length);
+      const jsonString = new TextDecoder().decode(jsonBytes);
+      const loadedData = JSON.parse(jsonString);
+
+      Object.assign(gameData, loadedData);
+      rawImageBlob = file.slice(0, markerIndex);
+
+      const blobUrl = URL.createObjectURL(rawImageBlob);
+      document.getElementById("ui-player-avatar").src = blobUrl;
+      document.getElementById("preview-image").src = blobUrl;
+
+      document.getElementById("left-panel").classList.remove("hidden-panel");
+      document.getElementById("right-panel").classList.remove("hidden-panel");
+
+      updatePlayerUI();
+      if (typeof updatePartyUI === "function") updatePartyUI();
+      document.getElementById("ui-gold-count").innerText = gameData.gold;
+      document.getElementById("ui-day-count").innerText = gameData.day;
+
+      showModal(
+        "💾 LOAD GAME SUCCESS!",
+        `โหลดบันทึกนักผจญภัย: <b>[ ${gameData.player.name} ]</b><br>DAY: ${gameData.day} | ยอดเงิน: ${gameData.gold} Gold`,
+        "alert",
+        () => {
+          switchState(1);
+          if (typeof renderQuestBoard === "function") renderQuestBoard();
+        },
+      );
+      return;
+    } catch (e) {
+      console.error("Save data corrupted:", e);
+      alert(
+        "⚠️ ข้อมูลเซฟในรูปภาพนี้เสียหาย! ระบบจะสกัดพลังสร้างตัวละครใหม่แทน",
+      );
+    }
+  }
+
+  // ─── โหมด B: เป็น "รูปภาพธรรมดา" (สกัดพลังสร้างตัวละครใหม่) ───
+  rawImageBlob = file;
 
   const fileSize = file.size;
   const minPool = 150,
@@ -186,20 +249,20 @@ function updatePlayerUI() {
     document.getElementById("ui-player-exp").innerText =
       `EXP: ${p.exp || 0} / ${currentRankData.maxExp}`;
 
-    document.getElementById("ui-det-hp").innerText = `Max HP: ${p.stats.hp}`;
-    document.getElementById("ui-det-spd").innerText = `⚡ SPD: ${p.stats.spd}`;
-    document.getElementById("ui-det-atk").innerText = `⚔️ ATK: ${p.stats.atk}`;
-    document.getElementById("ui-det-def").innerText = `🛡️ DEF: ${p.stats.def}`;
-    document.getElementById("ui-det-luk").innerText = `🍀 LUK: ${p.stats.luk}`;
+    document.getElementById("ui-det-hp").innerText = `❤️ ${p.stats.hp}`;
+    document.getElementById("ui-det-atk").innerText = `⚔️ ${p.stats.atk}`;
+    document.getElementById("ui-det-def").innerText = `🛡️ ${p.stats.def}`;
+    document.getElementById("ui-det-spd").innerText = `⚡ ${p.stats.spd}`;
+    document.getElementById("ui-det-luk").innerText = `🍀 ${p.stats.luk}`;
 
     document.getElementById("ui-eq-weapon").innerText =
-      `🗡️ WEAPON: ${p.equipment?.weapon?.name || "Null"}`;
+      `🗡️ ${p.equipment?.weapon?.name || "None"}`;
     document.getElementById("ui-eq-armor").innerText =
-      `🛡️ ARMOR: ${p.equipment?.armor?.name || "Null"}`;
+      `🛡️ ${p.equipment?.armor?.name || "None"}`;
     document.getElementById("ui-eq-head").innerText =
-      `🪖 HEAD: ${p.equipment?.head?.name || "Null"}`;
+      `🪖 ${p.equipment?.head?.name || "None"}`;
     document.getElementById("ui-eq-acc").innerText =
-      `💍 ACC: ${p.equipment?.acc?.name || "Null"}`;
+      `💍 ${p.equipment?.acc?.name || "None"}`;
   }
 
   const leadNameEl = document.getElementById("ui-party-lead-name");
@@ -208,16 +271,8 @@ function updatePlayerUI() {
 
 function togglePlayerStatus() {
   const acc = document.getElementById("ui-player-status-accordion");
-  const btn = event.currentTarget;
-
-  if (acc.style.display === "none") {
-    acc.style.display = "block";
-    btn.innerHTML = "📊 HIDE STATUS 🔼";
-    btn.style.background = "#666";
-  } else {
-    acc.style.display = "none";
-    btn.innerHTML = "📊 VIEW STATUS 🔽";
-    btn.style.background = "#444";
+  if (acc) {
+    acc.style.display = acc.style.display === "none" ? "block" : "none";
   }
 }
 
@@ -227,7 +282,7 @@ function switchState(stateNumber) {
   });
   const targetState = document.getElementById(`state-${stateNumber}`);
   if (targetState) {
-    targetState.style.display = "flex"; // <-- [แก้ไข] ล็อกเป็น flex เสมอ
+    targetState.style.display = "flex";
   }
 
   const backBtn = document.getElementById("btn-back-board");
@@ -238,12 +293,13 @@ function switchState(stateNumber) {
     if (goDungeonBtn) {
       goDungeonBtn.style.display = gameData.activeQuest ? "block" : "none";
     }
-    if (typeof refreshQuestDetailUI === "function") {
-      refreshQuestDetailUI();
-    }
   } else {
     if (backBtn) backBtn.style.display = "none";
     if (goDungeonBtn) goDungeonBtn.style.display = "none";
+  }
+
+  if (typeof refreshQuestDetailUI === "function") {
+    refreshQuestDetailUI();
   }
 
   if (stateNumber === 4) {

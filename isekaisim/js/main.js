@@ -151,3 +151,32 @@ function initGame() {
 
 // บังคับให้ initGame ทำงานก็ต่อเมื่อ HTML โหลดเสร็จสมบูรณ์แล้วเท่านั้น
 document.addEventListener("DOMContentLoaded", initGame);
+
+// ==========================================
+// 5. Game Save System
+// ==========================================
+async function saveGameToFile() {
+  if (!rawImageBlob) {
+    showModal("⚠️ ไม่สามารถบันทึกได้", "ไม่พบข้อมูลรูปภาพต้นฉบับในระบบ", "alert");
+    return;
+  }
+
+  // 1. แปลง Global State ทั้งก้อนเป็นข้อความ JSON
+  const jsonString = JSON.stringify(gameData);
+  const markerAndData = "===ISEKAI_SAVE_V1===" + jsonString;
+  const textBlob = new Blob([markerAndData], { type: "text/plain" });
+
+  // 2. จับรวมร่าง: [ ไบต์รูป PNG ออริจินัล ] + [ ไบต์ข้อความ JSON ]
+  const finalSaveBlob = new Blob([rawImageBlob, textBlob], { type: "image/png" });
+
+  // 3. ตั้งชื่อไฟล์ให้รู้ตัวตน และสั่งเบราว์เซอร์ดาวน์โหลด
+  const safeName = (gameData.player.name || "Adventurer").toLowerCase().replace(/[^a-z0-9]/g, "_");
+  const fileName = `isekai_day${gameData.day}_${safeName}.png`;
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(finalSaveBlob);
+  link.download = fileName;
+  link.click();
+
+  showModal("💾 บันทึกสาส์นลับสำเร็จ!", `ไฟล์เซฟ <b>${fileName}</b> ถูกดาวน์โหลดแล้ว<br><span style="font-size:11px; color:#ffaa00;">(ใช้รูปนี้อัปโหลดเพื่อเล่นต่อคราวหน้าได้เลย ตัวรูปยังกดเปิดดูได้ปกติ!)</span>`, "alert");
+}

@@ -196,6 +196,15 @@ function calculateExpedition(quest) {
   addLog(`> [SYSTEM] เริ่มภารกิจ: ${quest.name}${dayStr}...`);
   addLog(`> กำลังประมวลผลสภาพแวดล้อม...`);
 
+  // --- 1. บัฟอาหารหรูแสดงผลก่อนเลยทันทีเมื่อเข้าดันเจี้ยน ---
+    if (gameData.hasLuxBuff) {
+      quest.reqPow = Math.floor(quest.reqPow * 0.8);
+      ratio = partyPower / quest.reqPow; 
+      addLog(`<span style="color: #FFD700; font-weight: bold;">> 🍖 [BUFF] อานุภาพ Luxurious Steak! ปาร์ตี้แข็งแกร่งขึ้น 20%</span>`);
+      gameData.hasLuxBuff = false; 
+    }
+
+  // --- 2. ระบบสุ่ม Event ประจำวัน ---
   let eventSkipDamage = false;
   let eventFreeWin = false;
   let ev = triggerRandomEvent(pInfo);

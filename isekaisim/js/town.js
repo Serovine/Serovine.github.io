@@ -5,6 +5,11 @@ let currentShopItems = [];
 // เปิดหน้าเมือง
 function enterTown() {
   switchState(4);
+  const s4 = document.getElementById("state-4");
+  if (s4 && SVGS.bg_town) {
+    s4.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(SVGS.bg_town)}')`;
+  }
+
   openTownSubMenu("main");
 }
 
@@ -31,34 +36,37 @@ function openTownSubMenu(menu) {
 }
 
 // ==========================================
-// 1. ระบบ STATUS UPGRADE
+// 1. เรนเดอร์ TRAINING GYM
 // ==========================================
 function renderStatusMenu() {
   const stats = [
-    { key: "hp",  name: "❤️ HP",  baseCost: 5,  costPerPoint: 0.05, inc: 10 }, // HP +10 → Power +2
-    { key: "atk", name: "⚔️ ATK", baseCost: 8,  costPerPoint: 0.10, inc: 3  }, // ATK +3 → Power +3
-    { key: "def", name: "🛡️ DEF", baseCost: 8,  costPerPoint: 0.10, inc: 3  }, // DEF +3 → Power +3
-    { key: "spd", name: "⚡ SPD", baseCost: 8,  costPerPoint: 0.10, inc: 3  }, // SPD +3 → Power +3
-    { key: "luk", name: "🍀 LUK", baseCost: 12, costPerPoint: 0.18, inc: 2  }, // LUK +2 → Power +2
+    { key: "hp", name: "❤️ Max HP", baseCost: 5, costPerPoint: 0.05, inc: 10 },
+    { key: "atk", name: "⚔️ Attack", baseCost: 8, costPerPoint: 0.1, inc: 3 },
+    { key: "def", name: "🛡️ Defense", baseCost: 8, costPerPoint: 0.1, inc: 3 },
+    { key: "spd", name: "⚡ Speed", baseCost: 8, costPerPoint: 0.1, inc: 3 },
+    { key: "luk", name: "🍀 Luck", baseCost: 12, costPerPoint: 0.18, inc: 2 },
   ];
 
   const container = document.getElementById("town-upgrade-list");
+  if (!container) return;
   container.innerHTML = "";
 
   stats.forEach((s) => {
     let currentVal = gameData.player.stats[s.key];
-    let upgradedTimes = Math.max(0, currentVal - 150);
+    let upgradedTimes = Math.max(0, currentVal - 150); // สูตรเดิมของคุณ 100%
     let cost = Math.floor(s.baseCost + upgradedTimes * s.costPerPoint);
 
     container.innerHTML += `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #222; padding: 10px; border-radius: 5px; margin-bottom: 10px; border-left: 3px solid #4CAF50;">
-                <div style="text-align: left;">
-                    <span style="font-size: 12px; color: #ccc;">${s.name}</span><br>
-                    <span style="font-size: 16px; color: #fff; font-weight: bold;">${currentVal} <span style="color: #4CAF50; font-size: 10px;">(+${s.inc})</span></span>
-                </div>
-                <button onclick="upgradeStat('${s.key}', ${cost}, ${s.inc})" class="btn-action" style="width: auto; padding: 5px 10px; font-size: 12px; background: #4CAF50; box-shadow: 0 4px 0 #2e7d32; margin: 0;">UPGRADE 💰 ${cost}</button>
+        <div class="town-item-card" style="border-left: 4px solid #ff4c4c;">
+            <div class="item-text-stack">
+                <p style="color: #a89274;">${s.name}</p>
+                <h4>${currentVal} <span style="color: #ff4c4c; font-size: 11px;">(+${s.inc})</span></h4>
             </div>
-        `;
+            <button onclick="upgradeStat('${s.key}', ${cost}, ${s.inc})" class="btn-buy-3d gym-btn-style">
+                TRAIN 💰 ${cost}g
+            </button>
+        </div>
+    `;
   });
 }
 
@@ -134,16 +142,16 @@ function generateShopItems() {
 
   // ── Rank → stat range table ──
   const RANK_STAT_TABLE = {
-    F:   { min: 5,    max: 12  },
-    E:   { min: 10,   max: 20  },
-    D:   { min: 18,   max: 32  },
-    C:   { min: 28,   max: 45  },
-    B:   { min: 40,   max: 65  },
-    A:   { min: 60,   max: 95  },
-    S:   { min: 85,   max: 130 },
-    SS:  { min: 120,  max: 180 },
-    SSS: { min: 160,  max: 240 },
-    GOD: { min: 220,  max: 320 },
+    F: { min: 5, max: 12 },
+    E: { min: 10, max: 20 },
+    D: { min: 18, max: 32 },
+    C: { min: 28, max: 45 },
+    B: { min: 40, max: 65 },
+    A: { min: 60, max: 95 },
+    S: { min: 85, max: 130 },
+    SS: { min: 120, max: 180 },
+    SSS: { min: 160, max: 240 },
+    GOD: { min: 220, max: 320 },
   };
 
   const playerRank = gameData.player.rank || "F";
@@ -162,7 +170,9 @@ function generateShopItems() {
     usedNames.add(fullName);
 
     // สุ่ม stat ตาม rank range
-    let statVal = Math.floor(Math.random() * (statRange.max - statRange.min + 1)) + statRange.min;
+    let statVal =
+      Math.floor(Math.random() * (statRange.max - statRange.min + 1)) +
+      statRange.min;
 
     // ราคา = stat * 10 ± 30% (เหมือนเดิม logic ดีอยู่แล้ว)
     let basePrice = statVal * 10;
@@ -182,21 +192,26 @@ function generateShopItems() {
   }
 }
 
+// ==========================================
+// 2. EQUIPMENT SHOP
+// ==========================================
 function renderShopMenu() {
   const container = document.getElementById("town-shop-list");
+  if (!container) return;
   container.innerHTML = "";
 
   currentShopItems.forEach((item, index) => {
     if (item.isBought) {
       container.innerHTML += `
-                <div style="display: flex; align-items: center; background: #222; padding: 10px; border-radius: 5px; opacity: 0.5;">
-                    <div style="width: 48px; height: 48px; background: #111; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">${item.svg}</div>
-                    <div style="flex: 1; text-align: left;">
-                        <span style="font-size: 14px; color: #fff; text-decoration: line-through;">${item.name}</span><br>
-                        <span style="font-size: 12px; color: #ff4c4c;">SOLD OUT</span>
-                    </div>
-                </div>
-            `;
+          <div class="town-item-card" style="opacity: 0.4; border-left: 4px solid #555;">
+              <div class="item-icon-frame">${item.svg}</div>
+              <div class="item-text-stack">
+                  <h4 style="text-decoration: line-through; color: #888;">${item.name}</h4>
+                  <p style="color: #ff4c4c;">❌ SOLD OUT</p>
+              </div>
+              <button class="btn-buy-3d" style="background: #333; cursor: not-allowed;" disabled>BOUGHT</button>
+          </div>
+      `;
     } else {
       let statColor =
         item.statType === "hp"
@@ -205,17 +220,17 @@ function renderShopMenu() {
             ? "#008CBA"
             : "#FFD700";
       container.innerHTML += `
-                <div style="display: flex; align-items: center; background: #2a2a30; padding: 10px; border-radius: 5px; border-left: 3px solid #008CBA;">
-                    <div style="width: 48px; height: 48px; background: #111; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">${item.svg}</div>
-                    <div style="flex: 1; text-align: left;">
-                        <span style="font-size: 14px; color: #fff; font-weight: bold;">${item.name}</span><br>
-                        <span style="font-size: 11px; color: #aaa;">
-                            [ ${item.type} ] | <span style="color: ${statColor};">+${item.statValue} ${item.statType.toUpperCase()}</span>
-                        </span>
-                    </div>
-                    <button onclick="buyItem(${index})" class="btn-action" style="width: auto; padding: 6px 10px; font-size: 12px; background: #008CBA; box-shadow: 0 4px 0 #006b8f; margin: 0;">BUY 💰 ${item.cost}</button>
-                </div>
-            `;
+          <div class="town-item-card" style="border-left: 4px solid #008cba;">
+              <div class="item-icon-frame">${item.svg}</div>
+              <div class="item-text-stack">
+                  <h4>${item.name}</h4>
+                  <p style="color: #aaa;">[ ${item.type} ] <span style="color: ${statColor}; font-weight: bold;">+${item.statValue} ${item.statType.toUpperCase()}</span></p>
+              </div>
+              <button onclick="buyItem(${index})" class="btn-buy-3d shop-btn-style">
+                  BUY 💰 ${item.cost}g
+                </button>
+          </div>
+      `;
     }
   });
 }
@@ -295,61 +310,60 @@ function renderInnMenu() {
     {
       id: "lux",
       name: "Luxurious Steak",
-      desc: "มื้อหรู! ฟื้น HP เต็ม + บัฟ ATK/DEF +10% วันพรุ่งนี้",
-      cost: 200,   // ~2 quests F
+      desc: "มื้อหรู! ฟื้น HP เต็ม 100% พร้อมรับบัฟ Pow+20% วันพรุ่งนี้",
+      cost: 200,
       svg: SVGS.lux_meal,
       color: "#FFD700",
     },
     {
       id: "reg",
-      name: "Regular Soup",
-      desc: "มื้อปกติ ฟื้น HP เต็ม",
-      cost: 50,    // ~0.5 quest F
+      name: "Regular Meal",
+      desc: "มื้ออาหารปกติ ฟื้นฟู HP กลับมาเต็ม 100%",
+      cost: 50,
       svg: SVGS.reg_meal,
       color: "#4CAF50",
     },
     {
       id: "life",
       name: "Lifesaving Bread",
-      desc: "ฟื้น HP กลับมา 70%",
-      cost: 15,    // แค่ค่าน้ำ
+      desc: "ขนมปังประทังชีวิต ฟื้นฟู HP ขั้นต่ำที่ 70%",
+      cost: 10,
       svg: SVGS.life_meal,
       color: "#ff9800",
     },
     {
       id: "starve",
       name: "Sleep",
-      desc: "นอนดื้อๆ HP ไม่ฟื้น",
+      desc: "เข้าพักผ่อนทันทีโดยไม่ทานอาหาร",
       cost: 0,
       svg: SVGS.bed_meal,
-      color: "#555555",
+      color: "#888888",
     },
   ];
 
   const container = document.getElementById("town-inn-list");
+  if (!container) return;
   container.innerHTML = "";
 
   meals.forEach((m) => {
     container.innerHTML += `
-            <div style="display: flex; align-items: center; background: #2a2a30; padding: 10px; border-radius: 5px; border-left: 3px solid ${m.color};">
-                <div style="width: 48px; height: 48px; background: #111; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">${m.svg}</div>
-                <div style="flex: 1; text-align: left;">
-                    <span style="font-size: 14px; color: ${m.color}; font-weight: bold;">${m.name}</span><br>
-                    <span style="font-size: 10px; color: #aaa;">${m.desc}</span>
-                </div>
-                <button onclick="eatMeal('${m.id}', ${m.cost})" class="btn-action" style="width: auto; padding: 6px 10px; font-size: 12px; background: #ff9800; box-shadow: 0 4px 0 #c66900; margin: 0;">COST 💰 ${m.cost}</button>
+        <div class="town-item-card" style="border-left: 4px solid ${m.color};">
+            <div class="item-icon-frame">${m.svg}</div>
+            <div class="item-text-stack">
+                <h4 style="color: ${m.color};">${m.name}</h4>
+                <p style="color: #bbb;">${m.desc}</p>
             </div>
-        `;
+            <button onclick="eatMeal('${m.id}', ${m.cost})" class="btn-buy-3d inn-btn-style" style="background: ${m.cost > 0 ? "" : "linear-gradient(180deg, #607d8b, #37474f)"}; box-shadow: ${m.cost > 0 ? "" : "0 4px 0 #263238"};">
+                ${m.cost > 0 ? `ORDER 💰 ${m.cost}g` : `REST ✨ FREE`}
+            </button>
+        </div>
+    `;
   });
 }
 
 function eatMeal(type, cost) {
   if (gameData.gold < cost) {
-    showModal(
-      "💸 เงินไม่พอ",
-      "ป้าเจ้าของร้านบอกว่าไม่มีเงินก็ไปนอนข้างถนน!",
-      "alert",
-    );
+    showModal("💸 เงินไม่พอ", "alert");
     return;
   }
 
@@ -362,6 +376,13 @@ function eatMeal(type, cost) {
         gameData.gold -= cost;
         document.getElementById("ui-gold-count").innerText = gameData.gold;
 
+        // --- [ เพิ่มลอจิกบันทึกบัฟอาหารหรู ] ---
+        if (type === "lux") {
+          gameData.hasLuxBuff = true;
+        } else {
+          gameData.hasLuxBuff = false; // ถ้านอนเฉยๆ หรือกินของปกติ บัฟหรูจะหายไป
+        }
+
         // --- [ ลอจิกฮีลเลือดตามประเภทอาหาร ] ---
         let p = gameData.player;
         if (p) {
@@ -372,7 +393,7 @@ function eatMeal(type, cost) {
             if (p.currentHp < targetHp) p.currentHp = targetHp;
           }
         }
-        if (typeof updatePlayerUI === "function") updatePlayerUI(); // สั่งรีเฟรชหน้าต่างซ้ายมือ
+        if (typeof updatePlayerUI === "function") updatePlayerUI();
 
         // --- [ ลอจิกฮีลเลือด ลูกน้อง ] ---
         if (Array.isArray(gameData.party)) {
@@ -394,28 +415,20 @@ function eatMeal(type, cost) {
         document.getElementById("custom-modal-title").innerHTML = "💤 Zzz...";
         document.getElementById("custom-modal-msg").innerHTML =
           "ปาร์ตี้ของคุณหลับพักผ่อน...<br>เตรียมพร้อมสำหรับการผจญภัยในวันพรุ่งนี้";
-        document.getElementById("custom-modal-buttons").innerHTML = ""; // ซ่อนปุ่ม บังคับรอ
+        document.getElementById("custom-modal-buttons").innerHTML = "";
 
-        // หน่วงเวลา 2 วินาทีแล้วเริ่มวันใหม่
         setTimeout(() => {
           document.getElementById("custom-modal-overlay").style.display =
             "none";
 
-          // +1 วัน
           if (!gameData.day) gameData.day = 1;
           gameData.day++;
           document.getElementById("ui-day-count").innerText = gameData.day;
 
-          // รีเซ็ตของในร้านค้าสำหรับวันใหม่
           currentShopItems = [];
-
-          // สุ่มกระดานเควสใหม่
           if (typeof generateDailyQuests === "function") generateDailyQuests();
-
-          // สุ่ม NPC ในโรงเตี๊ยมใหม่
           if (typeof initTavernPool === "function") initTavernPool();
 
-          // เด้งกลับไปกระดานเควส
           switchState(1);
         }, 2000);
       }
