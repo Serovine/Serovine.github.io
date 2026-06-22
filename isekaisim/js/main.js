@@ -180,3 +180,53 @@ async function saveGameToFile() {
 
   showModal("💾 บันทึกสาส์นลับสำเร็จ!", `ไฟล์เซฟ <b>${fileName}</b> ถูกดาวน์โหลดแล้ว<br><span style="font-size:11px; color:#ffaa00;">(ใช้รูปนี้อัปโหลดเพื่อเล่นต่อคราวหน้าได้เลย ตัวรูปยังกดเปิดดูได้ปกติ!)</span>`, "alert");
 }
+
+/* ==========================================================================
+   MOBILE TAB INJECTOR & CONTROLLER (ระบบเสกปุ่มสลับหน้าจอสำหรับมือถือ)
+   ========================================================================== */
+
+function injectMobileHeaderTabs() {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    const titleDiv = header.querySelector('div:first-child'); // จับออริจินัล Title เดิม
+
+    // 1. สร้างแท่นวางปุ่ม Tab
+    const tabNav = document.createElement('div');
+    tabNav.id = 'mobile-tab-hub';
+    tabNav.className = 'mobile-tabs-container';
+    tabNav.style.display = 'none'; // ปิดไว้ก่อน (CSS จะเป็นคนเปิดเองเมื่อจอแคบ)
+
+    // 2. ยัดปุ่ม 3 สหายลงไป (ใช้ ID และ Class ที่ไม่ซ้ำกับโค้ดเดิม)
+    tabNav.innerHTML = `
+        <button onclick="switchMobileTab('left')" class="m-tab" id="mtab-left">👤 Profile</button>
+        <button onclick="switchMobileTab('main')" class="m-tab active-m-tab" id="mtab-main">🎮 Game</button>
+        <button onclick="switchMobileTab('right')" class="m-tab" id="mtab-right">📜 Quest</button>
+    `;
+
+    titleDiv.after(tabNav);
+
+    // 3. บังคับให้เปิดมาหน้าแรก อยู่ที่ Tab 'Game' (ตรงกลาง) เสมอ
+    const gameContainer = document.getElementById('game-container');
+    if (gameContainer) gameContainer.classList.add('mobile-show-main');
+}
+
+// ฟังก์ชันควบคุมการสลับ Class เพื่อเปิด/ปิดทีละพาเนล
+function switchMobileTab(target) {
+    const container = document.getElementById('game-container');
+    if (!container) return;
+
+    // ล้างสถานะเก่า
+    container.classList.remove('mobile-show-left', 'mobile-show-main', 'mobile-show-right');
+    // ล็อกสถานะใหม่
+    container.classList.add(`mobile-show-${target}`);
+
+    // สลับสีปุ่ม Tab ให้เรืองแสงทองเฉพาะปุ่มที่ถูกกด
+    document.getElementById('mtab-left').classList.toggle('active-m-tab', target === 'left');
+    document.getElementById('mtab-main').classList.toggle('active-m-tab', target === 'main');
+    document.getElementById('mtab-right').classList.toggle('active-m-tab', target === 'right');
+}
+
+// สั่งรัน
+window.addEventListener('DOMContentLoaded', injectMobileHeaderTabs);
+
