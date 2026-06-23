@@ -36,11 +36,13 @@ body {
 }
 
 /* =========================================
-   2. MAIN LAYOUT & MOBILE HEADER TABS
+   2. MAIN LAYOUT & FOOLPROOF MOBILE TABS
    ========================================= */
 #game-container {
-    width: 1200px;
-    height: 720px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 1200px;
+    max-height: 720px;
     background-color: #2b2b2b;
     border: 4px solid #555;
     border-radius: 10px;
@@ -63,18 +65,14 @@ header {
     color: #ffd700;
 }
 
-/* --- Injected Mobile Header Tabs (ล่องหนอยู่บน Desktop) --- */
-.mobile-tabs-container {
-    display: none;
-    gap: 6px;
-    align-items: center;
-}
+/* สถานะเริ่มต้นบน Desktop: ปิดปุ่ม Tab มือถือ */
+#ui-mobile-tabs { display: none; }
 
 .m-tab {
     background: #1a1714;
     border: 1px solid #4a3c2e;
     color: #a89274;
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 13px;
     font-weight: bold;
     border-radius: 4px;
@@ -96,7 +94,7 @@ header {
     transition: opacity 0.5s ease-in-out;
 }
 
-/* --- Responsive Overhaul (โหมดมือถือแนวตั้ง) --- */
+/* --- Responsive Overrides (โหมดมือถือแนวตั้ง) --- */
 @media screen and (max-width: 768px) {
     #game-container {
         width: 100vw !important;
@@ -106,22 +104,15 @@ header {
         border: none;
         border-radius: 0;
         grid-template-columns: 1fr !important;
-        /* ปล่อยความสูงแถว 1 ให้เป็น auto เพื่อรองรับ Header ที่ปัดบรรทัดลงมา */
-        grid-template-rows: auto 1fr !important; 
+        grid-template-rows: 55px 1fr !important;
     }
 
-    /* กุญแจสำคัญ: อนุญาตให้ Header ปัดบรรทัดลงมาได้ (ทำลายคอขวด 475px) */
-    header {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 8px 12px;
-        gap: 8px;
-        min-width: 0;
-    }
-    header > div:first-child { display: none; } /* ซ่อนชื่อเกม */
-    .mobile-tabs-container { display: flex; flex-wrap: wrap; justify-content: center; }
+    /* กฎเหล็กสลับสายตา: ฆ่าชื่อเกม -> เปิดปุ่ม Tab */
+    #ui-desktop-title { display: none !important; }
+    #ui-mobile-tabs { display: flex !important; gap: 8px; justify-content: center; width: 100%; }
 
-    /* จัดการ 3 พาเนลให้ซ้อนทับกันในพิกัดเดียว */
+    header { padding: 0 10px !important; justify-content: center !important; }
+
     #left-panel, #main-panel, #right-panel {
         grid-column: 1 / -1 !important;
         grid-row: 2 / -1 !important;
@@ -130,7 +121,6 @@ header {
         border: none !important;
     }
 
-    /* ลอจิก Tab สลับหน้าต่าง */
     #left-panel, #right-panel { display: none !important; }
     #main-panel { display: block; }
 
