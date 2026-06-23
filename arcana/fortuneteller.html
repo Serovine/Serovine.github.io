@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Celestial Arcana — Tarot of the Twelve Houses</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Sarabun:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <!-- ═══════════════════════════════════════════
+       SCREEN 0 — Language Select
+  ════════════════════════════════════════════ -->
+        <section id="screen-lang" class="screen active">
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="screen-inner center-column">
+                <div class="orb-hero" id="orb-lang">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring orb-ring-1"></div>
+                    <div class="orb-ring orb-ring-2"></div>
+                    <div class="orb-ring orb-ring-3"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <h1 class="app-title">Celestial Arcana</h1>
+                <p class="app-subtitle">Tarot of the Twelve Houses</p>
+                <div class="lang-buttons">
+                    <button class="btn-lang" data-lang="th">
+                        <span class="lang-flag">🇹🇭</span>
+                        <span class="lang-label">ภาษาไทย</span>
+                    </button>
+                    <button class="btn-lang" data-lang="en">
+                        <span class="lang-flag">🇬🇧</span>
+                        <span class="lang-label">English</span>
+                        <span class="lang-badge">Soon</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 1 — Welcome
+  ════════════════════════════════════════════ -->
+        <section id="screen-welcome" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="screen-inner center-column">
+                <div class="orb-hero" id="orb-welcome">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring orb-ring-1"></div>
+                    <div class="orb-ring orb-ring-2"></div>
+                    <div class="orb-ring orb-ring-3"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <h1 class="app-title" data-i18n="app_title">
+                    Celestial Arcana
+                </h1>
+                <p
+                    class="orb-speech welcome-speech"
+                    data-i18n="welcome_speech"
+                ></p>
+                <button
+                    class="btn-primary"
+                    id="btn-start"
+                    data-i18n="btn_start"
+                >
+                    เริ่มดูดวง
+                </button>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 2 — Input
+  ════════════════════════════════════════════ -->
+        <section id="screen-input" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="screen-inner center-column">
+                <div class="orb-hero orb-small" id="orb-input">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring orb-ring-1"></div>
+                    <div class="orb-ring orb-ring-2"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <p
+                    class="orb-speech"
+                    id="orb-input-speech"
+                    data-i18n="input_speech"
+                ></p>
+
+                <div class="input-form">
+                    <div class="input-group">
+                        <label
+                            class="input-label"
+                            for="user-name"
+                            data-i18n="label_name"
+                            >ชื่อของท่าน</label
+                        >
+                        <input
+                            class="input-field"
+                            type="text"
+                            id="user-name"
+                            autocomplete="off"
+                            data-i18n-placeholder="placeholder_name"
+                        />
+                    </div>
+                    <div class="input-group">
+                        <label
+                            class="input-label"
+                            for="user-dob"
+                            data-i18n="label_dob"
+                            >วันเกิด</label
+                        >
+                        <input class="input-field" type="date" id="user-dob" />
+                    </div>
+                </div>
+
+                <div class="identity-card" id="identity-card" hidden>
+                    <div class="identity-card-inner">
+                        <div
+                            class="identity-zodiac"
+                            id="identity-zodiac-icon"
+                        ></div>
+                        <div class="identity-info">
+                            <span
+                                class="identity-zodiac-name"
+                                id="identity-zodiac-name"
+                            ></span>
+                            <span
+                                class="identity-card-name"
+                                id="identity-card-name"
+                            ></span>
+                        </div>
+                        <div class="identity-preview">
+                            <div
+                                class="card-dummy"
+                                id="identity-card-preview"
+                            ></div>
+                        </div>
+                    </div>
+                    <p class="identity-speech" id="identity-speech"></p>
+                </div>
+
+                <button
+                    class="btn-primary"
+                    id="btn-confirm-input"
+                    disabled
+                    data-i18n="btn_confirm"
+                >
+                    เริ่มการทำนาย
+                </button>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 3 — Shuffle
+  ════════════════════════════════════════════ -->
+        <section id="screen-shuffle" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="screen-inner center-column">
+                <div class="orb-hero" id="orb-shuffle">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring orb-ring-1"></div>
+                    <div class="orb-ring orb-ring-2"></div>
+                    <div class="orb-ring orb-ring-3"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <p
+                    class="orb-speech shuffle-speech"
+                    data-i18n="shuffle_speech"
+                ></p>
+                <div class="shuffle-deck" id="shuffle-deck">
+                    <div class="shuffle-card sc-1"></div>
+                    <div class="shuffle-card sc-2"></div>
+                    <div class="shuffle-card sc-3"></div>
+                    <div class="shuffle-card sc-4"></div>
+                    <div class="shuffle-card sc-5"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 4 — Draw x12
+  ════════════════════════════════════════════ -->
+        <section id="screen-draw" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+
+            <!-- spread circle (background, cards fly here) -->
+            <div class="spread-container" id="spread-container">
+                <div class="spread-circle">
+                    <div
+                        class="spread-center-card"
+                        id="spread-center-card"
+                    ></div>
+                    <!-- 12 house slots injected by spread.js -->
+                </div>
+            </div>
+
+            <!-- draw UI overlay -->
+            <div class="draw-overlay" id="draw-overlay">
+                <div class="draw-header">
+                    <span class="draw-house-label" id="draw-house-label"></span>
+                    <span class="draw-counter" id="draw-counter">1 / 12</span>
+                </div>
+                <!-- fan arc -->
+                <div class="fan-container" id="fan-container"></div>
+                <p class="draw-instruction" data-i18n="draw_instruction"></p>
+            </div>
+
+            <!-- card reveal panel (slides up after pick) -->
+            <div class="reveal-panel" id="reveal-panel" hidden>
+                <div class="reveal-card-wrap">
+                    <div class="reveal-card" id="reveal-card"></div>
+                </div>
+                <div class="reveal-info">
+                    <h3 class="reveal-card-name" id="reveal-card-name"></h3>
+                    <span
+                        class="reveal-orientation"
+                        id="reveal-orientation"
+                    ></span>
+                    <p class="reveal-prophecy" id="reveal-prophecy"></p>
+                </div>
+                <button
+                    class="btn-secondary"
+                    id="btn-place-card"
+                    data-i18n="btn_place"
+                >
+                    วางไพ่
+                </button>
+            </div>
+
+            <!-- floating orb -->
+            <div class="orb-float" id="orb-float">
+                <div class="orb-mini">
+                    <div class="orb-core"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <div class="orb-bubble" id="orb-bubble" hidden></div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 5 — Final Draw 3x3
+  ════════════════════════════════════════════ -->
+        <section id="screen-final" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+
+            <div class="screen-inner">
+                <div class="final-header">
+                    <p
+                        class="orb-speech final-speech"
+                        data-i18n="final_speech"
+                    ></p>
+                    <span
+                        class="final-counter"
+                        id="final-counter"
+                        data-i18n-template="final_counter"
+                        >เลือก 0 / 3</span
+                    >
+                </div>
+
+                <div class="grid-3x3" id="grid-3x3">
+                    <!-- 9 cards injected by spread.js -->
+                </div>
+
+                <!-- reveal summary panel -->
+                <div class="summary-reveal" id="summary-reveal" hidden>
+                    <div class="summary-card-wrap">
+                        <div class="summary-card" id="summary-card"></div>
+                    </div>
+                    <div class="summary-info">
+                        <span class="summary-label" id="summary-label"></span>
+                        <h3
+                            class="summary-card-name"
+                            id="summary-card-name"
+                        ></h3>
+                        <p class="summary-prophecy" id="summary-prophecy"></p>
+                    </div>
+                    <button
+                        class="btn-secondary"
+                        id="btn-confirm-summary"
+                        data-i18n="btn_confirm_summary"
+                    >
+                        รับทราบ
+                    </button>
+                </div>
+            </div>
+
+            <!-- floating orb -->
+            <div class="orb-float" id="orb-float-final">
+                <div class="orb-mini">
+                    <div class="orb-core"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <div class="orb-bubble" id="orb-bubble-final" hidden></div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       SCREEN 6 — Result
+  ════════════════════════════════════════════ -->
+        <section id="screen-result" class="screen">
+            <div class="star-field" aria-hidden="true"></div>
+
+            <div class="result-header">
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-subtitle" data-i18n="result_subtitle"></p>
+            </div>
+
+            <!-- full spread wheel -->
+            <div class="result-spread" id="result-spread">
+                <div class="spread-circle-result">
+                    <div
+                        class="spread-center-result"
+                        id="result-center-card"
+                    ></div>
+                </div>
+            </div>
+
+            <!-- summary 3 cards row -->
+            <div class="result-summary-row">
+                <p
+                    class="result-summary-title"
+                    data-i18n="result_summary_title"
+                >
+                    โชคชะตาของท่าน
+                </p>
+                <div
+                    class="result-summary-cards"
+                    id="result-summary-cards"
+                ></div>
+            </div>
+
+            <div class="result-actions">
+                <button
+                    class="btn-primary"
+                    id="btn-restart"
+                    data-i18n="btn_restart"
+                >
+                    ดูดวงใหม่
+                </button>
+                <button
+                    class="btn-secondary"
+                    id="btn-save"
+                    data-i18n="btn_save"
+                >
+                    บันทึกผล
+                </button>
+            </div>
+
+            <!-- floating orb -->
+            <div class="orb-float" id="orb-float-result">
+                <div class="orb-mini">
+                    <div class="orb-core"></div>
+                    <div class="orb-glow"></div>
+                </div>
+                <div class="orb-bubble" id="orb-bubble-result" hidden></div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════
+       MODAL — Card Detail
+  ════════════════════════════════════════════ -->
+        <div class="modal-backdrop" id="modal-backdrop" hidden>
+            <div class="card-modal" id="card-modal">
+                <button class="modal-close" id="modal-close" aria-label="Close">
+                    ✕
+                </button>
+                <div class="modal-card-scene">
+                    <div class="modal-card-flip" id="modal-card-flip">
+                        <div
+                            class="modal-card-front"
+                            id="modal-card-front"
+                        ></div>
+                        <div class="modal-card-back">
+                            <div class="modal-card-info" id="modal-card-info">
+                                <h3
+                                    class="modal-card-title"
+                                    id="modal-card-title"
+                                ></h3>
+                                <div
+                                    class="modal-card-meta"
+                                    id="modal-card-meta"
+                                ></div>
+                                <div class="modal-card-divider"></div>
+                                <p
+                                    class="modal-card-prophecy"
+                                    id="modal-card-prophecy"
+                                ></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="modal-hint" data-i18n="modal_hint">แตะไพ่เพื่อพลิก</p>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+       SCRIPTS (order matters)
+  ════════════════════════════════════════════ -->
+        <script src="js/lang.js"></script>
+        <script src="js/data.th.js"></script>
+        <script src="js/data.en.js"></script>
+        <script src="js/zodiac-map.js"></script>
+        <script src="js/deck.js"></script>
+        <script src="js/spread.js"></script>
+        <script src="js/ui.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
