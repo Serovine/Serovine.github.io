@@ -17,7 +17,6 @@ const gameData = {
     power: 0,
     stats: { hp: 0, atk: 0, def: 0, spd: 0, luk: 0 },
     currentHp: 0,
-
     equipment: { weapon: null, armor: null, head: null, acc: null },
   },
   // จองพื้นที่ปาร์ตี้ไว้ 3 ช่องเสมอ ป้องกันบั๊ก Array length
@@ -74,7 +73,6 @@ function injectModals() {
         </div>
     `;
 
-  // ยิงโค้ด HTML ไปต่อท้ายส่วน body
   document.body.insertAdjacentHTML("beforeend", modalsHTML);
 }
 
@@ -113,13 +111,10 @@ function closeCustomModal(result) {
 // ==========================================
 // 4. Global Utility Functions (เครื่องมือส่วนกลาง)
 // ==========================================
-
-// ฟังก์ชันสุ่มตัวเลขจำนวนเต็ม
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// ฟังก์ชันหน่วงเวลา ใช้ร่วมกับ async/await
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -128,20 +123,14 @@ function sleep(ms) {
 // 5. Game Initializer (จุด Start)
 // ==========================================
 function initGame() {
-  // 1. สร้าง Component ที่เป็น Modal ทั้งหมดก่อนเป็นอันดับแรก
   injectModals();
 
-  // 2. ปรับให้เริ่มที่ State 0 (หน้าตั้งต้น) เสมอ
   if (typeof switchState === "function") {
     switchState(0);
   }
-
-  // 3. แปลงไฟล์ CSV ฐานข้อมูล Quest (ถ้าฟังก์ชันโหลดพร้อมแล้ว)
   if (typeof parseCSV === "function") {
     parseCSV();
   }
-
-  // 4. สุ่มตัวละครเข้าโรงเตี๊ยมรอไว้เลย (ลดภาระตอนเปิดหน้า Tinder)
   if (typeof initTavernPool === "function") {
     initTavernPool();
   }
@@ -149,11 +138,10 @@ function initGame() {
   console.log("[System] Game Initialized & Modals Injected Successfully.");
 }
 
-// บังคับให้ initGame ทำงานก็ต่อเมื่อ HTML โหลดเสร็จสมบูรณ์แล้วเท่านั้น
 document.addEventListener("DOMContentLoaded", initGame);
 
 // ==========================================
-// 5. Game Save System
+// 6. Game Save System
 // ==========================================
 async function saveGameToFile() {
   if (!rawImageBlob) {
@@ -161,15 +149,12 @@ async function saveGameToFile() {
     return;
   }
 
-  // 1. แปลง Global State ทั้งก้อนเป็นข้อความ JSON
   const jsonString = JSON.stringify(gameData);
   const markerAndData = "===ISEKAI_SAVE_V1===" + jsonString;
   const textBlob = new Blob([markerAndData], { type: "text/plain" });
 
-  // 2. จับรวมร่าง: [ ไบต์รูป PNG ออริจินัล ] + [ ไบต์ข้อความ JSON ]
   const finalSaveBlob = new Blob([rawImageBlob, textBlob], { type: "image/png" });
 
-  // 3. ตั้งชื่อไฟล์ให้รู้ตัวตน และสั่งเบราว์เซอร์ดาวน์โหลด
   const safeName = (gameData.player.name || "Adventurer").toLowerCase().replace(/[^a-z0-9]/g, "_");
   const fileName = `isekai_day${gameData.day}_${safeName}.png`;
 
@@ -181,65 +166,20 @@ async function saveGameToFile() {
   showModal("💾 บันทึกสาส์นลับสำเร็จ!", `ไฟล์เซฟ <b>${fileName}</b> ถูกดาวน์โหลดแล้ว<br><span style="font-size:11px; color:#ffaa00;">(ใช้รูปนี้อัปโหลดเพื่อเล่นต่อคราวหน้าได้เลย ตัวรูปยังกดเปิดดูได้ปกติ!)</span>`, "alert");
 }
 
-/* ==========================================================================
-   MOBILE TAB INJECTOR & CONTROLLER (ระบบเสกปุ่มสลับหน้าจอสำหรับมือถือ)
-   ========================================================================== */
-
-function injectMobileHeaderTabs() {
-    const header = document.querySelector('header');
-    if (!header) return;
-
-    const titleDiv = header.querySelector('div:first-child'); // จับออริจินัล Title เดิม
-
-    // 1. สร้างแท่นวางปุ่ม Tab
-    const tabNav = document.createElement('div');
-    tabNav.id = 'mobile-tab-hub';
-    tabNav.className = 'mobile-tabs-container';
-    tabNav.style.display = 'none'; // ปิดไว้ก่อน (CSS จะเป็นคนเปิดเองเมื่อจอแคบ)
-
-    // 2. ยัดปุ่ม 3 สหายลงไป (ใช้ ID และ Class ที่ไม่ซ้ำกับโค้ดเดิม)
-    tabNav.innerHTML = `
-        <button onclick="switchMobileTab('left')" class="m-tab" id="mtab-left">👤 Profile</button>
-        <button onclick="switchMobileTab('main')" class="m-tab active-m-tab" id="mtab-main">🎮 Game</button>
-        <button onclick="switchMobileTab('right')" class="m-tab" id="mtab-right">📜 Quest</button>
-    `;
-
-    titleDiv.after(tabNav);
-
-    // 3. บังคับให้เปิดมาหน้าแรก อยู่ที่ Tab 'Game' (ตรงกลาง) เสมอ
-    const gameContainer = document.getElementById('game-container');
-    if (gameContainer) gameContainer.classList.add('mobile-show-main');
-}
-
-// ฟังก์ชันควบคุมการสลับ Class เพื่อเปิด/ปิดทีละพาเนล
+// ==========================================
+// 7. Mobile Tab Controller (สลับหน้าต่างมือถือ)
+// ==========================================
 function switchMobileTab(target) {
-    const container = document.getElementById('game-container');
-    if (!container) return;
+  const container = document.getElementById('game-container');
+  if (!container) return;
 
-    // ล้างสถานะเก่า
-    container.classList.remove('mobile-show-left', 'mobile-show-main', 'mobile-show-right');
-    // ล็อกสถานะใหม่
-    container.classList.add(`mobile-show-${target}`);
+  container.classList.remove('mobile-show-left', 'mobile-show-main', 'mobile-show-right');
+  container.classList.add('mobile-show-' + target);
 
-    // สลับสีปุ่ม Tab ให้เรืองแสงทองเฉพาะปุ่มที่ถูกกด
-    document.getElementById('mtab-left').classList.toggle('active-m-tab', target === 'left');
-    document.getElementById('mtab-main').classList.toggle('active-m-tab', target === 'main');
-    document.getElementById('mtab-right').classList.toggle('active-m-tab', target === 'right');
+  // Safe Reset: ล้างสีเหลืองออกให้หมดก่อน แล้วค่อยเติมเป้าหมาย
+  const tabs = ['left', 'main', 'right'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('mtab-' + t);
+    if (btn) btn.classList.toggle('active-m-tab', t === target);
+  });
 }
-
-// สั่งรัน
-window.addEventListener('DOMContentLoaded', injectMobileHeaderTabs);
-
-// ฟังก์ชันควบคุมสวิตช์ Tab บนมือถือ
-function switchMobileTab(target) {
-    const container = document.getElementById('game-container');
-    if (!container) return;
-
-    container.classList.remove('mobile-show-left', 'mobile-show-main', 'mobile-show-right');
-    container.classList.add(`mobile-show-${target}`);
-
-    document.getElementById('mtab-left').classList.toggle('active-m-tab', target === 'left');
-    document.getElementById('mtab-main').classList.toggle('active-m-tab', target === 'main');
-    document.getElementById('mtab-right').classList.toggle('active-m-tab', target === 'right');
-}
-
