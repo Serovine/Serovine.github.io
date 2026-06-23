@@ -40,93 +40,12 @@
                         gap: 10px;
                     "
                 >
-                    LIFE SIMULATOR
+                    <span style="font-size: 22px">🍻</span> LIFE SIMULATOR
                     <span style="color: #8c7355; font-weight: normal">|</span>
                     ISEKAI TAVERN
                 </div>
-
-                <div style="display: flex; gap: 15px; align-items: center">
-                    <div
-                        style="
-                            background: linear-gradient(
-                                145deg,
-                                #2a2216,
-                                #16120b
-                            );
-                            border: 2px solid #d4af37;
-                            padding: 4px 14px;
-                            border-radius: 20px;
-                            box-shadow:
-                                inset 0 0 10px rgba(212, 175, 55, 0.15),
-                                0 2px 6px rgba(0, 0, 0, 0.7);
-                            display: flex;
-                            align-items: center;
-                            gap: 6px;
-                        "
-                    >
-                        <span style="font-size: 15px">🪙</span>
-                        <span
-                            style="
-                                color: #a89274;
-                                font-size: 11px;
-                                font-weight: bold;
-                            "
-                            >:</span
-                        >
-                        <span
-                            id="ui-gold-count"
-                            style="
-                                color: #ffd700;
-                                font-size: 15px;
-                                font-weight: 900;
-                                letter-spacing: 0.5px;
-                            "
-                            >150</span
-                        >
-                    </div>
-
-                    <div
-                        style="
-                            background: linear-gradient(
-                                145deg,
-                                #1f1624,
-                                #100a14
-                            );
-                            border: 2px solid #9c27b0;
-                            padding: 4px 14px;
-                            border-radius: 20px;
-                            box-shadow:
-                                inset 0 0 10px rgba(156, 39, 176, 0.2),
-                                0 2px 6px rgba(0, 0, 0, 0.7);
-                            display: flex;
-                            align-items: center;
-                            gap: 6px;
-                        "
-                    >
-                        <span style="font-size: 15px">🌙</span>
-                        <span
-                            style="
-                                color: #cda8e5;
-                                font-size: 11px;
-                                font-weight: bold;
-                            "
-                            >:</span
-                        >
-                        <span
-                            id="ui-day-count"
-                            style="
-                                color: #e1bee7;
-                                font-size: 15px;
-                                font-weight: 900;
-                                letter-spacing: 0.5px;
-                            "
-                            >1</span
-                        >
-                    </div>
-                </div>
             </header>
 
-            <!-- Left Panel -->
             <div id="left-panel" class="hidden-panel">
                 <div class="stat-box">
                     <img id="ui-player-avatar" src="" alt="Avatar" />
@@ -153,7 +72,6 @@
                         CLASS: WANDERER
                     </p>
 
-                    <!-- Level & Rank -->
                     <div
                         onclick="togglePlayerStatus()"
                         title="คลิกเพื่อกาง/พับ Status"
@@ -197,7 +115,6 @@
                         >
                     </div>
 
-                    <!-- HP bar -->
                     <div
                         style="
                             display: flex;
@@ -235,7 +152,6 @@
                         ></div>
                     </div>
 
-                    <!-- Accordion Status & Equipment -->
                     <div
                         id="ui-player-status-accordion"
                         style="
@@ -357,7 +273,6 @@
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                 "
-                                title="Weapon Slot"
                             >
                                 🗡️ None
                             </div>
@@ -368,7 +283,6 @@
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                 "
-                                title="Armor Slot"
                             >
                                 🛡️ None
                             </div>
@@ -379,7 +293,6 @@
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                 "
-                                title="Headgear Slot"
                             >
                                 🪖 None
                             </div>
@@ -390,7 +303,6 @@
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                 "
-                                title="Accessory Slot"
                             >
                                 💍 None
                             </div>
@@ -428,12 +340,10 @@
                 </div>
             </div>
 
-            <!-- Main Panel -->
             <div
                 id="main-panel"
                 style="overflow: hidden; min-height: 0; position: relative"
             >
-                <!-- STATE 0: Title Screen -->
                 <div id="state-0" class="center-state" style="display: flex">
                     <div class="title-header">
                         <h1>LIFE SIMULATOR<br />IN ISEKAI TAVERN</h1>
@@ -442,7 +352,6 @@
                         </p>
                     </div>
 
-                    <!-- Upload Image -->
                     <div style="margin: 20px 0; text-align: center">
                         <label for="image-upload" class="btn-upload">
                             🖼️ อัปโหลดรูปภาพเพื่อเริ่มเกม <br />(New Game / Load
@@ -457,7 +366,6 @@
                         />
                     </div>
 
-                    <!-- how to play -->
                     <div class="how-to-play-box">
                         <p
                             style="
@@ -477,19 +385,21 @@
                         >
                             <p style="margin-bottom: 6px">
                                 <b>1. 🖼️ กำเนิดผู้กล้า:</b>
-                                อัปโหลดรูปภาพเพื่อสกัดสเตตัส หรือเล่นต่อ
+                                อัปโหลดรูปภาพเพื่อสกัดสเตตัส (ใช้รูปเซฟเก่า =
+                                เล่นต่อ)
                             </p>
                             <p style="margin-bottom: 6px">
-                                <b>2. 📜 รับเควส & จัดตี้:</b>
-                                แวะ Tavern เพื่อหาเพื่อนร่วมทีม
+                                <b>2. 📜 รับเควส & จัดตี้:</b> ดู % สำเร็จ
+                                แล้วแวะบาร์ปัดขวาจ้างเพื่อนร่วมทีม
                             </p>
                             <p style="margin-bottom: 6px">
-                                <b>3. ⚔️ ลุยดันเจี้ยน:</b> กด Go to Dungeon สั่ง
-                                Start Expedition แล้วนั่งลุ้นผลในการลงดันเจี้ยน
+                                <b>3. ⚔️ ลุยดันเจี้ยน:</b> นั่งลุ้นผล
+                                Auto-battle ถ้าหลอด HP แดงเถือกให้รีบกดหนี!
                             </p>
                             <p style="margin-bottom: 12px">
-                                <b>4. 🍲 พักผ่อน:</b> นำเงินไปอัพสเตตัส ซื้อของ
-                                และเข้าINN เพื่อกินอาหาร และเข้านอน จบวัน
+                                <b>4. 🍲 พักผ่อนในเมือง:</b>
+                                นำทองไปอัปสเตตัส ซื้อของ และเข้านอนที่ INN
+                                เพื่อข้ามวัน
                             </p>
                             <p
                                 style="
@@ -498,14 +408,13 @@
                                     font-size: 11px;
                                 "
                             >
-                                💡 <b>Tip:</b> กด [ SAVE ] ที่เมืองเพื่อโหลดไฟล์
-                                PNG เก็บข้อมูลตัวละครไว้เล่นต่อ!
+                                💡 <b>Tip:</b> กด [ SAVE ] ที่หน้าเมืองเพื่อโหลดไฟล์
+                                PNG เก็บข้อมูลตัวละครไว้เสมอ!
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- STATE 1: Quest Board -->
                 <div
                     id="state-1"
                     class="center-state"
@@ -576,7 +485,11 @@
                         <button
                             id="btn-accept-quest"
                             class="btn-action"
-                            style="display: none; flex: 1; background: #4caf50"
+                            style="
+                                display: none;
+                                flex: 1;
+                                background: #4caf50;
+                            "
                             onclick="acceptQuest()"
                         >
                             ACCEPT QUEST
@@ -592,7 +505,6 @@
                     </div>
                 </div>
 
-                <!-- STATE 2: Tavern -->
                 <div
                     id="state-2"
                     class="center-state"
@@ -815,7 +727,6 @@
                     </div>
                 </div>
 
-                <!-- STATE 3: Dungeon Expedition -->
                 <div
                     id="state-3"
                     class="center-state"
@@ -826,7 +737,6 @@
                         height: 100%;
                     "
                 >
-                    <!--  CSS Grid -->
                     <div
                         style="
                             display: grid;
@@ -839,7 +749,6 @@
                             overflow: hidden;
                         "
                     >
-                        <!-- Subject -->
                         <h2
                             style="
                                 text-align: center;
@@ -851,7 +760,6 @@
                             ⚔️ EXPEDITION
                         </h2>
 
-                        <!-- Quest Details -->
                         <div
                             style="
                                 background: #222;
@@ -868,13 +776,16 @@
                             </h3>
                             <p
                                 id="dungeon-quest-desc"
-                                style="color: #aaa; font-size: 12px; margin: 0"
+                                style="
+                                    color: #aaa;
+                                    font-size: 12px;
+                                    margin: 0;
+                                "
                             >
                                 Quest Desc
                             </p>
                         </div>
 
-                        <!-- Terminal Log -->
                         <div
                             id="dungeon-log-box"
                             style="
@@ -897,7 +808,6 @@
                             > Ready for expedition.<br />
                         </div>
 
-                        <!-- Lower Control Grid -->
                         <div
                             style="
                                 display: flex;
@@ -905,7 +815,6 @@
                                 gap: 15px;
                             "
                         >
-                            <!-- Progress Bar -->
                             <div
                                 style="
                                     width: 100%;
@@ -927,7 +836,6 @@
                                 ></div>
                             </div>
 
-                            <!-- Buttons -->
                             <button
                                 id="btn-start-expedition"
                                 class="btn-action"
@@ -973,7 +881,6 @@
                     </div>
                 </div>
 
-                <!-- STATE 4: Town Menu -->
                 <div
                     id="state-4"
                     class="center-state"
@@ -989,9 +896,7 @@
                             </p>
                         </div>
 
-                        <!-- ตาราง 2x2 -->
                         <div class="town-grid-2x2">
-                            <!-- 1: GYM -->
                             <button
                                 class="town-grid-card gym-card"
                                 onclick="openTownSubMenu('status')"
@@ -1003,7 +908,6 @@
                                 </div>
                             </button>
 
-                            <!-- 2: SHOP -->
                             <button
                                 class="town-grid-card shop-card"
                                 onclick="openTownSubMenu('shop')"
@@ -1015,7 +919,6 @@
                                 </div>
                             </button>
 
-                            <!-- 3: SAVE -->
                             <button
                                 class="town-grid-card save-card"
                                 onclick="saveGameToFile()"
@@ -1027,7 +930,6 @@
                                 </div>
                             </button>
 
-                            <!-- 4: INN -->
                             <button
                                 class="town-grid-card inn-card"
                                 onclick="openTownSubMenu('inn')"
@@ -1036,10 +938,6 @@
                                 <div class="card-label-box">
                                     <h3>INN</h3>
                                     <p>ทานอาหารและพักผ่อน</p>
-                                    <p>
-                                        *** โปรดเลือกเมนูนี้เพื่อเข้าสู่วันถัดไป
-                                        ***
-                                    </p>
                                 </div>
                             </button>
                         </div>
@@ -1077,10 +975,7 @@
                                 ซื้ออุปกรณ์สวมใส่
                             </p>
                         </div>
-                        <div
-                            id="town-shop-list"
-                            class="submenu-item-list"
-                        ></div>
+                        <div id="town-shop-list" class="submenu-item-list"></div>
                         <button
                             class="btn-classic-back"
                             onclick="openTownSubMenu('main')"
@@ -1099,13 +994,71 @@
                                 เลือกเมนูอาหารเพื่อฟื้นค่า HP ก่อนนอน
                             </p>
                         </div>
-                        <div id="town-inn-list" class="submenu-item-list"></div>
+                        <div
+                            id="town-inn-list"
+                            class="submenu-item-list"
+                        ></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Panel (Quest Detail) -->
             <div id="right-panel" class="hidden-panel">
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background: #24211e;
+                        border: 2px solid #5c4a33;
+                        padding: 8px 12px;
+                        border-radius: 6px;
+                        margin-bottom: 15px;
+                        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+                    "
+                >
+                    <div style="display: flex; align-items: center; gap: 6px">
+                        <span style="font-size: 16px">🪙</span>
+                        <span
+                            style="
+                                color: #a89274;
+                                font-size: 11px;
+                                font-weight: bold;
+                            "
+                            >GOLD:</span
+                        >
+                        <span
+                            id="ui-gold-count"
+                            style="
+                                color: #ffd700;
+                                font-size: 15px;
+                                font-weight: 900;
+                            "
+                            >150</span
+                        >
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 6px">
+                        <span style="font-size: 16px">🌙</span>
+                        <span
+                            style="
+                                color: #cda8e5;
+                                font-size: 11px;
+                                font-weight: bold;
+                            "
+                            >DAY:</span
+                        >
+                        <span
+                            id="ui-day-count"
+                            style="
+                                color: #e1bee7;
+                                font-size: 15px;
+                                font-weight: 900;
+                            "
+                            >1</span
+                        >
+                    </div>
+                </div>
+
                 <div class="quest-detail-box">
                     <h3
                         style="
@@ -1117,7 +1070,6 @@
                     >
                         QUEST DETAIL
                     </h3>
-
                     <div id="right-quest-info">
                         <p
                             style="
@@ -1130,10 +1082,15 @@
                         </p>
                     </div>
                 </div>
+
                 <button
                     id="btn-back-board"
                     class="btn-action"
-                    style="display: none; background: #555; margin-bottom: 10px"
+                    style="
+                        display: none;
+                        background: #555;
+                        margin-bottom: 10px;
+                    "
                     onclick="switchState(1)"
                 >
                     🔙 BACK TO QUEST BOARD
