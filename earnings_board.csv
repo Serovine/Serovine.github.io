@@ -1,8 +1,8 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
 DRI,Darden Restaurants Inc.,19-03-26,Before Market,213.45,14.13%,NYSE,
 FRVO,Fervo Energy Company,22-06-26,Before Market,35.09,-3.97%,NASDAQ,+4.02%
-CCL,Carnival Corporation Ltd.,23-06-26,Before Market,30.87,0.27%,NYSE,
-KFY,Korn Ferry,23-06-26,Before Market,71.46,5.59%,NYSE,
+CCL,Carnival Corporation Ltd.,23-06-26,Before Market,30.87,0.27%,NYSE,-9.57%
+KFY,Korn Ferry,23-06-26,Before Market,71.46,5.59%,NYSE,+3.29%
 CBRS,Cerebras Systems Inc.,23-06-26,After Market,234.71,-24.55%,NASDAQ,
 FDX,FedEx Corporation,23-06-26,After Market,326.2,40.75%,NYSE,
 KBH,KB Home,23-06-26,After Market,54.2,-4.69%,NYSE,
