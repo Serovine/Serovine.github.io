@@ -230,3 +230,16 @@ function switchMobileTab(target) {
 // สั่งรัน
 window.addEventListener('DOMContentLoaded', injectMobileHeaderTabs);
 
+// ฟังก์ชันควบคุมสวิตช์ Tab บนมือถือ
+function switchMobileTab(target) {
+    const container = document.getElementById('game-container');
+    if (!container) return;
+
+    container.classList.remove('mobile-show-left', 'mobile-show-main', 'mobile-show-right');
+    container.classList.add(`mobile-show-${target}`);
+
+    document.getElementById('mtab-left').classList.toggle('active-m-tab', target === 'left');
+    document.getElementById('mtab-main').classList.toggle('active-m-tab', target === 'main');
+    document.getElementById('mtab-right').classList.toggle('active-m-tab', target === 'right');
+}
+
