@@ -198,7 +198,7 @@ function bindSpreadTap() {
 
 function initFinalScreen() {
   AppState.summaryPicked = 0;
-  AppState.summarySelected = []; // เก็บไพ่ที่เลือกไว้ก่อน
+  AppState.summarySelected = [];
   updateFinalCounter(0);
 
   initFloatOrb("orb-float-final", "orb-bubble-final");
@@ -206,16 +206,13 @@ function initFinalScreen() {
 
   const finalPool = prepareFinalPool();
   const grid = document.getElementById("grid-3x3");
-
   buildGrid3x3(grid, finalPool, (cardNumber, summaryIdx) => {
     onSummaryCardPicked(cardNumber, summaryIdx);
   }, AppState.theme);
 
-  // ซ่อน summary reveal ไว้ก่อน
   const panel = document.getElementById("summary-reveal");
   if (panel) panel.hidden = true;
 
-  // แสดงปุ่ม confirm เลือกครบ
   const btnConfirm = document.getElementById("btn-confirm-summary");
   if (btnConfirm) {
     btnConfirm.textContent = "ยืนยันการเลือก";
@@ -230,7 +227,6 @@ function onSummaryCardPicked(cardNumber, summaryIdx) {
   AppState.summarySelected.push({ cardNumber, isReversed: result.isReversed, summaryIdx });
   updateFinalCounter(AppState.summaryPicked);
 
-  // ครบ 3 ใบ → แสดงปุ่ม confirm
   if (AppState.summaryPicked >= 3) {
     const btnConfirm = document.getElementById("btn-confirm-summary");
     if (btnConfirm) btnConfirm.hidden = false;
@@ -239,19 +235,17 @@ function onSummaryCardPicked(cardNumber, summaryIdx) {
 }
 
 function startPrayerScreen() {
-  // ซ่อน grid
   const grid = document.getElementById("grid-3x3");
   if (grid) grid.hidden = true;
 
   const btnConfirm = document.getElementById("btn-confirm-summary");
   if (btnConfirm) btnConfirm.hidden = true;
 
-  // แสดง prayer UI
   const panel = document.getElementById("summary-reveal");
   if (panel) {
     panel.hidden = false;
     panel.innerHTML = `
-      <div style="text-align:center; padding: 20px 0; display:flex; flex-direction:column; align-items:center; gap:20px;">
+      <div style="text-align:center; padding:20px 0; display:flex; flex-direction:column; align-items:center; gap:20px;">
         <p style="font-family:'Cinzel',serif; font-size:14px; color:var(--gold-light); line-height:1.8;">
           จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
         </p>
@@ -290,24 +284,6 @@ function revealNextSummaryCard() {
     btnConfirm.hidden = false;
     btnConfirm.textContent = idx < 2 ? "ใบต่อไป" : "ดูผลทำนาย";
     btnConfirm.onclick = () => {
-      hideSummaryReveal();
-      AppState.revealIndex++;
-      setTimeout(() => revealNextSummaryCard(), 400);
-    };
-  }
-}
-
-  const item = AppState.summarySelected[idx];
-  const prophecy = getCardSummary(item.cardNumber, item.isReversed, item.summaryIdx);
-  showSummaryReveal(item.cardNumber, item.isReversed, item.summaryIdx, prophecy);
-
-  const btnConfirm = document.getElementById("btn-confirm-summary");
-  if (btnConfirm) {
-    btnConfirm.hidden = false;
-    btnConfirm.textContent = idx < 2 ? "ใบต่อไป" : "ดูผลทำนาย";
-    btnConfirm.onclick = () => {
-console.log("confirm clicked");
-  startPrayerScreen();
       hideSummaryReveal();
       AppState.revealIndex++;
       setTimeout(() => revealNextSummaryCard(), 400);
