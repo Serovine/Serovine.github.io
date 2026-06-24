@@ -129,12 +129,17 @@ function renderIdentityCard(zodiacResult, userName) {
   const speech = document.getElementById("identity-speech");
 
   icon.textContent = zodiacResult.symbol;
-  zodiacName.textContent = t(`zodiac_names.${zodiacResult.sign}`) ||
-    LANG[currentLang].zodiac_names[zodiacResult.sign];
+  zodiacName.textContent = LANG[currentLang].zodiac_names[zodiacResult.sign] || zodiacResult.sign;
   cardName.textContent = zodiacResult.cardName;
 
   // dummy card preview
-  preview.innerHTML = makeDummyCard(zodiacResult.cardNumber, "identity-dummy");
+ preview.innerHTML = "";
+const img = document.createElement("img");
+img.src = cardImagePath(zodiacResult.cardNumber, AppState?.theme || "hololive");
+img.alt = zodiacResult.cardName;
+img.style.cssText = "width:44px;height:80px;object-fit:cover;border-radius:4px;";
+img.onerror = () => { preview.innerHTML = makeDummyCard(zodiacResult.cardNumber, "identity-dummy"); };
+preview.appendChild(img);
 
   const prefix = t("identity_speech_prefix");
   const suffix = t("identity_speech_suffix");
