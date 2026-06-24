@@ -189,7 +189,7 @@ html, body {
   right: 20px;
   z-index: 50;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: flex-end;
   gap: 8px;
 }
@@ -221,7 +221,6 @@ html, body {
   line-height: 1.5;
   white-space: pre-line;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  order: -1;
 }
 .bubble-pop  { animation: bubblePop  .3s ease; }
 .bubble-fade { animation: bubbleFade .3s ease forwards; }
