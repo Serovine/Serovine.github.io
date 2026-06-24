@@ -194,7 +194,13 @@ function showRevealPanel(cardNumber, isReversed, houseIndex, prophecy) {
   const prophecyEl = document.getElementById("reveal-prophecy");
 
   // render card image หรือ dummy
-  cardEl.innerHTML = makeDummyCard(cardNumber);
+  cardEl.innerHTML = "";
+const img = document.createElement("img");
+img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
+img.alt = CARD_NAMES[cardNumber];
+img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+img.onerror = () => { cardEl.innerHTML = makeDummyCard(cardNumber); };
+cardEl.appendChild(img);
   if (isReversed) cardEl.classList.add("reversed");
   else cardEl.classList.remove("reversed");
 
