@@ -10,11 +10,11 @@ const AppState = {
   theme: "hololive",
   userName: "",
   dob: "",
-  zodiac: null,          // { sign, cardNumber, cardName, symbol }
-  currentHouse: 0,       // 0-11
-  fanCards: [],          // ไพ่ที่กางให้เลือกตอนนี้
-  summaryPicked: 0,      // 0-3
-  phase: "lang",         // lang | welcome | input | shuffle | draw | final | result
+  zodiac: null, // { sign, cardNumber, cardName, symbol }
+  currentHouse: 0, // 0-11
+  fanCards: [], // ไพ่ที่กางให้เลือกตอนนี้
+  summaryPicked: 0, // 0-3
+  phase: "lang", // lang | welcome | input | shuffle | draw | final | result
 };
 
 const FAN_SIZE = 7; // จำนวนไพ่กางแต่ละรอบ
@@ -38,7 +38,7 @@ function initApp() {
 // ═══════════════════════════════════════════
 
 function bindLangScreen() {
-  document.querySelectorAll(".btn-lang").forEach(btn => {
+  document.querySelectorAll(".btn-lang").forEach((btn) => {
     btn.addEventListener("click", () => {
       const lang = btn.dataset.lang;
       if (lang === "en") return; // mockup — ยังไม่เปิด
@@ -100,7 +100,9 @@ function startShuffle() {
 
 function initDrawScreen() {
   // สร้าง spread slots
-  const spreadCircle = document.querySelector("#spread-container .spread-circle");
+  const spreadCircle = document.querySelector(
+    "#spread-container .spread-circle",
+  );
   buildSpreadSlots(spreadCircle);
 
   // วางไพ่ประจำตัวกลางวง
@@ -120,9 +122,13 @@ function renderCenterCard() {
   const img = document.createElement("img");
   img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
   img.alt = AppState.zodiac.cardName;
-  img.style.cssText = "width:52px;height:94px;object-fit:cover;border-radius:6px;";
+  img.style.cssText =
+    "width:52px;height:94px;object-fit:cover;border-radius:6px;";
   img.onerror = () => {
-    center.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
+    center.innerHTML = makeDummyCard(
+      AppState.zodiac.cardNumber,
+      "center-card-svg",
+    );
   };
   center.appendChild(img);
   center.title = AppState.zodiac.cardName;
@@ -131,45 +137,73 @@ function renderCenterCard() {
 function startHouseDraw(houseIndex) {
   AppState.currentHouse = houseIndex;
 
+  AppState.stagedCard = null;
+
   updateHouseLabel(houseIndex);
   updateDrawCounter(houseIndex + 1, 12);
 
-  // orb พูดตาม house
   const msg = LANG[currentLang].orb_draw_messages[houseIndex] || "";
   orbSpeak("orb-float", "orb-bubble", msg, 5000);
 
-  // hide reveal panel ถ้าค้างอยู่
   hideRevealPanel();
 
-  // deal fan
   AppState.fanCards = dealFan(FAN_SIZE);
   const fanContainer = document.getElementById("fan-container");
 
-  buildFan(fanContainer, AppState.fanCards, (cardNumber) => {
-    onCardPicked(cardNumber, houseIndex);
-  }, AppState.theme);
+  if (fanContainer) fanContainer.style.pointerEvents = "auto";
+
+  buildFan(
+    fanContainer,
+    AppState.fanCards,
+    (cardNumber) => {
+      onCardPicked(cardNumber, houseIndex);
+    },
+    AppState.theme,
+  );
 }
 
 function onCardPicked(cardNumber, houseIndex) {
-  const result = pickCard(cardNumber, houseIndex);
+  // ══════════════════════════════════════════════════════════════
+  // STAGE PHASE
+  // ══════════════════════════════════════════════════════════════
+  AppState.stagedCard = cardNumber;
 
-  // ดึงคำทำนายจาก data
-  const prophecy = getCardProphecy(cardNumber, result.isReversed, houseIndex);
+  const orientation = getOrientation(cardNumber);
+  const isReversed = orientation === "reversed";
+  const prophecy = getCardProphecy(cardNumber, isReversed, houseIndex);
 
-  // แสดง reveal panel
-  showRevealPanel(cardNumber, result.isReversed, houseIndex, prophecy);
+  showRevealPanel(cardNumber, isReversed, houseIndex, prophecy);
 
-  // bind ปุ่มวางไพ่
   const btnPlace = document.getElementById("btn-place-card");
+  btnPlace.disabled = false;
+
+  // ══════════════════════════════════════════════════════════════
+  // COMMIT PHASE
+  // ══════════════════════════════════════════════════════════════
   btnPlace.onclick = () => {
-    placeCardInSlot(houseIndex, cardNumber, result.isReversed, AppState.theme);
+    if (AppState.stagedCard === null) return;
+    btnPlace.disabled = true;
+
+    const fanContainer = document.getElementById("fan-container");
+    if (fanContainer) fanContainer.style.pointerEvents = "none";
+
+    const committedCard = AppState.stagedCard;
+    AppState.stagedCard = null;
+
+    const result = pickCard(committedCard, houseIndex);
+
+    placeCardInSlot(
+      houseIndex,
+      committedCard,
+      result.isReversed,
+      AppState.theme,
+    );
     hideRevealPanel();
 
     const nextHouse = houseIndex + 1;
     if (nextHouse < 12) {
       setTimeout(() => startHouseDraw(nextHouse), 400);
     } else {
-      // ครบ 12 ใบ → ไป final
       setTimeout(() => {
         AppState.phase = "final";
         showScreen("screen-final");
@@ -181,7 +215,7 @@ function onCardPicked(cardNumber, houseIndex) {
 
 // tap ไพ่บน spread เพื่อดู modal
 function bindSpreadTap() {
-  document.querySelector("#spread-container").addEventListener("click", e => {
+  document.querySelector("#spread-container").addEventListener("click", (e) => {
     const slot = e.target.closest(".house-slot-filled");
     if (!slot) return;
     const houseIdx = parseInt(slot.dataset.house);
@@ -206,9 +240,14 @@ function initFinalScreen() {
 
   const finalPool = prepareFinalPool();
   const grid = document.getElementById("grid-3x3");
-  buildGrid3x3(grid, finalPool, (cardNumber, summaryIdx) => {
-    onSummaryCardPicked(cardNumber, summaryIdx);
-  }, AppState.theme);
+  buildGrid3x3(
+    grid,
+    finalPool,
+    (cardNumber, summaryIdx) => {
+      onSummaryCardPicked(cardNumber, summaryIdx);
+    },
+    AppState.theme,
+  );
 
   const panel = document.getElementById("summary-reveal");
   if (panel) panel.hidden = true;
@@ -224,13 +263,22 @@ function initFinalScreen() {
 function onSummaryCardPicked(cardNumber, summaryIdx) {
   const result = pickSummaryCard(cardNumber, summaryIdx);
   AppState.summaryPicked++;
-  AppState.summarySelected.push({ cardNumber, isReversed: result.isReversed, summaryIdx });
+  AppState.summarySelected.push({
+    cardNumber,
+    isReversed: result.isReversed,
+    summaryIdx,
+  });
   updateFinalCounter(AppState.summaryPicked);
 
   if (AppState.summaryPicked >= 3) {
     const btnConfirm = document.getElementById("btn-confirm-summary");
     if (btnConfirm) btnConfirm.hidden = false;
-    orbSpeak("orb-float-final", "orb-bubble-final", "เลือกครบแล้ว... พร้อมรับโชคชะตาหรือยัง?", 0);
+    orbSpeak(
+      "orb-float-final",
+      "orb-bubble-final",
+      "เลือกครบแล้ว... พร้อมรับโชคชะตาหรือยัง?",
+      0,
+    );
   }
 }
 
@@ -249,7 +297,8 @@ function startPrayerScreen() {
   if (!prayerDiv) {
     prayerDiv = document.createElement("div");
     prayerDiv.id = "prayer-div";
-    prayerDiv.style.cssText = "text-align:center; padding:40px 20px; display:flex; flex-direction:column; align-items:center; gap:24px;";
+    prayerDiv.style.cssText =
+      "text-align:center; padding:40px 20px; display:flex; flex-direction:column; align-items:center; gap:24px;";
     document.getElementById("screen-final").appendChild(prayerDiv);
   }
   prayerDiv.hidden = false;
@@ -258,13 +307,17 @@ function startPrayerScreen() {
     จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
   </p>
   <div style="display:flex; gap:16px; justify-content:center; margin:8px 0;">
-    ${AppState.summarySelected.map(item => `
+    ${AppState.summarySelected
+      .map(
+        (item) => `
       <div style="width:66px; height:120px; border-radius:6px; overflow:hidden; box-shadow:0 0 12px rgba(201,168,76,0.3);">
-        <img src="assets/card/cardback.webp" 
+        <img src="assets/card/cardback.webp"
              style="width:100%;height:100%;object-fit:cover;"
              onerror="this.parentElement.style.background='#1a0e3a';this.parentElement.style.border='1px solid #c9a84c'">
       </div>
-    `).join("")}
+    `,
+      )
+      .join("")}
   </div>
   <button class="btn-primary" id="btn-reveal-start">เปิดเผยโชคชะตา</button>
 `;
@@ -293,8 +346,17 @@ function revealNextSummaryCard() {
   }
 
   const item = AppState.summarySelected[idx];
-  const prophecy = getCardSummary(item.cardNumber, item.isReversed, item.summaryIdx);
-  showSummaryReveal(item.cardNumber, item.isReversed, item.summaryIdx, prophecy);
+  const prophecy = getCardSummary(
+    item.cardNumber,
+    item.isReversed,
+    item.summaryIdx,
+  );
+  showSummaryReveal(
+    item.cardNumber,
+    item.isReversed,
+    item.summaryIdx,
+    prophecy,
+  );
 
   const btnConfirm = document.getElementById("btn-confirm-summary");
   if (btnConfirm) {
@@ -325,21 +387,30 @@ function initResultScreen() {
   if (resultSpreadEl) {
     // วางไพ่ประจำตัวกลาง
     const centerEl = document.getElementById("result-center-card");
-if (centerEl) {
-  const img = document.createElement("img");
-  img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
-  img.style.cssText = "width:52px;height:94px;border-radius:6px;object-fit:cover;";
-  img.onerror = () => {
-    centerEl.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
-  };
-  centerEl.innerHTML = "";
-  centerEl.appendChild(img);
-}
+    if (centerEl) {
+      const img = document.createElement("img");
+      img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
+      img.style.cssText =
+        "width:52px;height:94px;border-radius:6px;object-fit:cover;";
+      img.onerror = () => {
+        centerEl.innerHTML = makeDummyCard(
+          AppState.zodiac.cardNumber,
+          "center-card-svg",
+        );
+      };
+      centerEl.innerHTML = "";
+      centerEl.appendChild(img);
+    }
 
-    buildResultSpread(resultSpreadEl, Deck.placed, (houseIdx, cardNum, isRev) => {
-      const prophecy = getCardProphecy(cardNum, isRev, houseIdx);
-      openCardModal(cardNum, isRev, prophecy, houseIdx);
-    }, AppState.theme);
+    buildResultSpread(
+      resultSpreadEl,
+      Deck.placed,
+      (houseIdx, cardNum, isRev) => {
+        const prophecy = getCardProphecy(cardNum, isRev, houseIdx);
+        openCardModal(cardNum, isRev, prophecy, houseIdx);
+      },
+      AppState.theme,
+    );
   }
 
   initFloatOrb("orb-float-result", "orb-bubble-result");

@@ -119,8 +119,8 @@ const LANG = {
     },
 
     // Luck labels
-    luck_lucky: "✦ มงคล",
-    luck_unlucky: "✧ อัปมงคล",
+    luck_lucky: "ผลการทำนาย",
+    luck_unlucky: "ผลการทำนาย",
 
     // Save / screenshot
     save_not_supported: "เบราว์เซอร์นี้ไม่รองรับการบันทึกภาพ",

@@ -40,7 +40,7 @@ function showScreen(screenId) {
 // ═══════════════════════════════════════════
 
 function initStarFields() {
-  document.querySelectorAll(".star-field").forEach(field => {
+  document.querySelectorAll(".star-field").forEach((field) => {
     field.innerHTML = "";
     const count = 80;
     for (let i = 0; i < count; i++) {
@@ -129,17 +129,27 @@ function renderIdentityCard(zodiacResult, userName) {
   const speech = document.getElementById("identity-speech");
 
   icon.textContent = zodiacResult.symbol;
-  zodiacName.textContent = LANG[currentLang].zodiac_names[zodiacResult.sign] || zodiacResult.sign;
+  zodiacName.textContent =
+    LANG[currentLang].zodiac_names[zodiacResult.sign] || zodiacResult.sign;
   cardName.textContent = zodiacResult.cardName;
 
   // dummy card preview
- preview.innerHTML = "";
-const img = document.createElement("img");
-img.src = cardImagePath(zodiacResult.cardNumber, AppState?.theme || "hololive");
-img.alt = zodiacResult.cardName;
-img.style.cssText = "width:44px;height:80px;object-fit:cover;border-radius:4px;";
-img.onerror = () => { preview.innerHTML = makeDummyCard(zodiacResult.cardNumber, "identity-dummy"); };
-preview.appendChild(img);
+  preview.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = cardImagePath(
+    zodiacResult.cardNumber,
+    AppState?.theme || "hololive",
+  );
+  img.alt = zodiacResult.cardName;
+  img.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    preview.innerHTML = makeDummyCard(
+      zodiacResult.cardNumber,
+      "identity-dummy",
+    );
+  };
+  preview.appendChild(img);
 
   const prefix = t("identity_speech_prefix");
   const suffix = t("identity_speech_suffix");
@@ -195,12 +205,15 @@ function showRevealPanel(cardNumber, isReversed, houseIndex, prophecy) {
 
   // render card image หรือ dummy
   cardEl.innerHTML = "";
-const img = document.createElement("img");
-img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
-img.alt = CARD_NAMES[cardNumber];
-img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:6px;";
-img.onerror = () => { cardEl.innerHTML = makeDummyCard(cardNumber); };
-cardEl.appendChild(img);
+  const img = document.createElement("img");
+  img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
+  img.alt = CARD_NAMES[cardNumber];
+  img.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    cardEl.innerHTML = makeDummyCard(cardNumber);
+  };
+  cardEl.appendChild(img);
   if (isReversed) cardEl.classList.add("reversed");
   else cardEl.classList.remove("reversed");
 
@@ -235,12 +248,15 @@ function showSummaryReveal(cardNumber, isReversed, summaryIndex, prophecy) {
   const prophecyEl = document.getElementById("summary-prophecy");
 
   cardEl.innerHTML = "";
-const img = document.createElement("img");
-img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
-img.alt = CARD_NAMES[cardNumber];
-img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:6px;";
-img.onerror = () => { cardEl.innerHTML = makeDummyCard(cardNumber); };
-cardEl.appendChild(img);
+  const img = document.createElement("img");
+  img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
+  img.alt = CARD_NAMES[cardNumber];
+  img.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    cardEl.innerHTML = makeDummyCard(cardNumber);
+  };
+  cardEl.appendChild(img);
   if (isReversed) cardEl.classList.add("reversed");
   else cardEl.classList.remove("reversed");
 
@@ -294,36 +310,128 @@ function openCardModal(cardNumber, isReversed, prophecy, houseIndex) {
   const backdrop = document.getElementById("modal-backdrop");
   const flipEl = document.getElementById("modal-card-flip");
   const frontEl = document.getElementById("modal-card-front");
-  const titleEl = document.getElementById("modal-card-title");
-  const metaEl = document.getElementById("modal-card-meta");
-  const prophecyEl = document.getElementById("modal-card-prophecy");
+  const infoContainer = document.getElementById("modal-card-info"); // เป้าหมายหลัก!
 
-  // reset flip state
   flipEl.classList.remove("flipped");
 
-  // front = รูปไพ่
-  frontEl.innerHTML = makeDummyCard(cardNumber, "modal-dummy");
+  frontEl.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = cardImagePath(cardNumber, AppState?.theme || "hololive");
+  img.alt = CARD_NAMES[cardNumber];
+  img.style.cssText =
+    "width:100%; height:100%; object-fit:cover; border-radius:6px; display:block;";
+  img.onerror = () => {
+    frontEl.innerHTML = makeDummyCard(cardNumber, "modal-dummy");
+  };
+  frontEl.appendChild(img);
   if (isReversed) frontEl.classList.add("reversed");
   else frontEl.classList.remove("reversed");
 
-  // back = ข้อมูล
-  titleEl.textContent = CARD_NAMES[cardNumber];
+  const cardData = tarotData?.[cardNumber] || {};
+  const info = cardData.info || {};
+  const sideData = isReversed ? cardData.reversed : cardData.upright;
 
-  const orientation = isReversed ? t("reversed") : t("upright");
-  const houseName = houseIndex !== undefined
-    ? LANG[currentLang].house_names[houseIndex]
+  const cardName = CARD_NAMES[cardNumber] || info.name || "";
+  const cardNumStr = String(cardNumber).padStart(2, "0");
+
+  const elementEmojis = { Fire: "🔥", Water: "💧", Air: "💨", Earth: "🌿" };
+  const celestialEmojis = {
+    Sun: "☀️",
+    Moon: "🌙",
+    Mercury: "💫",
+    Venus: "✨",
+    Mars: "⚔️",
+    Jupiter: "🌟",
+    Saturn: "🪐",
+    Uranus: "🌀",
+    Neptune: "🌊",
+    Pluto: "🌑",
+    Aries: "♈",
+    Taurus: "♉",
+    Gemini: "♊",
+    Cancer: "♋",
+    Leo: "♌",
+    Virgo: "♍",
+    Libra: "♎",
+    Scorpio: "♏",
+    Sagittarius: "♐",
+    Capricorn: "♑",
+    Aquarius: "♒",
+    Pisces: "♓",
+  };
+
+  const elemStr = info.element
+    ? `${elementEmojis[info.element] || "✧"} ${info.element}`
     : "";
-  const luckKey = isReversed ? "luck_unlucky" : "luck_lucky";
+  const astroObj = info.planet || info.zodiac || "";
+  const astroStr = astroObj
+    ? `${celestialEmojis[astroObj] || "✦"} ${astroObj}`
+    : "";
 
-  metaEl.innerHTML = `
-    <span class="meta-orientation ${isReversed ? "reversed" : "upright"}">${orientation}</span>
-    ${houseName ? `<span class="meta-house">${houseName}</span>` : ""}
-    <span class="meta-luck">${t(luckKey)}</span>
+  const orientLabel = isReversed ? t("reversed") : t("upright");
+  const orientClass = isReversed ? "reversed" : "upright";
+  const houseLabel =
+    houseIndex !== undefined ? LANG[currentLang].house_names[houseIndex] : "";
+  const luckLabel = t(isReversed ? "luck_unlucky" : "luck_lucky");
+
+  const rawKeywords = sideData?.keyword || info?.keyword || "";
+  const keywordBadges = rawKeywords
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean)
+    .map((k) => `<span class="kw-badge">${k}</span>`)
+    .join("");
+
+  const loreText = info.description || "— ยังไม่มีบันทึกตำนานของไพ่ใบนี้ —";
+
+  infoContainer.innerHTML = `
+    <div class="mc-header">
+      <span class="mc-num">NO. ${cardNumStr}</span>
+      <h3 class="mc-title">${cardName}</h3>
+    </div>
+
+    ${
+      elemStr || astroStr
+        ? `
+      <div class="mc-astro-row">
+        ${elemStr ? `<span class="mc-astro-tag">${elemStr}</span>` : ""}
+        ${elemStr && astroStr ? `<span class="mc-astro-dot">•</span>` : ""}
+        ${astroStr ? `<span class="mc-astro-tag">${astroStr}</span>` : ""}
+      </div>
+    `
+        : ""
+    }
+
+    <div class="mc-reading-meta">
+      <span class="meta-orientation ${orientClass}">${orientLabel}</span>
+      ${houseLabel ? `<span class="meta-house">${houseLabel}</span>` : ""}
+      <span class="meta-luck">${luckLabel}</span>
+    </div>
+
+    ${
+      keywordBadges
+        ? `
+      <div class="mc-keywords-container">
+        ${keywordBadges}
+      </div>
+    `
+        : ""
+    }
+
+    <div class="modal-card-divider"></div>
+
+    <div class="mc-prophecy-box">
+      <p class="mc-prophecy-text">${prophecy || "..."}</p>
+    </div>
+
+    <div class="modal-card-divider"></div>
+
+    <div class="mc-lore-box">
+      <span class="mc-lore-label">CARD LORE</span>
+      <p class="mc-lore-text">${loreText}</p>
+    </div>
   `;
 
-  prophecyEl.textContent = prophecy;
-
-  // flip on tap
   flipEl.onclick = () => flipEl.classList.toggle("flipped");
 
   backdrop.hidden = false;
@@ -342,9 +450,12 @@ function closeCardModal() {
 }
 
 function initModalClose() {
-  document.getElementById("modal-close").addEventListener("click", closeCardModal);
-  document.getElementById("modal-backdrop").addEventListener("click", e => {
-    if (e.target === document.getElementById("modal-backdrop")) closeCardModal();
+  document
+    .getElementById("modal-close")
+    .addEventListener("click", closeCardModal);
+  document.getElementById("modal-backdrop").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("modal-backdrop"))
+      closeCardModal();
   });
 }
 
@@ -356,10 +467,12 @@ function setTheme(theme) {
   UI.currentTheme = theme;
   document.body.dataset.theme = theme;
   // refresh รูปไพ่ทุกใบที่แสดงอยู่
-  document.querySelectorAll(".spread-card img, .reveal-card img").forEach(img => {
-    const cardNum = parseInt(img.closest("[data-card]")?.dataset.card);
-    if (!isNaN(cardNum)) img.src = cardImagePath(cardNum, theme);
-  });
+  document
+    .querySelectorAll(".spread-card img, .reveal-card img")
+    .forEach((img) => {
+      const cardNum = parseInt(img.closest("[data-card]")?.dataset.card);
+      if (!isNaN(cardNum)) img.src = cardImagePath(cardNum, theme);
+    });
 }
 
 // ═══════════════════════════════════════════
@@ -379,35 +492,37 @@ function renderResultSummaryCards(summaryData) {
   const labels = LANG[currentLang].summary_labels;
 
   summaryData.forEach((item, i) => {
-  if (!item) return;
-  const wrap = document.createElement("div");
-  wrap.className = "result-summary-item";
+    if (!item) return;
+    const wrap = document.createElement("div");
+    wrap.className = "result-summary-item";
 
-  const label = document.createElement("span");
-  label.className = "result-summary-label";
-  label.textContent = labels[i] || "";
+    const label = document.createElement("span");
+    label.className = "result-summary-label";
+    label.textContent = labels[i] || "";
 
-  const cardDiv = document.createElement("div");
-  cardDiv.className = "result-summary-card" + (item.isReversed ? " reversed" : "");
+    const cardDiv = document.createElement("div");
+    cardDiv.className =
+      "result-summary-card" + (item.isReversed ? " reversed" : "");
 
-  const img = document.createElement("img");
-  img.src = cardImagePath(item.cardNumber, AppState?.theme || "hololive");
-  img.alt = CARD_NAMES[item.cardNumber];
-  img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:6px;";
-  img.onerror = () => {
-    cardDiv.innerHTML = makeDummyCard(item.cardNumber);
-  };
-  cardDiv.appendChild(img);
+    const img = document.createElement("img");
+    img.src = cardImagePath(item.cardNumber, AppState?.theme || "hololive");
+    img.alt = CARD_NAMES[item.cardNumber];
+    img.style.cssText =
+      "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+    img.onerror = () => {
+      cardDiv.innerHTML = makeDummyCard(item.cardNumber);
+    };
+    cardDiv.appendChild(img);
 
-  const name = document.createElement("span");
-  name.className = "result-summary-name";
-  name.textContent = CARD_NAMES[item.cardNumber];
+    const name = document.createElement("span");
+    name.className = "result-summary-name";
+    name.textContent = CARD_NAMES[item.cardNumber];
 
-  wrap.appendChild(label);
-  wrap.appendChild(cardDiv);
-  wrap.appendChild(name);
-  container.appendChild(wrap);
-});
+    wrap.appendChild(label);
+    wrap.appendChild(cardDiv);
+    wrap.appendChild(name);
+    container.appendChild(wrap);
+  });
 }
 // ═══════════════════════════════════════════
 // Shuffle animation
@@ -415,7 +530,10 @@ function renderResultSummaryCards(summaryData) {
 
 function playShuffleAnimation(onComplete) {
   const deck = document.getElementById("shuffle-deck");
-  if (!deck) { onComplete?.(); return; }
+  if (!deck) {
+    onComplete?.();
+    return;
+  }
 
   deck.classList.add("shuffle-animate");
   // animation 2.5s แล้ว callback
@@ -437,7 +555,9 @@ function validateInputs() {
 }
 
 function initInputValidation() {
-  document.getElementById("user-name")?.addEventListener("input", validateInputs);
+  document
+    .getElementById("user-name")
+    ?.addEventListener("input", validateInputs);
   document.getElementById("user-dob")?.addEventListener("change", () => {
     validateInputs();
     const dob = document.getElementById("user-dob")?.value;
