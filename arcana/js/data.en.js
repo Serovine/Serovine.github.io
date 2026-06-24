@@ -1,7 +1,7 @@
 // Tarot Data - 22 Major Arcana
 // Thai Version
 
-const tarotData = {
+const tarotDataEN = {
   0: {
     info: {
       name: "The Fool",
