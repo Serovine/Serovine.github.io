@@ -7,6 +7,9 @@
 /* ─── Reset & Base ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* hidden attribute must always win */
+[hidden] { display: none !important; }
+
 :root {
   --navy:       #080818;
   --navy-mid:   #0d0d2b;
