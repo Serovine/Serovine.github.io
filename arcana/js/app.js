@@ -241,21 +241,29 @@ function startPrayerScreen() {
   const btnConfirm = document.getElementById("btn-confirm-summary");
   if (btnConfirm) btnConfirm.hidden = true;
 
-  const panel = document.getElementById("summary-reveal");
-  if (panel) {
-    panel.hidden = false;
-    panel.innerHTML = `
-      <div style="text-align:center; padding:20px 0; display:flex; flex-direction:column; align-items:center; gap:20px;">
-        <p style="font-family:'Cinzel',serif; font-size:14px; color:var(--gold-light); line-height:1.8;">
-          จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
-        </p>
-        <button class="btn-primary" id="btn-reveal-start">เปิดเผยโชคชะตา</button>
-      </div>
-    `;
-    document.getElementById("btn-reveal-start").onclick = () => startRevealSequence();
-  }
-}
+  const finalHeader = document.querySelector(".final-header");
+  if (finalHeader) finalHeader.hidden = true;
 
+  // สร้าง prayer div แยกต่างหาก ไม่ทับ summary-reveal
+  let prayerDiv = document.getElementById("prayer-div");
+  if (!prayerDiv) {
+    prayerDiv = document.createElement("div");
+    prayerDiv.id = "prayer-div";
+    prayerDiv.style.cssText = "text-align:center; padding:40px 20px; display:flex; flex-direction:column; align-items:center; gap:24px;";
+    document.getElementById("screen-final").appendChild(prayerDiv);
+  }
+  prayerDiv.hidden = false;
+  prayerDiv.innerHTML = `
+    <p style="font-family:'Cinzel',serif; font-size:14px; color:var(--gold-light); line-height:2;">
+      จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
+    </p>
+    <button class="btn-primary" id="btn-reveal-start">เปิดเผยโชคชะตา</button>
+  `;
+  document.getElementById("btn-reveal-start").onclick = () => {
+    prayerDiv.hidden = true;
+    startRevealSequence();
+  };
+}
 function startRevealSequence() {
   const panel = document.getElementById("summary-reveal");
   if (panel) panel.hidden = true;
