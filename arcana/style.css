@@ -443,10 +443,16 @@ body {
 }
 
 #btn-confirm-summary {
-    position: fixed;
-    bottom: 24px;
-    right: 20px;
-    z-index: 40;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    z-index: 100;
+
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Input Screen ─── */
@@ -541,7 +547,8 @@ body {
 }
 .identity-preview {
     flex-shrink: 0;
-    width: 44px;
+    width: var(--card-w);
+    height: var(--card-h);
 }
 .identity-speech {
     margin-top: 10px;
@@ -658,6 +665,26 @@ body {
     height: 100%;
 }
 
+@keyframes wheelSlowSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.spread-wheel-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.65;
+    animation: wheelSlowSpin 140s linear infinite;
+}
+
 /* House slots */
 .house-slot {
     position: absolute;
@@ -666,6 +693,7 @@ body {
     border-radius: var(--radius);
 }
 .house-slot-empty {
+    opacity: 0;
     background: rgba(201, 168, 76, 0.05);
     border: 1px dashed rgba(201, 168, 76, 0.2);
     display: flex;
@@ -673,9 +701,10 @@ body {
     justify-content: center;
 }
 .house-slot-label {
-    font-family: "Cinzel", serif;
+    display: none;
+    /*font-family: "Cinzel", serif;
     font-size: 11px;
-    color: rgba(201, 168, 76, 0.3);
+    color: rgba(201, 168, 76, 0.3);*/
 }
 .house-slot-filled {
     border: none;
@@ -722,14 +751,27 @@ body {
 }
 
 /* Spread center card */
-.spread-center-card {
+.spread-center-card,
+.spread-center-result {
     position: absolute;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 3;
-    filter: drop-shadow(0 0 12px var(--gold-glow));
+    width: var(--card-w);
+    height: var(--card-h);
+    z-index: 10;
 }
+.spread-center-card img,
+.spread-center-result img,
+.spread-center-card .card-dummy,
+.spread-center-result .card-dummy {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 0 20px var(--gold-glow);
+}
+
 .center-card-svg {
     width: 52px;
     height: 94px;
@@ -989,7 +1031,7 @@ body {
     right: 0;
     z-index: 30;
     background: linear-gradient(to top, var(--navy) 80%, transparent);
-    padding: 20px 20px 32px;
+    padding: 20px 20px 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1006,6 +1048,7 @@ body {
     height: 100%;
     border-radius: var(--radius);
     overflow: hidden;
+    box-shadow: 0 0 25px rgba(201, 168, 76, 0.2);
 }
 .summary-card.reversed {
     transform: rotate(180deg);
@@ -1033,6 +1076,23 @@ body {
     color: var(--text);
     line-height: 1.7;
     max-width: 320px;
+}
+
+#summary-reveal:not([hidden]) ~ #btn-confirm-summary {
+    position: fixed;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 35;
+
+    width: calc(100% - 40px);
+    max-width: 440px;
+    min-height: 44px;
+    border-radius: 8px;
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 /* ─── Result Screen ─── */
@@ -1209,9 +1269,9 @@ body {
 
 /* 3D flip */
 .modal-card-scene {
-    width: var(--card-w);
-    height: var(--card-h);
-    perspective: 600px;
+    width: 275px;
+    height: 500px;
+    perspective: 1000px;
     cursor: pointer;
 }
 .modal-card-flip {
@@ -1247,15 +1307,15 @@ body {
 }
 
 .modal-card-info {
-    padding: 14px 12px;
+    padding: 20px 14px 28px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     width: 100%;
 }
 .modal-card-title {
     font-family: "Cinzel", serif;
-    font-size: 13px;
+    font-size: 17px;
     color: var(--gold-light);
     text-align: center;
 }
@@ -1312,6 +1372,157 @@ body {
     z-index: 1;
 }
 
+.mc-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.mc-num {
+    font-family: "Cinzel", serif;
+    font-size: 11px;
+    color: var(--gold-dim);
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+.mc-title {
+    font-family: "Cinzel", serif;
+    font-size: 18px;
+    color: var(--gold-light);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15;
+    text-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* 2. แถบธาตุ & ดวงดาว */
+.mc-astro-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    margin: -2px 0 2px;
+}
+.mc-astro-tag {
+    font-size: 11px;
+    color: var(--gold-light);
+    font-family: "Cinzel", serif;
+    letter-spacing: 0.5px;
+}
+.mc-astro-dot {
+    color: var(--gold-dim);
+    font-size: 10px;
+}
+
+/* 3. บริบทคำทำนาย (ตรง/กลับหัว, ภพ, มงคล) */
+.mc-reading-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px 8px;
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+.meta-orientation {
+    font-size: 11px;
+    font-family: "Cinzel", serif;
+    padding: 2px 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.meta-orientation.upright {
+    background: rgba(201, 168, 76, 0.15);
+    color: var(--gold);
+}
+.meta-orientation.reversed {
+    background: rgba(107, 63, 160, 0.25);
+    color: #c084fc;
+}
+.meta-house {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+}
+.meta-luck {
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* 4. ป้าย Keywords Badges */
+.mc-keywords-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    padding: 2px 0;
+}
+.kw-badge {
+    font-size: 11px;
+    color: var(--navy-card);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.15s ease;
+}
+.kw-badge:hover {
+    transform: scale(1.08);
+}
+
+/* 5. กล่องคำทำนายเฉพาะตำแหน่ง */
+.mc-prophecy-box {
+    background: linear-gradient(
+        to right,
+        rgba(201, 168, 76, 0.1),
+        rgba(201, 168, 76, 0.02)
+    );
+    border-left: 3px solid var(--gold);
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    margin: 2px 0;
+}
+.mc-prophecy-text {
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* 6. คำอธิบายตำนานไพ่ (Card Lore) */
+.mc-lore-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mc-lore-label {
+    font-family: "Cinzel", serif;
+    font-size: 10px;
+    color: var(--gold-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 700;
+}
+.mc-lore-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    text-align: justify;
+    font-style: italic;
+    padding: 0 4px;
+}
+
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
     width: 4px;
@@ -1342,10 +1553,19 @@ body {
 }
 @media (min-width: 480px) {
     .reveal-panel,
-    .summary-reveal {
+    .summary-reveal,
+    .draw-overlay {
         left: 50%;
         right: auto;
         transform: translateX(-50%);
         width: 480px;
     }
+
+    .orb-float {
+        right: calc(50% - 240px + 16px);
+    }
+
+    /*#btn-confirm-summary {
+        right: calc(50% - 240px + 20px);
+    }*/
 }
