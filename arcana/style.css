@@ -457,7 +457,7 @@ html, body {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%) translateY(18px);
+  transform: translateX(-50%) translateY(24px);
   width: 100vw;
   max-width: 480px;
   aspect-ratio: 1;
