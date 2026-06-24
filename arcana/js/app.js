@@ -245,9 +245,16 @@ function initResultScreen() {
   if (resultSpreadEl) {
     // วางไพ่ประจำตัวกลาง
     const centerEl = document.getElementById("result-center-card");
-    if (centerEl) {
-      centerEl.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
-    }
+if (centerEl) {
+  const img = document.createElement("img");
+  img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
+  img.style.cssText = "width:52px;height:94px;border-radius:6px;object-fit:cover;";
+  img.onerror = () => {
+    centerEl.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
+  };
+  centerEl.innerHTML = "";
+  centerEl.appendChild(img);
+}
 
     buildResultSpread(resultSpreadEl, Deck.placed, (houseIdx, cardNum, isRev) => {
       const prophecy = getCardProphecy(cardNum, isRev, houseIdx);
