@@ -322,6 +322,13 @@ html, body {
 .btn-secondary:hover  { border-color:var(--gold); background:rgba(201,168,76,0.08); }
 .btn-secondary:active { transform:scale(.97); }
 
+#btn-confirm-summary {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 40;
+}
+
 /* ─── Input Screen ─── */
 .input-form { width: 100%; display:flex; flex-direction:column; gap:16px; }
 .input-group { display:flex; flex-direction:column; gap:6px; }
@@ -713,7 +720,7 @@ html, body {
   max-width:480px;
   margin:0 auto;
 }
-.summary-card-wrap { width:var(--card-w); height:var(--card-h); }
+.summary-card-wrap { width: 275px; height: 500px; }
 .summary-card { width:100%; height:100%; border-radius:var(--radius); overflow:hidden; }
 .summary-card.reversed { transform:rotate(180deg); }
 .summary-label {
