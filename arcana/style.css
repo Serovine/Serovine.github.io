@@ -192,6 +192,7 @@ html, body {
   flex-direction: column-reverse;
   align-items: flex-end;
   gap: 8px;
+justify-content: flex-end;
 }
 .orb-mini {
   position: relative;
@@ -214,13 +215,14 @@ html, body {
   max-width: calc(100vw - 90px);
   background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
   border: 1px solid var(--gold-dim);
-  border-radius: 12px 12px 4px 12px;
+   border-radius: 12px 12px 12px 4px;
   padding: 10px 14px;
   font-size: 13px;
   color: var(--gold-light);
   line-height: 1.5;
   white-space: pre-line;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+margin-bottom: 8px;
 }
 .bubble-pop  { animation: bubblePop  .3s ease; }
 .bubble-fade { animation: bubbleFade .3s ease forwards; }
