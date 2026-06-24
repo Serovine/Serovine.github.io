@@ -455,9 +455,9 @@ html, body {
 
 .spread-container {
   position: absolute;
-  top: 18px;
+  top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(18px);
   width: 100vw;
   max-width: 480px;
   aspect-ratio: 1;
