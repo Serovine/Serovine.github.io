@@ -29,7 +29,7 @@ function initApp() {
   bindLangScreen();
   bindWelcomeScreen();
   bindInputScreen();
-  bindDrawScreen()
+  bindDrawScreen();
   bindFinalScreen();
   bindResultScreen();
 }
