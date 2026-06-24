@@ -254,11 +254,20 @@ function startPrayerScreen() {
   }
   prayerDiv.hidden = false;
   prayerDiv.innerHTML = `
-    <p style="font-family:'Cinzel',serif; font-size:14px; color:var(--gold-light); line-height:2;">
-      จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
-    </p>
-    <button class="btn-primary" id="btn-reveal-start">เปิดเผยโชคชะตา</button>
-  `;
+  <p style="font-family:'Cinzel',serif; font-size:14px; color:var(--gold-light); line-height:2;">
+    จงหลับตา<br>รวมพลังจิต<br>มุ่งความตั้งใจไปยังดวงดาว...
+  </p>
+  <div style="display:flex; gap:16px; justify-content:center; margin:8px 0;">
+    ${AppState.summarySelected.map(item => `
+      <div style="width:66px; height:120px; border-radius:6px; overflow:hidden; box-shadow:0 0 12px rgba(201,168,76,0.3);">
+        <img src="assets/card/cardback.webp" 
+             style="width:100%;height:100%;object-fit:cover;"
+             onerror="this.parentElement.style.background='#1a0e3a';this.parentElement.style.border='1px solid #c9a84c'">
+      </div>
+    `).join("")}
+  </div>
+  <button class="btn-primary" id="btn-reveal-start">เปิดเผยโชคชะตา</button>
+`;
   document.getElementById("btn-reveal-start").onclick = () => {
     prayerDiv.hidden = true;
     startRevealSequence();
