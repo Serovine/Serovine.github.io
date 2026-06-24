@@ -391,7 +391,7 @@ function renderResultSummaryCards(summaryData) {
   wrap.appendChild(name);
   container.appendChild(wrap);
 });
-
+}
 // ═══════════════════════════════════════════
 // Shuffle animation
 // ═══════════════════════════════════════════
