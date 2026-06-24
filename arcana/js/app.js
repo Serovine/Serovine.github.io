@@ -292,6 +292,8 @@ function revealNextSummaryCard() {
     btnConfirm.hidden = false;
     btnConfirm.textContent = idx < 2 ? "ใบต่อไป" : "ดูผลทำนาย";
     btnConfirm.onclick = () => {
+console.log("confirm clicked");
+  startPrayerScreen();
       hideSummaryReveal();
       AppState.revealIndex++;
       setTimeout(() => revealNextSummaryCard(), 400);
