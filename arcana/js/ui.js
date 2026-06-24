@@ -362,20 +362,35 @@ function renderResultSummaryCards(summaryData) {
   const labels = LANG[currentLang].summary_labels;
 
   summaryData.forEach((item, i) => {
-    if (!item) return;
-    const wrap = document.createElement("div");
-    wrap.className = "result-summary-item";
+  if (!item) return;
+  const wrap = document.createElement("div");
+  wrap.className = "result-summary-item";
 
-    wrap.innerHTML = `
-      <span class="result-summary-label">${labels[i] || ""}</span>
-      <div class="result-summary-card ${item.isReversed ? "reversed" : ""}">
-        ${makeDummyCard(item.cardNumber)}
-      </div>
-      <span class="result-summary-name">${CARD_NAMES[item.cardNumber]}</span>
-    `;
-    container.appendChild(wrap);
-  });
-}
+  const label = document.createElement("span");
+  label.className = "result-summary-label";
+  label.textContent = labels[i] || "";
+
+  const cardDiv = document.createElement("div");
+  cardDiv.className = "result-summary-card" + (item.isReversed ? " reversed" : "");
+
+  const img = document.createElement("img");
+  img.src = cardImagePath(item.cardNumber, AppState?.theme || "hololive");
+  img.alt = CARD_NAMES[item.cardNumber];
+  img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    cardDiv.innerHTML = makeDummyCard(item.cardNumber);
+  };
+  cardDiv.appendChild(img);
+
+  const name = document.createElement("span");
+  name.className = "result-summary-name";
+  name.textContent = CARD_NAMES[item.cardNumber];
+
+  wrap.appendChild(label);
+  wrap.appendChild(cardDiv);
+  wrap.appendChild(name);
+  container.appendChild(wrap);
+});
 
 // ═══════════════════════════════════════════
 // Shuffle animation
