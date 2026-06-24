@@ -455,7 +455,7 @@ html, body {
 
 .spread-container {
   position: absolute;
-  top: 0;
+  top: 18;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
