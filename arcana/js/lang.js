@@ -5,7 +5,7 @@ const LANG = {
   th: {
     // App
     app_title: "Celestial Arcana",
-    app_subtitle: "ไพ่ทาโรต์แห่งสิบสองราศี",
+    app_subtitle: "ไพ่ทาโรต์แห่งจักรราศี",
 
     // Screen 0 — Lang select (hardcoded, no translation needed)
 
@@ -94,7 +94,7 @@ const LANG = {
     btn_confirm_summary: "รับทราบ",
 
     // Screen 6 — Result
-    result_subtitle: "โชคชะตาแห่งสิบสองราศีของท่าน",
+    result_subtitle: "สรุปผลการทำนาย",
     result_summary_title: "ไพ่แห่งชะตากรรม",
     btn_restart: "ดูดวงใหม่",
     btn_save: "บันทึกผล",
