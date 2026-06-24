@@ -273,7 +273,6 @@ function startRevealSequence() {
 function revealNextSummaryCard() {
   const idx = AppState.revealIndex;
   if (idx >= AppState.summarySelected.length) {
-    // เปิดครบแล้ว → ไป result
     setTimeout(() => {
       AppState.phase = "result";
       showScreen("screen-result");
@@ -281,6 +280,22 @@ function revealNextSummaryCard() {
     }, 600);
     return;
   }
+
+  const item = AppState.summarySelected[idx];
+  const prophecy = getCardSummary(item.cardNumber, item.isReversed, item.summaryIdx);
+  showSummaryReveal(item.cardNumber, item.isReversed, item.summaryIdx, prophecy);
+
+  const btnConfirm = document.getElementById("btn-confirm-summary");
+  if (btnConfirm) {
+    btnConfirm.hidden = false;
+    btnConfirm.textContent = idx < 2 ? "ใบต่อไป" : "ดูผลทำนาย";
+    btnConfirm.onclick = () => {
+      hideSummaryReveal();
+      AppState.revealIndex++;
+      setTimeout(() => revealNextSummaryCard(), 400);
+    };
+  }
+}
 
   const item = AppState.summarySelected[idx];
   const prophecy = getCardSummary(item.cardNumber, item.isReversed, item.summaryIdx);
