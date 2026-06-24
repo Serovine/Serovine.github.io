@@ -117,7 +117,15 @@ function initDrawScreen() {
 function renderCenterCard() {
   const center = document.getElementById("spread-center-card");
   if (!center || !AppState.zodiac) return;
-  center.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
+  center.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
+  img.alt = AppState.zodiac.cardName;
+  img.style.cssText = "width:52px;height:94px;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    center.innerHTML = makeDummyCard(AppState.zodiac.cardNumber, "center-card-svg");
+  };
+  center.appendChild(img);
   center.title = AppState.zodiac.cardName;
 }
 
