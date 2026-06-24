@@ -521,6 +521,12 @@ function renderResultSummaryCards(summaryData) {
     wrap.appendChild(label);
     wrap.appendChild(cardDiv);
     wrap.appendChild(name);
+
+    wrap.style.cursor = "pointer";
+    wrap.addEventListener("click", () => {
+      const prophecy = getCardSummary(item.cardNumber, item.isReversed, i);
+      openCardModal(item.cardNumber, item.isReversed, prophecy, undefined);
+    });
     container.appendChild(wrap);
   });
 }
@@ -575,4 +581,44 @@ function initInputValidation() {
       renderIdentityCard(zodiac, name);
     }
   });
+}
+
+// ═══════════════════════════════════════════
+// Identity Card Modal
+// ═══════════════════════════════════════════
+function openIdentityModal() {
+  const backdrop = document.getElementById("identity-modal-backdrop");
+  const flipEl = document.getElementById("identity-modal-flip");
+  const frontEl = document.getElementById("identity-modal-front");
+  const backEl = document.getElementById("identity-modal-back");
+
+  flipEl.classList.remove("flipped");
+
+  // front = หน้าไพ่
+  frontEl.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = cardImagePath(AppState.zodiac.cardNumber, AppState.theme);
+  img.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:8px;";
+  img.onerror = () => {
+    frontEl.innerHTML = makeDummyCard(AppState.zodiac.cardNumber);
+  };
+  frontEl.appendChild(img);
+
+  // back = cardback
+  backEl.innerHTML = "";
+  const backImg = document.createElement("img");
+  backImg.src = "assets/card/cardback.webp";
+  backImg.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:8px;";
+  backEl.appendChild(backImg);
+
+  flipEl.onclick = () => flipEl.classList.toggle("flipped");
+
+  backdrop.hidden = false;
+
+  document.getElementById("identity-modal-close").onclick = () => {
+    backdrop.hidden = true;
+    flipEl.classList.remove("flipped");
+  };
 }

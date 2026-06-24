@@ -124,6 +124,8 @@ const LANG = {
 
     // Save / screenshot
     save_not_supported: "เบราว์เซอร์นี้ไม่รองรับการบันทึกภาพ",
+
+    btn_summary: "สรุปผลการทำนาย",
   },
 
   en: {
@@ -235,6 +237,8 @@ const LANG = {
     luck_unlucky: "✧ Inauspicious",
 
     save_not_supported: "Screenshot not supported in this browser.",
+
+    btn_summary: "Fortune Summary",
   },
 };
 

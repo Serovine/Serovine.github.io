@@ -38,6 +38,7 @@ function initApp() {
 // ═══════════════════════════════════════════
 
 function bindLangScreen() {
+  buildDeckSelector();
   document.querySelectorAll(".btn-lang").forEach((btn) => {
     btn.addEventListener("click", () => {
       const lang = btn.dataset.lang;
@@ -49,6 +50,86 @@ function bindLangScreen() {
       showScreen("screen-welcome");
     });
   });
+}
+
+// ═══════════════════════════════════════════
+// Screen 0 — Deck Selector
+// ═══════════════════════════════════════════
+const DECKS = [
+  { id: "classic", name: "Classic Tarot", credit: "Arts by Rider–Waite" },
+  { id: "astrologia", name: "Astrologia Tarot", credit: "Arts by me" },
+  {
+    id: "hololive",
+    name: "HoloSphere",
+    credit: "Arts by Tatsuya Ishihara C106",
+  },
+  { id: "fgo", name: "FGO Tarot", credit: "Art by starshadowmagician" },
+  {
+    id: "jojo",
+    name: "JOJO Tarot",
+    credit: "Original from JoJo's Bizarre Adventure",
+  },
+];
+
+function bindWelcomeScreen() {
+  buildDeckSelector();
+
+  document.getElementById("btn-start").addEventListener("click", () => {
+    AppState.phase = "input";
+    showScreen("screen-input");
+    initInputValidation();
+  });
+}
+
+function buildDeckSelector() {
+  const list = document.getElementById("deck-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  DECKS.forEach((deck) => {
+    const btn = document.createElement("button");
+    btn.className =
+      "deck-btn" + (deck.id === AppState.theme ? " deck-btn-active" : "");
+    btn.textContent = deck.name;
+    btn.dataset.id = deck.id;
+
+    btn.addEventListener("click", () => {
+      AppState.theme = deck.id;
+      list
+        .querySelectorAll(".deck-btn")
+        .forEach((b) => b.classList.remove("deck-btn-active"));
+      btn.classList.add("deck-btn-active");
+      updateDeckPreview(deck);
+    });
+
+    list.appendChild(btn);
+  });
+
+  // แสดง preview deck ปัจจุบัน
+  const current = DECKS.find((d) => d.id === AppState.theme) || DECKS[0];
+  updateDeckPreview(current);
+}
+
+function updateDeckPreview(deck) {
+  const previewCard = document.getElementById("deck-preview-card");
+  const previewName = document.getElementById("deck-preview-name");
+  const previewCredit = document.getElementById("deck-preview-credit");
+  if (!previewCard) return;
+
+  // สุ่มเลขไพ่ 0-21
+  const randomCard = Math.floor(Math.random() * 22);
+  previewCard.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = `assets/card/${deck.id}/${cardFilename(randomCard)}`;
+  img.style.cssText =
+    "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+  img.onerror = () => {
+    previewCard.innerHTML = makeDummyCard(randomCard);
+  };
+  previewCard.appendChild(img);
+
+  if (previewName) previewName.textContent = deck.name;
+  if (previewCredit) previewCredit.textContent = deck.credit;
 }
 
 // ═══════════════════════════════════════════
@@ -132,6 +213,8 @@ function renderCenterCard() {
   };
   center.appendChild(img);
   center.title = AppState.zodiac.cardName;
+  center.style.cursor = "pointer";
+  center.addEventListener("click", () => openIdentityModal());
 }
 
 function startHouseDraw(houseIndex) {
@@ -341,6 +424,7 @@ function revealNextSummaryCard() {
       AppState.phase = "result";
       showScreen("screen-result");
       initResultScreen();
+      setTimeout(() => openSummaryModal(), 400);
     }, 600);
     return;
   }
@@ -400,6 +484,8 @@ function initResultScreen() {
       };
       centerEl.innerHTML = "";
       centerEl.appendChild(img);
+      centerEl.style.cursor = "pointer";
+      centerEl.addEventListener("click", () => openIdentityModal());
     }
 
     buildResultSpread(
@@ -420,10 +506,67 @@ function bindResultScreen() {
   document.getElementById("btn-restart")?.addEventListener("click", () => {
     resetApp();
   });
-
-  document.getElementById("btn-save")?.addEventListener("click", () => {
-    saveResult();
+  document.getElementById("btn-summary")?.addEventListener("click", () => {
+    openSummaryModal();
   });
+}
+
+function openSummaryModal() {
+  const backdrop = document.getElementById("summary-modal-backdrop");
+  const titleEl = document.getElementById("summary-modal-title");
+  const zodiacEl = document.getElementById("summary-modal-zodiac");
+  const bodyEl = document.getElementById("summary-modal-body");
+
+  // header
+  titleEl.textContent = `ผลการทำนายโชคชะตา ของ ${AppState.userName}`;
+  const zodiacName = LANG[currentLang].zodiac_names[AppState.zodiac.sign];
+  zodiacEl.textContent = `ราศี: ${zodiacName}  •  ไพ่ประจำตัว: ${AppState.zodiac.cardName}`;
+
+  // body
+  let html = "";
+
+  // summary 3 ใบ
+  html += `<div class="sm-section">`;
+  html += `<h3 class="sm-section-title">สรุปผลการทำนาย</h3>`;
+  const summaryLabels = LANG[currentLang].summary_labels;
+  Deck.summary.forEach((item, i) => {
+    if (!item) return;
+    const prophecy = getCardSummary(item.cardNumber, item.isReversed, i);
+    html += `<p class="sm-summary-line">
+      <span class="sm-summary-label">${summaryLabels[i]}</span>
+      <span class="sm-summary-text">${prophecy}</span>
+    </p>`;
+  });
+  html += `</div>`;
+
+  // 12 houses
+  html += `<div class="sm-section">`;
+  html += `<h3 class="sm-section-title">โชคชะตาทั้ง 12 ราศี</h3>`;
+  const houseNames = LANG[currentLang].house_names;
+  for (let i = 0; i < 12; i++) {
+    const placed = Deck.placed[i];
+    if (!placed) continue;
+    const prophecy = getCardProphecy(placed.cardNumber, placed.isReversed, i);
+    html += `<p class="sm-house-line">
+      <span class="sm-house-label">${houseNames[i]}</span>
+      <span class="sm-house-text">${prophecy}</span>
+    </p>`;
+  }
+  html += `</div>`;
+
+  bodyEl.innerHTML = html;
+
+  backdrop.hidden = false;
+  backdrop.classList.add("modal-fade-in");
+  setTimeout(() => backdrop.classList.remove("modal-fade-in"), 300);
+
+  document.getElementById("summary-modal-close").onclick = () => {
+    backdrop.classList.add("modal-fade-out");
+    setTimeout(() => {
+      backdrop.hidden = true;
+      backdrop.classList.remove("modal-fade-out");
+    }, 300);
+  };
 }
 
 // ═══════════════════════════════════════════

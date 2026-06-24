@@ -42,6 +42,27 @@
                         <span class="lang-badge">Soon</span>
                     </button>
                 </div>
+                <!-- Deck Selector -->
+                <div class="deck-selector" id="deck-selector">
+                    <p class="deck-label">เลือกชุดไพ่</p>
+                    <div class="deck-list" id="deck-list"></div>
+                    <div class="deck-preview" id="deck-preview">
+                        <div
+                            class="deck-preview-card"
+                            id="deck-preview-card"
+                        ></div>
+                        <div class="deck-preview-info">
+                            <span
+                                class="deck-preview-name"
+                                id="deck-preview-name"
+                            ></span>
+                            <span
+                                class="deck-preview-credit"
+                                id="deck-preview-credit"
+                            ></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -354,10 +375,10 @@
                 </button>
                 <button
                     class="btn-secondary"
-                    id="btn-save"
-                    data-i18n="btn_save"
+                    id="btn-summary"
+                    data-i18n="btn_summary"
                 >
-                    บันทึกผล
+                    สรุปผลการทำนาย
                 </button>
             </div>
 
@@ -405,6 +426,48 @@
                     </div>
                 </div>
                 <p class="modal-hint" data-i18n="modal_hint">แตะไพ่เพื่อพลิก</p>
+            </div>
+        </div>
+
+        <!-- Identity Card Modal -->
+        <div class="modal-backdrop" id="identity-modal-backdrop" hidden>
+            <div class="identity-modal">
+                <button class="modal-close" id="identity-modal-close">✕</button>
+                <div class="identity-modal-scene">
+                    <div class="identity-modal-flip" id="identity-modal-flip">
+                        <div
+                            class="identity-modal-front"
+                            id="identity-modal-front"
+                        ></div>
+                        <div
+                            class="identity-modal-back"
+                            id="identity-modal-back"
+                        ></div>
+                    </div>
+                </div>
+                <p class="modal-hint">แตะไพ่เพื่อพลิก</p>
+            </div>
+        </div>
+
+        <!-- Summary Modal — -->
+        <div class="modal-backdrop" id="summary-modal-backdrop" hidden>
+            <div class="summary-modal" id="summary-modal">
+                <button class="modal-close" id="summary-modal-close">✕</button>
+
+                <div class="summary-modal-header">
+                    <h2
+                        class="summary-modal-title"
+                        id="summary-modal-title"
+                    ></h2>
+                    <p
+                        class="summary-modal-zodiac"
+                        id="summary-modal-zodiac"
+                    ></p>
+                </div>
+
+                <div class="summary-modal-body" id="summary-modal-body">
+                    <!-- inject by JS -->
+                </div>
             </div>
         </div>
 
