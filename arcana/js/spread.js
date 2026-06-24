@@ -117,9 +117,15 @@ function buildFan(container, cardNumbers, onPick, theme = "hololive") {
     card.className = "fan-card";
     card.dataset.card = cardNum;
 
-    const back = document.createElement("div");
-    back.className = "fan-card-back";
-    card.appendChild(back);
+    const backImg = document.createElement("img");
+    backImg.src = "assets/card/cardback.webp";
+    backImg.style.cssText =
+      "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+    backImg.onerror = () => {
+      backImg.remove();
+      card.classList.add("fan-card-back");
+    };
+    card.appendChild(backImg);
 
     card.addEventListener("click", () => {
       container
@@ -159,9 +165,15 @@ function buildGrid3x3(container, cardNumbers, onPick, theme = "hololive") {
     const card = document.createElement("div");
     card.className = "grid-card";
 
-    const back = document.createElement("div");
-    back.className = "grid-card-back";
-    card.appendChild(back);
+    const backImg = document.createElement("img");
+    backImg.src = "assets/card/cardback.webp";
+    backImg.style.cssText =
+      "width:100%;height:100%;object-fit:cover;border-radius:6px;";
+    backImg.onerror = () => {
+      backImg.remove();
+      card.classList.add("grid-card-back");
+    };
+    card.appendChild(backImg);
     cell.appendChild(card);
 
     cell.addEventListener("click", () => {
