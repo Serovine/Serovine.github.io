@@ -29,7 +29,6 @@ function initApp() {
   bindLangScreen();
   bindWelcomeScreen();
   bindInputScreen();
-  bindDrawScreen();
   bindFinalScreen();
   bindResultScreen();
 }
