@@ -1,4 +1,4 @@
-// zodiacmap.js
+// zodiac.js
 // รับวันเกิด → zodiac → ไพ่ประจำตัว (Major Arcana)
 
 const ZODIAC_MAP = [
