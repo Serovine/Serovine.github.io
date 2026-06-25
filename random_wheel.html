@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, shrink-to-fit=no"
+        />
+        <title>Random App</title>
+        <!-- Bootstrap 5 + Canvas wheel, English only -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background: linear-gradient(145deg, #1e1e2f 0%, #2a2a40 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+                margin: 0;
+                padding: 1rem;
+            }
+            .app-card {
+                max-width: 650px;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 2.5rem;
+                box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6);
+                padding: 2rem 1.8rem;
+                position: relative;
+                transition: all 0.2s ease;
+            }
+            .back-link {
+                position: absolute;
+                top: 1rem;
+                left: 1.2rem;
+                font-size: 0.9rem;
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.8);
+                background: rgba(255, 255, 255, 0.1);
+                padding: 0.35rem 1rem;
+                border-radius: 2rem;
+                transition: 0.2s;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                z-index: 5;
+            }
+            .back-link:hover {
+                background: rgba(255, 255, 255, 0.25);
+                color: white;
+            }
+            .wheel-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                margin-top: 0.8rem;
+                margin-bottom: 1.5rem;
+            }
+            .wheel-pointer {
+                position: absolute;
+                top: -22px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 2.6rem;
+                color: #ffd700;
+                filter: drop-shadow(0 0 8px black);
+                z-index: 10;
+                pointer-events: none;
+                line-height: 1;
+            }
+            canvas {
+                max-width: 100%;
+                height: auto;
+                background: transparent;
+                border-radius: 50%;
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+                transition: box-shadow 0.2s;
+            }
+            .btn-primary,
+            .btn-success,
+            .btn-danger,
+            .btn-warning,
+            .btn-outline-light {
+                border-radius: 3rem;
+                padding: 0.7rem 1.8rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                transition: all 0.2s;
+            }
+            .list-group-item {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                border-radius: 1rem !important;
+                margin-bottom: 0.4rem;
+            }
+            .form-check-input:checked {
+                background-color: #ffc107;
+                border-color: #ffc107;
+            }
+            .text-glow {
+                text-shadow: 0 0 8px rgba(255, 255, 200, 0.7);
+            }
+            .state-title {
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.9);
+                letter-spacing: 0.5px;
+                margin-bottom: 1.5rem;
+            }
+            .fade:not(.show) {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .fade.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            /* extra spacing for state 3 header */
+            #state3 .state-title {
+                margin-bottom: 2rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app-card text-white">
+            <!-- Back button to index.html (top left) -->
+            <a href="index.html" class="back-link">← Back</a>
+
+            <!-- State 1: choose number of items -->
+            <div id="state1" class="fade show">
+                <h3 class="text-center mb-3 state-title">🎯 How many items?</h3>
+                <div class="mb-3">
+                    <label for="itemCountInput" class="form-label"
+                        >Number of items (2–12)</label
+                    >
+                    <input
+                        type="number"
+                        id="itemCountInput"
+                        class="form-control bg-dark text-white border-light"
+                        min="2"
+                        max="12"
+                        value="4"
+                        placeholder="e.g., 4"
+                    />
+                    <div class="form-text text-white-50">
+                        Enter between 2 and 12
+                    </div>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-warning btn-lg" id="goToState2Btn">
+                        OK
+                    </button>
+                </div>
+                <p class="text-center text-white-50 mt-3 mb-0">Step 1 of 3</p>
+            </div>
+
+            <!-- State 2: name items + removal checkbox -->
+            <div id="state2" class="fade">
+                <h3 class="text-center mb-3 state-title">📝 Name your items</h3>
+                <div id="dynamicItemList" class="list-group mb-3"></div>
+                <div class="form-check mb-3">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="removeAfterSpinCheck"
+                    />
+                    <label
+                        class="form-check-label fw-semibold"
+                        for="removeAfterSpinCheck"
+                    >
+                        ✅ Remove item after it is selected (tick = remove)
+                    </label>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-outline-light" id="backToState1Btn">
+                        ← Back
+                    </button>
+                    <button class="btn btn-success" id="goToWheelBtn">
+                        OK – Spin Wheel
+                    </button>
+                </div>
+                <p class="text-center text-white-50 mt-3 mb-0">Step 2 of 3</p>
+            </div>
+
+            <!-- State 3: Wheel + spin controls (no stop button) -->
+            <div id="state3" class="fade">
+                <h3 class="text-center state-title">🎡 Spin the Wheel</h3>
+                <div class="wheel-container">
+                    <div class="wheel-pointer">▼</div>
+                    <canvas
+                        id="wheelCanvas"
+                        width="380"
+                        height="380"
+                        aria-label="spinning wheel"
+                    ></canvas>
+                </div>
+                <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+                    <button
+                        class="btn btn-primary btn-lg px-4"
+                        id="startSpinBtn"
+                    >
+                        ▶ START
+                    </button>
+                </div>
+                <div
+                    id="resultMessage"
+                    class="text-center mt-3 fs-5 fw-bold text-warning text-glow"
+                ></div>
+                <p class="text-center text-white-50 mt-2 mb-0">
+                    Press START to spin, wheel stops automatically
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+                    <button
+                        class="btn btn-outline-warning"
+                        id="resetToState1Btn"
+                    >
+                        🔄 Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div
+            class="modal fade"
+            id="resultModal"
+            tabindex="-1"
+            aria-labelledby="resultModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white border-warning">
+                    <div class="modal-header border-warning">
+                        <h5 class="modal-title" id="resultModalLabel">
+                            🎉 Result
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div
+                        class="modal-body text-center fs-4"
+                        id="modalResultText"
+                    ></div>
+                    <div
+                        class="modal-footer border-warning justify-content-center"
+                    >
+                        <button
+                            type="button"
+                            class="btn btn-warning btn-lg px-5"
+                            data-bs-dismiss="modal"
+                            id="modalOkBtn"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            (function () {
+                // ----- APP STATE -----
+                let currentState = 1;
+                let itemCount = 4;
+                let items = [];
+                let removeAfterSpin = false;
+
+                let canvas = document.getElementById("wheelCanvas");
+                let ctx = canvas.getContext("2d");
+                let spinning = false;
+                let angle = 0;
+                let spinVelocity = 0;
+                let animationFrameId = null;
+                const friction = 0.992;
+                const minVelocity = 0.04;
+
+                const colorPalette = [
+                    "#F94144",
+                    "#F8961E",
+                    "#F9C74F",
+                    "#90BE6D",
+                    "#577590",
+                    "#4D908E",
+                    "#F9844A",
+                    "#43AA8B",
+                    "#F9A620",
+                    "#E76F51",
+                    "#264653",
+                    "#A7C957",
+                ];
+
+                const state1Div = document.getElementById("state1");
+                const state2Div = document.getElementById("state2");
+                const state3Div = document.getElementById("state3");
+
+                const itemCountInput =
+                    document.getElementById("itemCountInput");
+                const goToState2Btn = document.getElementById("goToState2Btn");
+                const backToState1Btn =
+                    document.getElementById("backToState1Btn");
+                const goToWheelBtn = document.getElementById("goToWheelBtn");
+                const dynamicItemList =
+                    document.getElementById("dynamicItemList");
+                const removeAfterSpinCheck = document.getElementById(
+                    "removeAfterSpinCheck",
+                );
+
+                const startSpinBtn = document.getElementById("startSpinBtn");
+                const resetToState1Btn =
+                    document.getElementById("resetToState1Btn");
+                const resultMessage = document.getElementById("resultMessage");
+
+                const resultModalEl = document.getElementById("resultModal");
+                const resultModal = new bootstrap.Modal(resultModalEl, {
+                    backdrop: "static",
+                    keyboard: false,
+                });
+                const modalResultText =
+                    document.getElementById("modalResultText");
+
+                function showState(state) {
+                    currentState = state;
+                    state1Div.style.display = state === 1 ? "block" : "none";
+                    state1Div.classList.toggle("show", state === 1);
+                    state2Div.style.display = state === 2 ? "block" : "none";
+                    state2Div.classList.toggle("show", state === 2);
+                    state3Div.style.display = state === 3 ? "block" : "none";
+                    state3Div.classList.toggle("show", state === 3);
+
+                    if (state === 3) {
+                        drawWheel(angle);
+                        resultMessage.textContent = "";
+                    }
+                    if (state !== 3 && spinning) {
+                        stopSpinAnimation();
+                    }
+                }
+
+                goToState2Btn.addEventListener("click", () => {
+                    let count = parseInt(itemCountInput.value, 10);
+                    if (isNaN(count) || count < 2 || count > 12) {
+                        alert("Please enter a number between 2 and 12.");
+                        return;
+                    }
+                    itemCount = count;
+                    if (items.length !== itemCount) {
+                        items = Array(itemCount)
+                            .fill("")
+                            .map((_, i) => `Item ${i + 1}`);
+                    }
+                    removeAfterSpinCheck.checked = false;
+                    removeAfterSpin = false;
+                    renderItemInputs();
+                    showState(2);
+                });
+
+                function renderItemInputs() {
+                    dynamicItemList.innerHTML = "";
+                    for (let i = 0; i < itemCount; i++) {
+                        const div = document.createElement("div");
+                        div.className =
+                            "list-group-item d-flex align-items-center bg-dark bg-opacity-50";
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.className =
+                            "form-control bg-transparent text-white border-0 item-name-input";
+                        input.value = items[i] || "";
+                        input.placeholder = `Item ${i + 1}`;
+                        input.dataset.index = i;
+                        input.addEventListener("input", (e) => {
+                            const idx = parseInt(e.target.dataset.index, 10);
+                            items[idx] =
+                                e.target.value.trim() || `Item ${idx + 1}`;
+                        });
+                        div.appendChild(input);
+                        dynamicItemList.appendChild(div);
+                    }
+                }
+
+                backToState1Btn.addEventListener("click", () => {
+                    syncItemsFromInputs();
+                    showState(1);
+                });
+
+                function syncItemsFromInputs() {
+                    const inputs =
+                        document.querySelectorAll(".item-name-input");
+                    inputs.forEach((inp) => {
+                        const idx = parseInt(inp.dataset.index, 10);
+                        if (!isNaN(idx) && idx < items.length) {
+                            items[idx] = inp.value.trim() || `Item ${idx + 1}`;
+                        }
+                    });
+                }
+
+                goToWheelBtn.addEventListener("click", () => {
+                    syncItemsFromInputs();
+                    const cleaned = items.map((it, i) =>
+                        it.trim() === "" ? `Item ${i + 1}` : it.trim(),
+                    );
+                    items = cleaned;
+                    if (items.length < 2) {
+                        alert("You need at least 2 items to spin the wheel.");
+                        return;
+                    }
+                    removeAfterSpin = removeAfterSpinCheck.checked;
+                    angle = 0;
+                    stopSpinAnimation();
+                    drawWheel(angle);
+                    showState(3);
+                });
+
+                function drawWheel(currentAngle) {
+                    if (!ctx || !canvas) return;
+                    const w = canvas.width;
+                    const h = canvas.height;
+                    ctx.clearRect(0, 0, w, h);
+                    if (!items || items.length === 0) {
+                        ctx.fillStyle = "#adb5bd";
+                        ctx.font = 'bold 16px "Segoe UI"';
+                        ctx.fillText("No items", w / 2 - 40, h / 2);
+                        return;
+                    }
+                    const centerX = w / 2;
+                    const centerY = h / 2;
+                    const radius = Math.min(w, h) * 0.42;
+                    const segmentAngle = (2 * Math.PI) / items.length;
+
+                    for (let i = 0; i < items.length; i++) {
+                        const startAngle = currentAngle + i * segmentAngle;
+                        const endAngle = startAngle + segmentAngle;
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                        ctx.closePath();
+                        ctx.fillStyle = colorPalette[i % colorPalette.length];
+                        ctx.fill();
+                        ctx.strokeStyle = "#ffffff";
+                        ctx.lineWidth = 2.5;
+                        ctx.stroke();
+
+                        ctx.save();
+                        ctx.translate(centerX, centerY);
+                        ctx.rotate(startAngle + segmentAngle / 2);
+                        ctx.textAlign = "right";
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.font = "bold 14px 'Segoe UI', Roboto";
+                        ctx.shadowColor = "#000000";
+                        ctx.shadowBlur = 4;
+                        const text =
+                            items[i].length > 14
+                                ? items[i].substring(0, 12) + "…"
+                                : items[i];
+                        ctx.fillText(text, radius - 12, 6);
+                        ctx.restore();
+                    }
+
+                    // Outer golden ring (border)
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                    ctx.strokeStyle = "#FFD700";
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+
+                    // Center hub
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.12, 0, 2 * Math.PI);
+                    ctx.fillStyle = "#212529";
+                    ctx.fill();
+                    ctx.strokeStyle = "#FFD700";
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+
+                function startSpin() {
+                    if (spinning) return;
+                    if (!items || items.length === 0) {
+                        alert("No items on the wheel.");
+                        return;
+                    }
+                    spinning = true;
+                    spinVelocity = 0.45 + Math.random() * 0.65;
+                    resultMessage.textContent = "";
+                    animate();
+                }
+
+                function animate() {
+                    if (!spinning) return;
+                    angle = (angle + spinVelocity) % (2 * Math.PI);
+                    drawWheel(angle);
+                    spinVelocity *= friction;
+                    if (spinVelocity < minVelocity) {
+                        stopSpinAndDetermineResult();
+                        return;
+                    }
+                    animationFrameId = requestAnimationFrame(animate);
+                }
+
+                function stopSpinAnimation() {
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
+                    }
+                    spinning = false;
+                    spinVelocity = 0;
+                }
+
+                function determineSelectedItem() {
+                    if (!items || items.length === 0) return null;
+                    const pointerAngle =
+                        (2 * Math.PI + -Math.PI / 2) % (2 * Math.PI);
+                    const seg = (2 * Math.PI) / items.length;
+                    let rawAngle =
+                        (pointerAngle - angle + 2 * Math.PI) % (2 * Math.PI);
+                    const selectedIndex =
+                        Math.floor(rawAngle / seg) % items.length;
+                    return { index: selectedIndex, name: items[selectedIndex] };
+                }
+
+                function stopSpinAndDetermineResult() {
+                    stopSpinAnimation();
+                    if (!items || items.length === 0) return;
+                    const result = determineSelectedItem();
+                    if (!result) return;
+
+                    resultMessage.textContent = `✨ Selected: ${result.name} ✨`;
+                    showResultModal(result.name);
+
+                    if (removeAfterSpin && items.length > 1) {
+                        items.splice(result.index, 1);
+                        angle = 0;
+                        drawWheel(angle);
+                        if (items.length < 2) {
+                            resultMessage.textContent += " (Only 1 item left)";
+                        }
+                    } else {
+                        drawWheel(angle);
+                    }
+                }
+
+                function showResultModal(itemName) {
+                    modalResultText.textContent = `🎯 ${itemName}`;
+                    resultModal.show();
+                }
+
+                startSpinBtn.addEventListener("click", startSpin);
+
+                resetToState1Btn.addEventListener("click", () => {
+                    stopSpinAnimation();
+                    itemCountInput.value = items.length || 4;
+                    showState(1);
+                    resultMessage.textContent = "";
+                });
+
+                removeAfterSpinCheck.addEventListener("change", (e) => {
+                    removeAfterSpin = e.target.checked;
+                });
+
+                // Initial load
+                items = ["Alpha", "Beta", "Gamma", "Delta"];
+                itemCount = 4;
+                itemCountInput.value = 4;
+                drawWheel(0);
+                showState(1);
+
+                window.addEventListener("resize", () => {
+                    if (currentState === 3) drawWheel(angle);
+                });
+            })();
+        </script>
+    </body>
+</html>
