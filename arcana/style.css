@@ -889,20 +889,12 @@ body {
     animation: slideDown 0.3s ease forwards;
 }
 @keyframes slideUp {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-    to {
-        transform: none;
-        opacity: 1;
-    }
+  from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
 }
+
 @keyframes slideDown {
-    to {
-        transform: translateY(100%);
-        opacity: 0;
-    }
+  to { transform: translateX(-50%) translateY(100%); opacity: 0; }
 }
 
 .reveal-card-wrap {
