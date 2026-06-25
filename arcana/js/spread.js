@@ -8,17 +8,17 @@
 // 12 houses เรียงทวนเข็มนาฬิกา เริ่ม House 1 = 9 o'clock (180°)
 const HOUSE_ANGLES = [
   180, // House 1  — 9 o'clock
-  210, // House 2  — 8 o'clock
-  240, // House 3  — 7 o'clock
-  270, // House 4  — 6 o'clock
-  300, // House 5  — 5 o'clock
-  330, // House 6  — 4 o'clock
+  150, // House 2  — 10 o'clock
+  120, // House 3  — 11 o'clock
+  90, // House 4  — 12 o'clock
+  60, // House 5  — 1 o'clock
+  30, // House 6  — 2 o'clock
   0, // House 7  — 3 o'clock
-  30, // House 8  — 2 o'clock
-  60, // House 9  — 1 o'clock
-  90, // House 10 — 12 o'clock
-  120, // House 11 — 11 o'clock
-  150, // House 12 — 10 o'clock
+  330, // House 8  — 4 o'clock
+  300, // House 9  — 5 o'clock
+  270, // House 10 — 6 o'clock
+  240, // House 11 — 7 o'clock
+  210, // House 12 — 8 o'clock
 ];
 
 // ═══════════════════════════════════════════

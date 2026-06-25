@@ -167,6 +167,11 @@ function bindInputScreen() {
 function startShuffle() {
   initDeck(AppState.zodiac.cardNumber);
 
+  for (let i = 0; i <= 21; i++) {
+    const img = new Image();
+    img.src = cardImagePath(i, AppState.theme);
+  }
+
   playShuffleAnimation(() => {
     AppState.phase = "draw";
     AppState.currentHouse = 0;
@@ -463,7 +468,7 @@ function bindFinalScreen() {
 // ═══════════════════════════════════════════
 
 function initResultScreen() {
-  renderResultHeader(AppState.userName);
+  renderResultHeader("12 house of Astrology Tarot");
   renderResultSummaryCards(Deck.summary);
 
   // spread read-only
@@ -499,6 +504,35 @@ function initResultScreen() {
     );
   }
 
+  // orb result screen
+  const orbQuotes = [
+    "การ์ด 1 ใบ สามารถตีความได้หลากหลาย บางครั้งอาจอยู่นอกเหนือในคำทำนาย",
+    "โชคชะตาเป็นสิ่งถูกกำหนดโดยมนุษย์ หรือพระเจ้า หรือแค่ความบังเอิญ",
+    "โหราศาสตร์เป็นศาสตร์ของความเชื่อส่วนบุคคล โปรดใช้วิจารณญาณ",
+    "การทำนายซ้ำๆ บ่อยๆ เมื่อผลลัพธ์ไม่เป็นดังหวัง ไม่ได้ช่วยให้หนีจากคำทำนายแรกได้",
+    "คุณไม่สามารถกำหนดได้ว่า คำทำนายจะออกมาอย่างไร แต่คุณสามารถกำหนดมื้อเย็นของคุณได้",
+    "การได้รับคำทำนายว่าโชคร้าย นั่นหมายความว่า คุณมีเวลารับมือกับสิ่งที่ไม่รู้ว่าจะเกิดขึ้นหรือไม่",
+  ];
+  let quoteIndex = 0;
+
+  const orbFloatResult = document.getElementById("orb-float-result");
+  if (orbFloatResult) {
+    orbSpeak("orb-float-result", "orb-bubble-result", orbQuotes[0], 9000);
+
+    const orbMini = orbFloatResult.querySelector(".orb-mini");
+    if (orbMini) {
+      orbMini.onclick = (e) => {
+        e.stopPropagation();
+        quoteIndex = (quoteIndex + 1) % orbQuotes.length;
+        orbSpeak(
+          "orb-float-result",
+          "orb-bubble-result",
+          orbQuotes[quoteIndex],
+          0,
+        );
+      };
+    }
+  }
   initFloatOrb("orb-float-result", "orb-bubble-result");
 }
 
