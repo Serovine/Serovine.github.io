@@ -1,0 +1,328 @@
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    .wrap {
+        max-width: 680px;
+        font-family: var(--font-sans);
+        padding: 0 0 2rem;
+    }
+    .hero {
+        background: #be2d26;
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        margin-bottom: 1.75rem;
+    }
+    .hero-tag {
+        font-size: 11px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.65);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 0.6rem;
+    }
+    .hero-title {
+        font-size: 26px;
+        font-weight: 500;
+        color: #fff;
+        line-height: 1.3;
+        margin-bottom: 0.6rem;
+    }
+    .hero-desc {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.7;
+    }
+    .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 1rem;
+    }
+    .badge {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+    h2 {
+        font-size: 17px;
+        font-weight: 500;
+        color: var(--color-text-primary);
+        margin: 1.5rem 0 0.6rem;
+    }
+    p {
+        font-size: 15px;
+        line-height: 1.8;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.75rem;
+    }
+    .hl {
+        background: var(--color-background-secondary);
+        border-left: 3px solid #be2d26;
+        border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+        padding: 0.85rem 1.1rem;
+        margin: 1rem 0;
+    }
+    .hl p {
+        margin: 0;
+        font-style: italic;
+        color: var(--color-text-primary);
+        font-size: 14px;
+    }
+    .tl {
+        border-left: 2px solid #be2d26;
+        padding-left: 1.25rem;
+        margin: 1rem 0;
+    }
+    .tl-item {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    .tl-item::before {
+        content: "";
+        position: absolute;
+        left: -1.6rem;
+        top: 5px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #be2d26;
+    }
+    .yr {
+        font-size: 12px;
+        font-weight: 500;
+        color: #be2d26;
+        margin-bottom: 2px;
+    }
+    .tl-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--color-text-secondary);
+    }
+    .divider {
+        height: 1px;
+        background: var(--color-border-tertiary);
+        margin: 1.5rem 0;
+    }
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 1rem 0;
+    }
+    .stat {
+        background: var(--color-background-secondary);
+        border-radius: var(--border-radius-md);
+        padding: 0.85rem;
+        text-align: center;
+    }
+    .stat-n {
+        font-size: 20px;
+        font-weight: 500;
+        color: #be2d26;
+    }
+    .stat-l {
+        font-size: 11px;
+        color: var(--color-text-secondary);
+        margin-top: 3px;
+        line-height: 1.4;
+    }
+    .footer-box {
+        background: #be2d26;
+        border-radius: var(--border-radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    .footer-box p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 0;
+    }
+    .footer-box strong {
+        color: #fff;
+        font-weight: 500;
+    }
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-top: 0.85rem;
+    }
+    .tag {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.75);
+    }
+</style>
+
+<div class="wrap">
+    <div class="hero">
+        <div class="hero-title">☕ แก้วแดงใบเดิม ที่ทั้งโลกรู้จัก</div>
+        <div class="hero-desc">
+            ก่อนปี 2027 จะมาถึง
+            ขอเล่าเรื่องแก้วกาแฟใบที่อยู่ในครัวของเกือบทุกบ้าน และวางขายใน 180+
+            ประเทศทั่วโลก
+        </div>
+        <div class="badges">
+            <span class="badge">🎂 เกิดปี 1967</span>
+            <span class="badge">🌍 180+ ประเทศ</span>
+            <span class="badge">⏳ ครบ 60 ปี ปี 2027</span>
+        </div>
+    </div>
+
+    <h2>📖 เริ่มจากวิกฤตกาแฟบราซิล</h2>
+    <p>
+        ย้อนไปปี 1929 บราซิลมีกาแฟล้นตลาด Nestlé
+        เลยได้รับโจทย์ให้สร้างกาแฟที่ชงง่าย ใช้เวลา 7 ปีพัฒนา จนในปี 1938
+        Nescafé ก็ถือกำเนิดขึ้นที่สวิตเซอร์แลนด์ แล้วก็ขายหมดภายใน 2 เดือนแรก
+    </p>
+    <p>
+        ช่วงสงครามโลกครั้งที่ 2 กาแฟ Nescafé กลายเป็นส่วนหนึ่งของ emergency
+        rations ในกองทัพสหรัฐฯ — ทหารแทบทุกคนรู้จักแบรนด์นี้ก่อนสงครามจบ
+    </p>
+
+    <div class="tl">
+        <div class="tl-item">
+            <div class="yr">1938</div>
+            <div class="tl-text">
+                เปิดตัว Nescafé ครั้งแรก → ขายหมดใน 2 เดือน
+            </div>
+        </div>
+        <div class="tl-item">
+            <div class="yr">1967</div>
+            <div class="tl-text">
+                🔴 แก้วแดง Red Mug เปิดตัวครั้งแรกในแคนาดา
+            </div>
+        </div>
+        <div class="tl-item">
+            <div class="yr">1970</div>
+            <div class="tl-text">
+                Red Mug กลายเป็น logo สากลทั่วโลกอย่างเป็นทางการ
+            </div>
+        </div>
+        <div class="tl-item">
+            <div class="yr">2027</div>
+            <div class="tl-text">✨ ครบรอบ 60 ปีแห่งแก้วแดงใบนี้</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>™️ แก้วที่ได้รับการจดทะเบียนเป็นเครื่องหมายการค้า</h2>
+    <p>
+        รูปทรงและสีของแก้วแดงใบนี้ได้รับการคุ้มครองในฐานะ
+        <strong>3D Shape Trademark</strong> หรือ "เครื่องหมายการค้ารูปทรง 3
+        มิติ" — เช่นเดียวกับที่คนเห็นทรงขวด Coca-Cola
+        แล้วรู้ทันทีโดยไม่ต้องอ่านป้าย หรือเห็นขวดน้ำตาลช็อกโกแลต Nutella
+        แล้วก็รู้เลยว่าคืออะไร
+        แก้วแดงใบนี้ก็ผ่านกระบวนการพิสูจน์แล้วว่าทรงและสีของมันมี
+        "ความโดดเด่นเฉพาะตัว" ในสายตาผู้บริโภคทั่วโลก
+    </p>
+    <p>
+        Nestlé
+        เคยฟ้องบริษัทกาแฟหลายเจ้าที่นำแก้วสีแดงทรงคล้ายกันมาใช้ในบรรจุภัณฑ์โดยไม่ได้รับอนุญาต
+        ซึ่งแสดงให้เห็นว่าพวกเขาปกป้อง icon ใบนี้อย่างจริงจัง
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>🎁 ยุคทองของการแจกแก้วแดง</h2>
+    <p>
+        สิ่งที่ทำให้แก้วแดงแพร่กระจายเข้าสู่ครัวของผู้คนทั่วโลกได้ไวที่สุด
+        ไม่ใช่โฆษณา แต่คือ <strong>การแจกฟรี</strong>
+    </p>
+    <p>
+        ในยุค 70s–90s Nescafé ใช้กลยุทธ์ "ซื้อกาแฟ รับแก้วฟรี" แทบทุกตลาดทั่วโลก
+        ทั้งในไทย แอฟริกา ตะวันออกกลาง และเอเชียตะวันออกเฉียงใต้
+        บางตลาดแจกพร้อมกล่อง บางตลาดทำเป็น gift set แจกช่วงเทศกาล
+        แก้วแต่ละใบที่แจกออกไปก็คือ "บิลบอร์ดเคลื่อนที่"
+        ที่นั่งอยู่บนโต๊ะครัวของผู้คนตลอด 365 วัน
+        โดยไม่ต้องเสียค่าโฆษณาเพิ่มแม้แต่บาทเดียว
+    </p>
+
+    <div class="hl">
+        <p>
+            แก้วแต่ละใบที่แจกออกไป = billboard ที่อยู่บนโต๊ะกินข้าวทุกเช้า
+            ทุกคืน ทุกปี
+        </p>
+    </div>
+
+    <p>
+        แต่ปัจจุบัน การแจกแก้วแดงคลาสสิกใบนี้ลดน้อยลงมากแล้ว
+        โปรโมชั่นหลักในยุคใหม่มักเป็นแก้วดีไซน์พิเศษ แก้วรุ่น limited เฉพาะตลาด
+        หรือแถมมากับเครื่องชง Nespresso ในบางประเทศเท่านั้น ทำให้แก้วแดงต้นตำรับ
+        โดยเฉพาะรุ่นเก่าหรือรุ่น limited edition กลายเป็น "ของสะสม"
+        ที่ผู้คนตามหา มีขายใน marketplace ออนไลน์ในราคาสูงกว่าราคาตลาดปกติ
+    </p>
+
+    <div class="stat-row">
+        <div class="stat">
+            <div class="stat-n">180+</div>
+            <div class="stat-l">ประเทศที่วางขาย</div>
+        </div>
+        <div class="stat">
+            <div class="stat-n">5,500</div>
+            <div class="stat-l">แก้ว/วินาทีทั่วโลก</div>
+        </div>
+        <div class="stat">
+            <div class="stat-n">57 ปี</div>
+            <div class="stat-l">อายุแก้วแดงถึงวันนี้</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>🎈 เมื่อแก้วแดงลอยขึ้นฟ้า</h2>
+    <p>
+        Nescafé เคยทำ Hot Air Balloon รูปทรงแก้วแดงยักษ์สำหรับแคมเปญ activation
+        ในหลายประเทศ รวมถึงในกานา ที่มีการจัด "Nescafé Hot Air Balloon Mug Tour"
+        ปล่อยบอลลูนรูปแก้วแดงยักษ์ขึ้นท้องฟ้า ให้ผู้โชคดีจากการส่ง SMS
+        ได้นั่งบิน พร้อมเชิญเพื่อนขึ้นไปด้วย เป็นแคมเปญที่สร้าง buzz ในฐานะ
+        experiential marketing ที่แบรนด์ไม่ได้แค่ "พูดถึง" แก้วแดง แต่ทำให้คนได้
+        "สัมผัส" มันอย่างตัวต่อตัวในอีกมิติที่ต่างออกไป
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>☕ แก้วที่ไม่ได้ใส่แค่ Nescafé</h2>
+    <p>
+        เรื่องที่น่าสนใจมากคือ คนจำนวนมากใช้แก้วแดงชงกาแฟยี่ห้ออื่น ชงชา
+        โอวัลติน Milo หรือใส่อะไรก็ได้ที่อยากดื่ม — มันกลายเป็น "แก้วกลางบ้าน"
+        ที่ไม่ได้ผูกติดกับแบรนด์อีกต่อไป และนั่นคือสัญญาณว่ามันไม่ใช่แค่สินค้า
+        แต่กลายเป็นส่วนหนึ่งของชีวิตประจำวันของผู้คนไปแล้ว
+    </p>
+    <p>
+        และในหนัง ซีรีส์ และสื่อ media แก้วแดงใบนี้ก็โผล่เป็น prop ฉากครัว
+        ฉากตื่นเช้า ฉากชีวิตคนทั่วไปอยู่เสมอ เพราะมันคือ "ภาษาภาพ"
+        ที่ทุกคนเข้าใจทันทีว่านี่คือบ้านจริง ๆ
+    </p>
+
+    <div class="hl">
+        <p>
+            เมื่อของชิ้นหนึ่งถูกใช้เกินกว่าฟังก์ชันตั้งต้น — นั่นแหละคือ icon
+            ที่แท้จริง
+        </p>
+    </div>
+
+    <div class="footer-box">
+        <p>
+            <strong>ปี 2027 แก้วแดงจะครบ 60 ปี 🎂</strong><br />จาก 1967
+            ถึงวันนี้ มันยังคงนั่งอยู่บนโต๊ะครัวของผู้คนทั่วโลก<br />บางใบรอยร้าวบ้าง
+            บางใบสีซีดไปนิด แต่ทุกคนยังจำมันได้เสมอ
+        </p>
+        <div class="tags">
+            <span class="tag">#NescafeRedMug</span>
+            <span class="tag">#แก้วแดง</span>
+            <span class="tag">#Nescafe</span>
+            <span class="tag">#60Years2027</span>
+            <span class="tag">#กาแฟ</span>
+            <span class="tag">#ของสะสม</span>
+        </div>
+    </div>
+</div>
