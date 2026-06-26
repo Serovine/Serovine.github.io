@@ -240,11 +240,20 @@
                 overflow-y: auto;
                 padding: 6px 0;
             }
+            /* scrollbar sidebar (ปรับให้เห็นชัดขึ้น) */
             #sb-entry-list::-webkit-scrollbar {
-                width: 3px;
+                width: 8px;
+            }
+            #sb-entry-list::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.2);
             }
             #sb-entry-list::-webkit-scrollbar-thumb {
-                background: rgba(184, 134, 11, 0.3);
+                background: #8b6914;
+                border-radius: 4px;
+                border: 1px solid rgba(0, 0, 0, 0.3);
+            }
+            #sb-entry-list::-webkit-scrollbar-thumb:hover {
+                background: #b8860b;
             }
 
             .sb-entry {
@@ -321,16 +330,28 @@
                 pointer-events: all;
             }
 
-            /* scrollbar for main */
+            /* scrollbar for main (ปรับให้เห็นชัดขึ้น) */
             .state-panel::-webkit-scrollbar {
-                width: 6px;
+                width: 10px;
             }
             .state-panel::-webkit-scrollbar-track {
                 background: rgba(0, 0, 0, 0.15);
+                border-radius: 5px;
             }
             .state-panel::-webkit-scrollbar-thumb {
-                background: rgba(184, 134, 11, 0.3);
-                border-radius: 3px;
+                background: #8b6914;
+                border-radius: 5px;
+                border: 2px solid rgba(0, 0, 0, 0.2);
+            }
+            .state-panel::-webkit-scrollbar-thumb:hover {
+                background: #b8860b;
+            }
+
+            /* สำหรับ Firefox */
+            .state-panel,
+            #sb-entry-list {
+                scrollbar-width: thin;
+                scrollbar-color: #8b6914 rgba(0, 0, 0, 0.15);
             }
 
             /* ══ STATE 1: WELCOME ════════════════════════════════════ */
@@ -499,18 +520,20 @@
                     ),
                     var(--parch);
                 padding: 28px 44px 20px 60px;
-                position: relative;
             }
             /* red margin line */
-            #state-content::before {
+            #md-body {
+                position: relative;
+            }
+
+            #md-body::before {
                 content: "";
                 position: absolute;
-                left: 46px;
+                left: -14px; /* คำนวณจาก padding-left 60px - ระยะเส้นเดิม 46px */
                 top: 0;
                 bottom: 0;
                 width: 1px;
                 background: rgba(122, 32, 16, 0.22);
-                pointer-events: none;
             }
 
             /* ── markdown ── */
@@ -870,21 +893,21 @@
                 },
                 {
                     id: "novelindex",
-                    name: "Novel List",
+                    name: "รายชื่อนิยาย",
                     icon: "📚",
                     type: "novel",
                     desc: "นิยายต่างๆ",
                 },
                 {
                     id: "retrogame",
-                    name: "Retro Game Review",
+                    name: "รีวิวเกมเก่าๆ",
                     icon: "🕹️",
                     type: "retrogame",
                     desc: "รีวิวเกมคอนโซล retro เก่า",
                 },
                 {
                     id: "gameupdate",
-                    name: "Gacha Game Diary",
+                    name: "บันทึกเกมกาชาทั้งหลาย",
                     icon: "⚔️",
                     type: "gachagame",
                     desc: "บันทึกการอัปเดตเกม gacha",
@@ -904,14 +927,14 @@
             //  serovine.github.io/
             //  ├── tavern-diary.html
             //  └── tlog/
-            //      ├── isekaihippo/
-            //      │   ├── 1to50review.md
-            //      │   └── 51to100review.md
-            //      ├── genshin/
-            //      │   ├── patch1x.md
-            //      │   └── inazumajourney.md
             //      ├── translatesong/
-            //      │   └── nerusongsekaiseifuku.md
+            //      │   └── sekaiseifukubyneru.md
+            //      ├── novel/
+            //      │   └── mockupnovel.md
+            //      ├── retrogame/
+            //      │   └── cityconnection.md
+            //      ├── zzz/
+            //      │   └── zzz30journey.md
             //      └── [catfolder]/
             //          └── [entryfile].md
             //
