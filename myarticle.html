@@ -467,6 +467,45 @@
       #mobile-topbar { display: flex; }
       .content-scroll { padding: 20px 18px 40px; }
     }
+
+                /* ══════════════════════════════════════════════
+               GLOBAL SCROLLBAR (Sci-fi Cyan Theme)
+            ══════════════════════════════════════════════ */
+
+            /* บังคับ Global Dark Mode */
+            :root {
+                color-scheme: dark;
+            }
+
+            /* คุมความกว้าง/สูง ของทั้งเพจ, กล่อง md และกล่อง pre */
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 5px; /* สำคัญมาก: สำหรับ Scrollbar แนวนอนในกล่องโค้ด */
+            }
+
+            /* รางเลื่อน (Track) */
+            ::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.3);
+                border-left: 1px solid rgba(26, 58, 107, 0.2);
+            }
+
+            /* ตัวจับเลื่อน (Thumb) */
+            ::-webkit-scrollbar-thumb {
+                background: var(--cyan-dim);
+                border-radius: 3px;
+                border: 1px solid rgba(0, 229, 255, 0.1);
+            }
+
+            /* ตอนเอาเมาส์ไปชี้ */
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--cyan);
+                box-shadow: 0 0 10px var(--cyan); /* เรืองแสง */
+            }
+
+            /* มุมฉากตอนมีทั้ง Scrollbar แนวตั้งและแนวนอนมาบรรจบกัน */
+            ::-webkit-scrollbar-corner {
+                background: transparent;
+            }
   </style>
 </head>
 <body>
