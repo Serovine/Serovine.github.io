@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Life Simulator in Isekai Tavern - Clean UI</title>
+        <title>Life Simulator in Isekai Tavern - v1.02</title>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
         <div id="game-container">
-                       <header
+            <header
                 style="
                     background: linear-gradient(180deg, #1f1c18, #12100e);
                     border-bottom: 3px solid #8c7355;
@@ -26,7 +26,12 @@
                     style="
                         font-size: 17px;
                         font-weight: 900;
-                        background: linear-gradient(135deg, #fff, #ffd700, #ffaa00);
+                        background: linear-gradient(
+                            135deg,
+                            #fff,
+                            #ffd700,
+                            #ffaa00
+                        );
                         -webkit-background-clip: text;
                         -webkit-text-fill-color: transparent;
                         letter-spacing: 1.5px;
@@ -36,15 +41,33 @@
                         gap: 10px;
                     "
                 >
-                    <span style="font-size: 22px">🍻</span> LIFE SIMULATOR
+                    <span style="font-size: 22px"></span> LIFE SIMULATOR
                     <span style="color: #8c7355; font-weight: normal">|</span>
                     ISEKAI TAVERN
                 </div>
 
                 <div id="ui-mobile-tabs" class="mobile-tabs-container">
-                    <button onclick="switchMobileTab('left')" class="m-tab" id="mtab-left">👤 Profile</button>
-                    <button onclick="switchMobileTab('main')" class="m-tab active-m-tab" id="mtab-main">🎮 Game</button>
-                    <button onclick="switchMobileTab('right')" class="m-tab" id="mtab-right">📜 Quest</button>
+                    <button
+                        onclick="switchMobileTab('left')"
+                        class="m-tab"
+                        id="mtab-left"
+                    >
+                        👤 Profile
+                    </button>
+                    <button
+                        onclick="switchMobileTab('main')"
+                        class="m-tab active-m-tab"
+                        id="mtab-main"
+                    >
+                        🎮 Game
+                    </button>
+                    <button
+                        onclick="switchMobileTab('right')"
+                        class="m-tab"
+                        id="mtab-right"
+                    >
+                        📜 Quest
+                    </button>
                 </div>
             </header>
 
@@ -366,6 +389,29 @@
                             style="display: none"
                             onchange="processImageUpload(this)"
                         />
+                        <br /><br />
+                        <button
+                            id="btn-continue-seed"
+                            onclick="openSeedLoadModal()"
+                            style="
+                                background: linear-gradient(
+                                    145deg,
+                                    #2c2724,
+                                    #1a1714
+                                );
+                                border: 2px solid #5c4a33;
+                                color: #ffd700;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                font-size: 13px;
+                                cursor: pointer;
+                                font-family: inherit;
+                                font-weight: bold;
+                                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                            "
+                        >
+                            🔑 Continue with Seed Code
+                        </button>
                     </div>
 
                     <div class="how-to-play-box">
@@ -410,8 +456,9 @@
                                     font-size: 11px;
                                 "
                             >
-                                💡 <b>Tip:</b> กด [ SAVE ] ที่หน้าเมืองเพื่อโหลดไฟล์
-                                PNG เก็บข้อมูลตัวละครไว้เสมอ!
+                                💡 <b>Tip:</b> กด [ SAVE ]
+                                ที่หน้าเมืองเพื่อโหลดไฟล์ PNG
+                                เก็บข้อมูลตัวละครไว้เสมอ!
                             </p>
                         </div>
                     </div>
@@ -487,11 +534,7 @@
                         <button
                             id="btn-accept-quest"
                             class="btn-action"
-                            style="
-                                display: none;
-                                flex: 1;
-                                background: #4caf50;
-                            "
+                            style="display: none; flex: 1; background: #4caf50"
                             onclick="acceptQuest()"
                         >
                             ACCEPT QUEST
@@ -727,14 +770,14 @@
                             ▶
                         </button>
                     </div>
-<button
-                    id="btn-go-dungeon"
-                    class="btn-action"
-                    style="display: none; background: #008cba"
-                    onclick="enterDungeon()"
-                >
-                    GO TO DUNGEON ⚔️
-                </button>
+                    <button
+                        id="btn-go-dungeon"
+                        class="btn-action"
+                        style="display: none; background: #008cba"
+                        onclick="enterDungeon()"
+                    >
+                        GO TO DUNGEON ⚔️
+                    </button>
                 </div>
 
                 <div
@@ -786,11 +829,7 @@
                             </h3>
                             <p
                                 id="dungeon-quest-desc"
-                                style="
-                                    color: #aaa;
-                                    font-size: 12px;
-                                    margin: 0;
-                                "
+                                style="color: #aaa; font-size: 12px; margin: 0"
                             >
                                 Quest Desc
                             </p>
@@ -931,7 +970,7 @@
 
                             <button
                                 class="town-grid-card save-card"
-                                onclick="saveGameToFile()"
+                                onclick="openTownSubMenu('save')"
                             >
                                 <div class="card-icon-box">💾</div>
                                 <div class="card-label-box">
@@ -985,7 +1024,34 @@
                                 ซื้ออุปกรณ์สวมใส่
                             </p>
                         </div>
-                        <div id="town-shop-list" class="submenu-item-list"></div>
+                        <div
+                            id="town-shop-list"
+                            class="submenu-item-list"
+                        ></div>
+                        <button
+                            class="btn-classic-back"
+                            onclick="openTownSubMenu('main')"
+                        >
+                            🔙 BACK TO TOWN SQUARE
+                        </button>
+                    </div>
+
+                    <div id="town-save-menu" class="town-submenu-panel">
+                        <div
+                            class="submenu-header"
+                            style="border-bottom-color: #a89274"
+                        >
+                            <h3 style="color: #a89274">💾 SAVE ADVENTURE</h3>
+                            <p style="color: #aaa; font-size: 11px">
+                                บันทึกการผจญภัย
+                            </p>
+                        </div>
+
+                        <div
+                            id="town-save-list"
+                            class="submenu-item-list"
+                        ></div>
+
                         <button
                             class="btn-classic-back"
                             onclick="openTownSubMenu('main')"
@@ -1004,10 +1070,7 @@
                                 เลือกเมนูอาหารเพื่อฟื้นค่า HP ก่อนนอน
                             </p>
                         </div>
-                        <div
-                            id="town-inn-list"
-                            class="submenu-item-list"
-                        ></div>
+                        <div id="town-inn-list" class="submenu-item-list"></div>
                     </div>
                 </div>
             </div>
@@ -1096,11 +1159,7 @@
                 <button
                     id="btn-back-board"
                     class="btn-action"
-                    style="
-                        display: none;
-                        background: #555;
-                        margin-bottom: 10px;
-                    "
+                    style="display: none; background: #555; margin-bottom: 10px"
                     onclick="switchState(1)"
                 >
                     🔙 BACK TO QUEST BOARD
@@ -1108,9 +1167,371 @@
             </div>
         </div>
 
+        <div id="character-creation-modal">
+            <div class="modal-content-professional">
+                <div class="modal-header">
+                    <h2>✨ สกัดพลังสำเร็จ ✨</h2>
+                    <div class="name-input-container">
+                        <label>NAME:</label>
+                        <input
+                            type="text"
+                            id="player-name-input"
+                            placeholder="ใส่ชื่อตัวละคร..."
+                            maxlength="15"
+                        />
+                    </div>
+                </div>
+
+                <div class="profile-stats-container">
+                    <img id="preview-image" src="" alt="Profile" />
+                    <div class="stats-wrapper">
+                        <h3>STATUS</h3>
+                        <div id="generated-stats" class="stat-list"></div>
+                    </div>
+                </div>
+
+                <div class="class-selection-area">
+                    <h3>SELECT CLASS</h3>
+                    <div class="class-grid">
+                        <button
+                            class="btn-class class-warrior"
+                            onclick="selectClass(this, 'Warrior')"
+                        >
+                            ⚔️ Warrior
+                        </button>
+                        <button
+                            class="btn-class class-mage"
+                            onclick="selectClass(this, 'Mage')"
+                        >
+                            🪄 Mage
+                        </button>
+                        <button
+                            class="btn-class class-healer"
+                            onclick="selectClass(this, 'Healer')"
+                        >
+                            ✨ Healer
+                        </button>
+                        <button
+                            class="btn-class class-scout"
+                            onclick="selectClass(this, 'Scout')"
+                        >
+                            🏹 Scout
+                        </button>
+                        <button
+                            class="btn-class class-backpacker"
+                            onclick="selectClass(this, 'Backpacker')"
+                        >
+                            🎒 Backpacker
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-ok" onclick="confirmCharacter()">
+                    CONFIRM
+                </button>
+            </div>
+        </div>
+
+        <div id="custom-modal-overlay">
+            <div
+                style="
+                    background: #2a2a30;
+                    border: 2px solid #ffd700;
+                    border-radius: 8px;
+                    padding: 25px;
+                    width: 320px;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+                "
+            >
+                <h3
+                    id="custom-modal-title"
+                    style="color: #ffd700; margin-bottom: 10px; font-size: 20px"
+                >
+                    TITLE
+                </h3>
+                <p
+                    id="custom-modal-msg"
+                    style="
+                        color: #ccc;
+                        margin-bottom: 25px;
+                        font-size: 14px;
+                        line-height: 1.6;
+                    "
+                >
+                    Message here
+                </p>
+                <div
+                    id="custom-modal-buttons"
+                    style="
+                        display: flex;
+                        justify-content: space-around;
+                        gap: 15px;
+                    "
+                ></div>
+            </div>
+        </div>
+
+        <div
+            id="seed-load-modal"
+            style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(15, 15, 15, 0.95);
+                justify-content: center;
+                align-items: center;
+                z-index: 1001;
+                backdrop-filter: blur(3px);
+            "
+        >
+            <div
+                class="modal-content-professional"
+                style="width: 480px; max-height: 95vh; overflow-y: auto"
+            >
+                <div class="modal-header">
+                    <h2 style="color: #ffd700">🔑 Continue with Seed Code</h2>
+                    <p style="color: #aaa; font-size: 11px">
+                        จุติด้วยรหัสจากสวรรค์ เพื่อกลับไปผจญภัยต่อ
+                    </p>
+                </div>
+
+                <div
+                    style="
+                        background: #2a2a30;
+                        padding: 15px 12px;
+                        border-radius: 6px;
+                        border: 1px solid #444;
+                        margin-bottom: 12px;
+                        text-align: center;
+                    "
+                >
+                    <h3
+                        style="
+                            color: #ffaa00;
+                            font-size: 13px;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        1. อัปโหลดรูปภาพประจำตัว
+                    </h3>
+
+                    <!-- กล่อง Label หลักสำหรับกดเลือกรูป -->
+                    <label
+                        for="seed-image-upload"
+                        id="seed-upload-label"
+                        style="
+                            width: 150px;
+                            height: 150px;
+                            background: #1e1e24;
+                            border: 2px dashed #5c4a33;
+                            border-radius: 6px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            margin: 0 auto;
+                            overflow: hidden;
+                            transition: border-color 0.2s;
+                        "
+                    >
+                        <!-- ข้อความดั้งเดิมก่อนเลือกรูป -->
+                        <div id="seed-upload-placeholder">
+                            <span
+                                style="
+                                    font-size: 24px;
+                                    display: block;
+                                    margin-bottom: 4px;
+                                "
+                                >🖼️</span
+                            >
+                            <span
+                                style="
+                                    font-size: 11px;
+                                    color: #aaa;
+                                    font-weight: bold;
+                                "
+                                >เลือกรูปภาพประจำตัว</span
+                            >
+                        </div>
+
+                        <!-- รูปภาพพรีวิว (ซ่อนไว้ก่อนจนกว่าจะเลือกไฟล์) -->
+                        <img
+                            id="seed-upload-preview-img"
+                            src=""
+                            style="
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                display: none;
+                            "
+                        />
+                    </label>
+
+                    <input
+                        type="file"
+                        id="seed-image-upload"
+                        accept="image/*"
+                        style="display: none"
+                        onchange="previewSeedImage(this)"
+                    />
+
+                    <!-- เปลี่ยนจาก Status Text เป็นปุ่มกดล้างรูป (แสดงต่อเมื่อเลือกรูปแล้วเท่านั้น) -->
+                    <div
+                        id="seed-img-status"
+                        style="margin-top: 8px; min-height: 16px"
+                    ></div>
+                </div>
+
+                <div
+                    style="
+                        background: #2a2a30;
+                        padding: 12px;
+                        border-radius: 6px;
+                        border: 1px solid #444;
+                        margin-bottom: 12px;
+                        text-align: left;
+                    "
+                >
+                    <h3
+                        style="
+                            color: #ffaa00;
+                            font-size: 13px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        2. SEED CODE
+                    </h3>
+                    <textarea
+                        id="seed-code-input"
+                        placeholder="วางรหัส Seed Code เซฟเกมที่นี่..."
+                        style="
+                            width: 100%;
+                            height: 70px;
+                            background: #111;
+                            color: #fff;
+                            border: 1px solid #555;
+                            border-radius: 4px;
+                            padding: 8px;
+                            font-family: monospace;
+                            font-size: 11px;
+                            resize: none;
+                            box-sizing: border-box;
+                        "
+                    ></textarea>
+                    <button
+                        onclick="parseSeedCode()"
+                        style="
+                            width: 100%;
+                            background: #008cba;
+                            margin-top: 8px;
+                            padding: 10px;
+                            font-size: 13px;
+                        "
+                    >
+                        🔍 PARSE SEED CODE
+                    </button>
+                </div>
+
+                <div
+                    id="seed-preview-area"
+                    style="
+                        display: none;
+                        background: #141210;
+                        border: 1px solid #362f28;
+                        border-radius: 4px;
+                        padding: 12px;
+                        margin-bottom: 15px;
+                    "
+                >
+                    <div style="display: flex; gap: 15px; align-items: center">
+                        <div
+                            id="seed-avatar-container"
+                            style="
+                                width: 80px;
+                                height: 80px;
+                                background: #000;
+                                border: 1px solid #555;
+                                border-radius: 4px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                            "
+                        >
+                            <img
+                                id="seed-preview-avatar"
+                                src=""
+                                style="
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: contain;
+                                    display: none;
+                                "
+                            />
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                line-height: 1.6;
+                                color: #ddd;
+                                text-align: left;
+                                font-family: inherit;
+                            "
+                        >
+                            <div>
+                                <strong style="color: #ffd700">NAME:</strong>
+                                <span id="seed-preview-name">-</span>
+                            </div>
+                            <div>
+                                <strong style="color: #ffaa00">CLASS:</strong>
+                                <span id="seed-preview-class">-</span>
+                            </div>
+                            <div>
+                                <strong>DAY:</strong>
+                                <span id="seed-preview-day">-</span> |
+                                <strong>GOLD:</strong>
+                                <span id="seed-preview-gold">-</span> g
+                            </div>
+                            <div>
+                                <strong>RANK:</strong>
+                                <span id="seed-preview-rank">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px">
+                    <button
+                        onclick="closeSeedLoadModal()"
+                        style="flex: 1; background: #555; padding: 10px"
+                    >
+                        CANCEL
+                    </button>
+                    <button
+                        id="btn-seed-confirm"
+                        onclick="confirmSeedLoad()"
+                        style="
+                            flex: 1;
+                            background: #4caf50;
+                            display: none;
+                            padding: 10px;
+                        "
+                    >
+                        CONFIRM PLAY
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script src="js/constants.js"></script>
         <script src="js/bg.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/ui.js"></script>
         <script src="js/generator.js"></script>
         <script src="js/quest.js"></script>
         <script src="js/tinder.js"></script>
