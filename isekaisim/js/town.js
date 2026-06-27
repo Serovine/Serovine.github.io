@@ -2,23 +2,23 @@
 
 let currentShopItems = [];
 
-// เปิดหน้าเมือง
 function enterTown() {
   switchState(4);
   const s4 = document.getElementById("state-4");
   if (s4 && SVGS.bg_town) {
     s4.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(SVGS.bg_town)}')`;
   }
-
   openTownSubMenu("main");
 }
 
-// สลับเมนูย่อย
 function openTownSubMenu(menu) {
   document.getElementById("town-main-menu").style.display = "none";
   document.getElementById("town-status-menu").style.display = "none";
   document.getElementById("town-shop-menu").style.display = "none";
   document.getElementById("town-inn-menu").style.display = "none";
+  if (document.getElementById("town-save-menu")) {
+    document.getElementById("town-save-menu").style.display = "none";
+  }
 
   if (menu === "main") {
     document.getElementById("town-main-menu").style.display = "flex";
@@ -27,16 +27,22 @@ function openTownSubMenu(menu) {
     renderStatusMenu();
   } else if (menu === "shop") {
     document.getElementById("town-shop-menu").style.display = "flex";
-    if (currentShopItems.length === 0) generateShopItems(); // ถ้าเป็นวันใหม่ สุ่มของใหม่
+    if (currentShopItems.length === 0) generateShopItems();
     renderShopMenu();
   } else if (menu === "inn") {
     document.getElementById("town-inn-menu").style.display = "flex";
     renderInnMenu();
+  } else if (menu === "save") {
+    const saveEl = document.getElementById("town-save-menu");
+    if (saveEl) {
+      saveEl.style.display = "flex";
+      renderSaveMenu();
+    }
   }
 }
 
 // ==========================================
-// 1. เรนเดอร์ TRAINING GYM
+// 1. TRAINING MENU
 // ==========================================
 function renderStatusMenu() {
   const stats = [
@@ -73,7 +79,7 @@ function renderStatusMenu() {
 // อัปเกรดสเตตัส
 function upgradeStat(key, cost, inc) {
   if (gameData.gold < cost) {
-    showModal("💸 เงินไม่พอ", "ต้องไปลงดันเจี้ยนหาเงินมาก่อนนะ!", "alert");
+    showModal("💸 Not enough money", "เงินไม่พออัพ  ไปหามาเพิ่มก่อน", "alert");
     return;
   }
 
@@ -82,13 +88,12 @@ function upgradeStat(key, cost, inc) {
   gameData.player.stats[key] += inc;
   document.getElementById("ui-gold-count").innerText = gameData.gold;
 
-  // เลเวลจะถูกคำนวณใหม่แบบเรียลไทม์ผ่านฟังก์ชันนี้เลย!
   updatePlayerUI();
   renderStatusMenu();
 }
 
 // ==========================================
-// 2. ระบบ SHOP (อัปเกรดระบบ Procedural Items)
+// 2. SHOP EQUIPMENT
 // ==========================================
 function generateShopItems() {
   const PREFIXES = [
@@ -106,6 +111,11 @@ function generateShopItems() {
     "Ancient",
     "Mystic",
     "Dragon",
+    "Dog",
+    "Duck",
+    "Beautiful",
+    "Ugly",
+    "Super",
     "Heroic",
   ];
 
@@ -142,16 +152,16 @@ function generateShopItems() {
 
   // ── Rank → stat range table ──
   const RANK_STAT_TABLE = {
-    F: { min: 5, max: 12 },
-    E: { min: 10, max: 20 },
-    D: { min: 18, max: 32 },
-    C: { min: 28, max: 45 },
-    B: { min: 40, max: 65 },
-    A: { min: 60, max: 95 },
-    S: { min: 85, max: 130 },
-    SS: { min: 120, max: 180 },
-    SSS: { min: 160, max: 240 },
-    GOD: { min: 220, max: 320 },
+    F: { min: 5, max: 40 },
+    E: { min: 30, max: 60 },
+    D: { min: 50, max: 90 },
+    C: { min: 70, max: 100 },
+    B: { min: 90, max: 120 },
+    A: { min: 100, max: 150 },
+    S: { min: 120, max: 180 },
+    SS: { min: 150, max: 250 },
+    SSS: { min: 200, max: 320 },
+    GOD: { min: 200, max: 500 },
   };
 
   const playerRank = gameData.player.rank || "F";
@@ -169,12 +179,10 @@ function generateShopItems() {
     if (usedNames.has(fullName)) continue;
     usedNames.add(fullName);
 
-    // สุ่ม stat ตาม rank range
     let statVal =
       Math.floor(Math.random() * (statRange.max - statRange.min + 1)) +
       statRange.min;
 
-    // ราคา = stat * 10 ± 30% (เหมือนเดิม logic ดีอยู่แล้ว)
     let basePrice = statVal * 10;
     let priceVariance = Math.random() * 0.6 + 0.7;
     let finalCost = Math.floor(basePrice * priceVariance);
@@ -249,10 +257,8 @@ function buyItem(index) {
   let p = gameData.player;
   let oldEquipment = p.equipment[item.slot];
 
-  // เตรียมข้อความแสดงไอเท็มของเดิม
   let oldItemText = "ไม่มีไอเท็มสวมใส่";
   if (oldEquipment) {
-    // ถ้ามีของเดิมใส่อยู่ ให้โชว์ชื่อและสเตตัส
     oldItemText = `<b>${oldEquipment.name}</b> (+${oldEquipment.statValue} ${oldEquipment.statType.toUpperCase()})`;
   }
 
@@ -267,34 +273,28 @@ function buyItem(index) {
     "confirm",
     function (isYes) {
       if (isYes) {
-        // หักเงิน
         gameData.gold -= item.cost;
         document.getElementById("ui-gold-count").innerText = gameData.gold;
         currentShopItems[index].isBought = true;
 
-        // 1. ถ้ามีของเดิมอยู่ ให้หักสเตตัสของเดิมออกก่อน
         if (oldEquipment) {
           p.stats[oldEquipment.statType] -= oldEquipment.statValue;
         }
 
-        // 2. สวมใส่ของใหม่ บันทึกลง Object
         p.equipment[item.slot] = {
           name: item.name,
           statType: item.statType,
           statValue: item.statValue,
         };
 
-        // 3. บวกสเตตัสใหม่เข้าตัวละคร
         p.stats[item.statType] += item.statValue;
 
-        // 4. กรณีเป็น Headgear (+HP) หรือไอเท็มเพิ่มเลือด ให้บวกเลือดปัจจุบันตามไปด้วยกันเลือดแหว่ง
         if (item.statType === "hp") {
           p.currentHp += item.statValue;
         } else if (item.statType === "mp") {
           p.currentMp += item.statValue;
         }
 
-        // สั่งรีเฟรชหน้าต่างซ้ายมือและหน้าต่างร้านค้า
         if (typeof updatePlayerUI === "function") updatePlayerUI();
         renderShopMenu();
       }
@@ -303,7 +303,32 @@ function buyItem(index) {
 }
 
 // ==========================================
-// 3. ระบบ INN & SLEEP (กินข้าวข้ามวัน)
+// 3. SAVE MENU CONTROLLER
+// ==========================================
+function renderSaveMenu() {
+  const container = document.getElementById("town-save-list");
+  if (!container) return;
+
+  container.innerHTML = `
+      <div class="town-item-card" style="border-left: 4px solid #4caf50;">
+          <div class="item-text-stack">
+              <h4>1. Save to PNG (Original)</h4>
+              <p style="color: #bbb;">ฝังข้อมูลเซฟลงในไฟล์รูปภาพดั้งเดิม</p>
+          </div>
+          <button onclick="saveGameToFile()" class="btn-buy-3d" style="background: linear-gradient(180deg, #4caf50, #2e7d32); box-shadow: 0 4px 0 #1b5e20;">SAVE PNG</button>
+      </div>
+      <div class="town-item-card" style="border-left: 4px solid #008cba;">
+          <div class="item-text-stack">
+              <h4>2. Create Seed Code</h4>
+              <p style="color: #bbb;">สร้างรหัสสำหรับบันทึกการผจญภัย</p>
+          </div>
+          <button onclick="generateSaveSeedCode()" class="btn-buy-3d shop-btn-style">GET SEED</button>
+      </div>
+  `;
+}
+
+// ==========================================
+// 4. INN & SLEEP
 // ==========================================
 function renderInnMenu() {
   const meals = [
@@ -363,7 +388,11 @@ function renderInnMenu() {
 
 function eatMeal(type, cost) {
   if (gameData.gold < cost) {
-    showModal("💸 เงินไม่พอ", "alert");
+    showModal(
+      "💸 Not enough money",
+      "ไม่มีเงินจ่ายค่าอาหาร ไปหาเพิ่มเงินก่อน !",
+      "alert",
+    );
     return;
   }
 
@@ -376,14 +405,12 @@ function eatMeal(type, cost) {
         gameData.gold -= cost;
         document.getElementById("ui-gold-count").innerText = gameData.gold;
 
-        // --- [ เพิ่มลอจิกบันทึกบัฟอาหารหรู ] ---
         if (type === "lux") {
           gameData.hasLuxBuff = true;
         } else {
-          gameData.hasLuxBuff = false; // ถ้านอนเฉยๆ หรือกินของปกติ บัฟหรูจะหายไป
+          gameData.hasLuxBuff = false;
         }
 
-        // --- [ ลอจิกฮีลเลือดตามประเภทอาหาร ] ---
         let p = gameData.player;
         if (p) {
           if (type === "lux" || type === "reg") {
@@ -395,7 +422,6 @@ function eatMeal(type, cost) {
         }
         if (typeof updatePlayerUI === "function") updatePlayerUI();
 
-        // --- [ ลอจิกฮีลเลือด ลูกน้อง ] ---
         if (Array.isArray(gameData.party)) {
           gameData.party.forEach((member) => {
             if (member) {
@@ -410,7 +436,6 @@ function eatMeal(type, cost) {
         }
         if (typeof updatePartyUI === "function") updatePartyUI();
 
-        // เอฟเฟกต์หน้าจอมืดจำลองการนอน
         document.getElementById("custom-modal-overlay").style.display = "flex";
         document.getElementById("custom-modal-title").innerHTML = "💤 Zzz...";
         document.getElementById("custom-modal-msg").innerHTML =

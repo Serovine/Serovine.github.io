@@ -1,5 +1,4 @@
-// js/tinder.js
-
+// js/tinder.js (ลบ updatePartyUI ออก)
 let tavernPool = [];
 let currentNpcIndex = 0;
 
@@ -29,7 +28,7 @@ function createNPCData() {
   }
   const level = Math.max(1, pLevel + Math.floor(Math.random() * 5) - 2);
 
-  const hp = Math.floor(Math.random() * 80) + 20 + level * 15;
+  const hp = Math.floor(Math.random() * 80) + 20 + level * 20;
   const atk = Math.floor(Math.random() * 40) + 5 + level * 4;
   const def = Math.floor(Math.random() * 30) + 5 + level * 4;
   const spd = Math.floor(Math.random() * 30) + 5 + level * 4;
@@ -48,7 +47,7 @@ function createNPCData() {
     currentHp: hp,
     cost: cost,
     avatarSvg: generateDynamicAvatar({ hp: hp, atk: atk, def: def, luk: luk }),
-    quote: NPC_QUOTES[Math.floor(Math.random() * NPC_QUOTES.length)], // สุ่มคำคมใส่ NPC ทันที
+    quote: NPC_QUOTES[Math.floor(Math.random() * NPC_QUOTES.length)],
   };
 }
 
@@ -72,7 +71,7 @@ function renderTinderCard() {
 
   if (tavernPool.length === 0) {
     container.style.width = "440px";
-    container.style.minHeight = "540px"; // ยืดให้สูงขึ้น
+    container.style.minHeight = "500px";
     container.style.background = "#24211e";
     container.style.borderColor = "#554433";
     container.style.display = "flex";
@@ -104,7 +103,7 @@ function renderTinderCard() {
       : "";
 
   container.style.width = "440px";
-  container.style.minHeight = "540px"; // ยืดให้สูงขึ้น
+  container.style.minHeight = "500px";
   container.style.display = "flex";
   container.style.flexDirection = "column";
   container.style.background = "#24211e";
@@ -114,7 +113,6 @@ function renderTinderCard() {
     "0 12px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(140, 115, 85, 0.15)";
   container.style.padding = "20px";
 
-  // โครงสร้าง DOM ภายในเป็นของคุณออริจินัลทั้งหมด
   container.innerHTML = `
     ${recTagHTML}
 
@@ -255,77 +253,6 @@ function kickNPC(index) {
       }
     },
   );
-}
-
-function updatePartyUI() {
-  let count = 1;
-
-  if (Array.isArray(gameData.party)) {
-    gameData.party.forEach((member, index) => {
-      const slot = document.getElementById("ui-party-slot-" + index);
-      if (!slot) return;
-
-      if (member) {
-        count++;
-        if (member.currentHp === undefined) member.currentHp = member.stats.hp;
-        let hpPercent = Math.max(0, (member.currentHp / member.stats.hp) * 100);
-
-        let miniSvg = member.avatarSvg.replace(
-          /width="120" height="120"/g,
-          'width="100%" height="100%"',
-        );
-
-        slot.style.padding = "10px";
-        slot.style.justifyContent = "space-between";
-        slot.innerHTML = `
-            <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 12px; width: 78%;">
-                    <!-- กรอบรูปกระจกเวทมนตร์จิ๋ว -->
-                    <div style="width: 38px; height: 38px; background: #0f0d0c; border-radius: 4px; border: 1px solid #5c4a33; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 8px rgba(0,0,0,0.8);">
-                        ${miniSvg}
-                    </div>
-                    <div style="line-height: 1.3; text-align: left; width: 100%;">
-                        <span style="color:#f0e6d2; font-size: 13px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-shadow: 1px 1px 0px #000;">${member.name}</span>
-                        <span style="color:#ffaa00; font-size: 10px; font-weight: bold;">${member.class} <span style="color:#ffd700;">Lv.${member.level}</span></span>
-
-                        <!-- หลอด HP สไตล์ Obsidian -->
-                        <div style="width: 100%; height: 5px; background: #141210; border-radius: 3px; margin-top: 5px; overflow: hidden; border: 1px solid #362f28;">
-                            <div style="width: ${hpPercent}%; height: 100%; background: linear-gradient(90deg, #800000, #ff4c4c); transition: width 0.3s;"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ปุ่ม KICK สไตล์ขี้ผึ้งแดง -->
-                <button onclick="kickNPC(${index})" style="
-                    background: linear-gradient(145deg, #800000, #500000);
-                    color: #ffcdd2;
-                    border: 1px solid #b71c1c;
-                    padding: 5px 8px;
-                    font-size: 10px;
-                    font-weight: 900;
-                    border-radius: 3px;
-                    cursor: pointer;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-                    letter-spacing: 0.5px;
-                " onmouseover="this.style.background='linear-gradient(145deg, #b71c1c, #800000)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(145deg, #800000, #500000)'; this.style.color='#ffcdd2';">
-                    KICK
-                </button>
-            </div>
-        `;
-      } else {
-        slot.style.padding = "12px";
-        slot.style.justifyContent = "center";
-        slot.innerHTML =
-          '<span style="color: #5c4a33; font-weight: bold; font-size: 11px; letter-spacing: 1px;">[ EMPTY SLOT ]</span>';
-      }
-    });
-  }
-
-  const countUi = document.getElementById("ui-party-count");
-  if (countUi) countUi.innerText = count;
-
-  if (typeof refreshQuestDetailUI === "function") {
-    refreshQuestDetailUI();
-  }
 }
 
 initTavernPool();

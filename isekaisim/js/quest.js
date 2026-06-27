@@ -5,7 +5,7 @@ let currentBoardQuests = [];
 let selectedQuestIndex = null;
 
 // ==========================================
-// 1. ระบบจัดการฐานข้อมูลเควส
+// 1. DATABASE
 // ==========================================
 function parseCSV() {
   QUEST_DATABASE = [];
@@ -14,7 +14,7 @@ function parseCSV() {
 
   for (let i = 1; i < lines.length; i++) {
     const data = lines[i].split(",");
-    if (data.length !== headers.length) continue; // ป้องกันบรรทัดว่าง
+    if (data.length !== headers.length) continue;
 
     let quest = {};
     headers.forEach((header, index) => {
@@ -31,7 +31,7 @@ function parseCSV() {
 }
 
 // ==========================================
-// 2. ระบบสุ่มเควสประจำวัน (3-5 เควส + Rank Up)
+// 2. RANDOM QUESTS
 // ==========================================
 function generateDailyQuests() {
   if (QUEST_DATABASE.length === 0) parseCSV();
@@ -45,37 +45,33 @@ function generateDailyQuests() {
 
   currentBoardQuests = [];
 
-  // 2.1 สุ่มจำนวนเควส 3 ถึง 5 เควส
-  let questCount = Math.floor(Math.random() * 3) + 3;
+  let questCount = Math.floor(Math.random() * 3) + 5;
 
   for (let i = 0; i < questCount; i++) {
     if (availableQuests.length === 0) break;
     const randomIndex = Math.floor(Math.random() * availableQuests.length);
-    // Deep copy ป้องกันการแก้ไขอ้างอิง object ต้นฉบับ
     currentBoardQuests.push({ ...availableQuests[randomIndex] });
-    availableQuests.splice(randomIndex, 1); // ลบออกกันสุ่มซ้ำ
+    availableQuests.splice(randomIndex, 1);
   }
 
-  // 2.2 แทรกเควสเลื่อนขั้น (Rank Up) ไว้บนสุดถ้า EXP เต็ม
   if (
     gameData.player.exp >= playerRankData.maxExp &&
     playerRankData.next !== "MAX"
   ) {
     const rankUpQuest = {
-      name: `🔥 [TRIAL] ทดสอบเลื่อนขั้นเป็น Rank ${playerRankData.next}`,
-      desc: `บททดสอบขีดจำกัดของคุณ พิสูจน์ความแข็งแกร่งด้วยพลัง`,
+      name: `🔥 [TRIAL] Test for Rank Advancement ${playerRankData.next}`,
+      desc: `Test your limits. Prove your strength with power.`,
       type: "RankUp",
       reqClass: null,
       reqParty: 1,
-      reqPow: playerRankData.weight * 150 + 500,
+      reqPow: playerRankData.weight * 300 + 400,
       rank: playerRankData.rank,
-      reward: playerRankData.weight * 300,
+      reward: playerRankData.weight * 350,
       exp: 0,
       days: 1,
       isRankUp: true,
       targetRank: playerRankData.next,
     };
-    // ดันเข้าช่องแรกสุดของ Array ให้เสนอหน้าอยู่บนสุดเสมอ
     currentBoardQuests.unshift(rankUpQuest);
   }
 
@@ -83,10 +79,9 @@ function generateDailyQuests() {
 }
 
 // ==========================================
-// 3. ลอจิกการคำนวณอัตราความสำเร็จ
+// 3. SUCCESS RATE LOGIC
 // ==========================================
 function calculateSuccessRate(quest) {
-  // เควส Rank Up ใช้ Party Power เพียวๆ
   if (quest.isRankUp) {
     let rate = (getPartyPower() / quest.reqPow) * 100;
     return Math.min(Math.max(Math.floor(rate), 0), 100);
@@ -110,7 +105,6 @@ function calculateSuccessRate(quest) {
     gameData.player.class === "Backpacker" ||
     gameData.party.some((n) => n && n.class === "Backpacker");
 
-  // สูตรคำนวณตามประเภทของเควส
   if (quest.type === "Combat") {
     rate = quest.reqPow > 0 ? (partyPower / quest.reqPow) * 100 : 100;
   } else if (quest.type === "Escort") {
@@ -124,7 +118,6 @@ function calculateSuccessRate(quest) {
     if (hasBackpacker) rate += 20;
   }
 
-  // โบนัสอาชีพตรงกับที่เควสต้องการ
   if (hasReqClass) {
     rate += 20;
   }
@@ -133,7 +126,7 @@ function calculateSuccessRate(quest) {
 }
 
 // ==========================================
-// 4. ระบบจัดการ UI ของบอร์ดเควส
+// 4. QUEST BOARD UI
 // ==========================================
 function renderQuestBoard() {
   const listContainer = document.getElementById("quest-list-container");
@@ -177,7 +170,7 @@ function renderQuestBoard() {
 function cancelQuest() {
   gameData.activeQuest = null;
   document.getElementById("ongoing-quest-area").style.display = "none";
-  document.getElementById("quest-board-area").style.display = "flex"; // <-- [แก้ไข] เปลี่ยนจาก block เป็น flex
+  document.getElementById("quest-board-area").style.display = "flex";
   renderQuestBoard();
 }
 
@@ -191,6 +184,15 @@ function refreshQuestDetailUI() {
   const isTownState =
     document.getElementById("state-4")?.style.display !== "none";
 
+  // 1. ปุ่ม Back ส่วนตัวของฝั่งขวาบนมือถือ (กดแล้วสลับกลับจอกลาง)
+  let mobileBackBtnHtml = "";
+  if (window.innerWidth <= 768) {
+    mobileBackBtnHtml = `
+        <button onclick="switchMobileTab('main')" class="btn-action" style="width: 100%; background: #555; box-shadow: 0 4px 0 #333; margin-top: 8px; display: block;">
+            🔙 BACK
+        </button>`;
+  }
+
   if (!quest) {
     if (isTownState) {
       infoBox.innerHTML = `
@@ -203,6 +205,7 @@ function refreshQuestDetailUI() {
     } else {
       infoBox.innerHTML = `<p style="color: #777; text-align: center; margin-top: 80px; font-size: 12px;">← เลือกเควสเพื่อดูรายละเอียด</p>`;
     }
+
     return;
   }
 
@@ -218,7 +221,6 @@ function refreshQuestDetailUI() {
     ? `<div style="color:#ff4c4c; font-size:10px; margin:6px 0; padding:4px; background:#221111; border-radius:3px; text-align:center;">⚠️ วัดผลจาก Party Power ล้วนๆ</div>`
     : "";
 
-  // ─── [ คืนชีพหลอด Progress ออริจินัล ] ───
   let progressHtml = "";
   if (quest.days > 1) {
     let currentDay = quest.currentDay || 0;
@@ -236,20 +238,35 @@ function refreshQuestDetailUI() {
     `;
   }
 
+  let mobileControlsHtml = "";
+  if (window.innerWidth <= 768) {
+    let acceptBtnHtml = !gameData.activeQuest
+      ? `<button onclick="acceptQuest()" class="btn-action" style="width: 100%; background: #4CAF50; box-shadow: 0 4px 0 #2e7d32; display: block;">
+                ✔ ACCEPT THIS QUEST
+           </button>`
+      : "";
+
+    mobileControlsHtml = `
+        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #555; display: flex; flex-direction: column; gap: 6px;">
+            ${acceptBtnHtml}
+            ${mobileBackBtnHtml}
+        </div>`;
+  }
+
   infoBox.innerHTML = `
-    <!-- ชื่อเควส -->
+    <!-- Quest Name -->
     <h4 style="margin: 0 0 8px 0; color: ${quest.isRankUp ? "#ff4c4c" : "#ffd700"}; font-size: 14px; font-weight: 900; text-align: center; line-height: 1.2;">
         [${quest.rank}] ${quest.name}
     </h4>
 
-    <!-- คำอธิบายย่อ -->
+    <!-- Quest Description -->
     <div style="background: #141210; border-left: 2px solid #8c7355; padding: 6px 8px; margin-bottom: 10px; border-radius: 0 3px 3px 0;">
         <p style="font-size: 11px; color: #bbb; margin: 0; line-height: 1.3; font-style: italic;">
             "${quest.desc}"
         </p>
     </div>
 
-    <!-- ตารางสเปก 2x2 -->
+    <!-- Table 2x2 -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; background: #141210; border: 1px solid #362f28; padding: 8px; border-radius: 4px; font-size: 11px; margin-bottom: 10px;">
         <div style="color: #ddd;">📜 ${quest.type}</div>
         <div style="color: #ddd;">🎯 ${reqClassHtml}</div>
@@ -261,7 +278,7 @@ function refreshQuestDetailUI() {
         </div>
     </div>
 
-    <!-- รางวัล -->
+    <!-- Reward -->
     <div style="background: #141210; border: 1px solid #5c4a33; padding: 6px; border-radius: 4px; text-align: center; margin-bottom: 10px;">
         <span style="color: #ffd700; font-size: 13px; font-weight: 900;">💰 ${quest.reward}</span> 
         <span style="color: #555; margin: 0 8px;">|</span> 
@@ -271,51 +288,49 @@ function refreshQuestDetailUI() {
     ${progressHtml}
     ${rankUpNotice}
 
-    <!-- ป้าย Win Rate ก้นกล่อง -->
+    <!-- Win Rate -->
     <div style="margin-top: auto; background: #0f0d0c; border: 1px solid ${rateColor}; padding: 6px; border-radius: 4px; text-align: center;">
         <span style="font-size: 10px; color: #888; font-weight: bold; margin-right: 4px;">WIN RATE:</span>
         <span style="color: ${rateColor}; font-size: 14px; font-weight: 900;">${successRate}%</span>
     </div>
-  `;
+    
+    ${mobileControlsHtml} `;
 }
 
 // ==========================================
-// 5. ระบบปฏิสัมพันธ์ (คลิก, รับเควส, ยกเลิก)
+// 5. Interaction
 // ==========================================
 function selectQuest(index) {
   selectedQuestIndex = index;
 
-  // รีเซ็ตขอบเควสทั้งหมด (แต่คงสีพื้นหลังของ Rank Up ไว้)
   document.querySelectorAll(".quest-list-item").forEach((el, i) => {
     let q = currentBoardQuests[i];
     el.style.borderColor = q.isRankUp ? "#ff4c4c" : "transparent";
   });
 
-  // ไฮไลต์เควสที่เลือกด้วยสีทอง
   document.getElementById(`quest-item-${index}`).style.borderColor = "#FFD700";
   document.getElementById("btn-accept-quest").style.display = "block";
 
   refreshQuestDetailUI();
+  if (window.innerWidth <= 768 && typeof switchMobileTab === "function") {
+    switchMobileTab("right");
+  }
 }
 
 function acceptQuest() {
   if (selectedQuestIndex === null) return;
   const quest = currentBoardQuests[selectedQuestIndex];
   quest.winRate = calculateSuccessRate(quest);
-  quest.currentDay = 0; // [เพิ่ม] เซ็ตความคืบหน้าเริ่มต้น
+  quest.currentDay = 0;
   gameData.activeQuest = quest;
 
   document.getElementById("quest-board-area").style.display = "none";
   document.getElementById("ongoing-quest-area").style.display = "block";
-
+  document.getElementById("btn-accept-quest").style.display = "none";
   switchState(2);
-}
-
-function cancelQuest() {
-  gameData.activeQuest = null;
-  document.getElementById("ongoing-quest-area").style.display = "none";
-  document.getElementById("quest-board-area").style.display = "block";
-  renderQuestBoard();
+  if (window.innerWidth <= 768 && typeof switchMobileTab === "function") {
+    switchMobileTab("main");
+  }
 }
 
 function restForToday() {

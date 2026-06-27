@@ -144,7 +144,7 @@ function applyHealToParty(healAmount) {
 
 function triggerRandomEvent(partyInfo) {
   dungeonRunCount++;
-  if (Math.random() <= 0.2 || dungeonRunCount >= 5) {
+  if (Math.random() <= 0.3 || dungeonRunCount >= 5) {
     dungeonRunCount = 0;
     let validEvents = RANDOM_EVENTS.filter((ev) => {
       if (ev.cond === "none") return true;
@@ -164,7 +164,10 @@ function calculateExpedition(quest) {
   let pInfo = getPartyInfo();
   let partyPower = Math.floor(
     gameData.player.stats.hp / 5 +
-    pInfo.totalAtk + pInfo.totalDef + pInfo.totalSpd + pInfo.totalLuk
+      pInfo.totalAtk +
+      pInfo.totalDef +
+      pInfo.totalSpd +
+      pInfo.totalLuk,
   );
   let ratio = partyPower / quest.reqPow;
   let isSuccess = false;
@@ -197,12 +200,14 @@ function calculateExpedition(quest) {
   addLog(`> กำลังประมวลผลสภาพแวดล้อม...`);
 
   // --- 1. บัฟอาหารหรูแสดงผลก่อนเลยทันทีเมื่อเข้าดันเจี้ยน ---
-    if (gameData.hasLuxBuff) {
-      quest.reqPow = Math.floor(quest.reqPow * 0.8);
-      ratio = partyPower / quest.reqPow; 
-      addLog(`<span style="color: #FFD700; font-weight: bold;">> 🍖 [BUFF] อานุภาพ Luxurious Steak! ปาร์ตี้แข็งแกร่งขึ้น 20%</span>`);
-      gameData.hasLuxBuff = false; 
-    }
+  if (gameData.hasLuxBuff) {
+    quest.reqPow = Math.floor(quest.reqPow * 0.8);
+    ratio = partyPower / quest.reqPow;
+    addLog(
+      `<span style="color: #FFD700; font-weight: bold;">> 🍖 [BUFF] อานุภาพ Luxurious Steak! ปาร์ตี้แข็งแกร่งขึ้น 20%</span>`,
+    );
+    gameData.hasLuxBuff = false;
+  }
 
   // --- 2. ระบบสุ่ม Event ประจำวัน ---
   let eventSkipDamage = false;
@@ -212,7 +217,7 @@ function calculateExpedition(quest) {
   if (ev) {
     addLog(`<br><span style="color: #bb86fc;">> ❓ [EVENT] ${ev.text}</span>`);
     if (ev.effect === "heal") {
-      applyHealToParty(999);
+      applyHealToParty(ev.value);
     }
     if (ev.effect === "gold") {
       bonusGold += ev.value;
@@ -224,7 +229,17 @@ function calculateExpedition(quest) {
       eventFreeWin = true;
     }
     if (ev.effect === "dmg_party") {
-      applyDamageToParty(ev.value);
+      const partyMaxHpList = [
+        gameData.player.stats.hp,
+        ...(gameData.party
+          ? gameData.party.map((m) => (m ? m.stats.hp : 0))
+          : [0, 0, 0]),
+      ];
+
+      const calculatedDmgList = partyMaxHpList.map((maxHp) =>
+        Math.max(1, Math.floor(maxHp * (ev.value / 100))),
+      );
+      applyDamageToParty(calculatedDmgList);
     }
     if (ev.effect === "lose_gold") {
       gameData.gold = Math.floor(gameData.gold * 0.8);
@@ -264,10 +279,12 @@ function calculateExpedition(quest) {
       );
 
       if (mHp > 0) {
-        let mDmg = Math.floor(mAtk * (quest.reqPow / (quest.reqPow + pInfo.totalDef)));
+        let mDmg = Math.floor(
+          mAtk * (quest.reqPow / (quest.reqPow + pInfo.totalDef)),
+        );
         mDmg = Math.max(Math.floor(quest.reqPow * 0.03), mDmg); // floor 3% of reqPow
         if (eventSkipDamage) mDmg = 0;
-        applyDamageToParty(mDmg); // ดาเมจลดตรงนี้
+        applyDamageToParty(mDmg);
         addLog(
           `> [Turn ${turn}] มอนสเตอร์เป้าหมาย สวนกลับ! ปาร์ตี้รับดาเมจรวม ${mDmg} แต้ม`,
         );
@@ -293,13 +310,17 @@ function calculateExpedition(quest) {
     // ----------------------
   } else if (qType === "Escort") {
     let waves = Math.floor(Math.random() * 4) + 2; // 2-5 เวฟ
-    let waveMulti = [0.12, 0.20, 0.30, 0.42, 0.56]; // เพิ่มขึ้นเรื่อยๆ
+    let waveMulti = [0.12, 0.2, 0.3, 0.42, 0.56]; // เพิ่มขึ้นเรื่อยๆ
     addLog(`> ขบวนเริ่มเดินทางเข้าสู่เขตอันตราย...`);
     for (let i = 1; i <= waves; i++) {
       if (gameData.player.currentHp <= 0) break;
       let d = eventSkipDamage
         ? 0
-        : Math.floor(quest.reqPow * waveMulti[i-1] * (quest.reqPow / (quest.reqPow + pInfo.totalDef)));
+        : Math.floor(
+            quest.reqPow *
+              waveMulti[i - 1] *
+              (quest.reqPow / (quest.reqPow + pInfo.totalDef)),
+          );
       d = Math.max(Math.floor(quest.reqPow * 0.05), d);
       applyDamageToParty(d);
       addLog(
@@ -320,49 +341,57 @@ function calculateExpedition(quest) {
     // ---- EXPLORE QUEST ----
     // ----------------------
   } else if (qType === "Explore") {
-      addLog(`> 🧭 ปาร์ตี้เริ่มแยกย้ายค้นหาเบาะแส...`);
-      const EX_TEXTS = [
-        "มอนสเตอร์เป้าหมายซุ่มโจมตี",
-        "กลไกกับดักมรณะทำงาน",
-        "หมอกอาบยาพิษปกคลุมพื้นที่",
-      ];
-  
-      let nodes = Math.floor(Math.random() * 4) + 2; // 2-5 node แทน hardcode 2
-  
-      for (let i = 0; i < nodes; i++) {
-        if (gameData.player.currentHp <= 0) break;
-        let txt = EX_TEXTS[Math.floor(Math.random() * EX_TEXTS.length)];
-        addLog(`> ⚠️ พบ${txt}! (ระบบทอยแต้มหลบหลีก...)`);
-  
-        let threshold = quest.reqPow * 1.5; // แทน hardcode 100
-        let roll = (pInfo.totalSpd + pInfo.totalLuk)
-                 + (pInfo.hasScout ? quest.reqPow * 0.3 : 0)
-                 + (Math.random() * quest.reqPow * 0.5);
-  
-        if (roll > threshold || eventSkipDamage) {
-          addLog(`> 🏃 ${pInfo.hasScout ? "[Scout] ตาไว! พาทีม" : "ปาร์ตี้"}หลบฉากออกมาได้ปลอดภัย`);
-        } else {
-          let nodeDmg = Math.floor(quest.reqPow * 0.15); // แทน hardcode 25
-          applyDamageToParty(nodeDmg);
-          addLog(`> 💥 หลบไม่พ้น! โดนลูกหลงเต็มๆ (รับดาเมจ ${nodeDmg} แต้ม)`);
-        }
+    addLog(`> 🧭 ปาร์ตี้เริ่มแยกย้ายค้นหาเบาะแส...`);
+    const EX_TEXTS = [
+      "มอนสเตอร์เป้าหมายซุ่มโจมตี",
+      "กลไกกับดักมรณะทำงาน",
+      "หมอกอาบยาพิษปกคลุมพื้นที่",
+    ];
+
+    let nodes = Math.floor(Math.random() * 4) + 2; // 2-5 node แทน hardcode 2
+
+    for (let i = 0; i < nodes; i++) {
+      if (gameData.player.currentHp <= 0) break;
+      let txt = EX_TEXTS[Math.floor(Math.random() * EX_TEXTS.length)];
+      addLog(`> ⚠️ พบ${txt}! (ระบบทอยแต้มหลบหลีก...)`);
+
+      let threshold = quest.reqPow * 1.5; // แทน hardcode 100
+      let roll =
+        pInfo.totalSpd +
+        pInfo.totalLuk +
+        (pInfo.hasScout ? quest.reqPow * 0.3 : 0) +
+        Math.random() * quest.reqPow * 0.5;
+
+      if (roll > threshold || eventSkipDamage) {
+        addLog(
+          `> 🏃 ${pInfo.hasScout ? "[Scout] ตาไว! พาทีม" : "ปาร์ตี้"}หลบฉากออกมาได้ปลอดภัย`,
+        );
+      } else {
+        let nodeDmg = Math.floor(quest.reqPow * 0.15); // แทน hardcode 25
+        applyDamageToParty(nodeDmg);
+        addLog(`> 💥 หลบไม่พ้น! โดนลูกหลงเต็มๆ (รับดาเมจ ${nodeDmg} แต้ม)`);
       }
-  
-      // โบนัส gold
-      let chestRoll = pInfo.totalLuk + (pInfo.hasScout ? quest.reqPow * 0.2 : 0) + Math.random() * quest.reqPow;
-      if (chestRoll > quest.reqPow * 1.2) {
-        let chestGold = Math.floor(quest.reward * 0.3); // แทน hardcode 100
-        bonusGold += chestGold;
-        addLog(`> 🎲 แจ็คพอต! ค้นพบห้องลับ... ได้โบนัส ${chestGold} Gold!`);
-      }
-  
-      if (gameData.player.currentHp > 0) isSuccess = true;
+    }
+
+    // โบนัส gold
+    let chestRoll =
+      pInfo.totalLuk +
+      (pInfo.hasScout ? quest.reqPow * 0.2 : 0) +
+      Math.random() * quest.reqPow;
+    if (chestRoll > quest.reqPow * 1.2) {
+      let chestGold = Math.floor(quest.reward * 0.3); // แทน hardcode 100
+      bonusGold += chestGold;
+      addLog(`> 🎲 แจ็คพอต! ค้นพบห้องลับ... ได้โบนัส ${chestGold} Gold!`);
+    }
+
+    if (gameData.player.currentHp > 0) isSuccess = true;
 
     // ----------------------
     // ---- COLLECT QUEST ----
     // ----------------------
   } else if (qType === "Collect") {
-    let target = quest.targetItems || Math.max(8, Math.floor(quest.reqPow / 20));
+    let target =
+      quest.targetItems || Math.max(8, Math.floor(quest.reqPow / 20));
     quest.targetItems = target;
     let current = quest.currentCollected || 0;
     addLog(`> 🎒 เป้าหมายการฟาร์ม: ขาดอีก ${target - current} ชิ้น`);
@@ -373,9 +402,9 @@ function calculateExpedition(quest) {
       gameData.player.currentHp > gameData.player.stats.hp * 0.15
     ) {
       let find =
-        Math.floor((pInfo.totalLuk + pInfo.totalSpd) / 40)
-                 + (pInfo.hasBackpacker ? Math.floor(quest.reqPow * 0.02) : 1)
-                 + Math.floor(Math.random() * 3);
+        Math.floor((pInfo.totalLuk + pInfo.totalSpd) / 40) +
+        (pInfo.hasBackpacker ? Math.floor(quest.reqPow * 0.02) : 1) +
+        Math.floor(Math.random() * 3);
       current += find;
       addLog(
         `> ค้นหารอบที่ ${round}... ได้มา ${find} ชิ้น (สะสม ${Math.min(current, target)}/${target})`,

@@ -129,7 +129,7 @@ function finishExpedition() {
 
   if (playerKnockedOut) {
     modalTitle = "💀 ปาร์ตี้แตก!";
-    modalMsg = `หัวหน้าปาร์ตี้หมดสติ! ปาร์ตี้ล่มสลาย ต้องหามกลับเมือง...\n(ความคืบหน้าไม่เพิ่ม)${extraLogs}`;
+    modalMsg = `หัวหน้าปาร์ตี้หมดสติ!\n ปาร์ตี้ล่มสลาย ต้องหามกลับเมือง...${extraLogs}`;
   } else if (quest.isSuccess) {
     if (quest.currentDay === undefined) quest.currentDay = 0;
     quest.currentDay++;
