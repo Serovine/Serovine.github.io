@@ -870,23 +870,25 @@ button:hover {
     gap: 14px;
 }
 .signboard-btn {
-    background: linear-gradient(145deg, #24201c, #1a1613) !important;
-    border: 2px solid #5c4a33 !important;
-    border-radius: 8px !important;
-    padding: 14px 20px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    margin: 0 !important;
+    width: 100%;
+    background: linear-gradient(145deg, #d4af37, #8a6421);
+    color: #1a0f00;
+    border: 2px solid #f5e6cc;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 900;
+    border-radius: 4px;
     cursor: pointer;
     box-shadow:
-        0 6px 15px rgba(0, 0, 0, 0.7),
-        inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
-    transition: all 0.2s ease !important;
+        0 6px 15px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 0px rgba(255, 255, 255, 0.4);
+    transition: all 0.2s ease;
+    letter-spacing: 1.5px;
+    font-family: inherit;
 }
 .signboard-btn:hover {
-    background: linear-gradient(145deg, #2e2824, #201b18) !important;
+    background: linear-gradient(145deg, #d4af37, #8a6421);
     border-color: #ffd700 !important;
     transform: translateX(8px) !important;
     box-shadow:
@@ -894,7 +896,8 @@ button:hover {
         0 0 15px rgba(255, 215, 0, 0.25) !important;
 }
 .signboard-btn:active {
-    transform: translateX(4px) !important;
+    background: linear-gradient(145deg, #2e2824, #201b18);
+    transform: translateX(4px);
 }
 
 .gym-sign {

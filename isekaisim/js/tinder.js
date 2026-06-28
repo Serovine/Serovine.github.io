@@ -154,7 +154,7 @@ function renderTinderCard() {
           "${currentNPC.quote || "ไม่มีบันทึกคำพูดในแฟ้มประวัติ"}"
       </div>
   
-      <button onclick="acceptNPC()" class="btn-sign-contract">
+      <button onclick="acceptNPC()" class="signboard-btn">
           📜 SIGN CONTRACT
       </button>
     `;
