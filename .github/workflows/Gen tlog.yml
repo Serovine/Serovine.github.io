@@ -1,0 +1,27 @@
+name: Generate tlog.json
+
+on:
+  push:
+    paths:
+      - "tlog/**.md"
+      - "tlog/**.html"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tlog.json
+        run: python3 .github/scripts/gen_tlog.py
+
+      - name: Commit and push tlog.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tlog/tlog.json
+          git diff --cached --quiet || git commit -m "chore: update tlog.json [skip ci]"
+          git push
