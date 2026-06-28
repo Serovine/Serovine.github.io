@@ -119,6 +119,11 @@ function updatePlayerUI() {
 
   const leadNameEl = document.getElementById("ui-party-lead-name");
   if (leadNameEl && p.name) leadNameEl.innerText = p.name.toUpperCase();
+
+  const mg = document.getElementById("m-town-gold");
+  const md = document.getElementById("m-town-day");
+  if (mg) mg.innerText = gameData.gold || 0;
+  if (md) md.innerText = gameData.day || 1;
 }
 
 function switchState(stateNumber) {

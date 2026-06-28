@@ -229,17 +229,8 @@ function calculateExpedition(quest) {
       eventFreeWin = true;
     }
     if (ev.effect === "dmg_party") {
-      const partyMaxHpList = [
-        gameData.player.stats.hp,
-        ...(gameData.party
-          ? gameData.party.map((m) => (m ? m.stats.hp : 0))
-          : [0, 0, 0]),
-      ];
-
-      const calculatedDmgList = partyMaxHpList.map((maxHp) =>
-        Math.max(1, Math.floor(maxHp * (ev.value / 100))),
-      );
-      applyDamageToParty(calculatedDmgList);
+      const currentLv = gameData.player.level || 1;
+      applyDamageToParty(ev.value * currentLv * 4);
     }
     if (ev.effect === "lose_gold") {
       gameData.gold = Math.floor(gameData.gold * 0.8);

@@ -1445,3 +1445,76 @@ button:hover {
     align-items: center;
     backdrop-filter: blur(3px);
 }
+
+/* =========================================
+   8. MOBILE TOWN STICKY HUD
+   ========================================= */
+.mobile-town-wallet {
+    display: none; /* ซ่อนบน PC เพราะมี Right Panel โชว์อยู่แล้ว */
+}
+
+@media screen and (max-width: 768px) {
+    .mobile-town-wallet {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 480px;
+        background: linear-gradient(145deg, #1f1b18, #14110e);
+        border: 1px solid #8c7355;
+        border-radius: 6px;
+        padding: 8px 14px;
+        margin-bottom: 12px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #f0e6d2;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        flex-shrink: 0;
+        letter-spacing: 0.5px;
+    }
+    .mobile-town-wallet span:nth-child(1) strong {
+        color: #ffd700;
+    }
+    .mobile-town-wallet span:nth-child(2) strong {
+        color: #e1bee7;
+    }
+}
+
+/* =========================================
+   9. TINDER CARD RESPONSIVE STACK
+   ========================================= */
+
+/* โหมด PC: วางซ้าย-ขวา 2 คอลัมน์กว้างเท่าเดิม */
+.tinder-layout-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 18px;
+    align-items: start;
+    width: 100%;
+}
+
+/* โหมดมือถือ: บังคับยุบเหลือคอลัมน์เดียว เรียงชั้นจากบนลงล่าง */
+@media screen and (max-width: 768px) {
+    #tinder-card-container {
+        width: 100% !important;
+        max-width: 320px !important;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+    .tinder-layout-grid {
+        grid-template-columns: 1fr !important; /* ยุบเหลือแนวตั้ง */
+        gap: 12px !important;
+    }
+
+    /* ตารางสเตตัสด้านล่างให้กางเป็น Grid 2 คอลัมน์ซ้าย-ขวา แถวละ 2 ข้อความ จะได้ไม่กินพื้นที่แนวดิ่ง */
+    .tinder-stats-box {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    .tinder-stats-box > div:nth-child(1) {
+        grid-column: span 2; /* เลเวลกินเต็มแถวบนสุด */
+    }
+}

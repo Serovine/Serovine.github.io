@@ -114,62 +114,50 @@ function renderTinderCard() {
   container.style.padding = "20px";
 
   container.innerHTML = `
-    ${recTagHTML}
-
-    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 18px; margin-bottom: 16px; align-items: start;">
-        
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div style="width: 140px; height: 140px; background: #0f0d0c; border: 2px solid #5c4a33; border-radius: 4px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
-                ${currentNPC.avatarSvg}
-            </div>
-            
-            <h3 style="color: #f0e6d2; margin: 0 0 4px 0; font-size: 17px; font-weight: 900; text-align: center; line-height: 1.2; text-shadow: 1px 1px 0px #000;">
-                ${currentNPC.name}
-            </h3>
-            <span style="color: #ffaa00; font-size: 11px; font-weight: bold; margin-bottom: 10px;">
-                [ ${currentNPC.class} ]
-            </span>
-            
-            <div style="background: #141210; border: 1px solid #3d342c; padding: 5px 10px; border-radius: 4px; width: 100%; text-align: center; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-                <span style="color: #a89274; font-size: 11px; font-weight: bold; margin-right: 4px;">FEE:</span>
-                <span style="color: #ffd700; font-size: 12px; font-weight: 900;">${displayCost}</span>
-            </div>
-        </div>
-
-        <div style="background: #141210; border: 1px solid #362f28; border-radius: 4px; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);">
-            <div style="color: #FFD700; font-weight: 900; border-bottom: 1px solid #2a241e; padding-bottom: 6px; margin-bottom: 2px;">🌟 Level: ${currentNPC.level}</div>
-            <div style="color: #ff6b6b;">❤️ Max HP: ${currentNPC.stats.hp}</div>
-            <div style="color: #ffaa00;">⚔️ ATK: ${currentNPC.stats.atk}</div>
-            <div style="color: #4dabf7;">⚡ SPD: ${currentNPC.stats.spd}</div>
-            <div style="color: #69db7c;">🛡️ DEF: ${currentNPC.stats.def}</div>
-            <div style="color: #cc5de8;">🍀 LUK: ${currentNPC.stats.luk}</div>
-        </div>
-
-    </div>
-
-    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; background: #1a1816; border: 1px solid #3d342c; border-left: 4px solid #c5a059; padding: 12px 16px; font-size: 13px; color: #e6d8c8; font-style: italic; margin-bottom: 18px; border-radius: 2px; text-align: center; box-shadow: 2px 2px 6px rgba(0,0,0,0.6); line-height: 1.5;">
-        "${currentNPC.quote || "ไม่มีบันทึกคำพูดในแฟ้มประวัติ"}"
-    </div>
-
-    <button onclick="acceptNPC()" style="
-        width: 100%;
-        background: linear-gradient(145deg, #d4af37, #8a6421);
-        color: #1a0f00;
-        border: 2px solid #f5e6cc;
-        padding: 14px;
-        font-size: 15px;
-        font-weight: 900;
-        border-radius: 4px;
-        cursor: pointer;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.4);
-        text-shadow: 0 1px 0px rgba(255,255,255,0.4);
-        transition: all 0.2s ease;
-        letter-spacing: 1.5px;
-        font-family: inherit;
-    " onmouseover="this.style.background='linear-gradient(145deg, #f3d266, #a67c2e)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='linear-gradient(145deg, #d4af37, #8a6421)'; this.style.transform='translateY(0)';">
-        📜 SIGN CONTRACT
-    </button>
-  `;
+      ${recTagHTML}
+  
+      <!-- เปลี่ยนจาก style.grid ตรงๆ เป็น class="tinder-layout-grid" -->
+      <div class="tinder-layout-grid" style="margin-bottom: 16px;">
+          
+          <!-- ท่อนที่ 1: อวตาร + ชื่อ + อาชีพ + ค่าจ้าง -->
+          <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+              <div style="width: 140px; height: 140px; background: #0f0d0c; border: 2px solid #5c4a33; border-radius: 4px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
+                  ${currentNPC.avatarSvg}
+              </div>
+              
+              <h3 style="color: #f0e6d2; margin: 0 0 4px 0; font-size: 17px; font-weight: 900; text-align: center; line-height: 1.2; text-shadow: 1px 1px 0px #000;">
+                  ${currentNPC.name}
+              </h3>
+              <span style="color: #ffaa00; font-size: 11px; font-weight: bold; margin-bottom: 10px;">
+                  [ ${currentNPC.class} ]
+              </span>
+              
+              <div style="background: #141210; border: 1px solid #3d342c; padding: 5px 10px; border-radius: 4px; width: 100%; text-align: center; box-sizing: border-box; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+                  <span style="color: #a89274; font-size: 11px; font-weight: bold; margin-right: 4px;">FEE:</span>
+                  <span style="color: #ffd700; font-size: 12px; font-weight: 900;">${displayCost}</span>
+              </div>
+          </div>
+  
+          <!-- ท่อนที่ 2: สเตตัส (ย้ายมาคล้องคอกับ class ด้านล่างแทน) -->
+          <div class="tinder-stats-box" style="background: #141210; border: 1px solid #362f28; border-radius: 4px; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; box-sizing: border-box; box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);">
+              <div style="color: #FFD700; font-weight: 900; border-bottom: 1px solid #2a241e; padding-bottom: 6px; margin-bottom: 2px;">🌟 Level: ${currentNPC.level}</div>
+              <div style="color: #ff6b6b;">❤️ Max HP: ${currentNPC.stats.hp}</div>
+              <div style="color: #ffaa00;">⚔️ ATK: ${currentNPC.stats.atk}</div>
+              <div style="color: #4dabf7;">⚡ SPD: ${currentNPC.stats.spd}</div>
+              <div style="color: #69db7c;">🛡️ DEF: ${currentNPC.stats.def}</div>
+              <div style="color: #cc5de8;">🍀 LUK: ${currentNPC.stats.luk}</div>
+          </div>
+  
+      </div>
+  
+      <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; background: #1a1816; border: 1px solid #3d342c; border-left: 4px solid #c5a059; padding: 12px 16px; font-size: 13px; color: #e6d8c8; font-style: italic; margin-bottom: 18px; border-radius: 2px; text-align: center; box-shadow: 2px 2px 6px rgba(0,0,0,0.6); line-height: 1.5;">
+          "${currentNPC.quote || "ไม่มีบันทึกคำพูดในแฟ้มประวัติ"}"
+      </div>
+  
+      <button onclick="acceptNPC()" class="btn-sign-contract">
+          📜 SIGN CONTRACT
+      </button>
+    `;
 }
 
 function browseNPC(direction) {
