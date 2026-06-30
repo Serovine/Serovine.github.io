@@ -1,14 +1,14 @@
 let stockData = [];
 let sectorChartInstance = null;
-let sectorColorMap = {}; // เก็บว่า Sector ไหนใช้สีอะไร
+let sectorColorMap = {};
 
-// ตัวแปรเก็บสถานะการ Filter
+// Filter
 let currentSectorFilter = null;
 let currentSearchQuery = "";
 let currentStageFilter = "all";
 
 const neonColors = [
-  "#00ffff", // Cyan (Tech มักจะได้สีนี้เพราะมีเยอะสุด)
+  "#00ffff", // Cyan
   "#39ff14", // Neon Green
   "#ffea00", // Yellow
   "#ff00ff", // Magenta
@@ -83,7 +83,6 @@ function getFilteredData() {
   });
 }
 
-// ถูกเรียกเมื่อมีการพิมพ์ Search หรือเปลี่ยน Dropdown
 function applyFilters() {
   currentSearchQuery = document
     .getElementById("searchInput")
@@ -91,18 +90,16 @@ function applyFilters() {
   currentStageFilter = document.getElementById("stageFilter").value;
   updateClearButtonState();
 
-  // อัปเดตเฉพาะรายชื่อ ไม่ต้องวาด Pie Chart ใหม่
   renderLeaderboard();
   renderRacingTrack();
 }
 
-// ถูกเรียกเมื่อต้องการล้าง Filter ทั้งหมด
 function clearFilters() {
   document.getElementById("searchInput").value = "";
-  document.getElementById("stageFilter").value = "all";
+  // document.getElementById("stageFilter").value = "all";
   currentSearchQuery = "";
-  currentStageFilter = "all";
-  currentSectorFilter = null; // ล้าง Sector ที่กดจาก Pie Chart ด้วย
+  // currentStageFilter = "all";
+  currentSectorFilter = null;
 
   updateClearButtonState();
   renderLeaderboard();
@@ -137,7 +134,6 @@ function renderSectorChart() {
 
   const labels = Object.keys(sectorCounts);
   const data = Object.values(sectorCounts);
-  // ใช้สีจากที่ Map ไว้ เพื่อให้ตรงกับการ์ด
   const bgColors = labels.map((label) => sectorColorMap[label]);
 
   if (sectorChartInstance) sectorChartInstance.destroy();
@@ -168,7 +164,6 @@ function renderSectorChart() {
           },
         },
       },
-      // อีเวนต์เมื่อคลิกที่ Pie Chart ให้ทำการ Filter Sector
       onClick: (evt, elements) => {
         if (elements.length > 0) {
           const index = elements[0].index;
@@ -182,11 +177,18 @@ function renderSectorChart() {
   });
 }
 
-// ฟังก์ชันช่วยแปลงตัวเลข Market Cap ให้เป็นหน่วย B (Billion)
 function formatMarketCap(num) {
   if (num >= 1e9) return (num / 1e9).toFixed(2) + " B";
   if (num >= 1e6) return (num / 1e6).toFixed(2) + " M";
   return num;
+}
+
+function getRankBadge(index) {
+  if (index === 0) return { text: "🏆1", class: "rank-top3 gold" };
+  if (index === 1) return { text: "🥈2", class: "rank-top3 silver" };
+  if (index === 2) return { text: "🥉3", class: "rank-top3 bronze" };
+  if (index < 10) return { text: `#${index + 1}`, class: "rank-top10" };
+  return { text: `#${index + 1}`, class: "" };
 }
 
 function renderLeaderboard() {
@@ -199,18 +201,22 @@ function renderLeaderboard() {
     return;
   }
 
-  const MAX_BAR_TARGET = 200;
+  const maxChange = Math.max(...displayData.map((d) => d.change6m));
 
   displayData.forEach((d, index) => {
     const oldPrice = d.price / (1 + d.change6m / 100);
-    const barWidth = Math.min((d.change6m / MAX_BAR_TARGET) * 100, 100);
+    const barWidth = (d.change6m / maxChange) * 100;
 
-    const isOverdrive = d.change6m >= MAX_BAR_TARGET;
+    // ✨ จุดที่แก้ไข: คำนวณรอยบาก 1 ก้อน = 100% โดยอิงจากเปอร์เซ็นต์ของตัวมันเอง
+    const chunkSize = d.change6m > 0 ? (100 / d.change6m) * 100 : 100;
+
+    const isOverdrive = d.change6m >= 200;
     const barClass = isOverdrive ? "overdrive-bar-fill" : "neon-bar-fill";
     const overdriveLabel = isOverdrive
-      ? '<span class="overdrive-txt">🔥 OVERDRIVE</span>'
+      ? '<span class="overdrive-txt">🔥 OVER LIMIT</span>'
       : "";
 
+    const rankBadge = getRankBadge(index);
     const link = `https://www.google.com/finance/quote/${d.symbol}:${d.exchange}`;
     const card = document.createElement("div");
     card.className = "player-card";
@@ -221,7 +227,7 @@ function renderLeaderboard() {
 
     card.innerHTML = `
             <div class="card-header">
-                <span class="rank">#${index + 1}</span>
+                <span class="rank ${rankBadge.class}">${rankBadge.text}</span>
                 <span class="symbol">${d.symbol}</span>
                 <span class="stage-badge ${stageClass}">${d.stage}</span>
             </div>
@@ -243,14 +249,14 @@ function renderLeaderboard() {
                         <span class="timeline-val sector-txt">${d.sector}</span>
                     </div>
                 </div>
-                <div class="market-cap-badge">💰 MARKET CAP: ${formatMarketCap(d.marketCap)}</div>
+                <div class="market-cap-badge">💰 Market Cap : ${formatMarketCap(d.marketCap)}</div>
                 <div class="growth-section">
                     <div class="growth-labels">
-                        <span class="growth-title">POWER LIMIT ${overdriveLabel}</span>
+                        <span class="growth-title">GROWTH POWER ${overdriveLabel}</span>
                         <span class="growth-value">+${d.change6m.toFixed(2)}%</span>
                     </div>
                     <div class="neon-bar-bg">
-                        <div class="${barClass}" style="width: ${barWidth}%"></div>
+                        <div class="${barClass}" style="width: ${barWidth}%; --chunk-size: ${chunkSize}%;"></div>
                     </div>
                 </div>
             </div>
@@ -268,14 +274,17 @@ function renderRacingTrack() {
 
   const displayData = getFilteredData();
   if (displayData.length === 0) {
-    trackContainer.innerHTML = `<div style="text-align:center; color:#ff073a; padding: 40px;">⚠️ NO RACERS ON THE TRACK ⚠️</div>`;
+    trackContainer.innerHTML = `<div style="text-align:center; color:#ff073a; padding: 40px;">⚠️ NO STOCK ON THE TRACK ⚠️</div>`;
     return;
   }
 
-  const MAX_BAR_TARGET = 200;
+  const maxChange = Math.max(...displayData.map((d) => d.change6m));
 
   displayData.forEach((d, index) => {
-    const barWidth = Math.min((d.change6m / MAX_BAR_TARGET) * 100, 100);
+    const barWidth = (d.change6m / maxChange) * 100;
+    const chunkSize = d.change6m > 0 ? (100 / d.change6m) * 100 : 100;
+
+    const rankBadge = getRankBadge(index);
     const link = `https://www.google.com/finance/quote/${d.symbol}:${d.exchange}`;
 
     const lane = document.createElement("div");
@@ -307,17 +316,18 @@ function renderRacingTrack() {
     });
 
     lane.innerHTML = `
-            <div class="lane-rank">#${index + 1}</div>
+            <div class="lane-rank ${rankBadge.class}">${rankBadge.text}</div>
             <div class="lane-symbol" style="color: ${sectorColorMap[d.sector]}">${d.symbol}</div>
             <div class="lane-bar-container">
-                <div class="lane-bar ${d.change6m >= MAX_BAR_TARGET ? "overdrive-bg" : ""}" style="width: 0%;" data-width="${barWidth}%"></div>
+                <div class="lane-bar ${d.change6m >= 200 ? "overdrive-bar-fill" : ""}"
+                     style="width: 0%; --chunk-size: ${chunkSize}%;"
+                     data-width="${barWidth}%"></div>
             </div>
             <div class="lane-value">+${d.change6m.toFixed(2)}%</div>
         `;
     trackContainer.appendChild(lane);
   });
 
-  // ทริกเกอร์แอนิเมชันกราฟแท่ง
   setTimeout(() => {
     document.querySelectorAll(".lane-bar").forEach((bar) => {
       bar.style.width = bar.getAttribute("data-width");

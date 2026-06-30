@@ -235,8 +235,7 @@ body {
     font-weight: bold;
 }
 
-/* (ใส่โค้ดสี .stage-badge.stage-1 ถึง 4 คงเดิมไว้ได้เลย) */
-
+/* stage-badge.stage-1 to 4  */
 .card-body {
     display: flex;
     flex-direction: column;
@@ -265,7 +264,7 @@ body {
     border: 1px solid rgba(255, 234, 0, 0.2);
 }
 
-/* ดีไซน์ Grid แสดงราคาอดีต ➔ ปัจจุบัน */
+/* Design Grid 6M Ago ➔ Now */
 .price-timeline-grid {
     display: flex;
     align-items: center;
@@ -319,7 +318,9 @@ body {
     color: #8a8baf;
 }
 
-/* 9. Progress Bar หลอดพลัง Nitro */
+/* ==========================================================================
+   9. Progress Bar Nitro
+   ========================================================================== */
 .growth-section {
     margin-top: 5px;
 }
@@ -363,19 +364,37 @@ body {
     border: 1px solid #22254e;
 }
 
-/* หลอดปกติ (โต 0-199%) */
 .neon-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #00ffff, #39ff14);
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #101226 calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #00ffff, #39ff14);
+    background-size:
+        var(--chunk-size, 100%) 100%,
+        100% 100%;
+    background-repeat: repeat-x, no-repeat;
     border-radius: 4px;
     box-shadow: 0 0 10px #39ff14;
     transition: width 1s ease-in-out;
 }
 
-/* หลอด Overdrive ทะลุลิมิต (โต 200%+) */
 .overdrive-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #ffea00, #ff073a);
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #101226 calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #ffea00, #ff073a);
+    background-size:
+        var(--chunk-size, 100%) 100%,
+        100% 100%;
+    background-repeat: repeat-x, no-repeat;
     border-radius: 4px;
     box-shadow:
         0 0 15px #ff073a,
@@ -383,7 +402,7 @@ body {
     transition: width 1s ease-in-out;
 }
 
-/* 10. View 2: Racing Track Screen (หน้าจอลู่วิ่งจำลอง) */
+/* 10. View 2: Racing Track Screen */
 .track-placeholder {
     background: #0d0f23;
     border: 1px solid #1f2347;
@@ -552,11 +571,10 @@ body {
 
 .lane-bar {
     height: 100%;
-    /* ไล่สีจากชมพูไปฟ้าสไตล์ Synthwave */
     background: linear-gradient(90deg, #ff00ff, #00ffff);
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-    width: 0; /* เริ่มต้นที่ 0 เพื่อทำ Animation */
+    width: 0;
     transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -670,7 +688,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
-    display: none; /* ซ่อนไว้ก่อน จะโชว์เมื่อมีการ Filter */
+    display: none;
 }
 
 .cyber-btn-clear:hover {
@@ -680,15 +698,13 @@ body {
 }
 
 /* ==========================================================================
-   16. Dynamic Sector Colors (ป้องกันการตาลาย)
+   16. Dynamic Sector Colors
    ========================================================================== */
 .player-card {
-    /* กำหนดสีขอบซ้ายให้เป็นสีตาม Sector (ถูกสั่งมาจาก JS) */
     border-left: 4px solid var(--sector-color, #252850);
 }
 
 .player-card:hover {
-    /* แสง Glow ตอน Hover จะเปลี่ยนสีตาม Sector ด้วย */
     border-color: var(--sector-color);
     box-shadow:
         0 10px 25px rgba(0, 0, 0, 0.3),
@@ -697,4 +713,102 @@ body {
 
 .player-card:hover::before {
     background: var(--sector-color);
+}
+
+/* ==========================================================================
+   17. Rank Embellishments (Top 3 & Top 10 Effects)
+   ========================================================================== */
+.rank.rank-top3,
+.lane-rank.rank-top3 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-shadow: 0 0 5px currentColor;
+    animation: pulse 1.5s infinite alternate;
+}
+
+.gold {
+    color: #ffd700 !important;
+}
+.silver {
+    color: #c0c0c0 !important;
+}
+.bronze {
+    color: #cd7f32 !important;
+}
+
+.rank.rank-top10,
+.lane-rank.rank-top10 {
+    color: #00ffff;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+/* ==========================================================================
+   18. Neon Bar Chunks
+   ========================================================================== */
+
+.neon-bar-fill {
+    height: 100%;
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #101226 calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #00ffff, #39ff14);
+    background-size:
+        var(--chunk-size, 100%) 100%,
+        100% 100%;
+    background-repeat: repeat-x, no-repeat;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #39ff14;
+    transition: width 1s ease-in-out;
+}
+
+.overdrive-bar-fill {
+    height: 100%;
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #101226 calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #ffea00, #ff073a);
+    background-size:
+        var(--chunk-size, 100%) 100%,
+        100% 100%;
+    background-repeat: repeat-x, no-repeat;
+    border-radius: 4px;
+    box-shadow:
+        0 0 15px #ff073a,
+        0 0 5px #ffea00;
+    transition: width 1s ease-in-out;
+}
+
+.lane-bar {
+    height: 100%;
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #0a0c1f calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #ff00ff, #00ffff);
+    background-size:
+        var(--chunk-size, 100%) 100%,
+        100% 100%;
+    background-repeat: repeat-x, no-repeat;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.lane-bar.overdrive-bar-fill {
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent calc(100% - 2px),
+            #0a0c1f calc(100% - 2px)
+        ),
+        linear-gradient(90deg, #ffea00, #ff073a);
 }
