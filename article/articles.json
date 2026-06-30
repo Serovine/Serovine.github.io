@@ -30,8 +30,15 @@
   {
     "id": "ai-event-2026-first-half",
     "title": "สรุปแวดวง AI ในครึ่งปีแรก 2026",
-    "date": "2026-05-20",
+    "date": "2026-06-29",
     "tags": ["AI", "news"],
     "file": "article/aievent2026firsthalf.html"
+  },
+  {
+    "id": "bearbrands",
+    "title": "ตำนาน นมตราหมี พลังมังกร ทำจากน้ำนมวัว",
+    "date": "2026-04-12",
+    "tags": ["beverages", "meme", "trending"],
+    "file": "article/bearbrands.html"
   }
 ]

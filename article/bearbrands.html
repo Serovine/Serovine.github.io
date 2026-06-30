@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตำนานนมตราหมี — จากกระป๋องสุดคลาสสิก สู่ยาวิเศษระดับตำนาน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;700;900&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0c0a08;
+    --bg-elevated: #151210;
+    --card: #1a1714;
+    --card-hover: #221f1a;
+    --border: #2e2923;
+    --fg: #f0ebe3;
+    --fg-muted: #8a8179;
+    --accent: #e8a838;
+    --accent-glow: rgba(232, 168, 56, 0.15);
+    --accent-deep: #c78820;
+    --cream: #f5e6c8;
+    --red-bear: #c0392b;
+    --highlight: #ffecd2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-deep) var(--bg);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent-deep); border-radius: 3px; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.85;
+    font-size: 17px;
+    overflow-x: hidden;
+  }
+
+  /* ========== พื้นหลังลอย ========== */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bg-orbs .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.08;
+    animation: orbFloat 20s ease-in-out infinite alternate;
+  }
+  .bg-orbs .orb:nth-child(1) {
+    width: 600px; height: 600px;
+    background: var(--accent);
+    top: -10%; left: -10%;
+    animation-duration: 25s;
+  }
+  .bg-orbs .orb:nth-child(2) {
+    width: 500px; height: 500px;
+    background: var(--red-bear);
+    bottom: 10%; right: -5%;
+    animation-duration: 30s;
+    animation-delay: -5s;
+  }
+  .bg-orbs .orb:nth-child(3) {
+    width: 400px; height: 400px;
+    background: var(--cream);
+    top: 50%; left: 40%;
+    animation-duration: 22s;
+    animation-delay: -10s;
+  }
+  @keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 50px) scale(0.95); }
+    100% { transform: translate(30px, 20px) scale(1.05); }
+  }
+
+  /* ========== ฟองนมลอย ========== */
+  .milk-bubbles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bubble {
+    position: absolute;
+    bottom: -30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,236,210,0.15), rgba(255,236,210,0.02));
+    border: 1px solid rgba(255,236,210,0.06);
+    animation: bubbleRise linear infinite;
+  }
+  @keyframes bubbleRise {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-110vh) translateX(var(--drift)) scale(0.3); opacity: 0; }
+  }
+
+  /* ========== เนื้อหาหลัก ========== */
+  .content-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 24px;
+    position: relative;
+  }
+
+  .hero-can {
+    width: 140px;
+    height: 200px;
+    position: relative;
+    margin-bottom: 48px;
+    animation: canHover 4s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .hero-can:hover { animation: canWiggle 0.6s ease-in-out; }
+
+  @keyframes canHover {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-12px) rotate(1deg); }
+  }
+  @keyframes canWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  .can-body {
+    width: 100%;
+    height: 170px;
+    background: linear-gradient(135deg, #c0392b 0%, #962d22 40%, #7a2318 100%);
+    border-radius: 8px 8px 4px 4px;
+    position: relative;
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,0.08),
+      0 20px 60px rgba(192,57,43,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    overflow: hidden;
+  }
+  .can-body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 8px;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent);
+    border-radius: 8px 0 0 4px;
+  }
+  .can-body::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(270deg, rgba(0,0,0,0.2), transparent);
+  }
+
+  .can-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+  }
+  .can-label .bear-icon {
+    font-size: 48px;
+    color: var(--cream);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .can-label .brand-text {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .can-top {
+    width: 106%;
+    height: 22px;
+    background: linear-gradient(180deg, #d4d0ca, #a8a49e);
+    border-radius: 4px 4px 0 0;
+    margin-left: -3%;
+    position: relative;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+  }
+  .can-top::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 10px;
+    background: #8a8680;
+    border-radius: 0 0 14px 14px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(232,168,56,0.25);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+  .hero-badge i { font-size: 10px; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 900;
+    font-size: clamp(32px, 6vw, 56px);
+    line-height: 1.25;
+    color: var(--fg);
+    margin-bottom: 24px;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .highlight-word {
+    background: linear-gradient(90deg, var(--accent), #f0c060);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--fg-muted);
+    max-width: 580px;
+    line-height: 1.9;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--fg-muted);
+    font-size: 12px;
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+  .scroll-hint .line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(8px); opacity: 1; }
+  }
+
+  /* ========== SECTION ทั่วไป ========== */
+  section {
+    padding: 80px 0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .section-label::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--accent);
+  }
+
+  h2 {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 900;
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.35;
+    color: var(--fg);
+    margin-bottom: 28px;
+  }
+
+  h3 {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--cream);
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--fg-muted);
+    margin-bottom: 20px;
+  }
+  p strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .text-accent { color: var(--accent) !important; font-weight: 600; }
+  .text-cream { color: var(--cream) !important; }
+
+  /* ========== INTRO BLOCK ========== */
+  .intro-block {
+    background: linear-gradient(135deg, var(--card) 0%, rgba(232,168,56,0.05) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .intro-block::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 140px;
+    color: var(--accent);
+    opacity: 0.06;
+    line-height: 1;
+  }
+
+  /* ========== DIVIDER ========== */
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin: 48px auto;
+    border: none;
+  }
+
+  /* ========== TIMELINE ========== */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin: 32px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 36px;
+    padding-left: 20px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -33px; top: 8px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .timeline-item:hover::before {
+    background: var(--accent);
+    transform: scale(1.3);
+  }
+  .timeline-year {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .timeline-item p { margin-bottom: 8px; }
+
+  /* ========== CARD GRID ========== */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .card-grid .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 22px;
+    transition: transform 0.3s ease, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-grid .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card-grid .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(232,168,56,0.3);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .card-grid .card:hover::after { opacity: 1; }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .card-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.7;
+  }
+
+  /* ========== HIGHLIGHT BOX ========== */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(232,168,56,0.08), rgba(192,57,43,0.06));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 16px 16px 0;
+    padding: 28px 32px;
+    margin: 32px 0;
+  }
+  .highlight-box p { color: var(--fg); margin-bottom: 0; }
+
+  /* ========== PANIC LIST ========== */
+  .panic-list {
+    list-style: none;
+    margin: 28px 0;
+  }
+  .panic-list li {
+    position: relative;
+    padding: 20px 24px 20px 56px;
+    margin-bottom: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--fg-muted);
+    transition: border-color 0.3s, transform 0.2s;
+    cursor: default;
+  }
+  .panic-list li:hover {
+    border-color: rgba(232,168,56,0.3);
+    transform: translateX(4px);
+  }
+  .panic-list li .step-num {
+    position: absolute;
+    left: 16px; top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .panic-list li strong { color: var(--cream); }
+
+  /* ========== MEME BOX ========== */
+  .meme-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    margin: 32px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .meme-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(232,168,56,0.02) 20px,
+      rgba(232,168,56,0.02) 40px
+    );
+  }
+  .meme-keyword {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), #f0c060);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 24px;
+    border-radius: 10px;
+    margin: 20px 0;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .meme-keyword:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(232,168,56,0.4);
+  }
+
+  .meme-translation {
+    font-size: 14px;
+    color: var(--fg-muted);
+    font-style: italic;
+    position: relative;
+  }
+
+  /* ========== DRAGON SECTION ========== */
+  .dragon-visual {
+    position: relative;
+    background: linear-gradient(180deg, rgba(192,57,43,0.1) 0%, transparent 100%);
+    border-radius: 24px;
+    padding: 48px 32px;
+    text-align: center;
+    margin: 40px 0;
+    overflow: hidden;
+    border: 1px solid rgba(192,57,43,0.15);
+  }
+  .dragon-visual .dragon-emoji {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 16px;
+    animation: dragonFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(192,57,43,0.4));
+  }
+  @keyframes dragonFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+  }
+  .dragon-visual p { color: var(--fg); margin-bottom: 0; font-size: 16px; }
+  .dragon-visual .sub-note {
+    font-size: 13px;
+    color: var(--fg-muted);
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  /* ========== BLOCKQUOTE ========== */
+  blockquote {
+    position: relative;
+    background: linear-gradient(135deg, var(--card), rgba(232,168,56,0.04));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin: 40px 0;
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 18px;
+    line-height: 2;
+    color: var(--cream);
+  }
+  blockquote::before {
+    content: '\f10d';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -14px; left: 28px;
+    font-size: 28px;
+    color: var(--accent);
+    background: var(--bg-elevated);
+    padding: 0 8px;
+    border-radius: 4px;
+  }
+
+  /* ========== VIDEO LINK ========== */
+  .video-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 28px;
+    color: var(--fg);
+    text-decoration: none;
+    transition: all 0.3s;
+    margin: 20px 0;
+  }
+  .video-link:hover {
+    border-color: var(--red-bear);
+    background: rgba(192,57,43,0.08);
+    transform: translateX(4px);
+  }
+  .video-link .play-icon {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--red-bear);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .video-link:hover .play-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(192,57,43,0.5);
+  }
+  .video-link .play-icon i { color: #fff; font-size: 16px; margin-left: 2px; }
+  .video-link .link-text { font-size: 15px; line-height: 1.5; }
+  .video-link .link-text strong { display: block; color: var(--cream); margin-bottom: 2px; }
+  .video-link .link-text span { color: var(--fg-muted); font-size: 13px; }
+
+  /* ========== CONCLUSION ========== */
+  .conclusion {
+    text-align: center;
+    padding: 60px 0 100px;
+  }
+  .conclusion h2 { margin-bottom: 20px; }
+  .conclusion p { max-width: 600px; margin: 0 auto 16px; }
+
+  .final-bear {
+    font-size: 64px;
+    margin-bottom: 24px;
+    display: inline-block;
+    animation: canHover 4s ease-in-out infinite;
+  }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--accent);
+    color: var(--cream);
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ========== PROGRESS BAR ========== */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--red-bear));
+    z-index: 100;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* ========== NAV DOTS ========== */
+  .nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav-dots .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+  }
+  .nav-dots .dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    transform: scale(1.4);
+  }
+  .nav-dots .dot:hover { background: var(--fg-muted); transform: scale(1.2); }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .content-wrapper { padding: 0 18px; }
+    .hero-can { width: 100px; height: 150px; }
+    .can-body { height: 125px; }
+    .can-label .bear-icon { font-size: 34px; }
+    .can-label .brand-text { font-size: 9px; }
+    .intro-block, blockquote { padding: 28px 22px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+    .dragon-visual { padding: 36px 20px; }
+    .dragon-visual .dragon-emoji { font-size: 52px; }
+    section { padding: 60px 0; }
+  }
+
+  /* ========== REDUCED MOTION ========== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .bubble { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- แถบความคืบหน้า -->
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+<!-- พื้นหลังลอย -->
+<div class="bg-orbs">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<!-- ฟองนมลอย -->
+<div class="milk-bubbles" id="bubbles"></div>
+
+<!-- จุดนำทางด้านข้าง -->
+<nav class="nav-dots" id="navDots" aria-label="นำทางส่วนต่างๆ">
+  <button class="dot active" data-section="hero" aria-label="หน้าแรก"></button>
+  <button class="dot" data-section="intro" aria-label="บทนำ"></button>
+  <button class="dot" data-section="origin" aria-label="จุดเริ่มต้น"></button>
+  <button class="dot" data-section="blended" aria-label="นมหมีปั่น"></button>
+  <button class="dot" data-section="indonesia" aria-label="ตำนานอินโดนีเซีย"></button>
+  <button class="dot" data-section="meme" aria-label="มีมระดับชาติ"></button>
+  <button class="dot" data-section="conclusion" aria-label="สรุป"></button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="hero">
+  <div class="hero-can" id="heroCan" title="กดเพื่อเปิดนม!">
+    <div class="can-top"></div>
+    <div class="can-body">
+      <div class="can-label">
+        <span class="bear-icon">🐻</span>
+        <span class="brand-text">Bear Brand</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-badge">
+    <i class="fas fa-circle"></i>
+    สารานุกรมแบรนด์ไทย
+  </div>
+
+  <h1>
+    เปิดตำนาน <span class="accent">"นมตราหมี"</span><br>
+    จากนมกระป๋องสุดคลาสสิก<br>
+    สู่<span class="highlight-word">ยาวิเศษระดับตำนาน</span>
+  </h1>
+
+  <p class="hero-sub">
+    ของฝากผู้ใหญ่ ของเยี่ยมคนไข้ ของจัดตะกร้าขึ้นกระเช้า —
+    ที่บารมีและความขลังไม่แพ้ซุปไก่สกัดหรือรังนกแทนเลยทีเดียว
+  </p>
+
+  <div class="scroll-hint">
+    <span>เลื่อนลงเพื่ออ่าน</span>
+    <div class="line"></div>
+  </div>
+</header>
+
+<!-- ===== เนื้อหาหลัก ===== -->
+<main class="content-wrapper">
+
+  <!-- บทนำ -->
+  <section id="intro">
+    <div class="intro-block">
+      <p>
+        ถ้าพูดถึงของฝากผู้ใหญ่ ของเยี่ยมคนไข้ หรือของจัดตะกร้าขึ้นกระเช้าในช่วงเทศกาล
+        เชื่อว่าร้อยทั้งร้อยต้องมี <strong class="text-accent">"นมตราหมี" (Bear Brand)</strong>
+        ยืนหนึ่งเป็นตัวเลือกอันดับต้นๆ ชนิดที่ว่าบารมีและความขลังไม่แพ้ซุปไก่สกัดหรือรังนกแทนเลยทีเดียว
+        แบรนด์นมสุดเก่าแก่ที่อยู่คู่ทุกบ้านมาอย่างยาวนานนี้
+        ไม่เพียงแต่จะรักษาความคลาสสิกของนมสเตอริไลส์กระป๋องเหล็กทรงแบน
+        ที่ต้องใช้ที่เจาะเปิดฝาจนเจ็บมือเอาไว้ได้อย่างเหนียวแน่น
+        แต่ในปัจจุบัน นมตราหมีได้แตกไลน์แปลงร่างออกมาตอบโจทย์ยุคใหม่อีกเพียบ!
+      </p>
+    </div>
+
+    <p>
+      มองไปในตู้แช่ตอนนี้ เราจะเห็นทั้งนมตราหมีแบบกล่อง UHT ปกติสำหรับดื่มง่ายๆ ในวันรีบเร่ง
+      นมพาสเจอร์ไรส์ถังเหลืองรสชาติสุดนัว รวมถึงนมผสมมอลต์และธัญพืชต่างๆ
+      เรียกได้ว่าแตกลูกแตกหลานออกมาดักทุกไลน์ผู้บริโภค
+      แต่เบื้องหลังโลโก้แม่หมีอุ้มลูกหมีที่มีสินค้าละลานตาขนาดนี้
+      <strong class="text-cream">รู้ไหมว่ามันมีเรื่องราวสุดพีค ความกาวระดับตำนาน
+      และเส้นทางธุรกิจที่น่าสนใจซ่อนอยู่เพียบ!</strong>
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-icon">🥫</span>
+        <div class="card-title">กระป๋องเหล็กสเตอริไลส์</div>
+        <div class="card-desc">ไอคอนสุดคลาสสิกที่ต้องใช้ที่เจาะเปิดฝา ใครโดนทีไรต้องร้อง อ๊าาา</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">📦</span>
+        <div class="card-title">กล่อง UHT</div>
+        <div class="card-desc">ดื่มง่าย เปิดฝาแก้วแล้วส่งตรงเข้าปาก สะดวกสำหรับยุครีบเร่ง</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🫙</span>
+        <div class="card-title">ถังเหลืองพาสเจอร์ไรส์</div>
+        <div class="card-desc">รสชาติสุดนัว คนรุ่นใหม่เรียกว่า "นมหมีถัง" ฮิตตลอดกาล</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- จุดเริ่มต้น -->
+  <section id="origin">
+    <div class="section-label">Chapter 01</div>
+    <h2>จุดเริ่มต้นของแม่หมี<br>จากร้านยาจีนสู่จักรวรรดิ Nestlé</h2>
+
+    <p>
+      ย้อนกลับไปในช่วงต้นศตวรรษที่ 20 นมตราหมีไม่ได้เริ่มต้นจากการเป็นนมพร้อมดื่ม
+      ในซูเปอร์มาร์เก็ตแบบตอนนี้นะครับ แต่มันถูกส่งออกไปขายในฐานะ
+      <strong class="text-accent">"อาหารเสริมเพื่อสุขภาพ"</strong>
+      โดยบริษัทสัญชาติสวิส และหนึ่งในกลยุทธ์ที่ล้ำลึกมากคือ
+      การนำไปวางขายใน <strong class="text-cream">"ร้านยาจีนแผนโบราณ"</strong> ในแถบเอเชีย
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        <i class="fas fa-flask" style="color:var(--accent);margin-right:8px;"></i>
+        ด้วยความที่วางขายในร้านยา ประกอบกับกระป๋องเหล็กทรงสูงดูดุดันไม่เหมือนนมกล่องทั่วไปในยุคนั้น
+        ทำให้คนติดภาพจำไปโดยปริยายว่า
+        <em>"นี่ไม่ใช่แค่นม แต่มันคือยาบำรุง!"</em>
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">ประมาณ ปี 1906</div>
+        <p>เริ่มต้นส่งออกนมสเตอริไลส์จากสวิสเซอร์แลนด์ ไปยังตลาดเอเชียในฐานะอาหารเสริม</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">ยุคต้น — กลยุทธ์ร้านยา</div>
+        <p>วางจำหน่ายผ่านร้านยาจีนแผนโบราณทั่วเอเชียตะวันออกเฉียงใต้ สร้างภาพลักษณ์ "นมบำรุง"</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">การเข้าซื้อกิจการโดย Nestlé</div>
+        <p>ยักษ์ใหญ่แห่งวงการอาหารอย่าง <strong>Nestlé</strong> มองเห็นศักยภาพ ดึงเข้าสู่เครืออย่างเป็นทางการ ขยายไลน์สินค้าจนกลายเป็นไอคอนิกระดับโลก</p>
+      </div>
+    </div>
+
+    <p>
+      ความนิยมนี้ไม่ได้หยุดอยู่แค่ในไทยหรือเอเชียตะวันออกเฉียงใต้
+      แต่ตัวแบรนด์ดังไกลไปทั่วโลก จนกระทั่งยักษ์ใหญ่แห่งวงการอาหารอย่าง
+      <strong class="text-accent">Nestlé (เนสเล่)</strong>
+      มองเห็นศักยภาพและดึงเข้ามาอยู่ในเครืออย่างเป็นทางการ
+      ขยายไลน์สินค้าจนกลายเป็นไอคอนิกที่ทุกคนต้องมีติดบ้าน
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- นมหมีปั่น -->
+  <section id="blended">
+    <div class="section-label">Chapter 02</div>
+    <h2>ปรากฏการณ์ "นมหมีปั่น" ฟีเวอร์<br>เมนูฮิตที่ Official แอบดันหลัง</h2>
+
+    <p>
+      ตัดภาพมาที่ประเทศไทย นมตราหมีสเตอริไลส์ (กระป๋องเหล็ก)
+      คือไอเทมสามัญประจำบ้านที่คนมักซื้อเป็นของเยี่ยมไข้หรือของขวัญปีใหม่
+      แต่เมื่อไม่กี่ปีมานี้ เกิดปรากฏการณ์
+      <strong class="text-accent">"นมหมีปั่น" ฟีเวอร์</strong>
+      ชนิดที่ว่าหันไปทางไหนก็เจอร้านเปิดใหม่เต็มไปหมด!
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-icon">🥛</span>
+        <div class="card-title">นมหมีปั่นออริจินัล</div>
+        <div class="card-desc">เน้นความหอมมัน นัว สะใจ — สูตรดั้งเดิมที่ทุกร้านต้องมี</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🍪</span>
+        <div class="card-title">นมหมีปั่นโกโก้/โอริโอ้</div>
+        <div class="card-desc">เพิ่มความเข้มข้น เคี้ยวหนึบ — ใครชอบช็อกโกแลตต้องลอง</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🍯</span>
+        <div class="card-title">นมหมีปั่นน้ำผึ้ง</div>
+        <div class="card-desc">หอมหวานละมุน ดื่มง่าย — เมนูสายละมุนที่ขายดีไม่แพ้กัน</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <i class="fas fa-lightbulb" style="color:var(--accent);margin-right:8px;"></i>
+        ความน่ารักคือ แม้ว่าแบรนด์ยักษ์ใหญ่อย่าง Nestlé Thailand จะไม่ได้ออกมารับรองร้านค้าเหล่านี้อย่างเป็นทางการ
+        (เพราะควบคุมมาตรฐานหน้าร้านยาก) แต่แบรนด์เลือกที่จะ
+        <strong class="text-accent">ไม่สั่งฟ้องหรือสั่งห้าม</strong>
+        แถมยังพลิกวิกฤตให้เป็นโอกาสด้วยการ "สนับสนุนแบบเนียนๆ"
+      </p>
+    </div>
+
+    <p>
+      Nestlé ออกมาทำคลิปรวมสูตรเมนูนมหมีปั่นแจกแจงแบบหมดเปลือก
+      ช่วยกระพือกระแสให้คนซื้อนมตราหมีไปทำกินเองที่บ้าน
+      หรือให้ร้านค้าเอาสูตรไปใช้ต่อ
+      เรียกได้ว่า <strong class="text-cream">วิน-วินกันทุกฝ่าย</strong>
+      ยอดขายทะลุเป้าแบบไม่ต้องตั้งหน้าร้านเองให้เหนื่อย
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ตำนานอินโดนีเซีย -->
+  <section id="indonesia">
+    <div class="section-label">Chapter 03</div>
+    <h2>ตำนานสุดกาวที่อินโดนีเซีย<br>เมื่อนมวัวกลายเป็น "น้ำอมฤต"</h2>
+
+    <p>
+      ถ้าคิดว่ากระแสนมหมีปั่นในไทยพีคแล้ว อยากให้ลองมาดูเรื่องราวที่ประเทศอินโดนีเซีย
+      <strong class="text-accent">ในช่วงต้นเดือนกรกฎาคม ปี 2021</strong>
+      เพราะนี่คือกรณีศึกษาทางการตลาดและพฤติกรรมผู้บริโภคที่ไปสุดทางจนกู่ไม่กลับ
+      ถึงขั้นเกิดเหตุการณ์ <strong class="text-cream">ตื่นตระหนกแห่แย่งชิง (Panic Buying)</strong>
+      นมตราหมีในซูเปอร์มาร์เก็ตราวกับวันสิ้นโลก!
+    </p>
+
+    <div class="dragon-visual">
+      <span class="dragon-emoji">🐉</span>
+      <p>โฆษณาพลังมังกร — CG สุดอลังการ<br>เป็นรูป <strong>"มังกรขาว"</strong> บินพ่นน้ำนมกวาดล้างเชื้อโรค</p>
+      <p class="sub-note">ใช่ครับ... โลโก้แบรนด์เป็นหมี แต่ตัวนำโฆษณาเป็นมังกร!</p>
+    </div>
+
+    <p>ลองมาลำดับเหตุการณ์ความกาวระดับ 10 กะโหลกนี้กันครับ:</p>
+
+    <ul class="panic-list">
+      <li>
+        <span class="step-num">1</span>
+        <strong>ภาพลักษณ์ฝังลึก</strong> — อย่างที่บอกไปตอนต้น แบรนด์นี้ถูกวางภาพจำว่าเป็น "นมบำรุงร่างกาย" มาตั้งแต่ยุคร้านยาจีน
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <strong>โฆษณาพลังมังกร</strong> — ในอินโดนีเซีย นมตราหมีใช้โฆษณาด้วย CG สุดอลังการ เป็นรูป "มังกรขาว" บินพ่นน้ำนมกวาดล้างเชื้อโรคและสิ่งชั่วร้าย
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <strong>ความเชื่อพื้นบ้านทำงาน</strong> — เมื่อความกลัวโรคระบาดสายพันธุ์เดลตาผสมโรงกับโฆษณามังกรขาวและภาพจำเก่าแก่ ชาวบ้านเลยปักใจเชื่อข่าวลือว่า <em>"เจ้านมกระป๋องนี้คือยาวิเศษที่สร้างภูมิคุ้มกัน ล้างสารพิษ และป้องกันโควิดได้!"</em> จนดันราคาขายพุ่งสูงขึ้นจากเดิมถึง <strong class="text-accent">5 เท่า</strong> ในชั่วข้ามคืน
+      </li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- มีมระดับชาติ -->
+  <section id="meme">
+    <div class="section-label">Chapter 04</div>
+    <h2>สู่การเป็น "มีมระดับชาติ"<br>บนโลกอินเทอร์เน็ต</h2>
+
+    <p>
+      ความขัดแย้งในตัวเองของแบรนด์นี้ ประกอบกับเหตุการณ์แย่งชิงน้ำอมฤตในปี 2021
+      ได้กลายสภาพเป็นวัตถุดิบชั้นดีที่ชาวเน็ตอินโดนีเซียนำไปล้อเลียนจนกลายเป็น
+      <strong class="text-accent">มีมตลกร้ายระดับชาติ</strong>
+    </p>
+
+    <div class="meme-box">
+      <p style="position:relative;color:var(--cream);margin-bottom:16px;">
+        ลองค้นหาคีย์เวิร์ดสุดฮิตนี้ดูสิ...
+      </p>
+      <div class="meme-keyword" id="memeKeyword" title="คลิกเพื่อคัดลอก">
+        IKLAN NAGA GAMBAR BERUANG SUSU SAPI
+      </div>
+      <p class="meme-translation" style="position:relative;">
+        แปลตรงตัว: <em>"โฆษณามังกร รูปหมี แต่นมวัว" 555</em>
+      </p>
+    </div>
+
+    <p>
+      หากลองนำคีย์เวิร์ดนั้นไปเสิร์ฟหาในอินเทอร์เน็ต
+      ก็จะเจอกับภาพตัดต่อและวิดีโอล้อเลียนมากมายที่แซวความอิหยังวะของแบรนด์นี้
+      เช่น ภาพกระป๋องนมที่มีมังกรโผล่ออกมาแทนหมี
+      หรือมีมแซวความสับสนของผู้บริโภคว่าสรุปแล้วเรากำลังดื่มนมของตัวอะไรกันแน่
+      จนกลายเป็นแคมเปญสร้างความตลกขบขันที่ผู้บริโภครุ่นใหม่เอามาเล่นกันอย่างสนุกสนานบนโลกออนไลน์
+    </p>
+
+    <blockquote>
+      ท้ายที่สุดแล้ว มันสะท้อนให้เห็นเลยว่า
+      พลังของการทำแบรนด์ดิ้งที่ฝังรากลึก
+      ผนวกเข้ากับความเชื่อพื้นบ้านและความตื่นตระหนก
+      สามารถเสกนมวัวสเตอริไลส์ธรรมดาๆ
+      ให้กลายเป็น "น้ำอมฤตในจินตนาการ"
+      ของผู้บริโภคได้อย่างทรงพลัง
+      <span style="color:var(--accent);font-weight:700;">— ชนิดที่วิทยาศาสตร์ก็ฉุดไม่อยู่</span>
+    </blockquote>
+
+    <div style="margin-top:32px;">
+      <a href="https://www.youtube.com/watch?v=FlvzH3329TY"
+         target="_blank" rel="noopener noreferrer" class="video-link">
+        <div class="play-icon"><i class="fas fa-play"></i></div>
+        <div class="link-text">
+          <strong>โฆษณานมตราหมีเวอร์ชันมังกรขาว</strong>
+          <span>วิดีโอออริจินัลจาก Nestlé Indonesia — ต้นตอของตำนาน</span>
+        </div>
+        <i class="fas fa-external-link-alt" style="color:var(--fg-muted);font-size:13px;margin-left:auto;"></i>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- สรุป -->
+  <section id="conclusion" class="conclusion">
+    <div class="final-bear">🐻</div>
+    <h2>กระป๋องเหล็กที่บรรจุมากกว่าแคลเซียม</h2>
+    <p>
+      จากนมบำรุงในร้านยา สู่นมปั่นขวัญใจวัยรุ่นไทย
+      และยาวิเศษระดับตำนานในอินโดนีเซีย
+      นมตราหมีได้พิสูจน์แล้วว่า
+      บรรจุภัณฑ์กระป๋องเหล็กสุดคลาสสิกนี้
+      ไม่ได้บรรจุแค่แคลเซียมและสารอาหารเท่านั้น
+    </p>
+    <p style="color:var(--cream);font-weight:500;font-size:18px;">
+      แต่มันยังบรรจุเรื่องราวสุดมหัศจรรย์<br>
+      ที่ทำให้เราต้องทึ่งได้ตลอดเวลาจริงๆ
+    </p>
+  </section>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ========== ฟองนมลอย ==========
+  (function createBubbles() {
+    const container = document.getElementById('bubbles');
+    const count = 18;
+    for (let i = 0; i < count; i++) {
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      const size = Math.random() * 30 + 8;
+      b.style.width = size + 'px';
+      b.style.height = size + 'px';
+      b.style.left = Math.random() * 100 + '%';
+      b.style.animationDuration = (Math.random() * 12 + 10) + 's';
+      b.style.animationDelay = (Math.random() * 15) + 's';
+      b.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+      container.appendChild(b);
+    }
+  })();
+
+  // ========== Scroll Reveal ==========
+  const sections = document.querySelectorAll('section');
+  const sectionIds = [];
+  sections.forEach(s => sectionIds.push(s.id));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // ========== Progress Bar ==========
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = Math.min((scrollTop / docHeight) * 100, 100);
+    progressBar.style.width = pct + '%';
+  }, { passive: true });
+
+  // ========== Nav Dots ==========
+  const dots = document.querySelectorAll('.nav-dots .dot');
+  const allSections = [
+    document.getElementById('hero'),
+    ...sections
+  ];
+
+  // คลิก dot
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const targetId = dot.getAttribute('data-section');
+      const target = document.getElementById(targetId);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // อัปเดต active dot ตาม scroll
+  const dotObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        dots.forEach(d => d.classList.remove('active'));
+        const active = document.querySelector(`.dot[data-section="${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.35 });
+
+  allSections.forEach(s => { if (s) dotObserver.observe(s); });
+
+  // ========== กดกระป๋องนม ==========
+  const heroCan = document.getElementById('heroCan');
+  let canOpened = false;
+  heroCan.addEventListener('click', () => {
+    if (!canOpened) {
+      canOpened = true;
+      showToast('🥫 ฉีดฝานมสำเร็จ! กร๊ากกก...');
+      // เพิ่มเอฟเฟกต์เล็กน้อย
+      heroCan.style.filter = 'brightness(1.3)';
+      setTimeout(() => { heroCan.style.filter = ''; }, 600);
+    } else {
+      showToast('🐻 นมหมีอร่อยไปแล้ว อย่ากดแล้ว!');
+    }
+  });
+
+  // ========== คลิกคัดลอกคีย์เวิร์ดมีม ==========
+  const memeKeyword = document.getElementById('memeKeyword');
+  memeKeyword.addEventListener('click', () => {
+    const text = memeKeyword.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 คัดลอกคีย์เวิร์ดไปยังคลิปบอร์ดแล้ว!');
+    }).catch(() => {
+      showToast('🔍 ลองค้นหา: ' + text);
+    });
+  });
+
+  // ========== Toast ==========
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  // ========== Parallax ของ bg-orbs เล็กน้อย ==========
+  const orbs = document.querySelectorAll('.bg-orbs .orb');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    orbs.forEach((orb, i) => {
+      const speed = (i + 1) * 0.02;
+      orb.style.transform = `translateY(${y * speed}px)`;
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>
