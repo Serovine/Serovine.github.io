@@ -16,6 +16,7 @@ exchange_map = {
     "NCM": "NASDAQ",
     "NYSE": "NYSE",
     "ASE": "NYSEAMERICAN",
+    "NYQ": "NYSE",
 }
 
 
