@@ -1,0 +1,38 @@
+[
+  {
+    "catId": "random",
+    "catName": "ไร้สาระทั่วไป",
+    "catIcon": "🍺",
+    "catType": "misc",
+    "catDesc": "ไร้สาระทั่วไป",
+    "id": "welcome",
+    "title": "welcome",
+    "date": "2025-01-01",
+    "tags": ["meta"],
+    "file": "tlog/random/welcome.md"
+  },
+  {
+    "catId": "retrogame",
+    "catName": "Retro Game",
+    "catIcon": "🕹️",
+    "catType": "game",
+    "catDesc": "Retro Game",
+    "id": "retrogame-cityconnection",
+    "title": "Cityconnection",
+    "date": "2026-06-25",
+    "tags": ["retrogame", "nes", "arcade"],
+    "file": "tlog/retrogame/cityconnection.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "sekaiseifukubyneru",
+    "title": "แปลเพลง How to Sekai Seifuku",
+    "date": "2015-12-24",
+    "tags": ["translated", "vocaloid"],
+    "file": "tlog/translatesong/sekaiseifukubyneru.md"
+  }
+]
