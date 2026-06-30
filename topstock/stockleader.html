@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Stock Growth Dashboard</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Prompt:wght@300;400;600&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="arcade-container">
+            <header class="arcade-header">
+                <div class="neon-title" data-text="STOCK RACE">STOCK RACE</div>
+                <p class="subtitle">🚀 TOP 100 GROWTH STOCKS LEADERBOARD</p>
+            </header>
+
+            <nav class="arcade-tabs">
+                <button class="tab-btn active" onclick="switchView('roster')">
+                    🕹️ THE ROSTER
+                </button>
+                <button class="tab-btn" onclick="switchView('track')">
+                    📊 CHART BAR
+                </button>
+            </nav>
+
+            <main id="view-roster" class="tab-content active">
+                <section class="summary-section">
+                    <div class="chart-wrapper">
+                        <h2 class="section-title">
+                            📊 MARKET BREADTH (SECTOR ALLOCATION)
+                        </h2>
+                        <div class="canvas-container">
+                            <canvas id="sectorChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="hud-controls">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="cyber-input"
+                        placeholder="🔍 SEARCH SYMBOL OR COMPANY..."
+                        oninput="applyFilters()"
+                    />
+
+                    <select
+                        id="stageFilter"
+                        class="cyber-select"
+                        onchange="applyFilters()"
+                    >
+                        <option value="all">⚡ ALL STAGES</option>
+                        <option value="Stage 1">🟡 STAGE 1 (BASING)</option>
+                        <option value="Stage 2">🟢 STAGE 2 (ADVANCING)</option>
+                        <option value="Stage 3">
+                            🟣 STAGE 3 (DISTRIBUTION)
+                        </option>
+                        <option value="Stage 4">🔴 STAGE 4 (DECLINING)</option>
+                    </select>
+
+                    <button
+                        id="clearFilterBtn"
+                        class="cyber-btn-clear"
+                        onclick="clearFilters()"
+                    >
+                        ❌ RESET SCANNER
+                    </button>
+                </div>
+
+                <section class="leaderboard-section">
+                    <h2 class="section-title">🏆 TOP 100 LEADERBOARD</h2>
+                    <div id="leaderboard-container" class="cards-grid">
+                        <div class="loading-text">
+                            LOADING DATA FROM THE TRACK...
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <main id="view-track" class="tab-content">
+                <section class="track-section">
+                    <h2 class="section-title">
+                        📈 STOCK PERFORMANCE TRACK CHART
+                    </h2>
+                    <div
+                        id="racing-track-container"
+                        class="racing-track-board"
+                    ></div>
+                </section>
+            </main>
+
+            <footer class="arcade-footer">
+                <p>
+                    🕹️ CONTROL: CLICK ON ANY PLAYER CARD OR TRACK LANE TO
+                    DESTINATION VIA GOOGLE FINANCE 🌐
+                </p>
+                <p>
+                    🔄 UPDATE PRICE DATA ON MONDAY AND THURSDAY / UPDATE STOCK
+                    LIST ON 1ST AND 15TH OF EACH MONTH
+                </p>
+            </footer>
+        </div>
+        <div id="cyber-tooltip" class="cyber-tooltip"></div>
+
+        <script src="script.js"></script>
+        <script>
+            // Switch Tabs View
+            function switchView(viewName) {
+                const buttons = document.querySelectorAll(".tab-btn");
+                buttons.forEach((btn) => btn.classList.remove("active"));
+
+                const contents = document.querySelectorAll(".tab-content");
+                contents.forEach((content) =>
+                    content.classList.remove("active"),
+                );
+
+                if (viewName === "roster") {
+                    buttons[0].classList.add("active");
+                    document
+                        .getElementById("view-roster")
+                        .classList.add("active");
+                } else {
+                    buttons[1].classList.add("active");
+                    document
+                        .getElementById("view-track")
+                        .classList.add("active");
+                    setTimeout(() => {
+                        document
+                            .querySelectorAll(".lane-bar")
+                            .forEach((bar) => {
+                                bar.style.width =
+                                    bar.getAttribute("data-width");
+                            });
+                    }, 50);
+                }
+            }
+        </script>
+    </body>
+</html>
