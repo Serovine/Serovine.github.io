@@ -252,7 +252,7 @@ function renderLeaderboard() {
                 <div class="market-cap-badge">💰 Market Cap : ${formatMarketCap(d.marketCap)}</div>
                 <div class="growth-section">
                     <div class="growth-labels">
-                        <span class="growth-title">GROWTH POWER ${overdriveLabel}</span>
+                        <span class="growth-title">GROWTH POWER<br> ${overdriveLabel}</span>
                         <span class="growth-value">+${d.change6m.toFixed(2)}%</span>
                     </div>
                     <div class="neon-bar-bg">
