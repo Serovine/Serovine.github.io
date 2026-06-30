@@ -1,0 +1,30 @@
+[
+  {
+    "id": "intro",
+    "title": "บทนำ",
+    "date": "2025-01-01",
+    "tags": ["intro", "meta"],
+    "file": "article/intro.md"
+  },
+  {
+    "id": "demystifying-ai-art",
+    "title": "คู่มือสร้างภาพ AI ฉบับรวบรัด",
+    "date": "2026-06-26",
+    "tags": ["ai", "tools"],
+    "file": "article/aiart.md"
+  },
+  {
+    "id": "nescafe-redmug",
+    "title": "ตำนานแก้วแดง NesCafe",
+    "date": "2026-06-26",
+    "tags": ["coffee", "knowledge"],
+    "file": "article/nescafered.html"
+  },
+  {
+    "id": "wholestorewar2026",
+    "title": "สมรภูมิห้างสรรพสินค้าชื่อดังในอเมริกา ปี 2026",
+    "date": "2026-05-20",
+    "tags": ["stock", "bussiness"],
+    "file": "article/wholestore2026war.html"
+  }
+]
