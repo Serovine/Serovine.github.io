@@ -240,20 +240,11 @@
                 overflow-y: auto;
                 padding: 6px 0;
             }
-            /* scrollbar sidebar (ปรับให้เห็นชัดขึ้น) */
             #sb-entry-list::-webkit-scrollbar {
-                width: 8px;
-            }
-            #sb-entry-list::-webkit-scrollbar-track {
-                background: rgba(0, 0, 0, 0.2);
+                width: 3px;
             }
             #sb-entry-list::-webkit-scrollbar-thumb {
-                background: #8b6914;
-                border-radius: 4px;
-                border: 1px solid rgba(0, 0, 0, 0.3);
-            }
-            #sb-entry-list::-webkit-scrollbar-thumb:hover {
-                background: #b8860b;
+                background: rgba(184, 134, 11, 0.3);
             }
 
             .sb-entry {
@@ -330,28 +321,16 @@
                 pointer-events: all;
             }
 
-            /* scrollbar for main (ปรับให้เห็นชัดขึ้น) */
+            /* scrollbar for main */
             .state-panel::-webkit-scrollbar {
-                width: 10px;
+                width: 6px;
             }
             .state-panel::-webkit-scrollbar-track {
                 background: rgba(0, 0, 0, 0.15);
-                border-radius: 5px;
             }
             .state-panel::-webkit-scrollbar-thumb {
-                background: #8b6914;
-                border-radius: 5px;
-                border: 2px solid rgba(0, 0, 0, 0.2);
-            }
-            .state-panel::-webkit-scrollbar-thumb:hover {
-                background: #b8860b;
-            }
-
-            /* สำหรับ Firefox */
-            .state-panel,
-            #sb-entry-list {
-                scrollbar-width: thin;
-                scrollbar-color: #8b6914 rgba(0, 0, 0, 0.15);
+                background: rgba(184, 134, 11, 0.3);
+                border-radius: 3px;
             }
 
             /* ══ STATE 1: WELCOME ════════════════════════════════════ */
@@ -521,9 +500,12 @@
                     var(--parch);
                 padding: 28px 44px 20px 60px;
             }
-            /* red margin line */
+
+            /* ── markdown ── */
             #md-body {
+                max-width: 680px;
                 position: relative;
+                margin: 0 auto 0 0;
             }
 
             #md-body::before {
@@ -536,11 +518,6 @@
                 background: rgba(122, 32, 16, 0.22);
             }
 
-            /* ── markdown ── */
-            #md-body {
-                max-width: 680px;
-                margin: 0 auto 0 0;
-            }
             .entry-stamp {
                 display: flex;
                 align-items: flex-start;
@@ -881,140 +858,45 @@
 
         <script>
             // ══════════════════════════════════════════════════════════════════════
-            //  ✦  DATA CONFIG
-            // ══════════════════════════════════════════════════════════════════════
-            const CATEGORIES = [
-                {
-                    id: "song",
-                    name: "แปลเพลง",
-                    icon: "🎵",
-                    type: "music",
-                    desc: "แปลเนื้อเพลงเป็นภาษาไทย",
-                },
-                {
-                    id: "novelindex",
-                    name: "รายชื่อนิยาย",
-                    icon: "📚",
-                    type: "novel",
-                    desc: "นิยายต่างๆ",
-                },
-                {
-                    id: "retrogame",
-                    name: "รีวิวเกมเก่าๆ",
-                    icon: "🕹️",
-                    type: "retrogame",
-                    desc: "รีวิวเกมคอนโซล retro เก่า",
-                },
-                {
-                    id: "gameupdate",
-                    name: "บันทึกเกมกาชาทั้งหลาย",
-                    icon: "⚔️",
-                    type: "gachagame",
-                    desc: "บันทึกการอัปเดตเกม gacha",
-                },
-                {
-                    id: "random",
-                    name: "ไร้สาระทั่วไป",
-                    icon: "🍺",
-                    type: "misc",
-                    desc: "อื่นๆ",
-                },
-            ];
-
-            // ══════════════════════════════════════════════════════════════════════
-            //  ✦  โครงสร้างไฟล์ใน repo:
-            //
-            //  serovine.github.io/
-            //  ├── tavern-diary.html
-            //  └── tlog/
-            //      ├── translatesong/
-            //      │   └── sekaiseifukubyneru.md
-            //      ├── novel/
-            //      │   └── mockupnovel.md
-            //      ├── retrogame/
-            //      │   └── cityconnection.md
-            //      ├── zzz/
-            //      │   └── zzz30journey.md
-            //      └── [catfolder]/
-            //          └── [entryfile].md
-            //
-            //  รูปภาพในบทความ → tlog/[cat]/assets/img.webp
-            //  ใช้ inline แทน file ได้ถ้าอยากเขียนตรงนี้เลย
+            //  ✦  โหลดข้อมูลจาก tlog/tlog.json — auto-generated โดย GitHub Action
+            //  ไม่ต้องแก้ไฟล์นี้เพื่อเพิ่มบันทึกอีกต่อไป!
             // ══════════════════════════════════════════════════════════════════════
 
-            const ENTRIES = [
-                // ── translate song ─────────────────────────────────────────────
-                {
-                    id: "howtosekaisefuku",
-                    catId: "song",
-                    title: "แปลเพลง How to Sekai Fuku ของ Neru",
-                    date: "2015-12-25",
-                    tags: ["translate", "song", "vocaloid"],
-                    file: "tlog/translatesong/sekaiseifukubyneru.md",
-                },
-
-                // ── novel index ──────────────────────────────────────────────────
-                {
-                    id: "mockupnovel",
-                    catId: "novelindex",
-                    title: "Mockup Novel",
-                    date: "2026-06-26",
-                    tags: ["novel", "index"],
-                    file: "tlog/novel/mockupnovel.md",
-                },
-
-                // ── Retro Game index ──────────────────────────────────────────────────
-                {
-                    id: "cityconnection",
-                    catId: "retrogame",
-                    title: "City Connection",
-                    date: "2026-06-26",
-                    tags: ["retro", "nes", "arcade"],
-                    file: "tlog/retrogame/cityconnection.md",
-                },
-
-                // ── Online Game Update ──────────────────────────────────────────────────
-                {
-                    id: "zzz30",
-                    catId: "gameupdate",
-                    title: "Zenless Zone Zero Patch3.0 Roscalifer",
-                    date: "2026-06-17",
-                    tags: ["zzz", "mihoyo", "patch"],
-                    file: "tlog/zzz/zzz30journey.md",
-                },
-
-                // ── random ────────────────────────────────────────────────────
-                {
-                    id: "guide",
-                    catId: "random",
-                    title: "คู่มือเพิ่มบันทึก",
-                    date: "2025-06-26",
-                    tags: ["meta"],
-                    inline: `# คู่มือ The Wanderer's Codex ✦
-
-## หาเลือกอ่านกันตามใจชอบเลย
-
-
----
-*— The Wanderer's Codex —*`,
-                },
-            ];
-            // ══════════════════════════════════════════════════════════════════════
+            let CATEGORIES = [];
+            let ENTRIES = [];
 
             let activeCatId = null;
             let activeEntryId = null;
             let sidebarOpen = false;
 
+            // ── derive CATEGORIES from entries (unique catId) ─────────────
+            function buildCategoriesFromEntries(entries) {
+                const seen = new Map();
+                entries.forEach((e) => {
+                    if (!seen.has(e.catId)) {
+                        seen.set(e.catId, {
+                            id: e.catId,
+                            name: e.catName || e.catId,
+                            icon: e.catIcon || "📄",
+                            type: e.catType || "misc",
+                            desc: e.catDesc || "",
+                        });
+                    }
+                });
+                return [...seen.values()];
+            }
+
             // ── populate dropdown ─────────────────────────────────────────
-            (function initDropdown() {
+            function populateDropdown() {
                 const sel = document.getElementById("cat-select");
+                sel.innerHTML = '<option value="">— เลือก Category —</option>';
                 CATEGORIES.forEach((c) => {
                     const o = document.createElement("option");
                     o.value = c.id;
                     o.textContent = `${c.icon} ${c.name}`;
                     sel.appendChild(o);
                 });
-            })();
+            }
 
             // ── sidebar toggle ────────────────────────────────────────────
             function toggleSidebar() {
@@ -1192,6 +1074,35 @@
                     .querySelectorAll(".sb-entry")
                     .forEach((el) => el.classList.remove("active"));
             }
+
+            // ── Init — fetch tlog.json ────────────────────────────────────
+            (async function init() {
+                try {
+                    const res = await fetch("tlog/tlog.json");
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    ENTRIES = await res.json();
+                    CATEGORIES = buildCategoriesFromEntries(ENTRIES);
+                } catch (e) {
+                    console.warn("tlog.json โหลดไม่ได้:", e.message);
+                    // fallback error entry
+                    ENTRIES = [
+                        {
+                            catId: "error",
+                            catName: "⚠ Error",
+                            catIcon: "⚠",
+                            catType: "misc",
+                            catDesc: "",
+                            id: "_err",
+                            title: "โหลด tlog.json ไม่ได้",
+                            date: "",
+                            tags: ["error"],
+                            inline: `# ⚠ ไม่พบ tlog/tlog.json\n\nตรวจสอบว่ามีไฟล์ \`tlog/tlog.json\` ใน repo\n\n\`\`\`\n${e.message}\n\`\`\``,
+                        },
+                    ];
+                    CATEGORIES = buildCategoriesFromEntries(ENTRIES);
+                }
+                populateDropdown();
+            })();
         </script>
     </body>
 </html>
