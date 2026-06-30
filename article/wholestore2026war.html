@@ -1,0 +1,522 @@
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 50px 30px;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+
+  .header h1 {
+    font-size: 2.4rem;
+    color: #f8fafc;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .header .update-date {
+    color: #64748b;
+    font-size: 0.95rem;
+    background: #0f172a;
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid #334155;
+  }
+
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 60px 0 30px 0;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #334155;
+  }
+
+  .section-icon {
+    font-size: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .section-sub {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    font-weight: 400;
+    margin-left: auto;
+    font-style: italic;
+  }
+
+  .winners .section-icon, .winners .section-title { color: #10b981; }
+  .winners { border-color: #10b981; }
+
+  .adapters .section-icon, .adapters .section-title { color: #f59e0b; }
+  .adapters { border-color: #f59e0b; }
+
+  .losers .section-icon, .losers .section-title { color: #ef4444; }
+  .losers { border-color: #ef4444; }
+
+  /* Cards */
+  .card {
+    background: #1e293b;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #334155;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    border-color: #475569;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+
+  .ticker {
+    background: #334155;
+    color: #cbd5e1;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .info-item {
+    background: #0f172a;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(51, 65, 85, 0.5);
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .info-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f8fafc;
+  }
+
+  .situation {
+    border-left: 4px solid #475569;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 18px 22px;
+    border-radius: 0 12px 12px 0;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    line-height: 1.8;
+  }
+
+  .situation strong {
+    color: #f8fafc;
+  }
+
+  /* Conclusion */
+  .conclusion {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 20px;
+    padding: 35px;
+    margin-top: 60px;
+    border: 1px solid #475569;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .conclusion h3 {
+    color: #f8fafc;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .conclusion p {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .money-flow h4 {
+    color: #10b981;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+
+  .money-list {
+    list-style: none;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+  }
+
+  .money-list li {
+    background: #10b981;
+    color: #0f172a;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .loser-text {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    border-top: 1px solid #475569;
+    padding-top: 20px;
+  }
+
+  .loser-text span {
+    color: #ef4444;
+    font-weight: bold;
+  }
+
+  .source {
+    text-align: center;
+    margin-top: 40px;
+    color: #475569;
+    font-size: 0.85rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.8rem; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+    .section-sub { margin-left: 0; }
+    .info-grid { grid-template-columns: 1fr; }
+    .card-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+
+<div class="container">
+  
+  <!-- Header -->
+  <div class="header">
+    <h1>🛍️ สมรภูมิห้างสรรพสินค้าชื่อดังในอเมริกา ปี 2026</h1>
+    <div class="update-date">อัปเดตข้อมูล ณ วันที่ 20 พฤษภาคม 2026</div>
+  </div>
+
+  <!-- Group 1 -->
+  <div class="section-header winners">
+    <div class="section-icon">📈</div>
+    <div class="section-title">กลุ่มที่ 1: ขาขึ้น (The Winners)</div>
+    <div class="section-sub">กำไรนิวไฮ แข็งแกร่งไร้พ่าย</div>
+  </div>
+
+  <!-- Card 1 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">1. Costco Wholesale</div>
+      <div class="ticker">$COST</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ราชาไร้พ่าย / เติบโตสูงสุดยอด</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">ราคาหุ้น</span>
+        <div class="info-value" style="color: #10b981;">ทะลุ $1,000 แล้ว</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ชนะคดีภาษีนำเข้าปี 2025 แล้วนำเงินที่ได้คืนมาหั่นราคาสินค้า คืนกำไรให้สมาชิกทันที ส่งผลให้ยอดต่ออายุสมาชิก (<em>Retention Rate</em>) พุ่งทะลุสถิติเดิม
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">2. Walmart</div>
+      <div class="ticker">$WMT</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ยักษ์ใหญ่เบอร์ 1 / หลุมหลบภัยเงินเฟ้อ</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">ยอดขายออนไลน์</span>
+        <div class="info-value" style="color: #10b981;">โตกระฉูด 27%</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ครองแชมป์ส่วนแบ่งตลาดอาหารสด (<em>Grocery</em>) กว่า <strong>21%</strong> ของประเทศ ชนะใจคนอเมริกันทุกชนชั้นที่ต้องการเซฟเงินในกระเป๋า เปลี่ยนสาขาหน้าร้านเป็นคลังกระจายสินค้าส่งด่วน แข่งกับ Amazon
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">3. Five Below</div>
+      <div class="ticker">$FIVE</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ม้ามืดสายเทรนดี้ ขวัญใจ Gen Z & Alpha</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">ราคาหุ้น</span>
+        <div class="info-value" style="color: #10b981;">$213 - $218</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ไตรมาสล่าสุดยอดขายพุ่ง <strong>24.3%</strong> แตะ $1.73 พันล้าน จากการเปิดโซน "Five Beyond" ขายของเล่นและของแต่งห้องราคาเกิน $5 (ขยับไปถึง $15) แต่เด็กๆ ก็ยังยอมให้พ่อแม่ลากมาจ่ายเงินตามกระแสฮิตใน TikTok
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">4. Trader Joe's</div>
+      <div class="ticker">Private</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">อินดี้มหาชน / ลอยตัวเหนือทุกดราม่า</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">ลักษณะบริษัท</span>
+        <div class="info-value">เอกชนนอกตลาดหุ้น (เจ้าของเดียวกับ Aldi)</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ไม่ต้องรับแรงกดดันจากวอลล์สตรีท เน้นออกสินค้าอาหารสำเร็จรูปที่เป็นไวรัลในโซเชียลตลอดเวลา คุมต้นทุนเนียนกริบ และไม่มีระบบ <em>Self-checkout</em> เพื่อรักษาเสน่ห์บริการ
+    </div>
+  </div>
+
+  <!-- Group 2 -->
+  <div class="section-header adapters">
+    <div class="section-icon">🔄</div>
+    <div class="section-title">กลุ่มที่ 2: ปรับทัพ/ฟื้นไข้ (The Adapters)</div>
+    <div class="section-sub">ธุรกิจทรงตัว กำลังแก้เกม</div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">5. Target</div>
+      <div class="ticker">$TGT</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ฟื้นตัวอย่างมีนัยสำคัญ (Turnaround)</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">ราคาหุ้น</span>
+        <div class="info-value" style="color: #f59e0b;">ดีดกลับเหนือ $127</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> หลังสะบักสะบอมในปี 2025 เพราะคนงดซื้อสินค้าแฟชั่น ล่าสุดยอมทุ่มงบ <strong>$2 พันล้าน</strong> เปิดตัวระบบสมาชิก "Target Circle 360" เน้นส่งของไวภายในวันเดียว และรีโนเวทร้านเพิ่มพื้นที่อาหารสดเพื่อดึงคนเข้าห้างทุกสัปดาห์
+    </div>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">6. BJ's Wholesale Club</div>
+      <div class="ticker">$BJ</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ทรงตัว รอวันกลับมาผงาด</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">รายได้</span>
+        <div class="info-value">รายได้รวมและค่าสมาชิกทำ New High</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> โมเดลห้างโกดังยังคงได้เปรียบในยุคเศรษฐกิจฝืดเคือง ปัจจุบันเดินหน้าแผนบุกเปิดสาขาขนานใหญ่ในรัฐเทกซัสเพื่อท้าชนเจ้าถิ่น แต่ราคาหุ้นภาพรวมยังฟื้นตัวช้าเพราะได้รับผลกระทบจากพายุภาษีนำเข้าในช่วงก่อนหน้า
+    </div>
+  </div>
+
+  <!-- Card 7 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">7. Dollar General</div>
+      <div class="ticker">$DG</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">หน้าบ้านรวยเงียบๆ</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">จำนวนสาขา</span>
+        <div class="info-value">พุ่งทะลุ 21,000 แห่ง</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ได้อานิสงส์กลุ่มคนรายได้ปานกลาง-สูง หันมาเดินเพื่อประหยัดเงิน (<em>Trade-down</em>) ประกาศเปิดสาขาเพิ่มอีก <strong>450 แห่ง</strong> ในปีนี้ แต่ราคาหุ้นร่วงมาอยู่แถว $103 - $104 จากข่าวดราม่าเปลี่ยนตัว CEO
+    </div>
+  </div>
+
+  <!-- Card 8 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-name">8. Nordstrom</div>
+      <div class="ticker">Delisted</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value">ลาออกจากตลาดหุ้น ไปรักษาแผลใจเงียบๆ</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">มูลค่าดีล</span>
+        <div class="info-value">รวมกว่า $6.25 พันล้าน</div>
+      </div>
+    </div>
+    <div class="situation">
+      <strong>🔮 สถานการณ์ 2026:</strong> ครอบครัวผู้ก่อตั้งร่วมทุนกับยักษ์ใหญ่เม็กซิโก ซื้อหุ้นคืนทั้งหมดและเพิกถอน (<em>Delist</em>) หุ้น JWN ออกจากตลาดหุ้นไปตั้งแต่ พ.ค. 2025 ปัจจุบันเดินหน้าปิดห้างใหญ่ที่ขาดทุน แล้วหันไปทุ่มขยายสาขาห้างลดราคา "Nordstrom Rack" แทน
+    </div>
+  </div>
+
+  <!-- Group 3 -->
+  <div class="section-header losers">
+    <div class="section-icon">📉</div>
+    <div class="section-title">กลุ่มที่ 3: ขาลง/หนีตาย (The Survivors)</div>
+    <div class="section-sub">เจ็บหนัก ผ่าตัดใหญ่ ล้มละลาย</div>
+  </div>
+
+  <!-- Card 9 -->
+  <div class="card" style="border-color: rgba(239, 68, 68, 0.3);">
+    <div class="card-head">
+      <div class="card-name">9. Dollar Tree</div>
+      <div class="ticker" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">$DLTR</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item" style="grid-column: span 2;">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value" style="color: #ef4444;">ดิ้นรนหนีตายอย่างหนัก (มีหินก้อนใหญ่ผูกขา)</div>
+      </div>
+    </div>
+    <div class="situation" style="border-left-color: #ef4444;">
+      <strong>🔮 สถานการณ์ 2026:</strong><br>
+      <strong>อวสานยุคห้างราคา $1 เรียบร้อย</strong> ขยับราคาฐานเป็น $1.25 สูงสุดที่ $7 ไปแล้ว<br><br>
+      ตัวแบรนด์หลักพอเอาตัวรอดได้จากการขึ้นราคา แต่กำลังโดนเนื้อร้ายอย่างแบรนด์ "Family Dollar" ที่ซื้อกิจการเข้ามาหวังกำไร แต่กลับถูกถ่วงขาจนแทบจมน้ำ จากปัญหาโดนขโมยของและสาขาทรุดโทรม<br><br>
+      ปัจจุบันปิดสาขาไปแล้วเกือบ <strong>1,000 แห่ง</strong> และยังพยายามเร่งขายกิจการ Family Dollar ทิ้ง
+    </div>
+  </div>
+
+  <!-- Card 10 -->
+  <div class="card" style="border-color: rgba(239, 68, 68, 0.3);">
+    <div class="card-head">
+      <div class="card-name">10. Save A Lot</div>
+      <div class="ticker" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">Private</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item" style="grid-column: span 2;">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value" style="color: #ef4444;">ถอดเครื่องช่วยหายใจหน้าร้าน ย้ายไปคุมหลังบ้านแทน</div>
+      </div>
+    </div>
+    <div class="situation" style="border-left-color: #ef4444;">
+      <strong>🔮 สถานการณ์ 2026:</strong> รอดตายจากการล้มละลายมาได้เพราะยอมเปลี่ยนโมเดลธุรกิจ <strong>100%</strong> เลิกบริหารหน้าร้านเอง แล้วเทขายสาขาให้ผู้ประกอบการท้องถิ่นทั้งหมด ผันตัวเป็น "ผู้ค้าส่งและให้เช่าสิทธิ์แฟรนไชส์" กินส่วนต่างอยู่เบื้องหลัง ปล่อยหน้าร้านโดน Aldi และ Dollar General รุมสกรัมจนเงียบเหงา
+    </div>
+  </div>
+
+  <!-- Card 11 -->
+  <div class="card" style="border-color: rgba(239, 68, 68, 0.3);">
+    <div class="card-head">
+      <div class="card-name">11. Big Lots</div>
+      <div class="ticker" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">Bankrupt</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">สถานะ</span>
+        <div class="info-value" style="color: #ef4444;">ขาตั้งอย่างเป็นทางการ</div>
+      </div>
+      <div class="info-item">
+        <span class="info-label">กฎหมาย</span>
+        <div class="info-value">ล้มละลาย Chapter 11 (ปลายปี 2024)</div>
+      </div>
+    </div>
+    <div class="situation" style="border-left-color: #ef4444;">
+      <strong>🔮 สถานการณ์ 2026:</strong> ตกเป็นของกลุ่มทุน Nexus Capital Management ถูกถอดออกจากตลาดหุ้น และโดนสั่งปิดสาขาหนีตายไปแล้วหลายร้อยแห่งทั่วประเทศ<br><br>
+      สภาพปัจจุบันตัวลีบเล็ก พยายามเลิกขายเฟอร์นิเจอร์ชิ้นใหญ่ แล้วกลับมาเน้นขายของชำราคาถูกเพื่อประคองลมหายใจ
+    </div>
+  </div>
+
+  <!-- Conclusion -->
+  <div class="conclusion">
+    <h3>📌 บทสรุป</h3>
+    <p>ตลาดค้าปลีกอเมริกายังปกติ ไม่ได้พังพินาศ คนยังเดินห้างหนาแน่นเป็นปกติ โดยเน้นไปที่กลุ่มสินค้าใช้สอยประจำวัน ส่วนสินค้าฟุ่มเฟือยอย่างเฟอร์นิเจอร์ทั่วไปนั้นยอดขายจะลดลงอย่างเห็นได้ชัด</p>
+    
+    <div class="money-flow">
+      <h4>💰 เม็ดเงินไหลไปที่ไหน?</h4>
+      <p style="margin-bottom: 15px;">เม็ดเงินส่วนใหญ่ถูกดูดไปหาห้างที่มี "Pricing Power" (อำนาจตั้งราคา) และจับกลุ่มลูกค้าได้ชัดเจน:</p>
+      <ul class="money-list">
+        <li>Costco</li>
+        <li>Walmart</li>
+        <li>Five Below</li>
+      </ul>
+    </div>
+
+    <div class="loser-text">
+      🗑️ <span>แล้วใครแพ้?</span> ส่วนพวกที่อยู่ตรงกลาง ไม่มีจุดเด่น ขยับราคาก็ไม่ได้ ก็กลายเป็นขยะที่โดนระบบคัดสรรธรรมชาติกวาดทิ้งไป
+    </div>
+  </div>
+
+  <div class="source">
+    แหล่งข้อมูล: วันที่ 20 พฤษภาคม 2026
+  </div>
+
+</div>
