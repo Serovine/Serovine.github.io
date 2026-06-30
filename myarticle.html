@@ -483,6 +483,22 @@
                 margin-bottom: 28px;
             }
 
+            /* ── HTML IFRAME ── */
+            #html-frame {
+                width: 100%;
+                min-height: 80vh;
+                border: none;
+                border-radius: 4px;
+                background: #fff;
+                display: block;
+                overflow: hidden;
+                border: 2px solid var(--cyan-dim);
+                box-shadow:
+                    0 0 0 6px var(--navy),
+                    0 0 0 7px var(--border),
+                    0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            }
+
             /* ── LOADING ── */
             #loader {
                 display: none;
@@ -771,28 +787,30 @@
                 const isInlineHtml = art.inlineHtml;
 
                 try {
-                    if (isInlineHtml) {
-                        // inline HTML — inject directly
+                    if (isInlineHtml || isHtmlFile) {
+                        // HTML — render in isolated iframe
                         loader.style.display = "none";
                         mdBody.style.display = "block";
-                        mdBody.innerHTML = `
-        <div class="article-date-stamp">✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}</div>
-        ${art.inlineHtml}`;
-                    } else if (isHtmlFile) {
-                        // fetch .html file — inject as-is inside a scoped wrapper
-                        const res = await fetch(art.file);
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        const html = await res.text();
-                        // extract <body> content if present, else use full text
-                        const bodyMatch = html.match(
-                            /<body[^>]*>([\s\S]*?)<\/body>/i,
-                        );
-                        const content = bodyMatch ? bodyMatch[1] : html;
-                        loader.style.display = "none";
-                        mdBody.style.display = "block";
-                        mdBody.innerHTML = `
-        <div class="article-date-stamp">✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}</div>
-        <div class="html-content">${content}</div>`;
+
+                        // remove old iframe if any
+                        const old = document.getElementById("html-frame");
+                        if (old) old.remove();
+
+                        if (isHtmlFile) {
+                            // .html file → iframe src โดยตรง ง่ายสุด isolated 100%
+                            mdBody.innerHTML = `<div class="article-date-stamp">✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}</div>`;
+                            const iframe = document.createElement("iframe");
+                            iframe.id = "html-frame";
+                            iframe.src = art.file;
+                            mdBody.appendChild(iframe);
+                        } else {
+                            // inlineHtml → srcdoc
+                            mdBody.innerHTML = `<div class="article-date-stamp">✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}</div>`;
+                            const iframe = document.createElement("iframe");
+                            iframe.id = "html-frame";
+                            iframe.srcdoc = art.inlineHtml;
+                            mdBody.appendChild(iframe);
+                        }
                     } else {
                         // markdown (inline or file)
                         let mdText = "";
