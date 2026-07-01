@@ -5,7 +5,6 @@ let sectorColorMap = {};
 // Filter
 let currentSectorFilter = null;
 let currentSearchQuery = "";
-let currentStageFilter = "all";
 
 const neonColors = [
   "#00ffff", // Cyan
@@ -67,38 +66,38 @@ async function loadData() {
   }
 }
 
-// ฟังก์ชันกรองข้อมูลตามเงื่อนไข (Search, Stage, Sector)
 function getFilteredData() {
   return stockData.filter((d) => {
-    const matchSearch =
-      d.symbol.toLowerCase().includes(currentSearchQuery) ||
-      d.company.toLowerCase().includes(currentSearchQuery);
-    const matchStage =
-      currentStageFilter === "all" ||
-      d.stage.toLowerCase() === currentStageFilter.toLowerCase();
+    const sym = (d.symbol || "").toLowerCase();
+    const comp = (d.company || "").toLowerCase();
+    const query = (currentSearchQuery || "").toLowerCase();
+
+    const matchSearch = sym.includes(query) || comp.includes(query);
     const matchSector =
       currentSectorFilter === null || d.sector === currentSectorFilter;
 
-    return matchSearch && matchStage && matchSector;
+    return matchSearch && matchSector;
   });
 }
 
 function applyFilters() {
-  currentSearchQuery = document
-    .getElementById("searchInput")
-    .value.toLowerCase();
-  currentStageFilter = document.getElementById("stageFilter").value;
-  updateClearButtonState();
+  try {
+    const searchEl = document.getElementById("searchInput");
+    if (searchEl) {
+      currentSearchQuery = searchEl.value;
+    }
 
-  renderLeaderboard();
-  renderRacingTrack();
+    updateClearButtonState();
+    renderLeaderboard();
+    renderRacingTrack();
+  } catch (error) {
+    console.error("🚨 Search System Error:", error);
+  }
 }
 
 function clearFilters() {
   document.getElementById("searchInput").value = "";
-  // document.getElementById("stageFilter").value = "all";
   currentSearchQuery = "";
-  // currentStageFilter = "all";
   currentSectorFilter = null;
 
   updateClearButtonState();
@@ -108,11 +107,7 @@ function clearFilters() {
 
 function updateClearButtonState() {
   const btn = document.getElementById("clearFilterBtn");
-  if (
-    currentSearchQuery !== "" ||
-    currentStageFilter !== "all" ||
-    currentSectorFilter !== null
-  ) {
+  if (currentSearchQuery !== "" || currentSectorFilter !== null) {
     btn.style.display = "inline-block";
   } else {
     btn.style.display = "none";
@@ -252,7 +247,7 @@ function renderLeaderboard() {
                 <div class="market-cap-badge">💰 Market Cap : ${formatMarketCap(d.marketCap)}</div>
                 <div class="growth-section">
                     <div class="growth-labels">
-                        <span class="growth-title">GROWTH POWER<br> ${overdriveLabel}</span>
+                        <span class="growth-title">GROWTH POWER ${overdriveLabel}</span>
                         <span class="growth-value">+${d.change6m.toFixed(2)}%</span>
                     </div>
                     <div class="neon-bar-bg">
