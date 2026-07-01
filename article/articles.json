@@ -40,5 +40,12 @@
     "date": "2026-04-12",
     "tags": ["beverages", "meme", "trending"],
     "file": "article/bearbrands.html"
+  },
+  {
+    "id": "parrotbrands",
+    "title": "สบู่พฤกษานกแก้ว มาไง",
+    "date": "2026-07-01",
+    "tags": ["consumer", "bussiness", "thai"],
+    "file": "article/parrotbrand.html"
   }
 ]
