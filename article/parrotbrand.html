@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สบู่นกแก้ว — สบู่บ้านนอกที่ไม่ธรรมดา</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:ital,wght@0,200..900;1,200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --cream:#FAF7F0;
+    --cream-dark:#F0EBE1;
+    --green:#2E7D4F;
+    --green-light:#3A9D6A;
+    --green-pale:#E8F5EC;
+    --green-dark:#1B5E3A;
+    --pink:#E8A0AA;
+    --pink-light:#FFF0F2;
+    --gold:#C8A852;
+    --gold-light:#FDF8EC;
+    --text:#2D2A26;
+    --text-muted:#7A756E;
+    --text-light:#A09A92;
+    --white:#FFFFFF;
+    --shadow-sm:0 1px 3px rgba(45,42,38,0.06);
+    --shadow-md:0 4px 20px rgba(45,42,38,0.08);
+    --shadow-lg:0 8px 40px rgba(45,42,38,0.1);
+    --shadow-xl:0 20px 60px rgba(45,42,38,0.12);
+  }
+  html{scroll-behavior:smooth;font-size:16px}
+  body{
+    font-family:'Noto Sans Thai',sans-serif;
+    background:var(--cream);
+    color:var(--text);
+    line-height:1.9;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--green-light);color:var(--white)}
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar{
+    position:fixed;top:0;left:0;height:3px;
+    background:linear-gradient(90deg,var(--green),var(--green-light),var(--gold));
+    z-index:9999;width:0%;transition:width 0.1s linear;
+    border-radius:0 2px 2px 0;
+  }
+
+  /* ===== NAV ===== */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:1rem 2rem;
+    transition:all 0.4s ease;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  nav.scrolled{
+    background:rgba(250,247,240,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 1px 20px rgba(0,0,0,0.06);
+    padding:0.6rem 2rem;
+  }
+  .nav-logo{
+    font-family:'Playfair Display',serif;
+    font-size:1.2rem;font-weight:700;
+    color:var(--green);letter-spacing:-0.02em;
+    opacity:0;transition:opacity 0.4s ease;
+  }
+  nav.scrolled .nav-logo{opacity:1}
+  .nav-links{display:flex;gap:1.5rem;list-style:none}
+  .nav-links a{
+    text-decoration:none;color:var(--text-muted);
+    font-size:0.8rem;font-weight:500;letter-spacing:0.05em;
+    text-transform:uppercase;transition:color 0.3s ease;
+    opacity:0;transition:opacity 0.4s ease,color 0.3s ease;
+  }
+  nav.scrolled .nav-links a{opacity:1}
+  .nav-links a:hover{color:var(--green)}
+
+  /* ===== HERO ===== */
+  .hero{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    background:linear-gradient(160deg,#1B5E3A 0%,#2E7D4F 40%,#3A9D6A 100%);
+    padding:6rem 2rem 4rem;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity:0.5;
+  }
+  .hero-glow{
+    position:absolute;width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,168,82,0.15) 0%,transparent 70%);
+    top:-100px;right:-100px;pointer-events:none;
+    animation:floatGlow 8s ease-in-out infinite;
+  }
+  @keyframes floatGlow{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-30px,30px) scale(1.1)}
+  }
+  .hero-glow-2{
+    position:absolute;width:400px;height:400px;border-radius:50%;
+    background:radial-gradient(circle,rgba(232,160,170,0.1) 0%,transparent 70%);
+    bottom:-50px;left:-50px;pointer-events:none;
+    animation:floatGlow 10s ease-in-out infinite reverse;
+  }
+  .hero-content{
+    position:relative;z-index:2;text-align:center;max-width:800px;
+    animation:heroIn 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+    opacity:0;
+  }
+  @keyframes heroIn{
+    0%{opacity:0;transform:translateY(40px) scale(0.96);filter:blur(6px)}
+    100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  }
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    padding:0.4rem 1.2rem;border-radius:100px;
+    background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.8);font-size:0.75rem;font-weight:500;
+    letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2rem;
+    backdrop-filter:blur(10px);
+  }
+  .hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .hero h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.5rem,6vw,4.5rem);
+    font-weight:700;color:var(--white);line-height:1.15;
+    margin-bottom:0.5rem;letter-spacing:-0.02em;
+  }
+  .hero h1 em{
+    font-style:italic;color:var(--gold);
+    font-weight:500;
+  }
+  .hero-sub{
+    font-size:clamp(1.1rem,2.5vw,1.4rem);
+    color:rgba(255,255,255,0.7);font-weight:300;
+    margin-bottom:2.5rem;line-height:1.6;
+  }
+  .hero-scroll{
+    display:inline-flex;flex-direction:column;align-items:center;gap:0.5rem;
+    color:rgba(255,255,255,0.4);font-size:0.7rem;letter-spacing:0.15em;
+    text-transform:uppercase;text-decoration:none;transition:color 0.3s ease;
+  }
+  .hero-scroll:hover{color:rgba(255,255,255,0.8)}
+  .scroll-line{
+    width:1px;height:40px;background:rgba(255,255,255,0.2);
+    position:relative;overflow:hidden;
+  }
+  .scroll-line::after{
+    content:'';position:absolute;top:-100%;left:0;width:100%;height:50%;
+    background:rgba(255,255,255,0.6);animation:scrollDown 2s ease-in-out infinite;
+  }
+  @keyframes scrollDown{0%{top:-50%}100%{top:150%}}
+
+  /* ===== FLOATING SOAP ===== */
+  .floating-soap{
+    position:absolute;pointer-events:none;opacity:0.06;
+  }
+  .soap-1{top:15%;right:10%;width:120px;height:120px;background:var(--white);border-radius:16px;transform:rotate(15deg);animation:soapFloat 6s ease-in-out infinite}
+  .soap-2{bottom:20%;left:8%;width:80px;height:80px;background:var(--pink);border-radius:12px;transform:rotate(-10deg);animation:soapFloat 8s ease-in-out infinite 1s}
+  .soap-3{top:40%;left:15%;width:60px;height:60px;background:var(--gold);border-radius:10px;transform:rotate(25deg);animation:soapFloat 7s ease-in-out infinite 0.5s}
+  @keyframes soapFloat{
+    0%,100%{transform:rotate(15deg) translateY(0)}
+    50%{transform:rotate(15deg) translateY(-20px)}
+  }
+
+  /* ===== SECTION COMMON ===== */
+  section{padding:5rem 1.5rem}
+  .container{max-width:780px;margin:0 auto}
+  .section-label{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    font-size:0.7rem;font-weight:600;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--green);margin-bottom:1rem;
+  }
+  .section-label::before{
+    content:'';width:24px;height:1.5px;background:var(--green);
+  }
+  .section-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    font-weight:600;line-height:1.25;letter-spacing:-0.01em;
+    margin-bottom:1.5rem;
+  }
+  .section-text{
+    font-size:1.05rem;color:var(--text-muted);line-height:2;
+    margin-bottom:1.5rem;
+  }
+  .section-text strong{color:var(--text);font-weight:600}
+
+  /* ===== REVEAL ANIMATION ===== */
+  .reveal{
+    opacity:0;transform:translateY(30px);
+    transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:0.1s}
+  .reveal-delay-2{transition-delay:0.2s}
+  .reveal-delay-3{transition-delay:0.3s}
+
+  /* ===== INTRO SECTION ===== */
+  .intro{
+    text-align:center;padding:6rem 1.5rem;
+    background:var(--cream);
+  }
+  .intro .container{max-width:640px}
+  .intro-quote{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.4rem,3vw,2rem);
+    font-weight:400;font-style:italic;
+    color:var(--text);line-height:1.5;
+    margin-bottom:2rem;position:relative;
+  }
+  .intro-quote::before{
+    content:'"';font-size:5rem;color:var(--green);
+    opacity:0.15;position:absolute;top:-2rem;left:-1.5rem;
+    font-family:'Playfair Display',serif;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider{
+    display:flex;align-items:center;justify-content:center;
+    padding:1rem 0;gap:1rem;
+  }
+  .divider span{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--green);opacity:0.3;
+  }
+  .divider span:nth-child(2){opacity:0.6;width:8px;height:8px}
+  .divider span:nth-child(3){opacity:0.3}
+
+  /* ===== TIMELINE ===== */
+  .timeline{position:relative;padding-left:2.5rem}
+  .timeline::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+    background:linear-gradient(to bottom,var(--green-pale),var(--green),var(--green-pale));
+    border-radius:2px;
+  }
+  .timeline-item{position:relative;padding-bottom:3rem}
+  .timeline-item:last-child{padding-bottom:0}
+  .timeline-dot{
+    position:absolute;left:-2.5rem;top:0.35rem;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--cream);border:2.5px solid var(--green);
+    transform:translateX(-6px);
+    transition:background 0.3s ease,box-shadow 0.3s ease;
+  }
+  .timeline-item:hover .timeline-dot{
+    background:var(--green);
+    box-shadow:0 0 0 6px rgba(46,125,79,0.12);
+  }
+  .timeline-year{
+    font-family:'Playfair Display',serif;
+    font-size:1.3rem;font-weight:700;color:var(--green);
+    margin-bottom:0.4rem;
+  }
+  .timeline-content{font-size:1rem;color:var(--text-muted);line-height:1.9}
+  .timeline-content strong{color:var(--text);font-weight:600}
+
+  /* ===== HIGHLIGHT CARD ===== */
+  .highlight-cards{display:grid;gap:1.5rem;margin-top:2.5rem}
+  .highlight-card{
+    background:var(--white);border-radius:16px;
+    padding:2rem;border:1px solid rgba(0,0,0,0.04);
+    box-shadow:var(--shadow-sm);
+    transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+    position:relative;overflow:hidden;
+  }
+  .highlight-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--green),var(--green-light));
+    transform:scaleX(0);transform-origin:left;
+    transition:transform 0.4s ease;
+  }
+  .highlight-card:hover::before{transform:scaleX(1)}
+  .highlight-card:hover{
+    box-shadow:var(--shadow-lg);
+    transform:translateY(-4px);
+  }
+  .card-icon{
+    width:48px;height:48px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;margin-bottom:1rem;
+  }
+  .card-icon.green{background:var(--green-pale)}
+  .card-icon.pink{background:var(--pink-light)}
+  .card-icon.gold{background:var(--gold-light)}
+  .card-title{
+    font-weight:700;font-size:1.1rem;margin-bottom:0.6rem;
+    color:var(--text);
+  }
+  .card-text{font-size:0.95rem;color:var(--text-muted);line-height:1.8}
+
+  /* ===== FACT BOX ===== */
+  .fact-box{
+    background:linear-gradient(135deg,var(--green-dark),var(--green));
+    color:var(--white);border-radius:20px;
+    padding:2.5rem;margin:2.5rem 0;position:relative;overflow:hidden;
+  }
+  .fact-box::before{
+    content:'';position:absolute;top:-50%;right:-30%;
+    width:300px;height:300px;border-radius:50%;
+    background:rgba(255,255,255,0.04);
+  }
+  .fact-box::after{
+    content:'';position:absolute;bottom:-30%;left:-20%;
+    width:200px;height:200px;border-radius:50%;
+    background:rgba(255,255,255,0.03);
+  }
+  .fact-box .section-label{color:rgba(255,255,255,0.6)}
+  .fact-box .section-label::before{background:rgba(255,255,255,0.4)}
+  .fact-box .section-title{color:var(--white)}
+  .fact-box .section-text{color:rgba(255,255,255,0.8)}
+  .fact-box .section-text strong{color:var(--white)}
+  .fact-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+    margin-top:2rem;position:relative;z-index:1;
+  }
+  .fact-stat{text-align:center}
+  .fact-stat-num{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;
+    color:var(--gold);line-height:1;
+  }
+  .fact-stat-label{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:0.3rem}
+
+  /* ===== PRODUCT GRID ===== */
+  .product-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1rem;margin-top:2rem;
+  }
+  .product-item{
+    background:var(--white);border-radius:14px;padding:1.5rem;
+    text-align:center;border:1px solid rgba(0,0,0,0.04);
+    box-shadow:var(--shadow-sm);
+    transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+    cursor:default;
+  }
+  .product-item:hover{
+    transform:translateY(-6px);box-shadow:var(--shadow-lg);
+  }
+  .product-emoji{font-size:2.5rem;margin-bottom:0.8rem;display:block}
+  .product-name{font-weight:600;font-size:0.9rem;color:var(--text);margin-bottom:0.3rem}
+  .product-desc{font-size:0.8rem;color:var(--text-light);line-height:1.5}
+
+  /* ===== COMPARISON ===== */
+  .comparison{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border-radius:20px;overflow:hidden;margin:2.5rem 0;
+    box-shadow:var(--shadow-md);
+  }
+  .comparison-side{padding:2.5rem 2rem}
+  .comparison-thai{
+    background:var(--pink-light);text-align:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .comparison-foreign{
+    background:var(--green-pale);text-align:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .comparison-price{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1;
+    margin:0.5rem 0;
+  }
+  .comparison-thai .comparison-price{color:var(--green)}
+  .comparison-foreign .comparison-price{color:#C0392B}
+  .comparison-label{font-size:0.85rem;color:var(--text-muted);font-weight:500}
+  .comparison-note{font-size:0.75rem;color:var(--text-light);margin-top:0.5rem}
+
+  /* ===== PULL QUOTE ===== */
+  .pull-quote{
+    border-left:3px solid var(--gold);
+    padding:1.5rem 2rem;margin:2.5rem 0;
+    background:var(--gold-light);border-radius:0 12px 12px 0;
+  }
+  .pull-quote p{
+    font-family:'Playfair Display',serif;
+    font-size:1.2rem;font-style:italic;
+    color:var(--text);line-height:1.7;
+  }
+
+  /* ===== CONCLUSION ===== */
+  .conclusion{
+    background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 50%,var(--green-light) 100%);
+    color:var(--white);text-align:center;padding:6rem 1.5rem;
+    position:relative;overflow:hidden;
+  }
+  .conclusion::before{
+    content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 0L40 20L20 40L0 20z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .conclusion .container{position:relative;z-index:1;max-width:680px}
+  .conclusion .section-label{color:rgba(255,255,255,0.5)}
+  .conclusion .section-label::before{background:rgba(255,255,255,0.3)}
+  .conclusion .section-title{color:var(--white)}
+  .conclusion .section-text{color:rgba(255,255,255,0.75)}
+  .conclusion .section-text strong{color:var(--white)}
+  .conclusion-final{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.3rem,3vw,1.7rem);
+    font-style:italic;font-weight:400;
+    color:rgba(255,255,255,0.9);
+    margin-top:2.5rem;line-height:1.6;
+    padding-top:2.5rem;border-top:1px solid rgba(255,255,255,0.1);
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    text-align:center;padding:3rem 1.5rem;
+    background:var(--green-dark);color:rgba(255,255,255,0.4);
+    font-size:0.8rem;
+  }
+  footer a{color:rgba(255,255,255,0.6);text-decoration:none}
+  footer a:hover{color:var(--white)}
+
+  /* ===== BACK TO TOP ===== */
+  .back-to-top{
+    position:fixed;bottom:2rem;right:2rem;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--green);color:var(--white);
+    border:none;cursor:pointer;font-size:1.2rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow-lg);z-index:90;
+    opacity:0;transform:translateY(20px);
+    transition:all 0.4s ease;pointer-events:none;
+  }
+  .back-to-top.show{opacity:1;transform:translateY(0);pointer-events:all}
+  .back-to-top:hover{background:var(--green-dark);transform:translateY(-2px)}
+
+  /* ===== SOAP ICON ANIMATION ===== */
+  .soap-icon-float{
+    display:inline-block;
+    animation:soapIconFloat 3s ease-in-out infinite;
+  }
+  @keyframes soapIconFloat{
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    25%{transform:translateY(-4px) rotate(2deg)}
+    75%{transform:translateY(2px) rotate(-1deg)}
+  }
+
+  /* ===== TOAST ===== */
+  .toast{
+    position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);
+    background:var(--text);color:var(--cream);padding:0.8rem 1.5rem;
+    border-radius:100px;font-size:0.85rem;font-weight:500;
+    box-shadow:var(--shadow-xl);z-index:200;
+    opacity:0;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
+    pointer-events:none;white-space:nowrap;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:768px){
+    .nav-links{display:none}
+    .comparison{grid-template-columns:1fr}
+    .fact-stats{grid-template-columns:repeat(3,1fr);gap:0.8rem}
+    .fact-stat-num{font-size:1.5rem}
+    section{padding:3.5rem 1.2rem}
+    .timeline{padding-left:2rem}
+    .timeline-dot{left:-2rem;transform:translateX(-5px)}
+    .floating-soap{display:none}
+  }
+  @media(max-width:480px){
+    .hero{padding:5rem 1.2rem 3rem}
+    .fact-box{padding:2rem 1.5rem}
+    .highlight-card{padding:1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navigation -->
+<nav id="nav">
+  <div class="nav-logo">🦜 Parrot Soap</div>
+  <ul class="nav-links">
+    <li><a href="#origin">จุดกำเนิด</a></li>
+    <li><a href="#fragrance">กลิ่นหอม</a></li>
+    <li><a href="#history">ประวัติ</a></li>
+    <li><a href="#products">ผลิตภัณฑ์</a></li>
+    <li><a href="#global">ต่างประเทศ</a></li>
+  </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="floating-soap soap-1"></div>
+  <div class="floating-soap soap-2"></div>
+  <div class="floating-soap soap-3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span>
+      Since 1951 · 75 ปีแห่งตำนาน
+    </div>
+    <h1>Parrot Botanical Soap<br><em>สบู่นกแก้ว</em></h1>
+    <p class="hero-sub">สบู่บ้านนอกที่ไม่ธรรมดา</p>
+    <a href="#intro" class="hero-scroll">
+      ค้นพบเรื่องราว
+      <div class="scroll-line"></div>
+    </a>
+  </div>
+</section>
+
+<!-- Intro -->
+<section class="intro" id="intro">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">เกริ่นนำ</div>
+      <p class="intro-quote">"สบู่ที่ถูกดูถูก แต่ไม่เคยแพ้ใคร"</p>
+      <p class="section-text">
+        วันนี้จะพาทุกคนไปทำความรู้จักสบู่ก้อนนี้แบบเจาะลึก ตั้งแต่จุดกำเนิดจนถึงปัจจุบัน
+        รับรองว่าอ่านจบแล้วจะมองสบู่ก้อนเขียวนี้ต่างไปจากเดิมแน่นอน
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span></span><span></span><span></span></div>
+
+<!-- Origin -->
+<section id="origin">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">จุดกำเนิด</div>
+      <h2 class="section-title">ฝรั่งคิด คนไทยใช้</h2>
+      <p class="section-text">
+        หลายคนอาจคิดว่าสบู่นกแก้วเป็นแบรนด์ไทยแท้ ๆ แต่รู้ไหมว่า
+        <strong>จริง ๆ แล้วมันถูกคิดค้นโดยชาวต่างชาติ!</strong>
+      </p>
+      <p class="section-text">
+        ย้อนกลับไปช่วงหลังสงครามโลกครั้งที่ 2 คนไทยยังนิยมอาบน้ำริมคลอง
+        และใช้<strong>สบู่กรดสีคราม</strong>ที่ซื้อจากร้านยี่ปั๊วในการทำความสะอาดทุกอย่าง
+        ตั้งแต่ขัดหม้อ ซักผ้า ไปจนถึงอาบน้ำ สบู่กรดนี้ไม่มีกลิ่นหอมอะไรเลย
+        แถมยังไม่ดีต่อผิวอีกต่างหาก
+      </p>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="pull-quote">
+        <p>คุณวอลเตอร์ เลโอ ไมเยอร์ (Walter Leo Meyer) ชาวสวิตเซอร์แลนด์ มองเห็นโอกาสตรงนี้ จึงเกิดแนวคิดที่จะผลิตสบู่หอมคุณภาพสูงขึ้นมา</p>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">พ.ศ. 2490</div>
+          <div class="timeline-content">
+            คิดค้นสูตรส่วนผสมสบู่หอมขึ้นมาเป็นครั้งแรก
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">พ.ศ. 2494</div>
+          <div class="timeline-content">
+            ก่อตั้ง <strong>บริษัท รูเบียอุตสาหกรรม จำกัด</strong> โรงงานแห่งแรกเล็ก ๆ ที่สุขุมวิท 42
+            มีคนงานไม่ถึง 20 คน ปัจจุบันซอยนั้นถูกเรียกกันติดปากว่า <strong>"ซอยรูเบีย"</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-3">
+      <p class="section-text" style="margin-top:1.5rem">
+        ส่วนที่มาของชื่อ <strong>"นกแก้ว"</strong> นั้น คุณไมเยอร์เป็นคนหลงใหลในธรรมชาติของเมืองไทย
+        โดยเฉพาะ<strong>นกแก้วไทยที่มีสีสันสดใส</strong> และพรรณไม้ป่าที่มีกลิ่นหอม
+        เขาจึงนำสองสิ่งนี้มาผสมผสานกันเป็นเอกลักษณ์ของแบรนด์
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span></span><span></span><span></span></div>
+
+<!-- Fragrance -->
+<section id="fragrance" style="background:var(--cream-dark)">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">เอกลักษณ์</div>
+      <h2 class="section-title">กลิ่นหอมที่โคตรไทย<br>แต่ใช้น้ำหอมฝรั่งเศส 🇫🇷</h2>
+      <p class="section-text">
+        หนึ่งในจุดเด่นที่ทำให้สบู่นกแก้วแตกต่างคือกลิ่นหอมที่เป็นเอกลักษณ์
+        โดยใช้<strong>หัวน้ำหอมที่นำเข้าจากประเทศฝรั่งเศส</strong>
+        ถึงแม้บางคนจะมองว่ามันเป็นสบู่บ้านนอก แต่รู้ไหมว่ากลิ่นของมันเป็นระดับฝรั่งเศส
+        ประเทศที่ขึ้นชื่อเรื่องคุณภาพของน้ำหอมของโลก
+      </p>
+    </div>
+
+    <div class="highlight-cards reveal reveal-delay-1">
+      <div class="highlight-card">
+        <div class="card-icon pink">🌸</div>
+        <div class="card-title">กลิ่นคล้ายน้ำหอมดัง</div>
+        <div class="card-text">มีคนออกมาแชร์ในโลกออนไลน์ว่าสบู่นกแก้วสีชมพูอ่อนมีกลิ่นที่คล้ายคลึงกับน้ำหอมแบรนด์ดังด้วยนะ</div>
+      </div>
+      <div class="highlight-card">
+        <div class="card-icon green">🌿</div>
+        <div class="card-title">หอมฟุ้ง ติดทน</div>
+        <div class="card-text">กลิ่นหอมของสบู่นกแก้วนั้นแรงและติดทน จนหลายคนเอาไปใช้แทนก้อนดับกลิ่นในตู้เสื้อผ้าหรือในรถยนต์เลยก็มี</div>
+      </div>
+      <div class="highlight-card">
+        <div class="card-icon gold">🏆</div>
+        <div class="card-title">ระดับโลก</div>
+        <div class="card-text">ฝรั่งเศส — ประเทศที่ขึ้นชื่อเรื่องคุณภาพน้ำหอมของโลก คือแหล่งที่มาของหัวน้ำหอมในสบู่ก้อนเล็ก ๆ นี้</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- History & Fame -->
+<section id="history">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">ความดังในยุคเริ่มต้น</div>
+      <h2 class="section-title">พุ่มพวง ดวงจันทร์<br>พรีเซ็นเตอร์คนแรก</h2>
+      <p class="section-text">
+        สบู่นกแก้วเริ่มเป็นที่รู้จักอย่างกว้างขวางเมื่อมีการทำโฆษณาทางโทรทัศน์เป็นครั้งแรก
+        ในปี <strong>พ.ศ. 2514</strong> และเลือก <strong>พุ่มพวง ดวงจันทร์</strong> มาเป็นพรีเซ็นเตอร์คนแรก
+      </p>
+      <p class="section-text">
+        การตลาดในยุคนั้นเน้นการขายในต่างจังหวัดเป็นหลัก
+        เพื่อให้กระจายตัวได้รวดเร็ว สบู่ก้อนนี้จึงแพร่หลายไปทั่วประเทศในเวลาไม่นาน
+        และสามารถทำยอดขายได้ถึง <strong>25 ล้านบาท</strong>
+      </p>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="timeline" style="margin-top:2rem">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">พ.ศ. 2514</div>
+          <div class="timeline-content">โฆษณาทางโทรทัศน์ครั้งแรก พุ่มพวง ดวงจันทร์ เป็นพรีเซ็นเตอร์</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">พ.ศ. 2529</div>
+          <div class="timeline-content">พุ่มพวง ดวงจันทร์ ถ่ายแบบโฆษณาอีกครั้ง — ภาพจำที่ยังคงอยู่ในความทรงจำของใครหลายคน</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span></span><span></span><span></span></div>
+
+<!-- Craft Section -->
+<section style="background:var(--cream-dark)">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">งานคราฟต์</div>
+      <h2 class="section-title">จากคาบเรียนศิลปะ<br>สู่คราฟต์พรีเมียม</h2>
+      <p class="section-text">
+        รู้หรือไม่ว่า สบู่นกแก้วเคยถูกนำมาใช้ในคาบเรียนด้วย!
+        มีนักเรียนหลายคนที่ต้องแกะสลักสบู่ส่งครู
+        และสบู่นกแก้วก็เป็นตัวเลือกยอดนิยม เพราะกลิ่นหอม
+        เนื้อไม่อ่อนหรือแข็งจนเกินไป แกะได้ไม่ยาก
+      </p>
+      <p class="section-text">
+        ปัจจุบันมีการจัด <strong>Workshop แกะสลักสบู่นกแก้ว</strong> มากมาย
+        โดยเฉพาะในช่วงวันแม่ที่นิยมแกะสลักเป็นรูปดอกไม้เพื่อมอบให้คุณแม่
+        เรียกได้ว่าจากสบู่ราคาถูกในห้องน้ำ
+        กลายเป็น<strong>งานคราฟต์พรีเมียม</strong>ที่มีมูลค่าทางจิตใจไม่น้อยเลย
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Crisis -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">วิกฤตและการเอาชนะ</div>
+      <h2 class="section-title">ผ่านวิกฤตมานับไม่ถ้วน<br>แต่รอดมาได้ทุกครั้ง</h2>
+      <p class="section-text">
+        เส้นทางของสบู่นกแก้วไม่ได้โรยด้วยกลีบกุหลาบ
+        ในยุคที่เศรษฐกิจไทยเฟื่องฟู ผู้คนหันไปเห่อของนอกกันหนักมาก
+        สบู่นกแก้วที่เป็นแบรนด์ไทย ๆ ถูกมองว่าเชย ไม่ทันสมัย
+        ยอดขายตกฮวบลงอย่างหนัก
+      </p>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="pull-quote">
+        <p>แต่แล้วในปี พ.ศ. 2540 วิกฤตต้มยำกุ้งก็มาเยือน — คนไทยหันมาสนใจของไทยมากขึ้น สบู่นกแก้วจึงพลิกวิกฤตให้เป็นโอกาสครั้งใหญ่</p>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <p class="section-text">
+        แถมยังปรับเปลี่ยนผลิตภัณฑ์ให้ทันสมัยมากขึ้น
+        มีหลายกลิ่น หลายสี มีมอยส์เจอไรเซอร์
+        รวมถึงออกผลิตภัณฑ์ครีมอาบน้ำตามกระแส
+      </p>
+      <p class="section-text" style="font-weight:600;color:var(--green)">
+        นี่คือบทพิสูจน์ว่าแบรนด์ที่แข็งแกร่งจริง ๆ ไม่เคยยอมแพ้ต่อวิกฤต
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Price Fact Box -->
+<section style="background:var(--cream-dark);padding-top:3rem;padding-bottom:3rem">
+  <div class="container">
+    <div class="reveal">
+      <div class="fact-box">
+        <div class="section-label">ราคาถูกเสมอ</div>
+        <h2 class="section-title">ตั้งแต่อดีตจนถึงปัจจุบัน</h2>
+        <p class="section-text">
+          เปิดตัวครั้งแรกในปี 2494 สบู่นกแก้วขายในราคาก้อนละ <strong>1–5 บาท</strong><br>
+          ผ่านมาแล้วตั้ง <strong>70 กว่าปี</strong> ปัจจุบันยังคงขายในราคาเพียง
+          <strong>ก้อนละ 10 กว่าบาท</strong> เท่านั้น
+          บางแพ็คเกจราคาเฉลี่ยตกก้อนละไม่ถึง 20 บาทด้วยซ้ำ
+        </p>
+        <div class="fact-stats">
+          <div class="fact-stat">
+            <div class="fact-stat-num" data-count="75">0</div>
+            <div class="fact-stat-label">ปีแห่งตำนาน</div>
+          </div>
+          <div class="fact-stat">
+            <div class="fact-stat-num" data-count="700" data-suffix="+">0</div>
+            <div class="fact-stat-label">พนักงาน (คน)</div>
+          </div>
+          <div class="fact-stat">
+            <div class="fact-stat-num" data-count="2000" data-suffix="M">0</div>
+            <div class="fact-stat-label">รายได้/ปี (บาท)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section id="products">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">ผลิตภัณฑ์</div>
+      <h2 class="section-title">แตกไลน์ผลิตภัณฑ์ใหม่<br>แต่ของเก๋าเก่าคือที่สุด</h2>
+      <p class="section-text">
+        สบู่นกแก้วไม่ได้หยุดนิ่ง มีการออกผลิตภัณฑ์ใหม่ ๆ มากมายตามยุคสมัย
+      </p>
+    </div>
+
+    <div class="product-grid reveal reveal-delay-1">
+      <div class="product-item">
+        <span class="product-emoji">🧴</span>
+        <div class="product-name">สบู่เหลว</div>
+        <div class="product-desc">ครีมอาบน้ำหลากหลายกลิ่น</div>
+      </div>
+      <div class="product-item">
+        <span class="product-emoji">🌿</span>
+        <div class="product-name">พฤกษานกแก้ว</div>
+        <div class="product-desc">สบู่สมุนไพรจากธรรมชาติ</div>
+      </div>
+      <div class="product-item">
+        <span class="product-emoji">🌷</span>
+        <div class="product-name">สบู่พีโอนี่</div>
+        <div class="product-desc">กลิ่นหอมละมุน สไตล์ญี่ปุ่น</div>
+      </div>
+      <div class="product-item">
+        <span class="product-emoji">💎</span>
+        <div class="product-name">Oil in Bath</div>
+        <div class="product-desc">สบู่เหลวบำรุงผิว</div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="pull-quote" style="margin-top:2.5rem">
+        <p>แต่ถึงจะออกผลิตภัณฑ์มามากมาย สิ่งที่ยังคงเด่นที่สุดและเป็นตำนานที่สุดก็คือ <strong>สบู่ก้อนนกแก้วสีเขียว</strong> นั่นเอง</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span></span><span></span><span></span></div>
+
+<!-- Global -->
+<section id="global" style="background:var(--cream-dark)">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">ระดับโลก</div>
+      <h2 class="section-title">คนไทยดูถูก<br>แต่ต่างประเทศกลับกรี๊ด</h2>
+      <p class="section-text">
+        น่า ironic ใช่ไหมล่ะ ที่คนไทยบางคนมองสบู่นกแก้วเป็นสบู่บ้านนอก
+        แต่กลับโด่งดังไกลถึงต่างประเทศ
+      </p>
+      <p class="section-text">
+        ชาวต่างชาติที่มาเที่ยวไทยชอบซื้อสบู่นกแก้วกลับไปเป็นของฝาก
+        เพราะตัวสบู่มีความเป็นไทยโบราณ กลิ่นหอมเป็นเอกลักษณ์
+        และราคาถูกมาก
+      </p>
+    </div>
+
+    <div class="comparison reveal reveal-delay-1">
+      <div class="comparison-side comparison-thai">
+        <div class="comparison-label">🇹🇭 ในประเทศไทย</div>
+        <div class="comparison-price">&lt; 20 ฿</div>
+        <div class="comparison-note">ต่อก้อน</div>
+      </div>
+      <div class="comparison-side comparison-foreign">
+        <div class="comparison-label">🌍 ในเว็บต่างประเทศ</div>
+        <div class="comparison-price">$$$</div>
+        <div class="comparison-note">ราคาพุ่งกระฉูด!</div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <p class="section-text" style="text-align:center">
+        ช่วงที่กระแสมาแรงมากช่วงนึง คือ <strong>กระแสความนิยมในประเทศจีน</strong>
+        🇨🇳 นักท่องเที่ยวจีนซื้อสบู่นกแก้วกลับบ้านกันเป็นกระบุง
+        เพราะชอบกลิ่นหอมและแพ็กเกจที่ดูวินเทจ
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Present -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">ปัจจุบัน</div>
+      <h2 class="section-title">ยังอยู่คู่คนไทย</h2>
+      <p class="section-text">
+        ผ่านร้อนผ่านหนาวมาแล้วตั้ง <strong>75 ปี</strong>
+        สบู่นกแก้วยังคงอยู่คู่คนไทยอย่างเหนียวแน่น
+      </p>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="highlight-cards" style="margin-top:2rem">
+        <div class="highlight-card">
+          <div class="card-icon green">👷</div>
+          <div class="card-title">พนักงานกว่า 700 คน</div>
+          <div class="card-text">จากโรงงานเล็ก ๆ คนงานไม่ถึง 20 คน ขยายตัวมาอย่างมหาศาล</div>
+        </div>
+        <div class="highlight-card">
+          <div class="card-icon gold">💰</div>
+          <div class="card-title">รายได้กว่า 2,000 ล้านบาท/ปี</div>
+          <div class="card-text">กำไรเฉลี่ยปีละประมาณ 200 ล้านบาท</div>
+        </div>
+        <div class="highlight-card">
+          <div class="card-icon pink">🌍</div>
+          <div class="card-title">ระดับตำนาน</div>
+          <div class="card-text">จากสบู่ก้อนเล็ก ๆ กลายเป็นแบรนด์ที่คนไทยภูมิใจและเป็นที่รู้จักไปทั่วโลก</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Conclusion -->
+<section class="conclusion">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">ส่งท้าย</div>
+      <h2 class="section-title">สบู่ก้อนเล็ก ที่พิสูจน์ความยิ่งใหญ่</h2>
+      <p class="section-text">
+        สบู่นกแก้วคือบทพิสูจน์ว่า <strong>ความยิ่งใหญ่ไม่ได้วัดกันที่ราคา</strong>
+        หรือความหรูหรา แต่วัดกันที่ความสามารถในการอยู่คู่กับผู้คนผ่านกาลเวลา
+      </p>
+      <p class="section-text">
+        จากสบู่ที่ถูกมองว่า <strong>"บ้านนอก" "คนจน"</strong>
+        กลับกลายเป็นแบรนด์ที่โด่งดังระดับโลก
+        จากราคาไม่ถึง 20 บาทในเมืองไทย
+        กลายเป็นสินค้าราคาแพงในต่างประเทศ
+      </p>
+      <p class="conclusion-final">
+        "ครั้งต่อไปที่คุณหยิบสบู่ก้อนเขียว ๆ นี้ขึ้นมา<br>
+        ลองคิดดูสิว่ามันผ่านอะไรมาบ้าง<br>
+        แล้วคุณจะมองมันต่างไปจากเดิมแน่นอน"
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>เขียนขึ้นเพื่อเล่าเรื่องราวของตำนานสบู่ไทย 🦜</p>
+  <p style="margin-top:0.5rem;opacity:0.6">Parrot Botanical Soap · บริษัท รูเบียอุตสาหกรรม จำกัด · Since 1951</p>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== PROGRESS BAR =====
+const progressBar = document.getElementById('progressBar');
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  progressBar.style.width = progress + '%';
+}
+
+// ===== NAV SCROLL STATE =====
+const nav = document.getElementById('nav');
+function updateNav() {
+  if (window.scrollY > 80) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+}
+
+// ===== BACK TO TOP =====
+const backToTop = document.getElementById('backToTop');
+function updateBackToTop() {
+  if (window.scrollY > 600) {
+    backToTop.classList.add('show');
+  } else {
+    backToTop.classList.remove('show');
+  }
+}
+
+// ===== SCROLL REVEAL =====
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ===== COUNTER ANIMATION =====
+const counters = document.querySelectorAll('[data-count]');
+let countersAnimated = false;
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersAnimated) {
+      countersAnimated = true;
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count'));
+        const suffix = counter.getAttribute('data-suffix') || '';
+        const duration = 2000;
+        const start = performance.now();
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(eased * target);
+          counter.textContent = current.toLocaleString() + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      });
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterObserver.observe(c.closest('.fact-stats') || c));
+
+// ===== TOAST ON SCROLL MILESTONES =====
+const milestones = [
+  { scroll: 0.25, message: '🦜 เริ่มเข้าเรื่องแล้ว...' },
+  { scroll: 0.50, message: '💡 แปลกใจมั้ย? อ่านต่อไปได้เลย!' },
+  { scroll: 0.75, message: '🔥 ใกล้จบแล้ว อย่าหยุดนะ!' },
+  { scroll: 0.95, message: '✨ ขอบคุณที่อ่านจบนะ!' }
+];
+let shownMilestones = new Set();
+function checkMilestones() {
+  const scrollFraction = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  milestones.forEach(m => {
+    if (scrollFraction >= m.scroll && !shownMilestones.has(m.scroll)) {
+      shownMilestones.add(m.scroll);
+      showToast(m.message);
+    }
+  });
+}
+
+// ===== TOAST FUNCTION =====
+let toastTimeout;
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2500);
+}
+
+// ===== COMBINED SCROLL HANDLER =====
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      updateProgress();
+      updateNav();
+      updateBackToTop();
+      checkMilestones();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// Initial calls
+updateProgress();
+updateNav();
+updateBackToTop();
+
+// ===== SMOOTH SCROLL FOR NAV LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      const offset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
