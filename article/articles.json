@@ -42,10 +42,10 @@
     "file": "article/bearbrands.html"
   },
   {
-    "id": "parrotbrands",
-    "title": "สบู่พฤกษานกแก้ว มาไง",
-    "date": "2026-07-01",
-    "tags": ["consumer", "bussiness", "thai"],
-    "file": "article/parrotbrand.html"
+    "id": "imagemodelevolution",
+    "title": "วิวัฒนาการของ Open Weight Image Model AI",
+    "date": "2026-07-03",
+    "tags": ["ai", "model", "evolution"],
+    "file": "article/imagemodelevolution.html"
   }
 ]

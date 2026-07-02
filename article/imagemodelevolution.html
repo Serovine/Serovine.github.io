@@ -1,0 +1,1944 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>วิวัฒนาการของ AI สร้างภาพ: 2022–2026</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --bg-deep: #0c0c0a;
+                --bg: #121210;
+                --bg-card: #1a1a16;
+                --bg-card-hover: #222218;
+                --fg: #f0ebe0;
+                --fg-muted: #9a9585;
+                --fg-dim: #6b665a;
+                --accent: #e8a824;
+                --accent-glow: rgba(232, 168, 36, 0.15);
+                --accent-soft: #d4983a;
+                --era1: #e07a3a;
+                --era2: #c75dde;
+                --era3: #3dd9a0;
+                --border: rgba(240, 235, 224, 0.06);
+                --border-accent: rgba(232, 168, 36, 0.2);
+                --radius: 16px;
+                --radius-sm: 10px;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                scrollbar-width: thin;
+                scrollbar-color: var(--fg-dim) var(--bg-deep);
+            }
+
+            body {
+                font-family: "Noto Sans Thai", sans-serif;
+                background: var(--bg-deep);
+                color: var(--fg);
+                line-height: 1.9;
+                font-weight: 400;
+                overflow-x: hidden;
+            }
+
+            ::selection {
+                background: var(--accent);
+                color: var(--bg-deep);
+            }
+
+            /* ─── Scrollbar ─── */
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--bg-deep);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--fg-dim);
+                border-radius: 3px;
+            }
+
+            /* ─── Noise overlay ─── */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 9999;
+            }
+
+            /* ─── Progress Bar ─── */
+            .progress-bar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    var(--era1),
+                    var(--accent),
+                    var(--era2),
+                    var(--era3)
+                );
+                z-index: 10000;
+                width: 0%;
+                transition: width 0.1s linear;
+            }
+
+            /* ─── Navigation ─── */
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                padding: 0 2rem;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: rgba(12, 12, 10, 0.7);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+                transition: transform 0.3s ease;
+            }
+
+            nav.hidden {
+                transform: translateY(-100%);
+            }
+
+            .nav-brand {
+                font-family: "Kanit", sans-serif;
+                font-weight: 700;
+                font-size: 1rem;
+                color: var(--accent);
+                letter-spacing: 0.5px;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 0.25rem;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: var(--fg-muted);
+                font-size: 0.82rem;
+                font-weight: 500;
+                padding: 0.4rem 0.85rem;
+                border-radius: 999px;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .nav-links a:hover,
+            .nav-links a.active {
+                color: var(--fg);
+                background: rgba(240, 235, 224, 0.06);
+            }
+
+            .nav-links a .dot {
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                margin-right: 6px;
+                vertical-align: middle;
+            }
+
+            /* ─── Hero ─── */
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 6rem 2rem 4rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-bg {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            .hero-bg .orb {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(120px);
+                opacity: 0.3;
+                animation: orbFloat 20s ease-in-out infinite;
+            }
+
+            .hero-bg .orb-1 {
+                width: 500px;
+                height: 500px;
+                background: var(--era1);
+                top: -10%;
+                left: -10%;
+                animation-delay: 0s;
+            }
+
+            .hero-bg .orb-2 {
+                width: 400px;
+                height: 400px;
+                background: var(--era2);
+                bottom: -10%;
+                right: -10%;
+                animation-delay: -7s;
+            }
+
+            .hero-bg .orb-3 {
+                width: 300px;
+                height: 300px;
+                background: var(--era3);
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                animation-delay: -14s;
+                opacity: 0.15;
+            }
+
+            @keyframes orbFloat {
+                0%,
+                100% {
+                    transform: translate(0, 0) scale(1);
+                }
+                33% {
+                    transform: translate(30px, -40px) scale(1.05);
+                }
+                66% {
+                    transform: translate(-20px, 30px) scale(0.95);
+                }
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 1;
+                max-width: 800px;
+            }
+
+            .hero-tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: var(--accent);
+                background: var(--accent-glow);
+                border: 1px solid var(--border-accent);
+                padding: 0.4rem 1.2rem;
+                border-radius: 999px;
+                margin-bottom: 2rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                opacity: 0;
+                animation: fadeUp 0.8s ease 0.2s forwards;
+            }
+
+            .hero h1 {
+                font-family: "Kanit", sans-serif;
+                font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+                font-weight: 800;
+                line-height: 1.25;
+                margin-bottom: 1.5rem;
+                opacity: 0;
+                animation: fadeUp 0.8s ease 0.4s forwards;
+            }
+
+            .hero h1 .highlight {
+                background: linear-gradient(135deg, var(--accent), #f0c060);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .hero-sub {
+                font-size: 1.1rem;
+                color: var(--fg-muted);
+                max-width: 600px;
+                margin: 0 auto 3rem;
+                opacity: 0;
+                animation: fadeUp 0.8s ease 0.6s forwards;
+            }
+
+            .hero-scroll {
+                opacity: 0;
+                animation: fadeUp 0.8s ease 0.8s forwards;
+            }
+
+            .hero-scroll a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--fg-dim);
+                text-decoration: none;
+                font-size: 0.78rem;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                transition: color 0.3s;
+            }
+
+            .hero-scroll a:hover {
+                color: var(--fg-muted);
+            }
+
+            .scroll-line {
+                width: 1px;
+                height: 48px;
+                background: linear-gradient(
+                    to bottom,
+                    var(--fg-dim),
+                    transparent
+                );
+                animation: scrollPulse 2s ease-in-out infinite;
+            }
+
+            @keyframes scrollPulse {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scaleY(0.6);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scaleY(1);
+                }
+            }
+
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ─── Intro ─── */
+            .intro {
+                max-width: 760px;
+                margin: 0 auto;
+                padding: 4rem 2rem;
+            }
+
+            .intro p {
+                font-size: 1.05rem;
+                color: var(--fg-muted);
+                margin-bottom: 1.2rem;
+            }
+
+            .intro p strong {
+                color: var(--fg);
+                font-weight: 600;
+            }
+
+            .era-count {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2.5rem;
+            }
+
+            .era-count-item {
+                flex: 1;
+                text-align: center;
+                padding: 1.5rem 1rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                transition: all 0.4s ease;
+                cursor: default;
+            }
+
+            .era-count-item:hover {
+                border-color: var(--border-accent);
+                transform: translateY(-4px);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            }
+
+            .era-count-item .num {
+                font-family: "Kanit", sans-serif;
+                font-size: 2.2rem;
+                font-weight: 800;
+                line-height: 1;
+                margin-bottom: 0.5rem;
+            }
+
+            .era-count-item .label {
+                font-size: 0.78rem;
+                color: var(--fg-muted);
+                letter-spacing: 0.3px;
+            }
+
+            .era-count-item:nth-child(1) .num {
+                color: var(--era1);
+            }
+            .era-count-item:nth-child(2) .num {
+                color: var(--era2);
+            }
+            .era-count-item:nth-child(3) .num {
+                color: var(--era3);
+            }
+
+            /* ─── Era Sections ─── */
+            .era-section {
+                max-width: 860px;
+                margin: 0 auto;
+                padding: 5rem 2rem;
+                position: relative;
+            }
+
+            .era-header {
+                display: flex;
+                align-items: flex-start;
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .era-badge {
+                flex-shrink: 0;
+                width: 64px;
+                height: 64px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: "Kanit", sans-serif;
+                font-weight: 800;
+                font-size: 1.4rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .era-badge::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                opacity: 0.15;
+            }
+
+            .era-1 .era-badge {
+                background: rgba(224, 122, 58, 0.12);
+                color: var(--era1);
+                border: 1px solid rgba(224, 122, 58, 0.2);
+            }
+            .era-2 .era-badge {
+                background: rgba(199, 93, 222, 0.12);
+                color: var(--era2);
+                border: 1px solid rgba(199, 93, 222, 0.2);
+            }
+            .era-3 .era-badge {
+                background: rgba(61, 217, 160, 0.12);
+                color: var(--era3);
+                border: 1px solid rgba(61, 217, 160, 0.2);
+            }
+
+            .era-title-group h2 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.6rem;
+                font-weight: 700;
+                margin-bottom: 0.3rem;
+            }
+
+            .era-1 .era-title-group h2 {
+                color: var(--era1);
+            }
+            .era-2 .era-title-group h2 {
+                color: var(--era2);
+            }
+            .era-3 .era-title-group h2 {
+                color: var(--era3);
+            }
+
+            .era-title-group .era-period {
+                font-size: 0.85rem;
+                color: var(--fg-dim);
+                font-weight: 500;
+            }
+
+            .era-title-group h3 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.15rem;
+                font-weight: 600;
+                color: var(--fg);
+                margin-top: 0.6rem;
+            }
+
+            /* ─── Content Blocks ─── */
+            .content-block {
+                margin-bottom: 2.5rem;
+            }
+
+            .content-block p {
+                font-size: 1rem;
+                color: var(--fg-muted);
+                margin-bottom: 1rem;
+            }
+
+            .content-block p strong {
+                color: var(--fg);
+                font-weight: 600;
+            }
+
+            /* ─── Feature List ─── */
+            .feature-list {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.6rem;
+                margin: 1.5rem 0;
+                padding: 1.5rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+            }
+
+            .feature-list li {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                font-size: 0.95rem;
+                color: var(--fg-muted);
+                line-height: 1.7;
+            }
+
+            .feature-list li .icon {
+                flex-shrink: 0;
+                width: 22px;
+                height: 22px;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.65rem;
+                margin-top: 3px;
+            }
+
+            .era-1 .feature-list li .icon {
+                background: rgba(224, 122, 58, 0.12);
+                color: var(--era1);
+            }
+            .era-2 .feature-list li .icon {
+                background: rgba(199, 93, 222, 0.12);
+                color: var(--era2);
+            }
+            .era-3 .feature-list li .icon {
+                background: rgba(61, 217, 160, 0.12);
+                color: var(--era3);
+            }
+
+            /* ─── Quote Block ─── */
+            .quote-block {
+                position: relative;
+                padding: 1.5rem 2rem;
+                margin: 2rem 0;
+                background: var(--bg-card);
+                border-left: 3px solid var(--accent);
+                border-radius: 0 var(--radius) var(--radius) 0;
+                font-style: italic;
+                color: var(--fg);
+                font-size: 0.95rem;
+                line-height: 1.8;
+            }
+
+            .quote-block::before {
+                content: "\201C";
+                position: absolute;
+                top: -0.2rem;
+                left: 0.8rem;
+                font-size: 3rem;
+                color: var(--accent);
+                opacity: 0.3;
+                font-family: Georgia, serif;
+                line-height: 1;
+            }
+
+            .quote-block code {
+                font-family: "Kanit", monospace;
+                background: rgba(232, 168, 36, 0.08);
+                padding: 0.15rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                color: var(--accent-soft);
+                font-style: normal;
+            }
+
+            /* ─── Model Grid ─── */
+            .model-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 0.75rem;
+                margin: 1.5rem 0;
+            }
+
+            .model-card {
+                padding: 1rem 1.2rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-sm);
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: default;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .model-card::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    135deg,
+                    transparent 50%,
+                    rgba(232, 168, 36, 0.03)
+                );
+                pointer-events: none;
+            }
+
+            .model-card:hover {
+                border-color: var(--border-accent);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            }
+
+            .model-card .name {
+                font-family: "Kanit", sans-serif;
+                font-weight: 600;
+                font-size: 0.92rem;
+                color: var(--fg);
+            }
+
+            .model-card .type {
+                font-size: 0.72rem;
+                color: var(--fg-dim);
+                margin-top: 0.25rem;
+            }
+
+            .era-2 .model-card:hover {
+                border-color: rgba(199, 93, 222, 0.3);
+            }
+            .era-3 .model-card:hover {
+                border-color: rgba(61, 217, 160, 0.3);
+            }
+
+            /* ─── Highlight Card ─── */
+            .highlight-card {
+                padding: 2rem;
+                margin: 2rem 0;
+                background: linear-gradient(
+                    135deg,
+                    var(--bg-card) 0%,
+                    rgba(26, 26, 22, 0.8) 100%
+                );
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .highlight-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+            }
+
+            .era-2 .highlight-card::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--era2),
+                    transparent
+                );
+            }
+
+            .era-3 .highlight-card::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--era3),
+                    transparent
+                );
+            }
+
+            .highlight-card h4 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 0.8rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .era-2 .highlight-card h4 {
+                color: var(--era2);
+            }
+            .era-3 .highlight-card h4 {
+                color: var(--era3);
+            }
+
+            .highlight-card p {
+                font-size: 0.95rem;
+                color: var(--fg-muted);
+                margin-bottom: 0.6rem;
+                line-height: 1.8;
+            }
+
+            .highlight-card p strong {
+                color: var(--fg);
+            }
+
+            /* ─── Comparison Table ─── */
+            .comparison {
+                margin: 2.5rem 0;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                gap: 0;
+                align-items: stretch;
+            }
+
+            .comparison-side {
+                padding: 2rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+            }
+
+            .comparison-side:first-child {
+                border-radius: var(--radius) 0 0 var(--radius);
+            }
+
+            .comparison-side:last-child {
+                border-radius: 0 var(--radius) var(--radius) 0;
+            }
+
+            .comparison-side h4 {
+                font-family: "Kanit", sans-serif;
+                font-weight: 700;
+                font-size: 0.95rem;
+                margin-bottom: 0.8rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .comparison-side:first-child h4 {
+                color: var(--era2);
+            }
+            .comparison-side:last-child h4 {
+                color: var(--era3);
+            }
+
+            .comparison-side p {
+                font-size: 0.88rem;
+                color: var(--fg-muted);
+                line-height: 1.7;
+            }
+
+            .comparison-vs {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 1rem;
+                background: var(--bg-deep);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+            }
+
+            .comparison-vs span {
+                font-family: "Kanit", sans-serif;
+                font-weight: 800;
+                font-size: 0.85rem;
+                color: var(--fg-dim);
+                background: var(--bg-card);
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid var(--border);
+            }
+
+            /* ─── Anima Special Section ─── */
+            .anima-section {
+                margin: 3rem 0;
+                padding: 2.5rem;
+                background: linear-gradient(
+                    160deg,
+                    rgba(61, 217, 160, 0.04) 0%,
+                    var(--bg-card) 40%,
+                    rgba(232, 168, 36, 0.03) 100%
+                );
+                border: 1px solid rgba(61, 217, 160, 0.12);
+                border-radius: var(--radius);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .anima-section::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 400px;
+                height: 400px;
+                background: radial-gradient(
+                    circle,
+                    rgba(61, 217, 160, 0.06),
+                    transparent 70%
+                );
+                pointer-events: none;
+            }
+
+            .anima-section h4 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.3rem;
+                font-weight: 800;
+                color: var(--era3);
+                margin-bottom: 0.4rem;
+                position: relative;
+            }
+
+            .anima-section .anima-sub {
+                font-size: 0.82rem;
+                color: var(--fg-dim);
+                margin-bottom: 1.5rem;
+                position: relative;
+            }
+
+            .anima-section p {
+                font-size: 0.95rem;
+                color: var(--fg-muted);
+                margin-bottom: 1rem;
+                line-height: 1.85;
+                position: relative;
+            }
+
+            .anima-section p strong {
+                color: var(--fg);
+            }
+
+            .arch-diagram {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin: 1.5rem 0;
+                position: relative;
+            }
+
+            .arch-node {
+                padding: 0.7rem 1.2rem;
+                background: rgba(61, 217, 160, 0.06);
+                border: 1px solid rgba(61, 217, 160, 0.15);
+                border-radius: var(--radius-sm);
+                font-family: "Kanit", sans-serif;
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--era3);
+                transition: all 0.3s ease;
+                cursor: default;
+            }
+
+            .arch-node:hover {
+                background: rgba(61, 217, 160, 0.1);
+                border-color: rgba(61, 217, 160, 0.3);
+                transform: scale(1.03);
+            }
+
+            .arch-node.accent {
+                background: var(--accent-glow);
+                border-color: var(--border-accent);
+                color: var(--accent);
+            }
+
+            .arch-arrow {
+                display: flex;
+                align-items: center;
+                color: var(--fg-dim);
+                font-size: 0.8rem;
+            }
+
+            /* ─── Divider ─── */
+            .divider {
+                max-width: 860px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            .divider-line {
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--border),
+                    transparent
+                );
+            }
+
+            /* ─── Conclusion ─── */
+            .conclusion {
+                max-width: 860px;
+                margin: 0 auto;
+                padding: 5rem 2rem;
+            }
+
+            .conclusion h2 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.8rem;
+                font-weight: 800;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .conclusion h2 .accent {
+                color: var(--accent);
+            }
+
+            .summary-flow {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                margin: 2.5rem 0;
+                position: relative;
+            }
+
+            .summary-flow::before {
+                content: "";
+                position: absolute;
+                left: 31px;
+                top: 32px;
+                bottom: 32px;
+                width: 2px;
+                background: linear-gradient(
+                    to bottom,
+                    var(--era1),
+                    var(--era2),
+                    var(--era3)
+                );
+                border-radius: 1px;
+            }
+
+            .flow-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 1.2rem;
+                padding: 1.2rem 1.5rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                transition: all 0.3s ease;
+            }
+
+            .flow-item:hover {
+                border-color: var(--border-accent);
+            }
+
+            .flow-item + .flow-item {
+                margin-top: 0.75rem;
+            }
+
+            .flow-dot {
+                flex-shrink: 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 2px solid;
+                position: relative;
+                z-index: 1;
+                margin-top: 2px;
+            }
+
+            .flow-item:nth-child(1) .flow-dot {
+                border-color: var(--era1);
+                background: rgba(224, 122, 58, 0.2);
+            }
+            .flow-item:nth-child(2) .flow-dot {
+                border-color: var(--era2);
+                background: rgba(199, 93, 222, 0.2);
+            }
+            .flow-item:nth-child(3) .flow-dot {
+                border-color: var(--era3);
+                background: rgba(61, 217, 160, 0.2);
+            }
+
+            .flow-text {
+                font-size: 0.95rem;
+                color: var(--fg-muted);
+                line-height: 1.7;
+            }
+
+            .flow-text strong {
+                color: var(--fg);
+                font-weight: 600;
+            }
+
+            /* ─── Closing ─── */
+            .closing {
+                margin-top: 3rem;
+                padding: 2.5rem;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                position: relative;
+            }
+
+            .closing::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    var(--era1),
+                    var(--era2),
+                    var(--era3)
+                );
+            }
+
+            .closing h3 {
+                font-family: "Kanit", sans-serif;
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: var(--fg);
+                margin-bottom: 1rem;
+            }
+
+            .closing p {
+                font-size: 0.95rem;
+                color: var(--fg-muted);
+                margin-bottom: 1rem;
+                line-height: 1.85;
+            }
+
+            .closing p strong {
+                color: var(--fg);
+            }
+
+            .car-analogy {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin: 2rem 0 1rem;
+            }
+
+            .analogy-card {
+                padding: 1.5rem;
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border);
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+
+            .analogy-card:hover {
+                transform: translateY(-2px);
+            }
+
+            .analogy-card.manual {
+                background: rgba(199, 93, 222, 0.04);
+                border-color: rgba(199, 93, 222, 0.15);
+            }
+
+            .analogy-card.auto {
+                background: rgba(61, 217, 160, 0.04);
+                border-color: rgba(61, 217, 160, 0.15);
+            }
+
+            .analogy-card .icon-wrap {
+                width: 48px;
+                height: 48px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 0.8rem;
+                font-size: 1.2rem;
+            }
+
+            .analogy-card.manual .icon-wrap {
+                background: rgba(199, 93, 222, 0.1);
+                color: var(--era2);
+            }
+            .analogy-card.auto .icon-wrap {
+                background: rgba(61, 217, 160, 0.1);
+                color: var(--era3);
+            }
+
+            .analogy-card .a-title {
+                font-family: "Kanit", sans-serif;
+                font-weight: 700;
+                font-size: 0.9rem;
+                color: var(--fg);
+                margin-bottom: 0.3rem;
+            }
+
+            .analogy-card .a-desc {
+                font-size: 0.8rem;
+                color: var(--fg-dim);
+            }
+
+            .final-thought {
+                margin-top: 1.5rem;
+                padding: 1.5rem;
+                background: var(--accent-glow);
+                border: 1px solid var(--border-accent);
+                border-radius: var(--radius-sm);
+                text-align: center;
+            }
+
+            .final-thought p {
+                color: var(--accent-soft);
+                font-size: 0.95rem;
+                font-style: italic;
+                margin: 0;
+                line-height: 1.8;
+            }
+
+            /* ─── Footer ─── */
+            footer {
+                max-width: 860px;
+                margin: 0 auto;
+                padding: 3rem 2rem;
+                text-align: center;
+                border-top: 1px solid var(--border);
+            }
+
+            footer p {
+                font-size: 0.78rem;
+                color: var(--fg-dim);
+            }
+
+            /* ─── Scroll Reveal ─── */
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.7s ease,
+                    transform 0.7s ease;
+            }
+
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .reveal-delay-1 {
+                transition-delay: 0.1s;
+            }
+            .reveal-delay-2 {
+                transition-delay: 0.2s;
+            }
+            .reveal-delay-3 {
+                transition-delay: 0.3s;
+            }
+            .reveal-delay-4 {
+                transition-delay: 0.4s;
+            }
+
+            /* ─── Responsive ─── */
+            @media (max-width: 768px) {
+                .nav-links {
+                    display: none;
+                }
+                .hero h1 {
+                    font-size: 2rem;
+                }
+                .era-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+                .comparison {
+                    grid-template-columns: 1fr;
+                }
+                .comparison-side:first-child {
+                    border-radius: var(--radius) var(--radius) 0 0;
+                }
+                .comparison-side:last-child {
+                    border-radius: 0 0 var(--radius) var(--radius);
+                }
+                .comparison-vs {
+                    padding: 0.5rem;
+                    border-left: 1px solid var(--border);
+                    border-right: 1px solid var(--border);
+                }
+                .car-analogy {
+                    grid-template-columns: 1fr;
+                }
+                .model-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .arch-diagram {
+                    flex-direction: column;
+                }
+                .arch-arrow {
+                    transform: rotate(90deg);
+                    justify-content: center;
+                }
+                .era-count {
+                    flex-direction: column;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .hero {
+                    padding: 5rem 1.2rem 3rem;
+                }
+                .era-section {
+                    padding: 3rem 1.2rem;
+                }
+                .intro {
+                    padding: 3rem 1.2rem;
+                }
+                .conclusion {
+                    padding: 3rem 1.2rem;
+                }
+                .model-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .anima-section {
+                    padding: 1.5rem;
+                }
+                .closing {
+                    padding: 1.5rem;
+                }
+            }
+
+            /* ─── Reduced Motion ─── */
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.01ms !important;
+                }
+                .reveal {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Progress Bar -->
+        <div class="progress-bar" id="progressBar"></div>
+
+        <!-- Navigation -->
+        <nav id="mainNav">
+            <div class="nav-brand">
+                <i class="fas fa-sparkles" style="margin-right: 6px"></i>AI
+                Image Evolution
+            </div>
+            <div class="nav-links">
+                <a href="#era1"
+                    ><span class="dot" style="background: var(--era1)"></span
+                    >ยุคที่ 1</a
+                >
+                <a href="#era2"
+                    ><span class="dot" style="background: var(--era2)"></span
+                    >ยุคที่ 2</a
+                >
+                <a href="#era3"
+                    ><span class="dot" style="background: var(--era3)"></span
+                    >ยุคที่ 3</a
+                >
+                <a href="#conclusion"
+                    ><span class="dot" style="background: var(--accent)"></span
+                    >สรุป</a
+                >
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-bg">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
+            </div>
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <i class="fas fa-timeline"></i> 2022 — 2026
+                </div>
+                <h1>
+                    วิวัฒนาการของ<br /><span class="highlight"
+                        >AI สร้างภาพ</span
+                    >
+                </h1>
+                <p class="hero-sub">
+                    จากยุค Stable Diffusion สู่ยุค Natural Language<br />
+                    — การเดินทาง 4 ปีกับพัฒนาการวิธีการสื่อสารระหว่างมนุษย์กับ
+                    AI
+                </p>
+                <div class="hero-scroll">
+                    <a href="#intro">
+                        <span>เลื่อนลงเพื่ออ่าน</span>
+                        <div class="scroll-line"></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intro -->
+        <section class="intro" id="intro">
+            <div class="reveal">
+                <p>
+                    ในระยะเวลาเพียงประมาณ <strong>4 ปี</strong> วงการ AI
+                    สร้างภาพ (Image Generation AI) ได้เปลี่ยนแปลงอย่างรวดเร็ว
+                    จากระบบที่ผู้ใช้ต้องจดจำ Keyword และ Tag จำนวนมาก
+                    ไปสู่โมเดลที่สามารถเข้าใจภาษามนุษย์ได้โดยตรง
+                </p>
+                <p>
+                    แม้จะไม่มีการแบ่งยุคอย่างเป็นทางการ
+                    แต่หากพิจารณาจากสถาปัตยกรรมของโมเดล วิธีการเขียน Prompt
+                    และแนวทางการใช้งานของชุมชน สามารถแบ่งวิวัฒนาการออกได้เป็น
+                    <strong>3 ยุค</strong> ดังนี้
+                </p>
+            </div>
+            <div class="era-count reveal reveal-delay-2">
+                <div class="era-count-item">
+                    <div class="num">01</div>
+                    <div class="label">ยุคทดลอง Prompt</div>
+                </div>
+                <div class="era-count-item">
+                    <div class="num">02</div>
+                    <div class="label">ยุค Prompt Engineering</div>
+                </div>
+                <div class="era-count-item">
+                    <div class="num">03</div>
+                    <div class="label">ยุค Natural Language</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- Era 1 -->
+        <section class="era-section era-1" id="era1">
+            <div class="era-header reveal">
+                <div class="era-badge">01</div>
+                <div class="era-title-group">
+                    <h2>ยุคแห่งการทดลอง Prompt</h2>
+                    <div class="era-period">2022 – 2023</div>
+                    <h3>Stable Diffusion 1.x</h3>
+                </div>
+            </div>
+
+            <div class="content-block reveal">
+                <p>
+                    โมเดลในยุคแรก ได้แก่
+                    <strong>Stable Diffusion 1.4 และ 1.5</strong>
+                </p>
+                <p>
+                    จุดเด่นของยุคนี้คือการทำให้ AI
+                    สร้างภาพสามารถใช้งานบนเครื่องคอมพิวเตอร์ทั่วไปได้
+                    โดยใช้โมเดลแบบ Latent Diffusion
+                    ซึ่งถือเป็นจุดเปลี่ยนสำคัญของวงการ Open Source
+                </p>
+            </div>
+
+            <ul class="feature-list reveal reveal-delay-1">
+                <li>
+                    <span class="icon"><i class="fas fa-expand"></i></span
+                    >ความละเอียดพื้นฐาน 512×512 พิกเซล
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-text-width"></i></span
+                    >ใช้ CLIP Text Encoder ที่มีข้อจำกัดด้าน Context ทำให้
+                    Prompt ที่ยาวมากเริ่มสูญเสียประสิทธิภาพ
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-compass"></i></span
+                    >ยังไม่มีมาตรฐานการเขียน Prompt
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-copy"></i></span
+                    >ผู้ใช้ส่วนใหญ่คัดลอก Prompt จากเว็บไซต์อย่าง Civitai หรือ
+                    Lexica แล้วนำมาปรับแต่งต่อ
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-camera"></i></span
+                    >งานที่ได้รับความนิยมส่วนใหญ่เป็นภาพแนว Photorealistic
+                </li>
+            </ul>
+
+            <div class="content-block reveal reveal-delay-2">
+                <p>
+                    ในช่วงเวลานี้ การสร้างภาพที่ดีขึ้นอยู่กับ "การสะสม Keyword"
+                    มากกว่าการอธิบายภาพด้วยภาษามนุษย์
+                </p>
+            </div>
+
+            <div class="quote-block reveal reveal-delay-3">
+                กล่าวได้ว่า ผู้ใช้ต้องเรียนรู้ "ภาษา" ของ AI มากกว่าให้ AI
+                เข้าใจภาษาของผู้ใช้
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- Era 2 -->
+        <section class="era-section era-2" id="era2">
+            <div class="era-header reveal">
+                <div class="era-badge">02</div>
+                <div class="era-title-group">
+                    <h2>ยุคแห่ง Prompt Engineering</h2>
+                    <div class="era-period">ปลายปี 2023 – 2025</div>
+                    <h3>Stable Diffusion XL (SDXL)</h3>
+                </div>
+            </div>
+
+            <div class="content-block reveal">
+                <p>
+                    การเปิดตัว Stable Diffusion XL หรือ SDXL
+                    ถือเป็นก้าวกระโดดครั้งสำคัญ
+                </p>
+                <p>
+                    นอกจากความละเอียดพื้นฐานที่เพิ่มเป็น
+                    <strong>1024×1024 พิกเซล</strong> แล้ว โมเดลยังสามารถตีความ
+                    Prompt ได้แม่นยำขึ้น
+                    รองรับรายละเอียดขององค์ประกอบภาพได้ดีกว่า SD1.x อย่างชัดเจน
+                </p>
+                <p>
+                    นี่คือยุคที่คำว่า
+                    <strong>Prompt Engineering</strong> เริ่มได้รับความนิยม
+                </p>
+            </div>
+
+            <div class="content-block reveal reveal-delay-1">
+                <p>
+                    ผู้ใช้จำนวนมากพัฒนา Prompt Format ที่มีรูปแบบคล้ายกัน
+                    โดยอ้างอิง Tag จาก Danbooru ซึ่งกลายเป็นมาตรฐานของวงการ
+                    Anime AI ในเวลาต่อมา
+                </p>
+            </div>
+
+            <div class="quote-block reveal reveal-delay-2">
+                <code
+                    >1girl, solo, smile, looking at viewer, masterpiece, best
+                    quality ...</code
+                >
+            </div>
+
+            <div class="content-block reveal reveal-delay-2">
+                <p>
+                    การเรียงลำดับ Tag, การกำหนดน้ำหนัก (Weights)
+                    และการจัดโครงสร้าง Prompt กลายเป็นทักษะสำคัญของผู้ใช้งาน
+                </p>
+            </div>
+
+            <!-- จตุรเทพ -->
+            <div class="highlight-card reveal reveal-delay-3">
+                <h4>
+                    <i class="fas fa-crown"></i> การกำเนิด "จตุรเทพ" โมเดลสาย
+                    Anime
+                </h4>
+                <p>
+                    ในชุมชนผู้ใช้งาน มีการเรียกโมเดลยอดนิยมว่า "จตุรเทพ"
+                    แม้จะมีแนวทางการเทรนแตกต่างกัน
+                    แต่ทั้งหมดล้วนผลักดันคุณภาพของงาน Anime ไปอีกระดับ
+                    และกลายเป็น Base Model สำหรับ Fine-tune และ LoRA
+                    อีกนับพันรุ่น
+                </p>
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="name">Pony Diffusion</div>
+                        <div class="type">Base Model</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">NoobAI (NAI)</div>
+                        <div class="type">Base Model</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">Animagine</div>
+                        <div class="type">Base Model</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">Illustrious</div>
+                        <div class="type">Base Model</div>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem">
+                    โดยเฉพาะ <strong>Illustrious</strong> ได้รับการยอมรับว่ามี
+                    Prompt Adherence สูงกว่า SDXL รุ่นก่อน
+                    สามารถเข้าใจภาษาธรรมชาติได้ดีขึ้น ขณะเดียวกันก็ยังรองรับ
+                    Danbooru Tag ได้อย่างมีประสิทธิภาพ
+                </p>
+                <p>
+                    ด้วยเหตุนี้ ผู้ใช้งานจำนวนไม่น้อยจึงเรียกช่วงปลายของ
+                    Illustrious ว่าเป็น
+                    <strong>"SDXL ยุค 2.5"</strong>
+                    แม้จะไม่ได้เป็นชื่อเรียกอย่างเป็นทางการก็ตาม
+                </p>
+            </div>
+
+            <!-- โมเดลลูกยอดนิยม -->
+            <div class="content-block reveal">
+                <p
+                    style="
+                        margin-top: 2rem;
+                        font-size: 0.9rem;
+                        color: var(--fg-dim);
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        font-weight: 500;
+                    "
+                >
+                    โมเดลลูกที่ได้รับความนิยม
+                </p>
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="name">WAI Illustrious</div>
+                        <div class="type">Fine-tune</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">NOVA Anime</div>
+                        <div class="type">Fine-tune</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">Hassaku</div>
+                        <div class="type">Fine-tune</div>
+                    </div>
+                    <div class="model-card">
+                        <div class="name">Janku</div>
+                        <div class="type">Fine-tune</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- Era 3 -->
+        <section class="era-section era-3" id="era3">
+            <div class="era-header reveal">
+                <div class="era-badge">03</div>
+                <div class="era-title-group">
+                    <h2>ยุคของ Natural Language</h2>
+                    <div class="era-period">2025 – ปัจจุบัน</div>
+                    <h3>จากภาษาของ AI สู่ภาษาของมนุษย์</h3>
+                </div>
+            </div>
+
+            <div class="content-block reveal">
+                <p>หากยุค SDXL คือการทำให้มนุษย์เรียนรู้ภาษาของ AI</p>
+                <p>
+                    <strong
+                        >ยุคปัจจุบันคือการทำให้ AI
+                        เรียนรู้ภาษาของมนุษย์แทน</strong
+                    >
+                </p>
+            </div>
+
+            <div class="content-block reveal reveal-delay-1">
+                <p>
+                    โมเดลรุ่นใหม่จำนวนมากเปลี่ยนจากการพึ่งพา Danbooru Tag
+                    เป็นการใช้
+                    <strong>Natural Language Prompt</strong>
+                    หรือการอธิบายภาพด้วยภาษาปกติ
+                </p>
+            </div>
+
+            <div class="comparison reveal reveal-delay-2">
+                <div class="comparison-side">
+                    <h4><i class="fas fa-gears"></i> Danbooru Tag</h4>
+                    <p>
+                        เรียง Tag หลายสิบหรือหลายร้อยคำ ต้องจำโครงสร้าง
+                        กำหนดน้ำหนัก และเรียงลำดับความสำคัญ
+                    </p>
+                </div>
+                <div class="comparison-vs"><span>VS</span></div>
+                <div class="comparison-side">
+                    <h4>
+                        <i class="fas fa-comment-dots"></i> Natural Language
+                    </h4>
+                    <p>
+                        อธิบายภาพด้วยประโยคธรรมดา เหมือนพูดคุยกับคน
+                        ไม่ต้องจำโครงสร้างซับซ้อน
+                    </p>
+                </div>
+            </div>
+
+            <div class="quote-block reveal reveal-delay-3">
+                "เด็กผู้หญิงกำลังนั่งอ่านหนังสือใต้ต้นซากุระในช่วงพระอาทิตย์ตก
+                โทนภาพอบอุ่นแบบภาพยนตร์"
+            </div>
+
+            <ul class="feature-list reveal reveal-delay-3">
+                <li>
+                    <span class="icon"><i class="fas fa-brain"></i></span>ใช้
+                    Large Language Model หรือ Text Encoder
+                    รุ่นใหม่ที่สามารถตีความข้อความได้ละเอียดกว่าเดิม
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-link"></i></span>Prompt
+                    Adherence ดีขึ้นอย่างชัดเจน ไม่ยึดติดกับข้อจำกัดของ Context
+                    แบบ CLIP
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-language"></i></span
+                    >ข้ามภาษาอังกฤษ ภาษาญี่ปุ่น ภาษาจีน ภาษาไทยได้
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-image"></i></span
+                    >ส่วนใหญ่เน้นงาน Photorealistic
+                    และการเข้าใจภาษาธรรมชาติเป็นหลัก
+                </li>
+            </ul>
+
+            <p
+                class="reveal"
+                style="
+                    font-size: 0.9rem;
+                    color: var(--fg-dim);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    font-weight: 500;
+                    margin-top: 2rem;
+                "
+            >
+                โมเดลสำคัญในยุคนี้
+            </p>
+            <div class="model-grid reveal reveal-delay-1">
+                <div class="model-card">
+                    <div class="name">FLUX</div>
+                    <div class="type">General</div>
+                </div>
+                <div class="model-card">
+                    <div class="name">Hunyuan Image</div>
+                    <div class="type">General</div>
+                </div>
+                <div class="model-card">
+                    <div class="name">Z-Image</div>
+                    <div class="type">General</div>
+                </div>
+                <div class="model-card">
+                    <div class="name">Chroma</div>
+                    <div class="type">General</div>
+                </div>
+                <div class="model-card">
+                    <div class="name">Seedream</div>
+                    <div class="type">General</div>
+                </div>
+                <div class="model-card">
+                    <div class="name">AuraFlow</div>
+                    <div class="type">General</div>
+                </div>
+            </div>
+
+            <!-- Anima Section -->
+            <div class="anima-section reveal">
+                <h4><i class="fas fa-star"></i> การมาของ Anima</h4>
+                <div class="anima-sub">
+                    2026 — CircleStone Labs x Comfy Org — สร้างบน NVIDIA Cosmos
+                </div>
+                <p>
+                    ในปี <strong>2026</strong> โมเดล
+                    <strong>Anima</strong> ได้เปิดตัวในฐานะโมเดล Open-weight
+                    สำหรับงาน Anime โดยพัฒนาร่วมกับ Comfy Org
+                    และสร้างขึ้นบนสถาปัตยกรรม <strong>NVIDIA Cosmos</strong>
+                </p>
+                <p>
+                    สิ่งที่แตกต่างคือ Anima ไม่ได้ใช้ CLIP Text Encoder แบบเดิม
+                    แต่เปลี่ยนมาใช้ <strong>Qwen3-0.6B</strong> เป็น Text
+                    Encoder พร้อมกับ
+                    <strong>Qwen Image VAE</strong>
+                    ทำให้เข้าใจภาษาธรรมชาติได้ลึกกว่าเดิม
+                    ทั้งด้านความสัมพันธ์ของคำ ลำดับเหตุการณ์
+                    และเจตนาของผู้สั่งงาน
+                </p>
+
+                <p
+                    style="
+                        font-size: 0.85rem;
+                        color: var(--fg-dim);
+                        margin-top: 1.5rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.8px;
+                        font-weight: 500;
+                    "
+                >
+                    สถาปัตยกรรม
+                </p>
+                <div class="arch-diagram">
+                    <div class="arch-node">
+                        Qwen3-0.6B<br /><span
+                            style="font-size: 0.7rem; opacity: 0.6"
+                            >Text Encoder</span
+                        >
+                    </div>
+                    <div class="arch-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="arch-node accent">
+                        NVIDIA Cosmos-Predict2-2B<br /><span
+                            style="font-size: 0.7rem; opacity: 0.6"
+                            >Image Backbone</span
+                        >
+                    </div>
+                    <div class="arch-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="arch-node">
+                        Qwen Image VAE<br /><span
+                            style="font-size: 0.7rem; opacity: 0.6"
+                            >Visual Encoder</span
+                        >
+                    </div>
+                </div>
+
+                <p>
+                    ตัว Image Backbone ถูก Fine-tune
+                    ด้วยข้อมูลภาพอนิเมะหลายล้านภาพ
+                    ส่งผลให้ยังคงความสามารถในการเข้าใจคำสั่งแบบภาษาพูด
+                    ขณะเดียวกันก็รองรับ <strong>Danbooru Tag</strong>,
+                    <strong>Natural Language</strong>
+                    หรือแม้แต่การ<strong>ผสมทั้งสองรูปแบบ</strong>ไว้ใน Prompt
+                    เดียวกันได้อย่างเป็นธรรมชาติ
+                </p>
+                <p>
+                    แนวทางดังกล่าวทำให้ผู้สร้าง Fine-tune และ LoRA
+                    จำนวนมากเริ่มย้ายจาก Illustrious มาสร้างโมเดลบน Anima
+                    เนื่องจากสามารถรักษาจุดแข็งของ Workflow เดิมไว้ได้
+                    ขณะเดียวกันก็เปิดทางสู่การสั่งงานด้วยภาษามนุษย์อย่างเต็มรูปแบบ
+                </p>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- Conclusion -->
+        <section class="conclusion" id="conclusion">
+            <h2 class="reveal">บท<span class="accent">สรุป</span></h2>
+
+            <div class="reveal reveal-delay-1">
+                <p
+                    style="
+                        text-align: center;
+                        color: var(--fg-muted);
+                        max-width: 640px;
+                        margin: 0 auto 2.5rem;
+                    "
+                >
+                    หากมองเฉพาะคุณภาพของภาพ
+                    ความแตกต่างระหว่างแต่ละยุคอาจไม่ชัดเจนนัก
+                    เพราะความสวยงามยังขึ้นอยู่กับข้อมูลที่ใช้เทรนและแนวทางของแต่ละโมเดล
+                </p>
+                <p
+                    style="
+                        text-align: center;
+                        color: var(--fg-muted);
+                        max-width: 640px;
+                        margin: 0 auto 3rem;
+                    "
+                >
+                    แต่หากมองในมิติของ
+                    <strong style="color: var(--fg)"
+                        >"การสื่อสารระหว่างมนุษย์กับ AI"</strong
+                    >
+                    จะเห็นการเปลี่ยนแปลงอย่างชัดเจน
+                </p>
+            </div>
+
+            <div class="summary-flow reveal reveal-delay-2">
+                <div class="flow-item">
+                    <div class="flow-dot"></div>
+                    <div class="flow-text">
+                        <strong>ยุคที่ 1</strong> — ผู้ใช้ต้องค้นหาและจดจำ
+                        Keyword
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-dot"></div>
+                    <div class="flow-text">
+                        <strong>ยุคที่ 2</strong> — ผู้ใช้ต้องเชี่ยวชาญ Prompt
+                        Engineering และ Danbooru Tag
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-dot"></div>
+                    <div class="flow-text">
+                        <strong>ยุคที่ 3</strong> — AI
+                        เริ่มเข้าใจภาษาธรรมชาติของมนุษย์ และยังรองรับ Tag
+                        แบบเดิมเมื่อจำเป็น
+                    </div>
+                </div>
+            </div>
+
+            <!-- Closing -->
+            <div class="closing reveal">
+                <h3>บทส่งท้าย</h3>
+                <p>
+                    แม้ว่าโมเดลยุคที่ 3 จะลดความยุ่งยากของการเขียน Prompt
+                    ลงอย่างมาก และทำให้การสร้างภาพด้วย AI
+                    เป็นเรื่องที่เข้าถึงได้ง่ายกว่าเดิม
+                    แต่ก็ไม่ได้หมายความว่าโมเดลยุค SDXL จะหมดความสำคัญ
+                </p>
+                <p>
+                    สำหรับผู้ใช้งานที่คุ้นเคยกับการเขียน Danbooru Tag หรือ
+                    Workflow แบบเดิม โมเดลในยุค SDXL
+                    ยังคงสร้างผลงานที่มีคุณภาพสูงได้ไม่แพ้โมเดลรุ่นใหม่
+                    อีกทั้งระบบ Prompt แบบ Pipeline
+                    ที่ผ่านการขัดเกลามาหลายปียังให้การควบคุมรายละเอียดในระดับที่ผู้ใช้งานระดับสูงจำนวนมากยังคงชื่นชอบ
+                </p>
+                <p>
+                    ท้ายที่สุดแล้ว การเปลี่ยนผ่านจากยุคที่ 2 สู่ยุคที่ 3
+                    ไม่ใช่การ <strong>"แทนที่"</strong> แต่เป็นการ
+                    <strong>"เพิ่มทางเลือก"</strong>
+                </p>
+
+                <div class="car-analogy">
+                    <div class="analogy-card manual">
+                        <div class="icon-wrap">
+                            <i class="fas fa-gears"></i>
+                        </div>
+                        <div class="a-title">เกียร์ธรรมดา</div>
+                        <div class="a-desc">
+                            Danbooru Tag & Prompt Pipeline<br />ควบคุมทุกจังหวะด้วยตนเอง
+                        </div>
+                    </div>
+                    <div class="analogy-card auto">
+                        <div class="icon-wrap">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div class="a-title">เกียร์อัตโนมัติ</div>
+                        <div class="a-desc">
+                            Natural Language<br />เข้าถึงง่าย สะดวกสบาย
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-thought">
+                    <p>
+                        สุดท้ายแล้ว ไม่มีระบบใดดีกว่าอีกระบบหนึ่งอย่างเด็ดขาด
+                        มีเพียงระบบที่เหมาะกับวิธีการทำงานของผู้ใช้แต่ละคนเท่านั้น
+                        และนั่นเองคือเสน่ห์ของวงการ Image Generation AI
+                        ในปัจจุบัน
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>วิวัฒนาการของ AI สร้างภาพ: 2022–2026 — บทความเชิงสรุปความรู้</p>
+        </footer>
+
+        <script>
+            /* ─── Progress Bar ─── */
+            const progressBar = document.getElementById("progressBar");
+            function updateProgress() {
+                const scrollTop = window.scrollY;
+                const docHeight =
+                    document.documentElement.scrollHeight - window.innerHeight;
+                const progress =
+                    docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = progress + "%";
+            }
+
+            /* ─── Nav Hide/Show on Scroll ─── */
+            const mainNav = document.getElementById("mainNav");
+            let lastScroll = 0;
+            function updateNav() {
+                const current = window.scrollY;
+                if (current > lastScroll && current > 200) {
+                    mainNav.classList.add("hidden");
+                } else {
+                    mainNav.classList.remove("hidden");
+                }
+                lastScroll = current;
+            }
+
+            /* ─── Active Nav Link ─── */
+            const navLinks = document.querySelectorAll(".nav-links a");
+            const sections = document.querySelectorAll("section[id]");
+            function updateActiveLink() {
+                let currentId = "";
+                sections.forEach((sec) => {
+                    const top = sec.offsetTop - 120;
+                    if (window.scrollY >= top) currentId = sec.id;
+                });
+                navLinks.forEach((link) => {
+                    link.classList.toggle(
+                        "active",
+                        link.getAttribute("href") === "#" + currentId,
+                    );
+                });
+            }
+
+            /* ─── Scroll Reveal (IntersectionObserver) ─── */
+            const revealEls = document.querySelectorAll(".reveal");
+            const revealObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                        }
+                    });
+                },
+                { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+            );
+            revealEls.forEach((el) => revealObserver.observe(el));
+
+            /* ─── Throttled Scroll Handler ─── */
+            let ticking = false;
+            window.addEventListener("scroll", () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        updateProgress();
+                        updateNav();
+                        updateActiveLink();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            /* ─── Initial call ─── */
+            updateProgress();
+            updateActiveLink();
+
+            /* ─── Smooth scroll for anchor links ─── */
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
