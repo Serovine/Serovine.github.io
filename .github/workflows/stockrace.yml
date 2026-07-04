@@ -6,13 +6,17 @@ on:
     - cron: "0 9 * * 1,4"
   workflow_dispatch: # SELF RUN
 
+# ✅ เพิ่มสิทธิ์ให้ Actions สามารถ Push ไฟล์กลับเข้า Repository ได้
+permissions:
+  contents: write
+
 jobs:
   fetch-stocks:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -31,6 +35,14 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add racingstock.csv
-          git commit -m "Update racingstock.csv [skip ci]" || echo "No changes to commit"
-          git push
+          
+          # ✅ ใช้ -A เพื่อแอดไฟล์ที่มีการเปลี่ยนแปลงทั้งหมด (เผื่อไฟล์ไปอยู่ใน topstock/)
+          git add -A
+          
+          # ✅ เช็คอย่างปลอดภัยว่ามีไฟล์ใหม่ให้เซฟไหม ถ้าไม่มีก็ข้ามไป ไม่ให้ระบบพัง
+          if ! git diff --cached --quiet; then
+            git commit -m "Update racingstock.csv [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No changes to commit"
+          fi
