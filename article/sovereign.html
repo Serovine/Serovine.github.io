@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>วาทกรรมแห่งเทวสิทธิ์</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700;900&family=Sarabun:wght@300;400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --bg: #0a0806;
+                --bg-deep: #050403;
+                --fg: #e8dcc8;
+                --fg-dim: #b8a98e;
+                --muted: #7a6e5d;
+                --accent: #c9a84c;
+                --accent-glow: #d4b85a;
+                --crimson: #8b1a1a;
+                --crimson-deep: #5c0e0e;
+                --crimson-light: #b83232;
+                --card: rgba(20, 16, 10, 0.85);
+                --border: rgba(201, 168, 76, 0.15);
+                --border-strong: rgba(201, 168, 76, 0.35);
+            }
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                scrollbar-width: thin;
+                scrollbar-color: var(--accent) var(--bg-deep);
+            }
+
+            body {
+                font-family: "Sarabun", sans-serif;
+                background: var(--bg);
+                color: var(--fg);
+                line-height: 1.95;
+                font-weight: 400;
+                overflow-x: hidden;
+                position: relative;
+            }
+
+            /* วิกเนตต์มืดขอบ */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background: radial-gradient(
+                    ellipse at center,
+                    transparent 35%,
+                    rgba(5, 4, 3, 0.75) 100%
+                );
+                pointer-events: none;
+                z-index: 2;
+            }
+
+            /* ลวดลายพื้นหลัง */
+            body::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                opacity: 0.025;
+                background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L35 25H55L39 35L44 55L30 43L16 55L21 35L5 25H25Z' fill='none' stroke='%23c9a84c' stroke-width='0.5'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            #ember-canvas {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            .manuscript {
+                position: relative;
+                z-index: 3;
+                max-width: 780px;
+                margin: 0 auto;
+                padding: 2rem 1.5rem 6rem;
+            }
+
+            /* === ส่วนหัว === */
+            .article-header {
+                text-align: center;
+                padding: 4rem 0 3rem;
+                position: relative;
+            }
+
+            .header-ornament {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                opacity: 0;
+                animation: fadeSlideDown 1s 0.3s ease forwards;
+            }
+
+            .ornament-line {
+                width: 80px;
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--accent),
+                    transparent
+                );
+            }
+
+            .ornament-diamond {
+                width: 10px;
+                height: 10px;
+                background: var(--accent);
+                transform: rotate(45deg);
+                box-shadow: 0 0 12px rgba(201, 168, 76, 0.4);
+            }
+
+            .header-symbol {
+                font-size: 2.5rem;
+                color: var(--accent);
+                margin-bottom: 1.5rem;
+                opacity: 0;
+                animation:
+                    fadeSlideDown 1s 0.5s ease forwards,
+                    float 4s 1.5s ease-in-out infinite;
+                filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.3));
+            }
+
+            .article-title {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 900;
+                font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+                line-height: 1.5;
+                color: var(--fg);
+                margin-bottom: 0.5rem;
+                opacity: 0;
+                animation: fadeSlideDown 1s 0.7s ease forwards;
+            }
+
+            .article-subtitle {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 600;
+                font-size: clamp(1rem, 2.8vw, 1.25rem);
+                color: var(--accent);
+                line-height: 1.6;
+                margin-top: 0.8rem;
+                opacity: 0;
+                animation: fadeSlideDown 1s 0.9s ease forwards;
+            }
+
+            .header-ornament-bottom {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.6rem;
+                margin-top: 2.5rem;
+                opacity: 0;
+                animation: fadeSlideDown 1s 1.1s ease forwards;
+            }
+
+            .ornament-dot {
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--accent);
+                opacity: 0.6;
+            }
+
+            .ornament-dot.center {
+                width: 6px;
+                height: 6px;
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(201, 168, 76, 0.5);
+            }
+
+            /* === ตัวแบ่งตกแต่ง === */
+            .section-divider {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+                margin: 3rem 0;
+                padding: 0 2rem;
+            }
+
+            .divider-line {
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--border-strong),
+                    transparent
+                );
+            }
+
+            .divider-icon {
+                color: var(--accent);
+                font-size: 0.9rem;
+                opacity: 0.7;
+                animation: pulse-glow 3s ease-in-out infinite;
+            }
+
+            /* === วรรคหลัก === */
+            .prose-section {
+                margin-bottom: 2.5rem;
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+
+            .prose-section.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .prose-section p {
+                text-indent: 2.5em;
+                margin-bottom: 1.2rem;
+                text-align: justify;
+                font-size: 1.02rem;
+                color: var(--fg-dim);
+            }
+
+            .prose-section p:last-child {
+                margin-bottom: 0;
+            }
+
+            .highlight-gold {
+                color: var(--accent);
+                font-weight: 600;
+                text-shadow: 0 0 15px rgba(201, 168, 76, 0.15);
+            }
+
+            .highlight-crimson {
+                color: var(--crimson-light);
+                font-weight: 600;
+            }
+
+            .highlight-italic {
+                font-style: italic;
+                color: var(--fg);
+                font-weight: 500;
+            }
+
+            .section-heading {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 700;
+                font-size: clamp(1.2rem, 3vw, 1.5rem);
+                color: var(--fg);
+                text-align: center;
+                margin-bottom: 2rem;
+                position: relative;
+                padding-bottom: 1.2rem;
+            }
+
+            .section-heading::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 120px;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--accent),
+                    transparent
+                );
+            }
+
+            .quote-block {
+                position: relative;
+                margin: 2rem 0;
+                padding: 1.8rem 2rem 1.8rem 2.5rem;
+                background: linear-gradient(
+                    135deg,
+                    rgba(139, 26, 26, 0.08),
+                    rgba(201, 168, 76, 0.05)
+                );
+                border-left: 3px solid var(--accent);
+                border-radius: 0 8px 8px 0;
+                font-family: "Noto Serif Thai", serif;
+                font-style: italic;
+                color: var(--fg);
+                font-size: 1.05rem;
+                line-height: 2;
+            }
+
+            .quote-block::before {
+                content: "\201C";
+                position: absolute;
+                top: -5px;
+                left: 10px;
+                font-size: 4rem;
+                color: var(--accent);
+                opacity: 0.2;
+                font-style: normal;
+                line-height: 1;
+            }
+
+            .quote-block.crimson {
+                border-left-color: var(--crimson-light);
+                background: linear-gradient(
+                    135deg,
+                    rgba(139, 26, 26, 0.12),
+                    rgba(10, 8, 6, 0.9)
+                );
+            }
+
+            .concept-card {
+                position: relative;
+                margin: 2rem 0;
+                padding: 2rem;
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            .concept-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--accent),
+                    var(--crimson),
+                    transparent
+                );
+            }
+
+            .concept-card .concept-label {
+                display: inline-block;
+                font-family: "Noto Serif Thai", serif;
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 0.1em;
+                color: var(--accent);
+                border: 1px solid var(--border-strong);
+                padding: 0.2rem 0.8rem;
+                border-radius: 4px;
+                margin-bottom: 1rem;
+            }
+
+            .concept-card p {
+                text-indent: 0 !important;
+                color: var(--fg-dim);
+            }
+
+            .dual-block {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            @media (max-width: 600px) {
+                .dual-block {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .dual-card {
+                padding: 1.5rem;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                position: relative;
+                overflow: hidden;
+                transition:
+                    border-color 0.4s ease,
+                    box-shadow 0.4s ease;
+            }
+
+            .dual-card:hover {
+                border-color: var(--border-strong);
+                box-shadow: 0 0 30px rgba(201, 168, 76, 0.05);
+            }
+
+            .dual-card.sword {
+                background: linear-gradient(
+                    160deg,
+                    rgba(139, 26, 26, 0.12),
+                    rgba(10, 8, 6, 0.9)
+                );
+            }
+            .dual-card.scripture {
+                background: linear-gradient(
+                    160deg,
+                    rgba(201, 168, 76, 0.08),
+                    rgba(10, 8, 6, 0.9)
+                );
+            }
+
+            .dual-card .card-icon {
+                font-size: 1.5rem;
+                margin-bottom: 0.8rem;
+                display: block;
+            }
+            .dual-card.sword .card-icon {
+                color: var(--crimson-light);
+            }
+            .dual-card.scripture .card-icon {
+                color: var(--accent);
+            }
+
+            .dual-card .card-title {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 700;
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .dual-card.sword .card-title {
+                color: var(--crimson-light);
+            }
+            .dual-card.scripture .card-title {
+                color: var(--accent);
+            }
+
+            .dual-card p {
+                text-indent: 0 !important;
+                font-size: 0.95rem;
+                color: var(--fg-dim);
+                margin: 0;
+            }
+
+            .thought-chain {
+                position: relative;
+                margin: 2.5rem 0;
+                padding-left: 2.5rem;
+            }
+
+            .thought-chain::before {
+                content: "";
+                position: absolute;
+                left: 8px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(
+                    180deg,
+                    var(--accent),
+                    var(--crimson),
+                    var(--accent)
+                );
+                opacity: 0.3;
+            }
+
+            .thought-item {
+                position: relative;
+                margin-bottom: 1.8rem;
+                padding: 1.2rem 1.5rem;
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                transition:
+                    transform 0.3s ease,
+                    border-color 0.3s ease;
+            }
+
+            .thought-item:hover {
+                transform: translateX(5px);
+                border-color: var(--border-strong);
+            }
+
+            .thought-item::before {
+                content: "";
+                position: absolute;
+                left: -2.5rem;
+                top: 1.6rem;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: var(--bg);
+                border: 2px solid var(--accent);
+                box-shadow: 0 0 10px rgba(201, 168, 76, 0.3);
+            }
+
+            .thought-item p {
+                text-indent: 0 !important;
+                margin: 0;
+                font-size: 0.97rem;
+            }
+
+            .finale-block {
+                position: relative;
+                margin: 3rem 0;
+                padding: 2.5rem 2rem;
+                background: linear-gradient(
+                    135deg,
+                    rgba(92, 14, 14, 0.15),
+                    rgba(10, 8, 6, 0.95),
+                    rgba(201, 168, 76, 0.05)
+                );
+                border: 1px solid rgba(139, 26, 26, 0.3);
+                border-radius: 12px;
+                text-align: center;
+            }
+
+            .finale-block::before {
+                content: "";
+                position: absolute;
+                inset: -1px;
+                border-radius: 13px;
+                background: linear-gradient(
+                    135deg,
+                    var(--crimson),
+                    transparent 40%,
+                    transparent 60%,
+                    var(--accent)
+                );
+                z-index: -1;
+                opacity: 0.3;
+            }
+
+            .finale-block p {
+                text-indent: 0 !important;
+                text-align: center;
+                font-size: 1.05rem;
+                color: var(--fg);
+                line-height: 2.1;
+            }
+
+            /* === แกลเลอรีแมว === */
+            .cat-gallery {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+                margin: 2rem 0;
+            }
+
+            @media (max-width: 600px) {
+                .cat-gallery {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+            .cat-card {
+                position: relative;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid var(--border);
+                aspect-ratio: 1;
+                transition:
+                    transform 0.4s ease,
+                    box-shadow 0.4s ease,
+                    border-color 0.4s ease;
+                cursor: default;
+            }
+
+            .cat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 30px rgba(201, 168, 76, 0.1);
+                border-color: var(--border-strong);
+            }
+
+            .cat-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: sepia(0.3) brightness(0.7) contrast(1.1);
+                transition:
+                    filter 0.4s ease,
+                    transform 0.6s ease;
+            }
+
+            .cat-card:hover img {
+                filter: sepia(0.1) brightness(0.8) contrast(1.05);
+                transform: scale(1.08);
+            }
+
+            .cat-card .cat-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    0deg,
+                    rgba(10, 8, 6, 0.9) 0%,
+                    transparent 60%
+                );
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 0.8rem;
+            }
+
+            .cat-card .cat-label {
+                font-family: "Noto Serif Thai", serif;
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: var(--accent);
+                letter-spacing: 0.05em;
+            }
+
+            .cat-card .cat-desc {
+                font-size: 0.68rem;
+                color: var(--fg-dim);
+                margin-top: 0.15rem;
+                line-height: 1.4;
+            }
+
+            /* === ตารางเปรียบเทียบ === */
+            .compare-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin: 2rem 0;
+                font-size: 0.95rem;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .compare-table thead th {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 700;
+                font-size: 0.85rem;
+                padding: 1rem 1.2rem;
+                text-align: center;
+                border-bottom: 1px solid var(--border-strong);
+                color: var(--accent);
+                background: rgba(201, 168, 76, 0.05);
+            }
+
+            .compare-table tbody td {
+                padding: 0.9rem 1.2rem;
+                border-bottom: 1px solid var(--border);
+                color: var(--fg-dim);
+                vertical-align: top;
+            }
+
+            .compare-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .compare-table tbody tr {
+                transition: background 0.3s ease;
+            }
+
+            .compare-table tbody tr:hover {
+                background: rgba(201, 168, 76, 0.03);
+            }
+
+            .compare-table .col-label {
+                font-family: "Noto Serif Thai", serif;
+                font-weight: 600;
+                color: var(--fg);
+                white-space: nowrap;
+                width: 30%;
+            }
+
+            /* === ลายเซ็น === */
+            .article-sigil {
+                text-align: center;
+                padding: 3rem 0 2rem;
+                opacity: 0;
+                transform: translateY(20px);
+                transition:
+                    opacity 1s ease,
+                    transform 1s ease;
+            }
+
+            .article-sigil.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .sigil-ring {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 1.5rem;
+                border: 1px solid var(--border-strong);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                animation: slow-spin 30s linear infinite;
+            }
+
+            .sigil-ring::before {
+                content: "";
+                position: absolute;
+                inset: 6px;
+                border: 1px dashed var(--border-strong);
+                border-radius: 50%;
+                animation: slow-spin 20s linear infinite reverse;
+            }
+
+            .sigil-ring i {
+                color: var(--accent);
+                font-size: 1.5rem;
+                animation: slow-spin 30s linear infinite reverse;
+                filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.4));
+            }
+
+            .sigil-text {
+                font-family: "Noto Serif Thai", serif;
+                font-size: 0.85rem;
+                color: var(--muted);
+                letter-spacing: 0.15em;
+            }
+
+            .reading-progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    var(--crimson),
+                    var(--accent)
+                );
+                z-index: 100;
+                width: 0%;
+                transition: width 0.1s linear;
+                box-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+            }
+
+            .back-to-top {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: var(--card);
+                border: 1px solid var(--border-strong);
+                color: var(--accent);
+                font-size: 1rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 50;
+                opacity: 0;
+                transform: translateY(20px);
+                transition:
+                    opacity 0.3s,
+                    transform 0.3s,
+                    background 0.3s,
+                    box-shadow 0.3s;
+                pointer-events: none;
+            }
+
+            .back-to-top.show {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: all;
+            }
+
+            .back-to-top:hover {
+                background: rgba(201, 168, 76, 0.1);
+                box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+            }
+
+            .drop-cap::first-letter {
+                font-family: "Noto Serif Thai", serif;
+                font-size: 3.5em;
+                font-weight: 900;
+                float: left;
+                line-height: 0.8;
+                margin-right: 0.1em;
+                margin-top: 0.05em;
+                color: var(--accent);
+                text-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+            }
+
+            .chapter-num {
+                font-family: "Noto Serif Thai", serif;
+                font-size: 0.75rem;
+                letter-spacing: 0.2em;
+                color: var(--muted);
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+
+            .side-accent {
+                position: relative;
+            }
+
+            .side-accent::before {
+                content: "";
+                position: absolute;
+                left: -1.5rem;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(180deg, var(--accent), transparent);
+                opacity: 0.2;
+            }
+
+            @media (max-width: 640px) {
+                .manuscript {
+                    padding: 1rem 1rem 4rem;
+                }
+                .article-header {
+                    padding: 2.5rem 0 2rem;
+                }
+                .quote-block {
+                    padding: 1.2rem 1.2rem 1.2rem 1.8rem;
+                }
+                .concept-card,
+                .thought-item {
+                    padding: 1.2rem;
+                }
+                .finale-block {
+                    padding: 1.8rem 1.2rem;
+                }
+                .ornament-line {
+                    width: 40px;
+                }
+                .side-accent::before {
+                    left: -1rem;
+                }
+                .cat-gallery {
+                    gap: 0.6rem;
+                }
+                .compare-table {
+                    font-size: 0.82rem;
+                }
+                .compare-table thead th,
+                .compare-table tbody td {
+                    padding: 0.6rem 0.7rem;
+                }
+            }
+
+            @keyframes fadeSlideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-8px);
+                }
+            }
+
+            @keyframes pulse-glow {
+                0%,
+                100% {
+                    opacity: 0.5;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slow-spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes shimmer {
+                0% {
+                    background-position: -200% center;
+                }
+                100% {
+                    background-position: 200% center;
+                }
+            }
+
+            .text-shimmer {
+                background: linear-gradient(
+                    90deg,
+                    var(--accent),
+                    #f0dca0,
+                    var(--accent),
+                    #f0dca0,
+                    var(--accent)
+                );
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: shimmer 6s linear infinite;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div
+            class="reading-progress"
+            id="readingProgress"
+            aria-hidden="true"
+        ></div>
+        <canvas id="ember-canvas" aria-hidden="true"></canvas>
+
+        <main class="manuscript">
+            <!-- ส่วนหัว -->
+            <header class="article-header">
+                <div class="header-ornament">
+                    <span class="ornament-line"></span>
+                    <span class="ornament-diamond"></span>
+                    <span class="ornament-line"></span>
+                </div>
+                <div class="header-symbol"><i class="fas fa-crown"></i></div>
+                <h1 class="article-title">วาทกรรมแห่งเทวสิทธิ์</h1>
+                <p class="article-subtitle">
+                    เมื่อ "องค์อธิปัตย์" ตกจากสรวงสวรรค์<br />สัญลักษณ์ ตัวตน
+                    และสิ่งที่เราเลือกจะเชื่อ
+                </p>
+                <div class="header-ornament-bottom">
+                    <span class="ornament-dot"></span>
+                    <span class="ornament-dot"></span>
+                    <span class="ornament-dot center"></span>
+                    <span class="ornament-dot"></span>
+                    <span class="ornament-dot"></span>
+                </div>
+            </header>
+
+            <!-- === บทที่ 1 === -->
+            <section class="prose-section" aria-label="บทนำ">
+                <div class="chapter-num">I &mdash; PROLEGOMENON</div>
+                <p class="drop-cap">
+                    ในพรมเช็ดเท้าแห่งประวัติศาสตร์การเมืองโลก
+                    ระบอบการปกครองที่ขับเคลื่อนด้วยศรัทธา ศีลธรรม และจิตวิญญาณ
+                    มักถูกสายตาอันตื้นเขินของมนุษย์ยุคปัจจุบันตราหน้าว่าเป็นเพียงความงมงายอันไร้สาระ
+                    ทว่า หากเรากะเทาะเปลือกแห่งอคติในศตวรรษที่ 21 ออก
+                    แล้วพินิจมันด้วยแว่นตาของ
+                    <span class="highlight-gold"
+                        >"ความเป็นเหตุเป็นผลสูงสุด"</span
+                    >
+                    (Teleology) ตามแบบฉบับของอริสโตเติล
+                    เราจะพบความจริงอันน่าพิศวง:
+                    <span class="highlight-italic">"สภาวะสมมุติเทพ"</span> หรือ
+                    <span class="highlight-italic">"ราชาผู้ไร้มลทิน"</span>
+                    แท้จริงแล้วหาใช่เรื่องงมงายไม่ หากแต่เป็น
+                    <span class="highlight-gold"
+                        >"เทคโนโลยีแห่งระเบียบจักรวาล"</span
+                    >
+                    (Cosmic Order) ที่มนุษยชาติประดิษฐ์ขึ้นเพื่อสยบภาวะอนาธิปไตย
+                </p>
+                <p>
+                    แต่ทว่า — ก่อนที่เราจะก้าวเข้าไปในโถงทางการเมือง
+                    เราต้องถามคำถามที่ลึกกว่านั้นก่อน:
+                    <span class="highlight-crimson"
+                        >กลไกแห่งการ "สร้างสมมุติเทพ" นี้
+                        เป็นของผู้มีอำนาจจริงหรือ?
+                        หรือมันเป็นคุณสมบัติโครงสร้างของจิตมนุษย์เอง?</span
+                    >
+                    ถ้าเป็นอย่างหลัง แสดงว่าผู้ปกครองไม่ได้ "ประดิษฐ์" อำนาจ
+                    แต่เขาเพียง "ขี่คลื่น" ของกระแสที่มีอยู่แล้ว
+                </p>
+            </section>
+
+            <div class="section-divider" aria-hidden="true">
+                <span class="divider-line"></span>
+                <span class="divider-icon"
+                    ><i class="fas fa-dharmachakra"></i
+                ></span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- === บทที่ 2 === -->
+            <section class="prose-section" aria-label="องค์อธิปัตย์">
+                <div class="chapter-num">II &mdash; FONS JUSTITIAE</div>
+                <h2 class="section-heading">ต้นธารแห่งความถูกต้องอันเด็ดขาด</h2>
+                <div class="side-accent">
+                    <p>
+                        ตามหลักปรัชญาการเมือง องค์อธิปัตย์ (Sovereign)
+                        จำเป็นต้องถูกสถาปนาให้เป็น
+                        <span class="highlight-gold"
+                            >"ต้นธารแห่งความถูกต้องอันเด็ดขาด"</span
+                        >
+                        (Fons Justitiae) กฎโบราณกล่าวไว้ว่า
+                        <span class="highlight-italic"
+                            >The King can do no wrong</span
+                        >
+                        — กษัตริย์มิอาจทรงกระทำผิดได้
+                        ซึ่งในเชิงโครงสร้างแล้วมิได้แปลว่าพระองค์ทรงเป็นมนุษย์ผู้วิเศษ
+                        แต่หมายความว่า โดยสภาวะทางกฎหมายและเจตจำนงแล้ว
+                        ตัวตนของพระองค์คือความยุติธรรมในตัวเอง
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-label">หลักการสำคัญ</span>
+                    <p>
+                        หากราชาสามารถทำผิดหรือทำบาปได้ นั่นเท่ากับว่า
+                        <span class="highlight-crimson"
+                            >"ความล่มสลายของระบบคุณค่า"</span
+                        >
+                        ได้เกิดขึ้นแล้ว ดังนั้น
+                        ความชั่วร้ายและความบกพร่องทั้งปวงในอาณาจักรจึงต้องถูกตีความว่าเป็น
+                        "บาปจากน้ำมือของผู้อื่น" เสมอ
+                        เพื่อให้ผู้อยู่บนยอดพีระมิดคงสภาวะอันบริสุทธิ์
+                        และทำหน้าที่เป็น
+                        <span class="highlight-gold">Last Arbiter</span> —
+                        ผู้พิพากษาคนสุดท้ายที่ไม่มีใครโต้แย้งได้
+                    </p>
+                </div>
+
+                <p>
+                    ที่นี่มีคำถามเกิดขึ้น: ถ้าราชาเป็น Last Arbiter แล้ว
+                    เมื่อเกิดความขัดแย้งระหว่าง "ผลประโยชน์ของราชาเอง" กับ
+                    "ความยุติธรรม" —
+                    <span class="highlight-crimson">ใครจะเป็นผู้ตัดสิน?</span>
+                    คำตอบในระบอบเทวสิทธิ์คือ: คำถามนี้ "ห้ามเกิดขึ้น"
+                    เพราะโดยนิยาม ราชาไม่มีผลประโยชน์ส่วนตัว —
+                    แต่นี่คือจุดที่ระบบเริ่มร้าว
+                    และเป็นจุดที่เราจะกลับมาดูในบทสุดท้าย
+                </p>
+            </section>
+
+            <div class="section-divider" aria-hidden="true">
+                <span class="divider-line"></span>
+                <span class="divider-icon"><i class="fas fa-fire"></i></span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- === บทที่ 3 === -->
+            <section class="prose-section" aria-label="กายสองกาย">
+                <div class="chapter-num">III &mdash; DUO CORPORUM</div>
+                <h2 class="section-heading">
+                    กายาอันเป็นอมตะ กับความจริงในห้องปฏิกูล
+                </h2>
+                <p class="drop-cap">
+                    ความย้อนแย้งอันลุ่มลึกที่สุดของระบอบนี้
+                    คือการหักล้างกันระหว่าง
+                    <span class="highlight-gold">"ภาพแทนอันศักดิ์สิทธิ์"</span>
+                    (The Divine Image) กับ
+                    <span class="highlight-crimson">"ความจริงทางกายภาพ"</span>
+                    (Physical Reality) มนุษย์ทุกคน รวมไปถึงราชา
+                    ล้วนติดอยู่ในกรงขังของดิน น้ำ ลม ไฟ ต้องกิน ดื่ม ขับถ่าย
+                    และเสื่อมสลายไปตามกาลเวลา
+                    แต่เหตุใดความเชื่ออันเปราะบางราวกับแก้วนี้จึงสืบทอดมาได้นับพันปี?
+                </p>
+
+                <div class="quote-block">
+                    นักปรัชญาการเมือง Ernst Kantorowicz ขุดค้นพบคำตอบในทฤษฎี
+                    <span class="highlight-gold">"สองกายาของกษัตริย์"</span>
+                    (The King's Two Bodies, 1957) —
+                    สังคมในอดีตสร้างกลไกแยกแยะระหว่าง กายเนื้ออันเน่าเปื่อยได้
+                    (Body Natural) กับ กายาแห่งเจตจำนงสาธารณะอันศักดิ์สิทธิ์
+                    (Body Politic)
+                </div>
+
+                <div class="thought-chain">
+                    <div class="thought-item">
+                        <p>
+                            เมื่อราชาดำเนินกิจกรรมทางชีวภาพ นั่นคือเรื่องของ
+                            <span class="highlight-crimson">กายเนื้อ</span> —
+                            แต่ตัวตนที่เป็น "สถาบัน" ของพระองค์ยังคงไร้มลทิน
+                        </p>
+                    </div>
+                    <div class="thought-item">
+                        <p>
+                            โลกโบราณบริหารความเปราะบางนี้ด้วย
+                            <span class="highlight-gold"
+                                >ความลึกลับ การปิดบัง
+                                และพิธีกรรมอันซับซ้อน</span
+                            >
+                            — เพื่อสร้าง "ระยะห่างระหว่างมนุษย์กับเทพเจ้า"
+                            ให้มีอยู่จริงในจิตสำนึก
+                        </p>
+                    </div>
+                    <div class="thought-item">
+                        <p>
+                            และที่สำคัญที่สุด:
+                            <span class="text-shimmer"
+                                >"ต้นทุนของการตื่นรู้นั้นแพงเกินไป"</span
+                            >
+                            — มนุษย์พร้อมใจกันแกล้งเชื่อในเรื่องสมมตินี้ (Social
+                            Fiction)
+                            เพราะมันคือกาวทางจิตวิญญาณชิ้นเดียวที่ยึดโยงประชากรนับล้านไม่ให้หันคมดาบเข้าหากัน
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    แต่ที่นี่ มีคำถามที่ไม่ค่อยมีใครถาม: ถ้า "การสร้างสัญลักษณ์"
+                    เป็นกลไกที่ต้องใช้พิธีกรรม การปิดบัง อำนาจบังคับ —
+                    <span class="highlight-crimson"
+                        >แล้วถ้ามีสิ่งที่กลายเป็นสัญลักษณ์ได้โดยไม่ต้องใช้สิ่งเหล่านั้นเลยล่ะ?</span
+                    >
+                </p>
+            </section>
+
+            <div class="section-divider" aria-hidden="true">
+                <span class="divider-line"></span>
+                <span class="divider-icon"><i class="fas fa-cat"></i></span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- === บทที่ 4: แมว === -->
+            <section class="prose-section" aria-label="แมว">
+                <div class="chapter-num">IV &mdash; FELIS SACRA</div>
+                <h2 class="section-heading">สมมุติเทพที่ไม่มีใครสร้าง</h2>
+                <p class="drop-cap">
+                    กางข้อมูลทางประวัติศาสตร์ออกมาดู — ทุกทวีป ทุกอารยธรรม
+                    ทุกศาสนา —
+                    เราจะพบว่ามีสิ่งมีชีวิตชนิดหนึ่งที่ได้รับการยกขึ้นสู่ฐานะสัญลักษณ์อย่างสม่ำเสมอจนน่าตกใจ:
+                    <span class="highlight-gold">แมว</span> ไม่ใช่สิงโต
+                    ไม่ใช่เหยี่ยว ไม่ใช่งู ที่ถูกเลือก — แต่เป็นสัตว์ตัวเล็ก ๆ
+                    ที่กินปลาและนอนตามร่มเงา
+                </p>
+
+                <!-- แกลเลอรีแมว -->
+                <div class="cat-gallery">
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/egypt-cat-bastet/400/400.jpg"
+                            alt="แมวอียิปต์โบราณ"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">อียิปต์โบราณ</span>
+                            <span class="cat-desc"
+                                >Bastet — เทพีที่คือแมวโดยตรง</span
+                            >
+                        </div>
+                    </div>
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/japan-temple-cat/400/400.jpg"
+                            alt="แมววัดญี่ปุ่น"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">ญี่ปุ่น</span>
+                            <span class="cat-desc"
+                                >Maneki-neko — ผู้เรียกทรัพย์
+                                ผู้พิทักษ์วัด</span
+                            >
+                        </div>
+                    </div>
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/siamese-royal-cat/400/400.jpg"
+                            alt="แมวสยาม"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">สยาม</span>
+                            <span class="cat-desc"
+                                >แมวโคราช — สัตว์มงคลระดับราชสำนัก</span
+                            >
+                        </div>
+                    </div>
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/islamic-mosque-cat/400/400.jpg"
+                            alt="แมวในศาสนาอิสลาม"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">อิสลาม</span>
+                            <span class="cat-desc"
+                                >สัตว์เดียวที่ได้เข้ามัสยิด</span
+                            >
+                        </div>
+                    </div>
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/celtic-freyja-cat/400/400.jpg"
+                            alt="แมวนอร์ส"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">นอร์ส/เคลต์</span>
+                            <span class="cat-desc">รถม้าของเทพี Freyja</span>
+                        </div>
+                    </div>
+                    <div class="cat-card">
+                        <img
+                            src="https://picsum.photos/seed/chinese-lucky-cat/400/400.jpg"
+                            alt="แมวจีน"
+                            loading="lazy"
+                        />
+                        <div class="cat-overlay">
+                            <span class="cat-label">จีน</span>
+                            <span class="cat-desc"
+                                >Li Shou — เทพีแมวผู้คุ้มครอง</span
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    <span class="highlight-gold">อียิปต์โบราณ</span> — Bastet
+                    ไม่ใช่เทพีที่ "คล้ายแมว" แต่เทพีคือแมวโดยตรง
+                    การฆ่าแมวถูกลงโทษด้วยประหารชีวิต เมื่อแมวตายในบ้าน
+                    เจ้าของต้องโกนหัวขนาดตาเป็นการไว้อาลัย —
+                    พิธีกรรมเดียวกับที่บทก่อนหน้าบรรยายว่าเป็น
+                    "การประกาศความตายทางสังคม" ทหารโรมันบุกอียิปต์
+                    คนอียิปต์เสียชีวิตเพราะปกป้องแมวกว่าปกป้องตัวเอง —
+                    <span class="highlight-crimson"
+                        >แมวอยู่เหนือชีวิตมนุษย์ในลำดับสัญลักษณ์</span
+                    >
+                </p>
+
+                <p>
+                    <span class="highlight-gold">ศาสนาอิสลาม</span> —
+                    พระศาสดามุฮัมมัดตัดขอบเสื้อเพื่อไม่ให้ตื่นแมวที่นอนอยู่
+                    แมวเป็นสัตว์เดียวที่ได้รับอนุญาตเข้ามัสยิด นี่สำคัญมาก:
+                    อิสลามปฏิเสธรูปเคารพทุกชนิด
+                    แต่แมวกลับได้รับสถานะพิเศษโดยปริยาย —
+                    <span class="highlight-italic"
+                        >มันเป็นสัญลักษณ์ที่ไม่ต้องประกาศว่าเป็นสัญลักษณ์</span
+                    >
+                </p>
+
+                <p>
+                    <span class="highlight-gold">ญี่ปุ่น</span> —
+                    แมวแก่เกินไปจะกลายเป็น Bakeneko หรือ Nekomata มีพลังวิเญจย์
+                    นี่คือความเชื่อที่ว่าแมวไม่ได้ตายแบบธรรมดา แต่
+                    <span class="highlight-gold">"เลื่อนระดับ"</span>
+                    วัดในญี่ปุ่นเลี้ยงแมวเป็นผู้พิทักษ์ —
+                    ตำแหน่งเดียวกับที่เราบรรยายว่าวัดเป็น "หน่วยข่าวกรอง" ของรัฐ
+                </p>
+
+                <p>
+                    <span class="highlight-gold">สยาม</span> —
+                    แมวโคราตเป็นสัตว์มงคลระดับราชสำนัก พิธีรดน้ำแมวเพื่อขอฝน —
+                    แมวทำหน้าที่เป็น
+                    <span class="highlight-gold"
+                        >ตัวกลางระหว่างมนุษย์กับธรรมชาติ</span
+                    >
+                    ตำแหน่งที่ปกติจะเป็นของพระหรือสมภาร แต่มันตกมาอยู่ที่แมว
+                    โดยไม่มีใครสั่งให้
+                </p>
+
+                <p>
+                    <span class="highlight-gold">ยุโรปยุคกลาง</span> —
+                    แมวดำถูกมองว่าเป็นสายให้ของแม่มด น่าสนใจคือ
+                    <span class="highlight-crimson"
+                        >ทั้งฝั่งศักดิ์สิทธิ์และฝั่งมืด ต่างก็ "ยกย่อง"
+                        แมว</span
+                    >
+                    ไม่มีอารยธรรมใดมองแมวว่าเป็น "สัตว์ธรรมดา"
+                    ทุกฝ่ายต้องใส่ความหมายเพิ่มให้แมวเสมอ
+                </p>
+
+                <!-- ตารางเปรียบเทียบ -->
+                <table class="compare-table" role="table">
+                    <thead>
+                        <tr>
+                            <th>มิติ</th>
+                            <th>กษัตริย์</th>
+                            <th>แมว</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-label">กายเนื้อ</td>
+                            <td>มนุษย์ที่กิน นอน ขับถ่าย</td>
+                            <td>สัตว์เลี้ยงลูกด้วยนมที่กินปลา นอน ขับถ่าย</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">กายสัญลักษณ์</td>
+                            <td>ต้นธารแห่งความยุติธรรม</td>
+                            <td>เทพี / ผู้พิทักษ์ / สายให้ / ตัวกลาง</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">วิธีรักษาสัญลักษณ์</td>
+                            <td>
+                                <span class="highlight-crimson"
+                                    >ต้องใช้พิธีกรรม การปิดบัง อำนาจบังคับ</span
+                                >
+                            </td>
+                            <td>
+                                <span class="highlight-gold"
+                                    >ไม่ต้องทำอะไรเลย — เกิดขึ้นเอง</span
+                                >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">ต้นกำเนิดสถานะ</td>
+                            <td>มนุษย์สร้างขึ้น (Top-down)</td>
+                            <td>เกิดจากจิตมนุษย์โดยธรรมชาติ (Bottom-up)</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">เมื่อสัญลักษณ์แตก</td>
+                            <td>เกิดการปฏิวัติ เผาวัง ลานประหาร</td>
+                            <td>ไม่เคยแตก — ยังคงอยู่ทุกวันนี้</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="concept-card">
+                    <span class="concept-label">หัวใจของเรื่อง</span>
+                    <p>
+                        ทำไมแมวถึงได้? ไม่ใช่เพราะมันมีพลัง
+                        ไม่ใช่เพราะมันมีประโยชน์ทางเศรษฐกิจ — แต่เพราะมันอยู่ใน
+                        <span class="highlight-gold">"จุดที่พอดี"</span>
+                        ขนาดเล็ก ไม่เป็นภัย มีความลึกลับในตัว (ตาเรืองแสง
+                        ก้าวไปไม่มีเสียง มองสิ่งที่มนุษย์มองไม่เห็น)
+                        แต่ก็ใกล้ตัวพอที่จะสัมผัสได้ มันคือ
+                        <span class="highlight-italic">"หน้าจอเปล่า" </span
+                        >ที่จิตมนุษย์สามารถฉายความหมายลงไปได้ไม่จำกัด —
+                        และทุกอารยธรรมก็ทำเช่นนั้น โดยที่ไม่มีใครบงการ
+                    </p>
+                </div>
+
+                <div class="quote-block">
+                    แมวคือ
+                    <span class="highlight-gold">Control Group</span>
+                    ในการทดลองทางความคิดนี้: ถ้าสิ่งที่ไม่มีอำนาจ
+                    เปล่าประโยชน์ทางเศรษฐกิจ เล็กกว่ามนุษย์มาก ยังสามารถกลายเป็น
+                    "สมมุติเทพ" ได้ — แสดงว่า
+                    <span class="text-shimmer"
+                        >กลไกแห่งการสร้างสัญลักษณ์นี้อยู่ในมนุษย์
+                        ไม่ใช่อยู่ในผู้ปกครอง</span
+                    >
+                </div>
+
+                <p>
+                    หมาเป็นเทียบได้หรือ? หมามีประวัติศาสตร์ยาวเท่ากัน
+                    แต่สัญลักษณ์ของหมาถูก
+                    <span class="highlight-crimson">"บีบไปทางเดียว"</span> —
+                    ความกล้าหาญ ความภักดี สงคราม การล่าสัตว์
+                    หมาเป็นเครื่องมือที่ถูกสร้างสัญลักษณ์ในบริบทที่จำกัด แต่แมว?
+                    แมวถูกสร้างสัญลักษณ์ใน
+                    <span class="highlight-gold">ทุกบริบท</span> — ศักดิ์สิทธิ์
+                    มืดมิด โชคลาภ ความตาย การเกิดใหม่ ความลึกลับ ความรัก
+                    การปกป้อง ความเป็นอิสระ — เพราะหมา "อ่านได้" แต่แมว
+                    "อ่านไม่ออก"
+                    และสิ่งที่อ่านไม่ออกก็คือสิ่งที่เราฉายความหมายลงไปได้ไม่จำกัด
+                </p>
+            </section>
+
+            <div class="section-divider" aria-hidden="true">
+                <span class="divider-line"></span>
+                <span class="divider-icon"
+                    ><i class="fas fa-balance-scale"></i
+                ></span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- === บทที่ 5 === -->
+            <section class="prose-section" aria-label="ทวิลักษณ์">
+                <div class="chapter-num">V &mdash; DUO POTESTATES</div>
+                <h2 class="section-heading">
+                    ทวิลักษณ์แห่งอำนาจ: ดาบและคัมภีร์
+                </h2>
+                <p class="drop-cap">
+                    กลับมาที่โถงทางการเมือง
+                    ปมปริศนาที่ตัดกันไม่ขาดคือความสัมพันธ์ระหว่าง
+                    "สถาบันกษัตริย์" กับ "สถาบันศาสนา"
+                    ซึ่งดำรงอยู่ในสภาวะย้อนแย้ง — พวกเขารวมกันเป็นหนึ่ง
+                    และแยกกันเป็นสองในเวลาเดียวกัน
+                </p>
+
+                <div class="dual-block">
+                    <div class="dual-card sword" tabindex="0">
+                        <span class="card-icon"
+                            ><i class="fas fa-gavel"></i
+                        ></span>
+                        <div class="card-title">เชิงสัญญะ</div>
+                        <p>
+                            พวกเขาคือเนื้อนาบุญเดียวกัน — ศาสนาคือ
+                            <span class="highlight-gold">"จิตวิญญาณ"</span>
+                            (Form) ราชาคือ
+                            <span class="highlight-crimson"
+                                >"ร่างกายและคมดาบ"</span
+                            >
+                            (Matter) แยกกันไม่ได้ เหมือนวิญญาณกับร่างกาย
+                        </p>
+                    </div>
+                    <div class="dual-card scripture" tabindex="0">
+                        <span class="card-icon"
+                            ><i class="fas fa-scroll"></i
+                        ></span>
+                        <div class="card-title">เชิงสัจธรรมทางการเมือง</div>
+                        <p>
+                            พวกเขาคือศัตรูคู่อาฆาตที่ช่วงชิง
+                            <span class="highlight-gold"
+                                >"สิทธิในการพิพากษา"</span
+                            >
+                            (The Right to Judge) — ราชาครองอำนาจทางโลก
+                            ศาสนจักรครองวิญญาณและนรกสวรรค์
+                        </p>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-label">สภาวะพึ่งพิงอันขมขื่น</span>
+                    <p>
+                        ทั้งสองฝ่ายต่างตกอยู่ใน "สภาวะพึ่งพาอันขมขื่น" —
+                        ราชาที่ไร้ศาสนารับรองจะกลายเป็นเพียงทรราชผู้ป่าเถื่อน
+                        ส่วนศาสนาที่ไร้ดาบของราชาก็เป็นเพียงปรัชญาเพ้อฝันที่ไร้พลังในการบังคับใช้
+                        แต่ทั้งสองฝ่ายก็รู้ดีว่าอีกฝ่ายคือ
+                        <span class="highlight-crimson"
+                            >ภัยคุกคามที่ใกล้ที่สุด</span
+                        >
+                        — ไม่ใช่ศัตรูข้างนอก แต่คือคู่แฝดที่ถ้าหลุดกันไป
+                        ทั้งคู่จะตาย
+                    </p>
+                </div>
+
+                <div class="quote-block">
+                    แม้แต่ยามที่ขั้วอำนาจเก่าพ่ายแพ้ในเกมการเมือง
+                    "ผ้าเหลืองและจีวร" ก็แปรสภาพเป็น
+                    <span class="highlight-gold"
+                        >พื้นที่ลี้ภัยทางจิตวิญญาณ</span
+                    >
+                    (Spiritual Asylum) เป็นการกดปุ่ม Reset โกนหัวเพื่อประกาศ
+                    "ความตายทางสังคม" ชั่วคราว —
+                    วัดจึงกลายเป็นตู้แช่แข็งทางปัญญาและหน่วยข่าวกรองที่กุม Big
+                    Data ของรัฐ
+                    เพื่อรอเวลาที่แผ่นดินถึงทางตันและถูกเรียกตัวกลับมาใช้บริการในฐานะผู้บริสุทธิ์อีกครั้ง
+                </div>
+
+                <p>
+                    และที่นี่ เราเห็นภาพสะท้อนจากเรื่องแมว: แมวในวัดญี่ปุ่น
+                    แมวในมัสยิด แมวในราชสำนักสยาม — สัตว์ตัวเล็กนี้ถูก "ว่าจ้าง"
+                    เข้ามาเป็นส่วนหนึ่งของระบบสัญลักษณ์ของผู้มีอำนาจ
+                    โดยไม่ต้องการความยินยอมจากตัวมันเอง
+                    <span class="highlight-crimson"
+                        >แมวไม่รู้ตัวว่าตัวเองเป็นสัญลักษณ์</span
+                    >
+                    — และนั่นคือจุดที่น่ากลัวที่สุด:
+                    สิ่งที่ถูกทำให้เป็นสัญลักษณ์โดยไม่รู้ตัว ไม่สามารถปฏิเสธได้
+                </p>
+            </section>
+
+            <div class="section-divider" aria-hidden="true">
+                <span class="divider-line"></span>
+                <span class="divider-icon"><i class="fas fa-skull"></i></span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- === บทที่ 6: บทสรุป === -->
+            <section class="prose-section" aria-label="บทสรุป">
+                <div class="chapter-num">VI &mdash; DEICIDIUM</div>
+                <h2 class="section-heading">บทสรุปแห่งการตกสวรรค์</h2>
+                <p class="drop-cap">
+                    ระบอบสมมุติเทพจะดำรงความศักดิ์สิทธิ์อยู่ได้
+                    ก็ต่อเมื่อพระองค์ทรงดำรงสถานะเป็น
+                    "ผู้ตัดสินผู้เที่ยงธรรมที่อยู่เหนือโลกีย์และความขัดแย้งทั้งปวง"
+                    แต่หายนะอันใหญ่หลวงจะเกิดขึ้นทันทีหากพระองค์ก้าวลงมาโลดแล่นในกระดานผลประโยชน์ทางโลก
+                    และกลายเป็น
+                    <span class="highlight-crimson">"ต้นตอของความชิบหาย"</span>
+                    เสียเอง — นี่คือจุดที่ Last Arbiter กลายเป็น Source of Chaos
+                </p>
+
+                <div class="concept-card">
+                    <span class="concept-label">จุดเสื่อมสลาย</span>
+                    <p>
+                        หากราชาองค์ใดทำลายสัญญาสังคม
+                        ทุบทำลายระบบปฏิบัติการทางจิตวิญญาณ (เช่น
+                        การสั่งเผาตำราหรือแบนความเชื่อเดิม)
+                        โดยไม่มีระบบใหม่ที่ดีกว่ามารองรับ...
+                        <span class="highlight-crimson"
+                            >"ม่านบังตาแห่งเทวสิทธิ์"</span
+                        >
+                        จะฉีกขาดทันที
+                    </p>
+                </div>
+
+                <div class="finale-block">
+                    <p>
+                        เมื่อมวลชนตื่นจากภาพฝัน
+                        และพบว่าผู้ที่พวกเขากราบไหว้แท้จริงแล้วคือมนุษย์ผู้เห็นแก่ตัว
+                        ศรัทธาอันบ้าคลั่งจะเปลี่ยนรูปพลังงานกลายเป็น
+                        <span class="highlight-crimson"
+                            >"ความแค้นอันสมบูรณ์แบบ"</span
+                        >
+                    </p>
+                    <p style="margin-top: 1.2rem">
+                        การลุกฮือขึ้นมาเผาทำลายพระราชวังและการลากองค์สมมุติเทพไปสู่ลานประหารในหน้าประวัติศาสตร์
+                        หาใช่เพียงการฆาตกรรมธรรมดา หากแต่เป็น
+                        <span class="text-shimmer"
+                            >"พิธีกรรมสังหารพระเจ้า"</span
+                        >
+                        (The Ritual of Deicide) เพื่อปลดแอกตนเองจากพันธนาการ
+                    </p>
+                    <p style="margin-top: 1.2rem; color: var(--fg-dim)">
+                        และพิสูจน์สัจธรรมขั้นพื้นฐานว่า...
+                        ต่อให้เป็นสายเลือดสวรรค์อันยิ่งใหญ่เพียงใด
+                        <span class="highlight-crimson"
+                            >ท้ายที่สุดแล้ว
+                            เลือดที่ไหลออกจากคอก็เป็นสีแดงเหม็นคาว
+                            ไม่ต่างจากคนล้างส้วมในวังแม้แต่น้อย</span
+                        >
+                    </p>
+                </div>
+
+                <div class="quote-block crimson" style="margin-top: 2.5rem">
+                    ประวัติศาสตร์จึงจารึกไว้อย่างเย็นชาว่า
+                    อำนาจที่ปราศจากความชอบธรรมและสมดุลแห่งผลประโยชน์
+                    ต่อให้ฉาบเคลือบด้วยทองคำจากสรวงสวรรค์
+                    วันหนึ่งมันย่อมล่มสลายและกลายเป็นเพียงเศษอิฐหินที่ถูกฝูงชนเหยียบย่ำอย่างสิ้นเชิง
+                </div>
+
+                <p style="margin-top: 2rem">
+                    แต่ก่อนจะปิดท้าย — ให้จำภาพแมวไว้: แมวไม่เคยล่มสลาย
+                    ไม่เคยถูกลากไปลานประหาร ไม่เคยถูก "เปิดโปง"
+                    ว่าแท้จริงแล้วแค่สัตว์ตัวเล็ก —
+                    <span class="highlight-gold"
+                        >เพราะแมวไม่ได้อ้างว่าตัวเองเป็นเทพ</span
+                    >
+                    สัญลักษณ์ของแมวดำรงอยู่ได้เพราะไม่มีใคร "เป็น" สัญลักษณ์นั้น
+                    — มันเป็นเพียง
+                    <span class="highlight-italic">กระจก</span>
+                    ที่จิตมนุษย์จ้องมองแล้วเห็นสิ่งที่ตัวเองต้องการเห็น
+                </p>
+
+                <p>
+                    กษัตริย์ล่มสลายเพราะเขา
+                    <span class="highlight-crimson"
+                        >พยายาม "เป็น" สิ่งที่เขาไม่ใช่</span
+                    >
+                    แมวรอดชีวิตเพราะมัน
+                    <span class="highlight-gold"
+                        >ไม่รู้ว่าตัวเอง "เป็น" อะไร</span
+                    >
+                    — และบางที
+                    นี่คือบทเรียนที่ลึกที่สุดที่ประวัติศาสตร์พยายามจะสอนเรา:
+                    <span class="text-shimmer"
+                        >อำนาจที่แท้จริงไม่ได้มาจากการประกาศ
+                        แต่มาจากการไม่ต้องประกาศ</span
+                    >
+                </p>
+            </section>
+
+            <!-- ลายเซ็น -->
+            <div class="article-sigil" id="sigil">
+                <div class="sigil-ring">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <p class="sigil-text">FINIS</p>
+            </div>
+        </main>
+
+        <button class="back-to-top" id="backToTop" aria-label="กลับไปด้านบน">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+
+        <script>
+            /* อนุภาคเพลิงลอย */
+            (function () {
+                const canvas = document.getElementById("ember-canvas");
+                const ctx = canvas.getContext("2d");
+                let embers = [];
+                const EMBER_COUNT = 35;
+
+                function resize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resize();
+                window.addEventListener("resize", resize);
+
+                function createEmber() {
+                    return {
+                        x: Math.random() * canvas.width,
+                        y: canvas.height + Math.random() * 100,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: -(0.3 + Math.random() * 0.7),
+                        size: Math.max(1, 1 + Math.random() * 2.5),
+                        life: 0,
+                        maxLife: 200 + Math.random() * 300,
+                        hue: 25 + Math.random() * 20,
+                        brightness: 50 + Math.random() * 30,
+                    };
+                }
+
+                for (let i = 0; i < EMBER_COUNT; i++) {
+                    const e = createEmber();
+                    e.life = Math.random() * e.maxLife;
+                    e.y = Math.random() * canvas.height;
+                    embers.push(e);
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < embers.length; i++) {
+                        const e = embers[i];
+                        e.life++;
+                        e.x += e.vx + Math.sin(e.life * 0.02) * 0.2;
+                        e.y += e.vy;
+                        const lifeRatio = e.life / e.maxLife;
+                        let alpha;
+                        if (lifeRatio < 0.1) alpha = lifeRatio / 0.1;
+                        else if (lifeRatio > 0.7) alpha = (1 - lifeRatio) / 0.3;
+                        else alpha = 1;
+                        alpha = Math.max(0, Math.min(1, alpha)) * 0.6;
+                        const r = Math.max(0.5, e.size);
+                        const gradient = ctx.createRadialGradient(
+                            e.x,
+                            e.y,
+                            0,
+                            e.x,
+                            e.y,
+                            r * 3,
+                        );
+                        gradient.addColorStop(
+                            0,
+                            `hsla(${e.hue}, 80%, ${e.brightness}%, ${alpha})`,
+                        );
+                        gradient.addColorStop(
+                            0.4,
+                            `hsla(${e.hue}, 90%, ${e.brightness - 10}%, ${alpha * 0.5})`,
+                        );
+                        gradient.addColorStop(
+                            1,
+                            `hsla(${e.hue}, 100%, 30%, 0)`,
+                        );
+                        ctx.beginPath();
+                        ctx.arc(e.x, e.y, r * 3, 0, Math.PI * 2);
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
+                        if (e.life >= e.maxLife || e.y < -20)
+                            embers[i] = createEmber();
+                    }
+                    requestAnimationFrame(animate);
+                }
+
+                if (
+                    !window.matchMedia("(prefers-reduced-motion: reduce)")
+                        .matches
+                )
+                    animate();
+            })();
+
+            /* แถบความคืบหน้า */
+            (function () {
+                const bar = document.getElementById("readingProgress");
+                function update() {
+                    const scrollTop = window.scrollY;
+                    const docHeight =
+                        document.documentElement.scrollHeight -
+                        window.innerHeight;
+                    bar.style.width =
+                        (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) +
+                        "%";
+                }
+                window.addEventListener("scroll", update, { passive: true });
+                update();
+            })();
+
+            /* Scroll Reveal */
+            (function () {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting)
+                                entry.target.classList.add("visible");
+                        });
+                    },
+                    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+                );
+
+                document
+                    .querySelectorAll(".prose-section, .article-sigil")
+                    .forEach((el) => observer.observe(el));
+            })();
+
+            /* ปุ่มกลับด้านบน */
+            (function () {
+                const btn = document.getElementById("backToTop");
+                function toggle() {
+                    btn.classList.toggle("show", window.scrollY > 600);
+                }
+                window.addEventListener("scroll", toggle, { passive: true });
+                btn.addEventListener("click", () =>
+                    window.scrollTo({ top: 0, behavior: "smooth" }),
+                );
+            })();
+        </script>
+    </body>
+</html>

@@ -47,5 +47,12 @@
     "date": "2026-07-03",
     "tags": ["ai", "model", "evolution"],
     "file": "article/imagemodelevolution.html"
+  },
+  {
+    "id": "sovereign",
+    "title": "ทวิลักษณ์แห่งอำนาจ:ราชาผู้ไร้มลทิล",
+    "date": "2026-07-04",
+    "tags": ["ปรัชญา", "การเมือง", "ประวัติศาสตร์"],
+    "file": "article/sovereign.html"
   }
 ]
