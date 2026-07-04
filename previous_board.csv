@@ -1,25 +1,13 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-DRI,Darden Restaurants Inc.,19-03-26,Before Market,213.45,14.13%,NYSE,-1.27%
-FRVO,Fervo Energy Company,22-06-26,Before Market,35.09,-3.97%,NASDAQ,+4.02%
-CCL,Carnival Corporation Ltd.,23-06-26,Before Market,30.87,0.27%,NYSE,-6.05%
-KFY,Korn Ferry,23-06-26,Before Market,71.46,5.59%,NYSE,+6.35%
-CBRS,Cerebras Systems Inc.,23-06-26,After Market,234.71,-24.55%,NASDAQ,-15.29%
-FDX,FedEx Corporation,23-06-26,After Market,326.2,40.75%,NYSE,-1.20%
-KBH,KB Home,23-06-26,After Market,54.2,-4.69%,NYSE,+17.44%
-WOR,Worthington Enterprises Inc.,23-06-26,After Market,60.4,16.15%,NYSE,-10.14%
-DAKT,Daktronics Inc.,24-06-26,Before Market,20.76,10.31%,NASDAQ,+1.19%
-NG,Novagold Resources Inc.,24-06-26,Before Market,7.8,-21.53%,NYSEAMERICAN,-10.32%
-PAYX,Paychex Inc.,24-06-26,Before Market,98.24,-10.46%,NASDAQ,-2.00%
-FUL,H. B. Fuller Company,24-06-26,After Market,64.86,9.13%,NYSE,-7.12%
-JEF,Jefferies Financial Group Inc.,24-06-26,After Market,62.1,1.77%,NYSE,-8.64%
-MLKN,MillerKnoll Inc.,24-06-26,After Market,16.5,-7.31%,NASDAQ,+17.52%
-MU,Micron Technology Inc.,24-06-26,After Market,1133.99,326.79%,NASDAQ,+16.06%
-TCOM,Trip.com Group Limited,24-06-26,After Market,45.1,-37.55%,NASDAQ,-13.48%
-WS,Worthington Steel Inc.,24-06-26,After Market,40.73,13.08%,NYSE,-7.82%
-AYI,Acuity Inc.,25-06-26,Before Market,317.62,-12.34%,NYSE,+21.67%
-BB,BlackBerry Limited,25-06-26,Before Market,8.38,122.28%,NYSE,+20.65%
-CMC,Commercial Metals Company,25-06-26,Before Market,72.36,4.72%,NYSE,+3.27%
-MKC,McCormick & Company Incorporat,25-06-26,Before Market,46.64,-30.90%,NYSE,+4.14%
-SNX,TD SYNNEX Corporation,25-06-26,Before Market,284.56,85.65%,NYSE,-0.17%
-FDXF,FedEx Freight Holding Company ,25-06-26,After Market,162.85,7.85%,NYSE,-4.37%
-WSE,Wise Group plc,25-06-26,After Market,10.84,-29.61%,NASDAQ,+9.22%
+FIZZ,National Beverage Corp.,12-03-26,After Market,32.73,1.68%,NASDAQ,+7.52%
+AVAV,AeroVironment  Inc.,29-06-26,After Market,137.95,-44.63%,NASDAQ,+15.29%
+CNXC,Concentrix Corporation,29-06-26,After Market,25.0,-39.59%,NASDAQ,-14.31%
+NKE,Nike  Inc.,30-06-26,After Market,40.75,-32.38%,NYSE,+3.79%
+PRGS,Progress Software Corporation,30-06-26,After Market,33.15,-23.97%,NASDAQ,+18.52%
+STZ,Constellation Brands  Inc.,30-06-26,After Market,146.3,7.02%,NYSE,-2.28%
+FDS,FactSet Research Systems Inc.,01-07-26,Before Market,231.74,-20.23%,NYSE,+8.76%
+GIS,General Mills  Inc.,01-07-26,Before Market,36.01,-20.86%,NYSE,+7.39%
+MSM,MSC Industrial Direct Company  ,01-07-26,Before Market,118.18,39.08%,NYSE,+6.95%
+UNF,Unifirst Corporation,01-07-26,Before Market,266.07,35.74%,NYSE,+2.34%
+GBX,Greenbrier Companies  Inc. (The,01-07-26,After Market,50.37,9.70%,NYSE,-2.90%
+LNN,Lindsay Corporation,02-07-26,Before Market,124.85,6.03%,NYSE,+2.30%
