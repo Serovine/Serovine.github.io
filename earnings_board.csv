@@ -1,1 +1,13 @@
-Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
+AEHR,Aehr Test Systems,07-04-26,After Market,69.96,197.83%,NASDAQ,
+NRIX,Nurix Therapeutics Inc.,08-04-26,Before Market,23.97,37.05%,NASDAQ,
+ACI,Albertsons Companies Inc.,14-04-26,Before Market,14.13,-16.57%,NYSE,
+EPAC,Enerpac Tool Group Corp.,07-07-26,After Market,34.87,-12.14%,NYSE,
+PENG,Penguin Solutions Inc.,07-07-26,After Market,61.47,191.74%,NASDAQ,
+AZZ,AZZ Inc.,08-07-26,After Market,150.01,35.57%,NYSE,
+LEVI,Levi Strauss & Co,08-07-26,After Market,24.41,16.49%,NYSE,
+PSMT,PriceSmart Inc.,08-07-26,After Market,197.9,56.33%,NASDAQ,
+PEP,Pepsico Inc.,09-07-26,Before Market,144.22,5.09%,NASDAQ,
+SMPL,The Simply Good Foods Company,09-07-26,Before Market,13.73,-27.12%,NASDAQ,
+WDFC,WD-40 Company,09-07-26,After Market,245.83,26.94%,NASDAQ,
+DAL,Delta Air Lines Inc.,10-07-26,Before Market,92.75,29.84%,NYSE,
