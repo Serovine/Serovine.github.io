@@ -2,7 +2,7 @@
 id: shoujorei
 title: แปลเพลง Shoujo Rei
 date: 2026-07-05
-tags: [translated, vocaloid]
+tags: [translated, vocaloid, Hatsune Miku]
 ---
 
 # 🎵 Shoujo Rei

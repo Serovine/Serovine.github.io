@@ -1,5 +1,17 @@
 [
   {
+    "catId": "novels",
+    "catName": "Novels",
+    "catIcon": "📄",
+    "catType": "misc",
+    "catDesc": "Novels",
+    "id": "novels-index",
+    "title": "Index",
+    "date": "",
+    "tags": [],
+    "file": "tlog/novels/index.md"
+  },
+  {
     "catId": "random",
     "catName": "ไร้สาระทั่วไป",
     "catIcon": "🍺",
@@ -8,7 +20,9 @@
     "id": "welcome",
     "title": "welcome",
     "date": "2025-01-01",
-    "tags": ["meta"],
+    "tags": [
+      "meta"
+    ],
     "file": "tlog/random/welcome.md"
   },
   {
@@ -17,10 +31,14 @@
     "catIcon": "🕹️",
     "catType": "game",
     "catDesc": "Retro Game",
-    "id": "retrogame-cityconnection",
-    "title": "Cityconnection",
+    "id": "cityconnection",
+    "title": "ย้อนรอย City Connection",
     "date": "2026-06-25",
-    "tags": ["retrogame", "nes", "arcade"],
+    "tags": [
+      "retro",
+      "nes",
+      "arcade"
+    ],
     "file": "tlog/retrogame/cityconnection.md"
   },
   {
@@ -29,11 +47,14 @@
     "catIcon": "🎵",
     "catType": "misc",
     "catDesc": "เพลงแปล",
-    "id": "howtosekaiseifuku",
-    "title": "แปลเพลง How to Sekai Seifuku - Neru",
-    "date": "2015-12-24",
-    "tags": ["translated", "vocaloid"],
-    "file": "tlog/translatesong/sekaiseifukubyneru.md"
+    "id": "sadplanet",
+    "title": "แปลเพลง From a Sad Star - Baby VOX",
+    "date": "2026-07-07",
+    "tags": [
+      "translated",
+      "K-Pop"
+    ],
+    "file": "tlog/translatesong/starplanet.md"
   },
   {
     "catId": "translatesong",
@@ -41,11 +62,31 @@
     "catIcon": "🎵",
     "catType": "misc",
     "catDesc": "เพลงแปล",
-    "id": "alicemagic",
-    "title": "แปลเพลง ALICE MAGIC - RITA",
-    "date": "2012-12-29",
-    "tags": ["translated", "song", "RITA", "KEY"],
-    "file": "tlog/translatesong/alicemagic.md"
+    "id": "lasthandshake",
+    "title": "แปลเพลง Handshake - Rain Bi",
+    "date": "2026-07-07",
+    "tags": [
+      "translated",
+      "K-Pop"
+    ],
+    "file": "tlog/translatesong/lasthandshake.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "orionnoyume",
+    "title": "แปลเพลง ORION no Yume",
+    "date": "2026-07-07",
+    "tags": [
+      "translated",
+      "vocaloid",
+      "BuzzG",
+      "Hatsune Miku"
+    ],
+    "file": "tlog/translatesong/orionnoyume.md"
   },
   {
     "catId": "translatesong",
@@ -54,9 +95,14 @@
     "catType": "misc",
     "catDesc": "เพลงแปล",
     "id": "a",
-    "title": "แปลเพลง A - BuzzG",
-    "date": "2012-09-19",
-    "tags": ["translated", "song", "vocaloid", "buzzG"],
+    "title": "แปลเพลง A",
+    "date": "2026-07-06",
+    "tags": [
+      "translated",
+      "vocaloid",
+      "BuzzG",
+      "Hatsune Miku"
+    ],
     "file": "tlog/translatesong/a.md"
   },
   {
@@ -65,10 +111,95 @@
     "catIcon": "🎵",
     "catType": "misc",
     "catDesc": "เพลงแปล",
+    "id": "fairytale",
+    "title": "แปลเพลง Fairy Tale,",
+    "date": "2026-07-06",
+    "tags": [
+      "translated",
+      "vocaloid",
+      "buzzG",
+      "Hatsune Miku"
+    ],
+    "file": "tlog/translatesong/fairytale.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "iscreamchocolatl",
+    "title": "แปลเพลง I Scream Chocolatl",
+    "date": "2026-07-06",
+    "tags": [
+      "translated",
+      "Anime",
+      "music"
+    ],
+    "file": "tlog/translatesong/iscreamchocolat.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "song_id",
+    "title": "แปลเพลง ー不可解ー -สิ่งที่ไม่ไม่อาจเข้าใจ-",
+    "date": "2026-07-06",
+    "tags": [
+      "translated",
+      "music",
+      "KAF"
+    ],
+    "file": "tlog/translatesong/fukakai.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
     "id": "shoujorei",
-    "title": "แปลเพลง Shoujo Rei - MikitoP",
-    "date": "2018-07-21",
-    "tags": ["translated", "song", "vocaloid", "MikitoP"],
+    "title": "แปลเพลง Shoujo Rei",
+    "date": "2026-07-05",
+    "tags": [
+      "translated",
+      "vocaloid",
+      "Hatsune Miku"
+    ],
     "file": "tlog/translatesong/shoujorei.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "alicemagic",
+    "title": "แปลเพลง ALICEMAGIC",
+    "date": "2026-07-03",
+    "tags": [
+      "translated",
+      "song",
+      "Rita",
+      "KEY"
+    ],
+    "file": "tlog/translatesong/alicemagic.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "sekaiseifukubyneru",
+    "title": "แปลเพลง How to Sekai Seifuku",
+    "date": "2015-12-24",
+    "tags": [
+      "translated",
+      "vocaloid"
+    ],
+    "file": "tlog/translatesong/sekaiseifukubyneru.md"
   }
 ]
