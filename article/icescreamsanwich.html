@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>การเดินทางของไอศกรีมแซนด์วิชเวเฟอร์</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg-color: #fdfbf7;
+                --text-main: #5d5c61;
+                --text-light: #8a8a8e;
+                --pastel-pink: #ffddd9;
+                --pastel-blue: #dbe9f4;
+                --pastel-green: #d5ece1;
+                --pastel-yellow: #fff4d6;
+                --pastel-purple: #ece3f5;
+                --pastel-orange: #ffe8d6;
+                --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Sarabun", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-main);
+                line-height: 1.8;
+                font-size: 17px;
+                overflow-x: hidden;
+            }
+
+            /* Decorative Background Blobs */
+            .blob {
+                position: fixed;
+                border-radius: 50%;
+                z-index: -1;
+                opacity: 0.4;
+            }
+            .blob-1 {
+                width: 300px;
+                height: 300px;
+                background: var(--pastel-pink);
+                top: -50px;
+                left: -100px;
+            }
+            .blob-2 {
+                width: 250px;
+                height: 250px;
+                background: var(--pastel-blue);
+                top: 40%;
+                right: -80px;
+            }
+            .blob-3 {
+                width: 200px;
+                height: 200px;
+                background: var(--pastel-yellow);
+                bottom: 50px;
+                left: -50px;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+
+            /* Hero Section */
+            header {
+                text-align: center;
+                padding: 60px 20px 40px;
+                animation: fadeDown 1s ease-out;
+            }
+
+            .hero-emoji {
+                font-size: 3.5rem;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            h1 {
+                font-family: "Prompt", sans-serif;
+                font-weight: 600;
+                font-size: 2.8rem;
+                color: #6c5b7b;
+                line-height: 1.3;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+                color: var(--text-light);
+                background: #fff;
+                display: inline-block;
+                padding: 10px 25px;
+                border-radius: 50px;
+                box-shadow: var(--card-shadow);
+                transform: rotate(-1deg);
+            }
+
+            /* Intro */
+            .intro {
+                background: #fff;
+                padding: 35px;
+                border-radius: 20px;
+                box-shadow: var(--card-shadow);
+                margin-bottom: 50px;
+                border-left: 6px solid var(--pastel-pink);
+            }
+
+            /* Chapter Styling */
+            .chapter {
+                margin-bottom: 60px;
+            }
+
+            h2 {
+                font-family: "Prompt", sans-serif;
+                font-size: 1.8rem;
+                color: #5e728e;
+                margin-bottom: 25px;
+                display: inline-block;
+                position: relative;
+                padding-bottom: 10px;
+            }
+
+            h2::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 8px;
+                background: var(--pastel-green);
+                border-radius: 4px;
+                z-index: -1;
+                opacity: 0.7;
+            }
+
+            p {
+                margin-bottom: 20px;
+            }
+
+            /* Grid for Countries */
+            .country-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-top: 30px;
+            }
+
+            .country-card {
+                padding: 25px;
+                border-radius: 15px 30px 15px 30px;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+                box-shadow: var(--card-shadow);
+            }
+
+            .country-card:hover {
+                transform: translateY(-5px) scale(1.02);
+            }
+
+            .country-card h3 {
+                font-family: "Prompt", sans-serif;
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .country-card p {
+                font-size: 0.95rem;
+                margin-bottom: 0;
+                color: var(--text-main);
+            }
+
+            .c-usa {
+                background: var(--pastel-blue);
+            }
+            .c-italy {
+                background: var(--pastel-yellow);
+            }
+            .c-korea {
+                background: var(--pastel-pink);
+            }
+            .c-aus {
+                background: var(--pastel-green);
+            }
+
+            /* Monaka Highlight */
+            .monaka-box {
+                background: var(--pastel-purple);
+                padding: 35px;
+                border-radius: 25px;
+                margin-top: 20px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .monaka-box::before {
+                content: "🍡";
+                position: absolute;
+                top: -10px;
+                right: 10px;
+                font-size: 5rem;
+                opacity: 0.2;
+                transform: rotate(15deg);
+            }
+
+            .highlight-text {
+                background: rgba(255, 255, 255, 0.5);
+                padding: 2px 8px;
+                border-radius: 5px;
+                font-weight: 500;
+            }
+
+            /* Timeline */
+            .timeline {
+                position: relative;
+                border-left: 3px dashed var(--pastel-orange);
+                margin-left: 20px;
+                padding-left: 30px;
+            }
+
+            .timeline-item {
+                margin-bottom: 40px;
+                position: relative;
+            }
+
+            .timeline-item::before {
+                content: "";
+                position: absolute;
+                left: -41px;
+                top: 5px;
+                width: 18px;
+                height: 18px;
+                background: #fff;
+                border: 4px solid var(--pastel-orange);
+                border-radius: 50%;
+            }
+
+            .timeline-date {
+                font-family: "Prompt", sans-serif;
+                font-weight: 600;
+                color: #d49a6a;
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+            }
+
+            .timeline-content {
+                background: #fff;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: var(--card-shadow);
+            }
+
+            .timeline-content strong {
+                color: #8b6b47;
+            }
+
+            /* Thailand Section */
+            .thai-box {
+                background: linear-gradient(
+                    135deg,
+                    #fff 0%,
+                    var(--pastel-orange) 100%
+                );
+                padding: 35px;
+                border-radius: 20px;
+                border: 2px dashed #ffb997;
+            }
+
+            .quote-box {
+                background: rgba(255, 255, 255, 0.6);
+                border-left: 4px solid #d49a6a;
+                padding: 15px 20px;
+                margin: 20px 0;
+                font-style: italic;
+                color: #6b5b48;
+            }
+
+            /* Conclusion */
+            .conclusion {
+                text-align: center;
+                background: var(--text-main);
+                color: #fdfbf7;
+                padding: 50px 30px;
+                border-radius: 30px;
+                margin-top: 40px;
+            }
+
+            .conclusion h2 {
+                color: #fff;
+            }
+
+            .conclusion h2::after {
+                background: #8a8a8e;
+            }
+
+            .conclusion p {
+                max-width: 600px;
+                margin: 0 auto;
+                opacity: 0.9;
+            }
+
+            footer {
+                text-align: center;
+                margin-top: 50px;
+                color: var(--text-light);
+                font-size: 0.9rem;
+                padding-bottom: 30px;
+            }
+
+            /* Animations */
+            @keyframes fadeDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @media (max-width: 600px) {
+                h1 {
+                    font-size: 2rem;
+                }
+                .container {
+                    padding: 20px 15px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <header>
+            <span class="hero-emoji">🍦</span>
+            <h1>การเดินทางของ<br />"ไอศกรีมแซนด์วิชเวเฟอร์"</h1>
+            <div class="subtitle">
+                ไอติมก้อนสี่เหลี่ยมที่เปลี่ยนชื่อไปตามพิกัดประเทศ
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Intro -->
+            <section class="intro">
+                <p>
+                    หากเราเดินไปที่ตู้แช่ไอศกรีมในร้านสะดวกซื้อหรือร้านขายของชำ
+                    เรามักจะสะดุดตากับไอติมเนื้อครีมสีขาวทรงบล็อกสี่เหลี่ยมคล้ายถาดทำน้ำแข็ง
+                    ห่อหุ้มด้วยแผ่นแป้งบางๆ สีครีมพาสเทล
+                    ขนมชนิดนี้มีความมหัศจรรย์อย่างหนึ่งคือ
+                    มันมีชื่อเรียกที่หลากหลายมากจนแทบจะเปลี่ยนไปตามพิกัดของประเทศที่คุณอยู่
+                </p>
+                <p>
+                    คนไทยรุ่นใหญ่บางคนเรียกมันว่า <strong>ไอติมโบราณ</strong>
+                    <strong>ไอติมกระเบื้อง</strong> บ้างก็เรียก
+                    <strong>ไอติมตัดโบราณ</strong>
+                    ในขณะที่คนรุ่นใหม่คุ้นเคยกับคำว่า
+                    <strong>โมนากะ</strong> สไตล์ญี่ปุ่น
+                    แต่ถ้าเราสืบรากลึกไปถึงสารบบอาหารระดับสากล
+                    ขนมที่ชวนน้ำลายสอชิ้นนี้มีชื่อเรียกอย่างเป็นทางการระดับสากลว่า
+                    <strong>"Ice Cream Sandwich"</strong> (ไอศกรีมแซนด์วิช)
+                </p>
+            </section>
+
+            <!-- Chapter 1 -->
+            <section class="chapter">
+                <h2>บทที่ 1: แผ่นเวเฟอร์บางเบา... ชื่อเรียกตามประเทศ</h2>
+                <p>
+                    สำหรับคนไทยเมื่อได้ยินคำว่า "แซนด์วิช"
+                    ภาพแรกในหัวมักจะเป็นขนมปังแผ่นหนาประกบไส้แฮมชีส
+                    การเห็นแผ่นแป้งเวเฟอร์ลายตารางบางๆ
+                    ห่อไอติมสี่เหลี่ยมจึงดูไม่เข้าเค้าเอาเสียเลย แต่ในหลักสากล
+                    คำว่า Sandwich ใช้อธิบายลักษณะของ
+                    "อาหารที่มีวัตถุสองชิ้นประกบสิ่งตรงกลางไว้เพื่อให้หยิบทานได้โดยมือไม่เลอะ"
+                    ซึ่งแต่ละประเทศมีการตีความที่แตกต่างกันออกไป:
+                </p>
+
+                <div class="country-grid">
+                    <div class="country-card c-usa">
+                        <h3>🇺🇸 อเมริกา</h3>
+                        <p>
+                            Ice Cream Sandwich แบบคลาสสิก คือ
+                            "คุกกี้ช็อกโกแลตนุ่มสีดำเจาะรู" ประกบไส้ไอติมวานิลลา
+                            ไม่ใช่แผ่นเวเฟอร์บางๆ
+                        </p>
+                    </div>
+                    <div class="country-card c-italy">
+                        <h3>🇮🇹 อิตาลี</h3>
+                        <p>
+                            ดินแดนแห่งเจลาโตจะเรียกมันว่า "Biscotto"
+                            ใช้แผ่นบิสกิตเนื้อหนาแน่นประกบเจลาโตรสเข้มข้น
+                        </p>
+                    </div>
+                    <div class="country-card c-korea">
+                        <h3>🇰🇷 เกาหลีใต้</h3>
+                        <p>
+                            ย่านสตรีทฟู้ดจะใช้ "Waffle" แผ่นหนานุ่มปิ้งร้อนๆ
+                            โปะไอติมก้อนยักษ์ วิปครีม แล้วพับครึ่งประกบ
+                            เคี้ยวเต็มคำ
+                        </p>
+                    </div>
+                    <div class="country-card c-aus">
+                        <h3>🇦🇺 ออสเตรเลีย</h3>
+                        <p>
+                            ตำนานอย่าง "Maxibon" ฝั่งที่เป็นแป้งจะใช้ "Waffle
+                            Biscuit" ที่มีความหนาและหนึบหนับ
+                            ไม่ใช่เวเฟอร์บางกรอบ
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 2 -->
+            <section class="chapter">
+                <h2>บทที่ 2: "โมนากะ" (Monaka) จากขนมพันปี</h2>
+                <p>
+                    ประเทศที่ใช้แผ่นเวเฟอร์บางกรอบสไตล์ไอติมโคนมาทำแซนด์วิชได้อย่างทรงอิทธิพลที่สุดคือ
+                    ญี่ปุ่น ในชื่อ
+                    <strong>"โมนากะ"</strong> ซึ่งมีที่มายาวนานนับพันปี
+                    เริ่มต้นในสมัยเฮอัน
+                    ขุนนางราชสำนักกินขนมแป้งข้าวเหนียวอบทรงกลมสีขาวในคืนวันเพ็ญ
+                    จึงแต่งกลอนเปรียบเปรยว่า "Monaka no Tsuki"
+                    (พระจันทร์ในคืนวันเพ็ญ)
+                    ต่อมาจึงนำมาสอดไส้ถั่วแดงกวนขายให้คนทั่วไป
+                </p>
+
+                <div class="monaka-box">
+                    <p>
+                        เมื่อวัฒนธรรมไอศกรีมตะวันตกหลั่งไหลเข้าสู่ญี่ปุ่น
+                        แบรนด์อย่าง
+                        <strong>Morinaga</strong> ได้ปฏิวัติวงการในปี 1972 ด้วย
+                        "Choco Monaka Jumbo" ซึ่งกลายเป็นแชมป์ยอดขายอันดับ 1
+                        ยาวนานจนถึงปัจจุบัน มียอดขายถล่มทลายกว่า
+                        <span class="highlight-text">100 ล้านชิ้นต่อปี</span>
+                    </p>
+                    <p style="margin-bottom: 0">
+                        ความอัจฉริยะคือการดีไซน์ให้เป็นบล็อกร่องตารางนูนต่ำ 18
+                        ช่อง เพื่อให้ "บิหักแบ่งกินได้ง่าย" แต่ในความเป็นจริง
+                        ยอดขายถล่มทลายเกือบ 100% มาจากคนที่แกะซองแล้ว
+                        <span class="highlight-text">"กัดกร้วมเดียว"</span>
+                        เข้าไปค่อนชิ้น เพราะความอร่อยนวลมันเกินกว่าจะห้ามใจ!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Chapter 3 -->
+            <section class="chapter">
+                <h2>บทที่ 3: ประวัติศาสตร์ ต้นกำเนิดเวเฟอร์</h2>
+                <p>
+                    ดั้งเดิม "เวเฟอร์" พัฒนามาจากแผ่นแป้งทำพิธีทางศาสนาในยุคกลาง
+                    ต่อมาในศตวรรษที่ 19 ช่างทำขนมแกะสลักแม่พิมพ์ให้มีลายตาราง
+                    (Gaufre) และพบว่าลายนี้ช่วยให้แป้งอุ้มไอศกรีมได้ดีไม่ลื่นไถล
+                    คำถามคือ ระหว่างไอติมแซนด์วิชเวเฟอร์ กับ โคนไอติม
+                    อะไรเกิดก่อนกัน?
+                </p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            ปลายยุค 1800s (เกิดก่อน)
+                        </div>
+                        <div class="timeline-content">
+                            <p style="margin-bottom: 0">
+                                <strong>Wafer Ice Cream Sandwich:</strong>
+                                พ่อค้าไอศกรีมรถเข็นชาวอิตาเลียนในนิวยอร์กและลอนดอน
+                                เผชิญปัญหาสุขอนามัยจากการใช้แก้วเลียไอติมร่วมกัน
+                                ในปี 1899
+                                จึงนำแผ่นเวเฟอร์ลายตารางสองแผ่นมาประกบหัวท้ายไอติม
+                                เพื่อให้คีบจับทานได้โดยมือไม่เลอะ
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">ปี 1904 (เกิดทีหลัง)</div>
+                        <div class="timeline-content">
+                            <p style="margin-bottom: 0">
+                                <strong>Ice Cream Cone:</strong>
+                                เกิดจากความบังเอิญในงาน St. Louis World's Fair
+                                เมื่อร้านไอติมจานชามหมด Ernest A. Hamwi
+                                พ่อค้าขนมวาฟเฟิลข้างๆ จึงหยิบแผ่นวาฟเฟิลร้อนๆ มา
+                                "ม้วนเป็นทรงกรวย" แล้วส่งให้ตักไอติมโปะลงไป
+                                กลายเป็นประวัติศาสตร์
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px">
+                    ส่วนรูปทรง "บล็อกสี่เหลี่ยมลูกบาศก์"
+                    ถูกพัฒนาขึ้นในยุคปฏิวัติอุตสาหกรรมแช่แข็ง
+                    เพราะการฉีดไอติมเป็นแท่งแล้วใช้ลวดตัดเป็นก้อนสี่เหลี่ยม
+                    ทำได้รวดเร็ว ไม่เหลือเศษทิ้ง และจัดเรียงในตู้แช่ได้แนบสนิท
+                    ประหยัดพื้นที่ขนส่งที่สุด
+                </p>
+            </section>
+
+            <!-- Chapter 4 -->
+            <section class="chapter">
+                <h2>บทที่ 4: เส้นทางสู่ไทย กับตำนาน "ตราจรวด"</h2>
+                <div class="thai-box">
+                    <p>
+                        ไอศกรีมแซนด์วิชเวเฟอร์เดินทางมาถึงไทยหลังสงครามโลกครั้งที่
+                        2 (พ.ศ. 2490)
+                        กลุ่มช่างและพ่อค้าชาวจีนนำเครื่องจักรตัดไอติมสี่เหลี่ยมเข้ามา
+                        แต่ดัดแปลงสูตรจากนมวัวแพงๆ ให้เป็นรสท้องถิ่น เช่น กะทิสด
+                        เผือก ชาไทย และรวมมิตร
+                    </p>
+                    <p>
+                        ในอดีตคนไทยเรียกแผ่นแป้งนวลๆ นี้ว่า
+                        <strong>"ไอติมแซนวิซ"</strong> แบรนด์ผู้บุกเบิกตำนานคือ
+                        <strong>"ไอศกรีมตราจรวด"</strong> แห่งจันทบุรี
+                        ใช้แม่พิมพ์เหล็กผลิตไอติมบล็อกห่อเวเฟอร์เนื้อนุ่ม
+                        วางขายในกล่องกระดาษสีส้ม-ขาว
+                    </p>
+
+                    <div class="quote-box">
+                        ทำไมคนไทยถึงไม่ค่อยยอมเรียกมันว่า "แซนด์วิช"? <br />
+                        เพราะสังคมไทยผูกพันกับ "ไอติมขนมปัง" (ใส่ไอติมกะทิ
+                        ข้าวเหนียว ลูกชิด ราดนมข้น)
+                        ซึ่งคนไทยจำกัดความว่านั่นแหละคือแซนด์วิช
+                        เมื่อมีไอติมห่อเวเฟอร์เข้ามา
+                        สมองจึงขัดแย้งและเลี่ยงไปเรียก "ไอติมตัดโบราณ"
+                        เพื่อไม่ให้สับสน
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section class="conclusion">
+                <h2>ความคลาสสิกเหนือกาลเวลา</h2>
+                <p>
+                    จากอาหารริมทางราคาถูกเพื่อสุขอนามัยในนิวยอร์ก
+                    สู่โมนากะขายดีประจำญี่ปุ่น และไอติมแซนวิซโบราณในไทย
+                    ไอศกรีมบล็อกเวเฟอร์ชิ้นนี้ได้พิสูจน์ตัวเองว่าเป็นหนึ่งในมาตรฐานของโลก
+                    (Global Standard) ที่หยั่งรากลึกในวัฒนธรรมมนุษยชาติ
+                </p>
+                <p style="margin-top: 15px">
+                    แม้ไอติมแบบอื่นจะเน้นความหรูหรา
+                    แต่ไอติมบล็อกสี่เหลี่ยมยังคงทำหน้าที่ซื่อตรงในฐานะ
+                    "ไอศกรีมที่เป็นมิตร ราคาประหยัด
+                    และถูกดีไซน์มาเพื่อการแบ่งปันความอร่อย"
+                    ไม่ว่าเวลาจะผ่านไปกี่ทศวรรฐก็ตาม 🍦✨
+                </p>
+            </section>
+
+            <footer>
+                <p>
+                    บทความเกี่ยวกับประวัติศาสตร์และวัฒนธรรมการกิน • Design with
+                    Pastel Theme
+                </p>
+            </footer>
+        </div>
+    </body>
+</html>

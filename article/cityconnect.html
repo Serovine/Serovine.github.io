@@ -1,0 +1,2031 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>City Connection · ย้อนรอยตำนานบนถนนยามราตรี</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=VT323&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --bg: #050816;
+                --bg-2: #0a1128;
+                --surface: #0f1b3d;
+                --surface-2: #142555;
+                --road: #1a2547;
+                --cyan: #00f0ff;
+                --cyan-dim: #0099aa;
+                --pink: #ff2d95;
+                --pink-dim: #aa1a64;
+                --yellow: #ffd23f;
+                --white: #e8f0ff;
+                --muted: #7a8bb8;
+                --border: rgba(0, 240, 255, 0.18);
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: "IBM Plex Sans Thai", sans-serif;
+                background: var(--bg);
+                color: var(--white);
+                overflow-x: hidden;
+                line-height: 1.75;
+                font-weight: 300;
+            }
+
+            .font-display {
+                font-family: "Chakra Petch", sans-serif;
+            }
+            .font-mono {
+                font-family: "VT323", monospace;
+            }
+
+            /* ========== Background ambient ========== */
+            .night-bg {
+                background:
+                    radial-gradient(
+                        ellipse 80% 50% at 50% -10%,
+                        rgba(0, 240, 255, 0.08),
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse 60% 40% at 80% 100%,
+                        rgba(255, 45, 149, 0.06),
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse 60% 40% at 20% 50%,
+                        rgba(0, 240, 255, 0.04),
+                        transparent 60%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #050816 0%,
+                        #0a1128 40%,
+                        #050816 100%
+                    );
+            }
+
+            /* ========== Progress bar ========== */
+            #progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                width: 0;
+                background: linear-gradient(90deg, var(--cyan), var(--pink));
+                z-index: 100;
+                box-shadow: 0 0 12px var(--cyan);
+                transition: width 0.1s;
+            }
+
+            /* ========== Stars ========== */
+            .stars {
+                position: absolute;
+                inset: 0;
+                background-image:
+                    radial-gradient(
+                        1px 1px at 20px 30px,
+                        rgba(255, 255, 255, 0.9),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 60px 70px,
+                        rgba(255, 255, 255, 0.5),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 110px 50px,
+                        rgba(255, 255, 255, 0.8),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 180px 90px,
+                        rgba(0, 240, 255, 0.4),
+                        transparent
+                    ),
+                    radial-gradient(
+                        2px 2px at 250px 20px,
+                        rgba(255, 255, 255, 0.9),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 350px 80px,
+                        rgba(255, 255, 255, 0.5),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 420px 130px,
+                        rgba(255, 45, 149, 0.4),
+                        transparent
+                    );
+                background-size: 500px 250px;
+                background-repeat: repeat;
+                opacity: 0.6;
+                animation: twinkle 6s ease-in-out infinite;
+            }
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.5;
+                }
+                50% {
+                    opacity: 0.8;
+                }
+            }
+
+            /* ========== Perspective road ========== */
+            .road-wrap {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 45vh;
+                overflow: hidden;
+                perspective: 220px;
+                perspective-origin: 50% 0%;
+            }
+            .road-grid {
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 300%;
+                height: 200%;
+                background-image:
+                    linear-gradient(
+                        90deg,
+                        transparent 0,
+                        transparent calc(50% - 1px),
+                        rgba(0, 240, 255, 0.4) 50%,
+                        transparent calc(50% + 1px)
+                    ),
+                    linear-gradient(
+                        0deg,
+                        rgba(0, 240, 255, 0.18) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(0, 240, 255, 0.12) 1px,
+                        transparent 1px
+                    );
+                background-size:
+                    100% 100%,
+                    0 60px,
+                    60px 60px;
+                transform: rotateX(78deg) translateY(0);
+                transform-origin: 50% 0%;
+                animation: road-move 1.2s linear infinite;
+                opacity: 0.55;
+            }
+            @keyframes road-move {
+                0% {
+                    background-position:
+                        0 0,
+                        0 0,
+                        0 0;
+                }
+                100% {
+                    background-position:
+                        0 0,
+                        0 60px,
+                        0 0;
+                }
+            }
+
+            /* Buildings silhouette */
+            .buildings {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 180px;
+                z-index: 2;
+                pointer-events: none;
+            }
+            .buildings svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            /* ========== Neon text ========== */
+            .neon-cyan {
+                color: var(--cyan);
+                text-shadow:
+                    0 0 6px rgba(0, 240, 255, 0.7),
+                    0 0 22px rgba(0, 240, 255, 0.4);
+            }
+            .neon-pink {
+                color: var(--pink);
+                text-shadow:
+                    0 0 6px rgba(255, 45, 149, 0.7),
+                    0 0 22px rgba(255, 45, 149, 0.4);
+            }
+            .neon-yellow {
+                color: var(--yellow);
+                text-shadow:
+                    0 0 6px rgba(255, 210, 63, 0.6),
+                    0 0 18px rgba(255, 210, 63, 0.35);
+            }
+
+            /* Hero title with gradient + glow */
+            .hero-title {
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+                background: linear-gradient(
+                    180deg,
+                    #ffffff 0%,
+                    var(--cyan) 60%,
+                    #006688 100%
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.45))
+                    drop-shadow(0 0 40px rgba(0, 240, 255, 0.2));
+                line-height: 0.95;
+            }
+
+            /* ========== Year tag ========== */
+            .year-tag {
+                font-family: "Chakra Petch", sans-serif;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 6px 16px;
+                border: 1px solid var(--cyan-dim);
+                background: rgba(0, 240, 255, 0.06);
+                color: var(--cyan);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                backdrop-filter: blur(6px);
+            }
+            .year-tag::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                background: var(--cyan);
+                border-radius: 50%;
+                box-shadow: 0 0 8px var(--cyan);
+                animation: pulse 1.6s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.5;
+                    transform: scale(1.4);
+                }
+            }
+
+            /* ========== Neon card ========== */
+            .neon-card {
+                background: linear-gradient(
+                    180deg,
+                    rgba(15, 27, 61, 0.6),
+                    rgba(10, 17, 40, 0.4)
+                );
+                border: 1px solid var(--border);
+                backdrop-filter: blur(8px);
+                transition: all 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .neon-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    135deg,
+                    transparent 40%,
+                    rgba(0, 240, 255, 0.06) 50%,
+                    transparent 60%
+                );
+                transform: translateX(-100%);
+                transition: transform 0.7s ease;
+                pointer-events: none;
+            }
+            .neon-card:hover::before {
+                transform: translateX(100%);
+            }
+            .neon-card:hover {
+                border-color: rgba(0, 240, 255, 0.5);
+                box-shadow:
+                    0 0 30px rgba(0, 240, 255, 0.15),
+                    inset 0 0 30px rgba(0, 240, 255, 0.04);
+                transform: translateY(-4px);
+            }
+
+            /* ========== Section number ========== */
+            .section-num {
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 700;
+                font-size: 14px;
+                letter-spacing: 0.3em;
+                color: var(--cyan);
+                display: inline-flex;
+                align-items: center;
+                gap: 14px;
+            }
+            .section-num::before {
+                content: "";
+                width: 40px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--cyan));
+            }
+            .section-num::after {
+                content: "";
+                width: 40px;
+                height: 1px;
+                background: linear-gradient(90deg, var(--cyan), transparent);
+            }
+
+            /* ========== Section heading ========== */
+            .section-heading {
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 700;
+                letter-spacing: -0.01em;
+                line-height: 1.15;
+                color: var(--white);
+            }
+
+            /* ========== Neon sign quote ========== */
+            .neon-sign {
+                background: linear-gradient(
+                    180deg,
+                    rgba(255, 45, 149, 0.08),
+                    rgba(255, 45, 149, 0.02)
+                );
+                border-left: 2px solid var(--pink);
+                border-right: 2px solid var(--pink);
+                box-shadow:
+                    0 0 25px rgba(255, 45, 149, 0.12),
+                    inset 0 0 25px rgba(255, 45, 149, 0.04);
+                padding: 24px 28px;
+                position: relative;
+            }
+            .neon-sign::before,
+            .neon-sign::after {
+                content: "";
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background: var(--pink);
+                border-radius: 50%;
+                box-shadow: 0 0 12px var(--pink);
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .neon-sign::before {
+                left: -4px;
+            }
+            .neon-sign::after {
+                right: -4px;
+            }
+
+            .neon-sign-cyan {
+                background: linear-gradient(
+                    180deg,
+                    rgba(0, 240, 255, 0.06),
+                    rgba(0, 240, 255, 0.02)
+                );
+                border-left: 2px solid var(--cyan);
+                border-right: 2px solid var(--cyan);
+                box-shadow:
+                    0 0 25px rgba(0, 240, 255, 0.12),
+                    inset 0 0 25px rgba(0, 240, 255, 0.04);
+            }
+
+            /* ========== Terminal ========== */
+            .terminal {
+                background: #02050f;
+                border: 1px solid rgba(0, 240, 255, 0.3);
+                font-family: "VT323", monospace;
+                box-shadow:
+                    0 0 40px rgba(0, 240, 255, 0.12),
+                    inset 0 0 60px rgba(0, 240, 255, 0.03);
+                position: relative;
+                overflow: hidden;
+            }
+            .terminal-header {
+                background: rgba(0, 240, 255, 0.05);
+                border-bottom: 1px solid var(--border);
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-family: "Chakra Petch", sans-serif;
+                font-size: 12px;
+                color: var(--muted);
+                letter-spacing: 0.1em;
+            }
+            .terminal-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+            .terminal-body {
+                padding: 24px;
+                font-size: 18px;
+                line-height: 1.6;
+                color: var(--cyan);
+                text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+            }
+            .terminal-body .comment {
+                color: var(--muted);
+            }
+            .terminal-body .string {
+                color: var(--yellow);
+                text-shadow: 0 0 6px rgba(255, 210, 63, 0.4);
+            }
+            .terminal-body .addr {
+                color: var(--pink);
+                text-shadow: 0 0 6px rgba(255, 45, 149, 0.4);
+            }
+
+            .cursor {
+                display: inline-block;
+                width: 10px;
+                height: 18px;
+                background: var(--cyan);
+                margin-left: 4px;
+                vertical-align: middle;
+                animation: blink 1s steps(2) infinite;
+            }
+            @keyframes blink {
+                0%,
+                50% {
+                    opacity: 1;
+                }
+                51%,
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            /* ========== Tags / chips ========== */
+            .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 5px 12px;
+                background: rgba(0, 240, 255, 0.06);
+                border: 1px solid var(--border);
+                font-size: 12px;
+                color: var(--cyan);
+                font-family: "Chakra Petch", sans-serif;
+                letter-spacing: 0.05em;
+            }
+
+            .country-chip {
+                padding: 8px 14px;
+                background: rgba(255, 255, 255, 0.025);
+                border: 1px solid var(--border);
+                font-size: 13px;
+                color: var(--muted);
+                transition: all 0.3s;
+                cursor: default;
+                font-family: "Chakra Petch", sans-serif;
+                letter-spacing: 0.04em;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .country-chip:hover {
+                background: rgba(0, 240, 255, 0.08);
+                border-color: var(--cyan);
+                color: var(--cyan);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 240, 255, 0.15);
+            }
+            .country-chip .dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--cyan-dim);
+            }
+            .country-chip:hover .dot {
+                background: var(--cyan);
+                box-shadow: 0 0 8px var(--cyan);
+            }
+
+            /* ========== Reveal on scroll ========== */
+            .reveal {
+                opacity: 0;
+                transform: translateY(36px);
+                transition:
+                    opacity 0.9s ease,
+                    transform 0.9s ease;
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* ========== Pixel grid ========== */
+            .pixel-grid {
+                background-image:
+                    linear-gradient(
+                        rgba(0, 240, 255, 0.03) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(0, 240, 255, 0.03) 1px,
+                        transparent 1px
+                    );
+                background-size: 40px 40px;
+            }
+
+            /* ========== Stat card ========== */
+            .stat-card {
+                padding: 24px;
+                background: linear-gradient(
+                    180deg,
+                    rgba(15, 27, 61, 0.5),
+                    rgba(10, 17, 40, 0.3)
+                );
+                border: 1px solid var(--border);
+                position: relative;
+                overflow: hidden;
+            }
+            .stat-card::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 30px;
+                height: 30px;
+                border-top: 2px solid var(--cyan);
+                border-left: 2px solid var(--cyan);
+            }
+            .stat-num {
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 700;
+                font-size: 48px;
+                line-height: 1;
+                background: linear-gradient(180deg, var(--cyan), #006688);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+            /* ========== Timeline ========== */
+            .timeline-line {
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(
+                    180deg,
+                    transparent,
+                    var(--cyan),
+                    var(--pink),
+                    transparent
+                );
+                transform: translateX(-50%);
+            }
+            .timeline-dot {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: var(--bg);
+                border: 2px solid var(--cyan);
+                box-shadow: 0 0 12px var(--cyan);
+                position: absolute;
+                left: 50%;
+                top: 8px;
+                transform: translateX(-50%);
+            }
+
+            /* ========== Buttons ========== */
+            .cta-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, var(--cyan), #0099dd);
+                color: #001020;
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 700;
+                font-size: 15px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+                position: relative;
+                overflow: hidden;
+            }
+            .cta-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+            .cta-btn-outline {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 32px;
+                background: transparent;
+                color: var(--pink);
+                font-family: "Chakra Petch", sans-serif;
+                font-weight: 600;
+                font-size: 15px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: 1px solid var(--pink);
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .cta-btn-outline:hover {
+                background: rgba(255, 45, 149, 0.1);
+                box-shadow: 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+
+            /* ========== Cat bomb ========== */
+            @keyframes shake {
+                0%,
+                100% {
+                    transform: translateX(0) rotate(0);
+                }
+                20% {
+                    transform: translateX(-3px) rotate(-2deg);
+                }
+                40% {
+                    transform: translateX(3px) rotate(2deg);
+                }
+                60% {
+                    transform: translateX(-3px) rotate(-1deg);
+                }
+                80% {
+                    transform: translateX(3px) rotate(1deg);
+                }
+            }
+            .cat-bomb {
+                animation: shake 0.5s ease-in-out infinite;
+                display: inline-block;
+            }
+
+            /* ========== Floating car ========== */
+            @keyframes drive-across {
+                0% {
+                    transform: translateX(-120px);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateX(calc(100vw + 120px));
+                    opacity: 0;
+                }
+            }
+            .driving-car {
+                position: absolute;
+                bottom: 15%;
+                font-size: 28px;
+                color: var(--pink);
+                text-shadow: 0 0 15px var(--pink);
+                animation: drive-across 12s linear infinite;
+                z-index: 3;
+            }
+
+            /* ========== Scanlines for hero ========== */
+            .scanlines {
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent 0,
+                    transparent 3px,
+                    rgba(0, 0, 0, 0.12) 3px,
+                    rgba(0, 0, 0, 0.12) 4px
+                );
+                pointer-events: none;
+                z-index: 5;
+                mix-blend-mode: multiply;
+                opacity: 0.4;
+            }
+
+            /* ========== Source cite ========== */
+            .cite {
+                font-size: 12px;
+                color: var(--muted);
+                font-style: italic;
+                padding-left: 16px;
+                border-left: 1px solid var(--border);
+                margin-top: 20px;
+            }
+
+            /* ========== Platform badge ========== */
+            .platform-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 14px 22px;
+                background: rgba(15, 27, 61, 0.6);
+                border: 1px solid var(--border);
+                transition: all 0.3s;
+            }
+            .platform-badge:hover {
+                border-color: var(--cyan);
+                background: rgba(0, 240, 255, 0.08);
+                transform: translateY(-3px);
+            }
+
+            /* ========== Character profile ========== */
+            .profile-card {
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 240, 255, 0.08),
+                    rgba(255, 45, 149, 0.04)
+                );
+                border: 1px solid var(--border);
+                padding: 32px;
+                position: relative;
+                overflow: hidden;
+            }
+            .profile-card::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(
+                    circle,
+                    rgba(0, 240, 255, 0.06),
+                    transparent 40%
+                );
+                pointer-events: none;
+            }
+
+            /* ========== Album card ========== */
+            .album-card {
+                background: linear-gradient(
+                    180deg,
+                    rgba(15, 27, 61, 0.7),
+                    rgba(10, 17, 40, 0.5)
+                );
+                border: 1px solid var(--border);
+                padding: 20px;
+                transition: all 0.4s;
+                position: relative;
+                overflow: hidden;
+            }
+            .album-card:hover {
+                border-color: var(--pink);
+                transform: translateY(-6px);
+                box-shadow: 0 10px 30px rgba(255, 45, 149, 0.15);
+            }
+            .album-cover {
+                aspect-ratio: 1;
+                background: linear-gradient(
+                    135deg,
+                    var(--pink-dim),
+                    var(--cyan-dim)
+                );
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .album-cover::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        circle at 30% 30%,
+                        rgba(255, 255, 255, 0.15),
+                        transparent 50%
+                    ),
+                    repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 10px,
+                        rgba(0, 0, 0, 0.1) 10px,
+                        rgba(0, 0, 0, 0.1) 11px
+                    );
+            }
+
+            /* ========== Glowing hr ========== */
+            .neon-hr {
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--cyan),
+                    transparent
+                );
+                position: relative;
+                margin: 80px 0;
+                opacity: 0.4;
+            }
+            .neon-hr::before {
+                content: "";
+                position: absolute;
+                top: -3px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 7px;
+                height: 7px;
+                background: var(--cyan);
+                border-radius: 50%;
+                box-shadow: 0 0 12px var(--cyan);
+            }
+
+            /* ========== Side nav indicator ========== */
+            .side-nav {
+                position: fixed;
+                right: 30px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 50;
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .side-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                border: 1px solid var(--cyan-dim);
+                background: transparent;
+                cursor: pointer;
+                transition: all 0.3s;
+                position: relative;
+            }
+            .side-dot.active,
+            .side-dot:hover {
+                background: var(--cyan);
+                box-shadow: 0 0 12px var(--cyan);
+                transform: scale(1.3);
+            }
+            .side-dot::after {
+                content: attr(data-label);
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-family: "Chakra Petch", sans-serif;
+                font-size: 11px;
+                color: var(--cyan);
+                white-space: nowrap;
+                opacity: 0;
+                transition: opacity 0.3s;
+                letter-spacing: 0.1em;
+            }
+            .side-dot:hover::after {
+                opacity: 1;
+            }
+
+            @media (max-width: 768px) {
+                .side-nav {
+                    display: none;
+                }
+                .timeline-line {
+                    left: 20px;
+                }
+                .timeline-dot {
+                    left: 20px;
+                }
+                .stat-num {
+                    font-size: 36px;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </head>
+    <body class="night-bg">
+        <!-- Progress bar -->
+        <div id="progress"></div>
+
+        <!-- Side navigation -->
+        <nav class="side-nav">
+            <a href="#hero" class="side-dot" data-label="INTRO"></a>
+            <a href="#sec1" class="side-dot" data-label="01 · GAMEPLAY"></a>
+            <a href="#sec2" class="side-dot" data-label="02 · CLARICE"></a>
+            <a href="#sec3" class="side-dot" data-label="03 · REBIRTH"></a>
+            <a href="#sec4" class="side-dot" data-label="04 · MUSIC"></a>
+            <a href="#sec5" class="side-dot" data-label="05 · EASTER EGG"></a>
+            <a href="#cta" class="side-dot" data-label="PLAY"></a>
+        </nav>
+
+        <!-- ============ HERO ============ -->
+        <section
+            id="hero"
+            class="relative min-h-screen flex items-center justify-center overflow-hidden"
+        >
+            <div class="stars"></div>
+            <div class="road-wrap">
+                <div class="road-grid"></div>
+            </div>
+            <div class="buildings">
+                <svg viewBox="0 0 1200 180" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient
+                            id="bldgGrad"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                        >
+                            <stop offset="0%" stop-color="#0a1128" />
+                            <stop offset="100%" stop-color="#050816" />
+                        </linearGradient>
+                    </defs>
+                    <path
+                        fill="url(#bldgGrad)"
+                        d="M0 180 V100 H30 V70 H60 V90 H100 V50 H130 V80 H170 V60 H210 V100 H250 V75 H290 V95 H330 V55 H370 V85 H410 V65 H450 V105 H490 V70 H530 V90 H570 V60 H610 V100 H650 V75 H690 V95 H730 V55 H770 V85 H810 V65 H850 V100 H890 V70 H930 V90 H970 V60 H1010 V95 H1050 V75 H1090 V100 H1130 V70 H1170 V85 H1200 V180 Z"
+                    />
+                    <!-- Window lights -->
+                    <g fill="#00f0ff" opacity="0.6">
+                        <rect x="40" y="110" width="3" height="3" />
+                        <rect x="55" y="115" width="3" height="3" />
+                        <rect x="70" y="120" width="3" height="3" />
+                        <rect x="110" y="80" width="3" height="3" />
+                        <rect x="125" y="90" width="3" height="3" />
+                        <rect x="180" y="100" width="3" height="3" />
+                        <rect x="220" y="120" width="3" height="3" />
+                        <rect x="260" y="110" width="3" height="3" />
+                        <rect x="300" y="125" width="3" height="3" />
+                        <rect x="340" y="90" width="3" height="3" />
+                        <rect x="380" y="115" width="3" height="3" />
+                        <rect x="420" y="100" width="3" height="3" />
+                        <rect x="460" y="130" width="3" height="3" />
+                        <rect x="500" y="110" width="3" height="3" />
+                        <rect x="540" y="125" width="3" height="3" />
+                        <rect x="580" y="95" width="3" height="3" />
+                        <rect x="620" y="130" width="3" height="3" />
+                        <rect x="660" y="115" width="3" height="3" />
+                        <rect x="700" y="125" width="3" height="3" />
+                        <rect x="740" y="90" width="3" height="3" />
+                        <rect x="780" y="115" width="3" height="3" />
+                        <rect x="820" y="100" width="3" height="3" />
+                        <rect x="860" y="130" width="3" height="3" />
+                        <rect x="900" y="110" width="3" height="3" />
+                        <rect x="940" y="125" width="3" height="3" />
+                        <rect x="980" y="95" width="3" height="3" />
+                        <rect x="1020" y="130" width="3" height="3" />
+                        <rect x="1060" y="115" width="3" height="3" />
+                        <rect x="1100" y="125" width="3" height="3" />
+                        <rect x="1140" y="100" width="3" height="3" />
+                    </g>
+                    <g fill="#ff2d95" opacity="0.5">
+                        <rect x="48" y="125" width="3" height="3" />
+                        <rect x="115" y="100" width="3" height="3" />
+                        <rect x="195" y="115" width="3" height="3" />
+                        <rect x="270" y="135" width="3" height="3" />
+                        <rect x="350" y="105" width="3" height="3" />
+                        <rect x="430" y="120" width="3" height="3" />
+                        <rect x="510" y="130" width="3" height="3" />
+                        <rect x="590" y="110" width="3" height="3" />
+                        <rect x="670" y="135" width="3" height="3" />
+                        <rect x="750" y="105" width="3" height="3" />
+                        <rect x="830" y="120" width="3" height="3" />
+                        <rect x="910" y="130" width="3" height="3" />
+                        <rect x="990" y="110" width="3" height="3" />
+                        <rect x="1070" y="135" width="3" height="3" />
+                        <rect x="1150" y="120" width="3" height="3" />
+                    </g>
+                </svg>
+            </div>
+
+            <i
+                class="fas fa-car-side driving-car"
+                style="animation-delay: 2s"
+            ></i>
+
+            <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+                <div class="year-tag mb-8">EST. 1985 · ARCADE LEGEND</div>
+
+                <h1 class="hero-title text-6xl md:text-8xl lg:text-9xl mb-6">
+                    CITY<br />CONNECTION
+                </h1>
+
+                <div class="flex items-center justify-center gap-4 mb-8">
+                    <div class="h-px w-12 bg-cyan-400/40"></div>
+                    <span
+                        class="font-display text-sm tracking-[0.4em] text-cyan-300/80"
+                        >ย้อนรอยตำนานบนถนนยามราตรี</span
+                    >
+                    <div class="h-px w-12 bg-cyan-400/40"></div>
+                </div>
+
+                <p
+                    class="text-lg md:text-xl text-slate-300/90 max-w-2xl mx-auto mb-12 font-light"
+                >
+                    จากเกมตู้ขับรถทาสีสุดฮิตในยุค 80s สู่ตำนานที่ยังมีลมหายใจ<br
+                        class="hidden md:block"
+                    />
+                    เรื่องราวที่ไม่ได้จบลงแค่ในตู้ Arcade
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="#sec1" class="cta-btn">
+                        <i class="fas fa-play"></i>
+                        เริ่มเดินทาง
+                    </a>
+                    <a href="#cta" class="cta-btn-outline">
+                        <i class="fas fa-gamepad"></i>
+                        ไปเล่นเกม
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scroll hint -->
+            <div
+                class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 animate-bounce"
+            >
+                <span
+                    class="font-display text-xs tracking-[0.3em] text-cyan-300/60"
+                    >SCROLL</span
+                >
+                <i class="fas fa-chevron-down text-cyan-400/60 text-xs"></i>
+            </div>
+
+            <div class="scanlines"></div>
+        </section>
+
+        <!-- ============ INTRO ============ -->
+        <section class="relative py-24 md:py-32 pixel-grid">
+            <div class="max-w-3xl mx-auto px-6 reveal">
+                <div class="neon-sign neon-sign-cyan mb-10">
+                    <p
+                        class="font-display text-lg text-cyan-300 leading-relaxed"
+                    >
+                        หากพูดถึงเกมยุค 80s ที่มีเอกลักษณ์ไม่เหมือนใคร
+                        ทั้งเกมเพลย์สุดกวน เพลงประกอบที่ติดหู
+                        และตัวเอกที่ถูกจดจำมาจนถึงทุกวันนี้
+                        <span class="neon-cyan font-bold"
+                            >"City Connection"</span
+                        >
+                        คือหนึ่งในชื่อที่ต้องถูกหยิบยกขึ้นมาพูดถึง
+                    </p>
+                </div>
+
+                <p class="text-slate-300/85 text-lg leading-loose mb-6">
+                    นี่ไม่ใช่แค่เกมเก่าที่ถูกลืม
+                    แต่เป็นซีรีส์ที่มีประวัติศาสตร์น่าสนใจ ตั้งแต่การดัดแปลงเกม
+                    ไปจนถึงการล้มสลายและเกิดใหม่ของค่ายผู้สร้าง
+                </p>
+                <p class="text-slate-300/85 text-lg leading-loose">
+                    วันนี้เราจะมาเจาะลึกทุกซอกทุกมุมของเกมนี้กัน —
+                    ตั้งแต่ซอร์สโค้ดลับ นางเอกที่โลกแทบลืม
+                    ไปจนถึงการเกิดใหม่ในศตวรรษใหม่
+                </p>
+
+                <div class="flex flex-wrap gap-3 mt-10">
+                    <span class="tag"
+                        ><i class="fas fa-calendar-alt"></i> ปี 1985</span
+                    >
+                    <span class="tag"
+                        ><i class="fas fa-cube"></i> Arcade · Famicom</span
+                    >
+                    <span class="tag"
+                        ><i class="fas fa-palette"></i> Action-Platformer</span
+                    >
+                    <span class="tag"
+                        ><i class="fas fa-flag-japan"></i> Jaleco</span
+                    >
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SECTION 1: GAMEPLAY ============ -->
+        <section id="sec1" class="relative py-24 md:py-32">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="reveal mb-16">
+                    <div class="section-num mb-5">CHAPTER 01</div>
+                    <h2 class="section-heading text-4xl md:text-6xl mb-6">
+                        เหยียบคันเร่ง<br />
+                        <span class="neon-cyan">ทาสีเมือง</span>
+                        และเสียงเปียโนคลาสสิก
+                    </h2>
+                    <p class="text-slate-400 max-w-2xl">
+                        เปิดตัวครั้งแรกในรูปแบบเกมตู้ Arcade เมื่อเดือนกรกฎาคม
+                        ปี 1985 โดยค่าย Jaleco รูปแบบเกมเป็นแนว
+                        Action-Platformer มุมมองด้านข้างที่เข้าใจง่าย
+                        แต่ท้าทายเอาเรื่อง
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-12 reveal">
+                    <div class="stat-card">
+                        <div class="stat-num">1985</div>
+                        <div
+                            class="font-display text-sm text-cyan-400 mt-2 tracking-wider"
+                        >
+                            ปีที่เปิดตัว
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2">
+                            เดือนกรกฎาคม บนตู้ Arcade
+                        </p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num">12</div>
+                        <div
+                            class="font-display text-sm text-cyan-400 mt-2 tracking-wider"
+                        >
+                            ประเทศใน Arcade
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2">
+                            ลดเหลือ 7 ด่านใน Famicom
+                        </p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num">∞</div>
+                        <div
+                            class="font-display text-sm text-cyan-400 mt-2 tracking-wider"
+                        >
+                            ลูปเกม
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2">
+                            วนกลับมาเริ่มใหม่ทันที
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-5 gap-8 reveal">
+                    <div class="lg:col-span-3 space-y-6">
+                        <p class="text-slate-300/90 text-lg leading-loose">
+                            ผู้เล่นจะต้องขับรถแฮทช์แบ็ก
+                            <span class="neon-cyan font-medium"
+                                >Honda City</span
+                            >
+                            ตะลุยไปตามฉากเมืองดังทั่วโลก
+                            หน้าที่หลักคือการขับทับเส้นทางเพื่อ
+                            <span class="font-medium text-white"
+                                >"ทาสีถนน"</span
+                            >
+                            ให้ครบทุกพื้นที่ในด่าน
+                        </p>
+                        <p class="text-slate-300/90 text-lg leading-loose">
+                            ระหว่างทางต้องคอยหลบหลีกรถตำรวจที่ไล่ล่า
+                            ซึ่งเราสามารถปากระป๋องน้ำมันสวนกลับเพื่อให้รถตำรวจหมุนชะงักแล้วชนทิ้งได้
+                        </p>
+
+                        <div class="neon-sign mt-8">
+                            <div class="flex items-start gap-4">
+                                <span class="cat-bomb text-3xl">🐱</span>
+                                <div>
+                                    <p
+                                        class="font-display text-pink-300 font-semibold mb-2"
+                                    >
+                                        ศัตรูที่อันตรายที่สุดกลับเป็น "แมว"
+                                    </p>
+                                    <p class="text-slate-300 leading-relaxed">
+                                        หากขับชนแมวที่นั่งขวางถนนอยู่
+                                        รถจะระเบิดทันที
+                                        พร้อมกับเสียงเพลงแมวเหยียบแป้นเปียโน
+                                        <span
+                                            class="font-mono text-yellow-300 text-base"
+                                            >Neko Funjatta</span
+                                        >
+                                        ดังเยาะเย้ย
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <div class="neon-card p-6">
+                            <div class="flex items-center gap-3 mb-5">
+                                <i class="fas fa-globe-asia text-cyan-400"></i>
+                                <h3
+                                    class="font-display text-cyan-300 tracking-wider text-sm"
+                                >
+                                    12 เมืองทั่วโลก
+                                </h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="country-chip"
+                                    ><span class="dot"></span>USA</span
+                                >
+                                <span class="country-chip"
+                                    ><span class="dot"></span>London</span
+                                >
+                                <span class="country-chip"
+                                    ><span class="dot"></span>Paris</span
+                                >
+                                <span class="country-chip"
+                                    ><span class="dot"></span>Egypt</span
+                                >
+                                <span class="country-chip"
+                                    ><span class="dot"></span>Japan</span
+                                >
+                                <span class="country-chip"
+                                    ><span class="dot"></span>+7 ประเทศ</span
+                                >
+                            </div>
+                            <div class="mt-6 pt-5 border-t border-cyan-500/15">
+                                <p
+                                    class="text-xs text-slate-400 leading-relaxed"
+                                >
+                                    <i
+                                        class="fas fa-info-circle text-cyan-400 mr-1"
+                                    ></i>
+                                    เวอร์ชัน Famicom/NES พอร์ตโดย TOSE
+                                    ถูกหั่นเหลือ 7 ด่าน
+                                    และวนลูปกลับมาเริ่มใหม่ทันที
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="cite">
+                    อ้างอิง: Wikipedia, Jaleco Wiki, Arcade Archives
+                    และบทวิเคราะห์เกมจาก Gaming Hell
+                </p>
+            </div>
+        </section>
+
+        <div class="neon-hr"></div>
+
+        <!-- ============ SECTION 2: CLARICE ============ -->
+        <section id="sec2" class="relative py-24 md:py-32">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="reveal mb-16">
+                    <div class="section-num mb-5">CHAPTER 02</div>
+                    <h2 class="section-heading text-4xl md:text-6xl mb-6">
+                        นางเอกเกมรุ่นบุกเบิก<br />
+                        ที่โลก <span class="neon-pink">(เกือบ)</span> ลืม
+                    </h2>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-10 reveal">
+                    <!-- Profile card -->
+                    <div class="profile-card">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div
+                                class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-pink-500 flex items-center justify-center text-2xl font-bold text-slate-900 font-display"
+                            >
+                                C
+                            </div>
+                            <div>
+                                <h3 class="font-display text-2xl text-white">
+                                    Clarice
+                                </h3>
+                                <p class="text-cyan-400 text-sm tracking-wider">
+                                    PROTAGONIST · ฉบับดั้งเดิม
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-sm">
+                            <div
+                                class="flex justify-between py-2 border-b border-cyan-500/10"
+                            >
+                                <span class="text-slate-400">อายุ</span>
+                                <span class="font-display text-cyan-300"
+                                    >15 ปี</span
+                                >
+                            </div>
+                            <div
+                                class="flex justify-between py-2 border-b border-cyan-500/10"
+                            >
+                                <span class="text-slate-400">สีผม</span>
+                                <span class="font-display text-cyan-300"
+                                    >ฟ้า</span
+                                >
+                            </div>
+                            <div
+                                class="flex justify-between py-2 border-b border-cyan-500/10"
+                            >
+                                <span class="text-slate-400">พาหนะ</span>
+                                <span class="font-display text-cyan-300"
+                                    >Honda City</span
+                                >
+                            </div>
+                            <div
+                                class="flex justify-between py-2 border-b border-cyan-500/10"
+                            >
+                                <span class="text-slate-400">เป้าหมาย</span>
+                                <span class="font-display text-pink-300"
+                                    >ตามหาผู้ชายในฝัน</span
+                                >
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-slate-400">อาชีพ</span>
+                                <span class="font-display text-cyan-300"
+                                    >ขับรถทั่วโลก</span
+                                >
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-5 border-t border-cyan-500/15">
+                            <div class="flex items-center gap-2 text-xs">
+                                <i class="fas fa-trophy text-yellow-400"></i>
+                                <span class="text-slate-400"
+                                    >มาก่อน Samus Aran จาก Metroid ถึง</span
+                                >
+                                <span
+                                    class="font-display text-yellow-300 text-base"
+                                    >1 ปี</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Story content -->
+                    <div class="space-y-6">
+                        <p class="text-slate-300/90 text-lg leading-loose">
+                            ภายใต้รถยนต์คันจิ๋วที่ขับซิ่งป่วนเมืองทั่วโลก
+                            ผู้ที่อยู่หลังพวงมาลัยคือ
+                            <span class="neon-cyan font-medium">Clarice</span>
+                            เด็กสาวผมสีฟ้าวัย 15 ปี
+                        </p>
+                        <p class="text-slate-300/90 leading-loose">
+                            แม้ระบบเกมจะบอกให้เราทาสีถนน แต่เนื้อเรื่องจริงๆ
+                            (Lore) ของเธอคือการขับรถออกเดินทางไปทั่วโลกเพื่อ
+                            <span class="font-medium text-white"
+                                >"ตามหาผู้ชายในฝัน"</span
+                            >
+                        </p>
+                        <p class="text-slate-300/90 leading-loose">
+                            ในแง่ของประวัติศาสตร์วิดีโอเกม Clarice
+                            ถือเป็นหนึ่งในตัวละครเอกหญิง (Female Protagonist)
+                            คนแรกๆ ของวงการ
+                        </p>
+
+                        <div class="neon-card p-5 mt-8">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i
+                                    class="fas fa-exclamation-triangle text-yellow-400"
+                                ></i>
+                                <span
+                                    class="font-display text-yellow-300 text-sm tracking-wider"
+                                    >การถูกดัดแปลงในอเมริกา</span
+                                >
+                            </div>
+                            <p
+                                class="text-slate-300/90 text-sm leading-relaxed mb-4"
+                            >
+                                เมื่อเกมถูกนำไปขายในอเมริกาเหนือ (พฤษภาคม 1988)
+                                ค่ายเกมตัดสินใจลบ Clarice ทิ้ง
+                                และเปลี่ยนตัวเอกเป็น
+                                <span class="text-pink-300 font-medium"
+                                    >"ผู้ชายมาดนักเลง (Greaser)"</span
+                                >
+                                ขโมยสีมาทาถนนแทน
+                            </p>
+                            <p class="text-slate-400 text-xs">
+                                แต่ในฝั่งญี่ปุ่น เธอยังคงเป็นมาสคอตตัวท็อป
+                                และไปปรากฏตัวใน Game Tengoku และ City Connection
+                                Rocket
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="cite">
+                    อ้างอิง: Wikipedia, TV Tropes - City Connection
+                    และข้อมูลตัวละครจากเว็บไซต์ทางการของ Game Tengoku
+                </p>
+            </div>
+        </section>
+
+        <div class="neon-hr"></div>
+
+        <!-- ============ SECTION 3: REBIRTH ============ -->
+        <section id="sec3" class="relative py-24 md:py-32">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="reveal mb-16">
+                    <div class="section-num mb-5">CHAPTER 03</div>
+                    <h2 class="section-heading text-4xl md:text-6xl mb-6">
+                        จากจุดจบของ
+                        <span
+                            class="text-slate-500 line-through decoration-pink-500/60"
+                            >Jaleco</span
+                        ><br />
+                        สู่การเกิดใหม่ในชื่อ
+                        <span class="neon-cyan">City Connection</span>
+                    </h2>
+                    <p class="text-slate-400 max-w-2xl">
+                        กาลเวลาผ่านไป ค่ายเกม Jaleco
+                        ประสบปัญหาทางการเงินจนต้องล้มละลาย
+                        แต่ตำนานไม่ได้จบลงแค่นั้น
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="relative pl-12 md:pl-0 reveal">
+                    <div class="timeline-line"></div>
+
+                    <div class="space-y-16">
+                        <!-- 2005 -->
+                        <div class="md:grid md:grid-cols-2 md:gap-12 relative">
+                            <div class="timeline-dot"></div>
+                            <div class="md:text-right md:pr-12">
+                                <div
+                                    class="font-display text-4xl neon-cyan font-bold mb-2"
+                                >
+                                    2005
+                                </div>
+                                <div class="tag mb-3 md:ml-auto">
+                                    ก่อตั้งบริษัท
+                                </div>
+                                <h4
+                                    class="font-display text-xl text-white mb-2"
+                                >
+                                    City Connection Co., Ltd.
+                                </h4>
+                                <p
+                                    class="text-slate-400 text-sm leading-relaxed"
+                                >
+                                    บริษัทใหม่ก่อตั้งขึ้นที่โตเกียว
+                                    โดยใช้ชื่อบริษัทตั้งตามชื่อเกมตู้สุดฮิตนี้นั่นเอง
+                                </p>
+                            </div>
+                            <div></div>
+                        </div>
+
+                        <!-- 2014 -->
+                        <div class="md:grid md:grid-cols-2 md:gap-12 relative">
+                            <div
+                                class="timeline-dot"
+                                style="
+                                    border-color: var(--pink);
+                                    box-shadow: 0 0 12px var(--pink);
+                                "
+                            ></div>
+                            <div></div>
+                            <div class="md:pl-12">
+                                <div
+                                    class="font-display text-4xl neon-pink font-bold mb-2"
+                                >
+                                    2014
+                                </div>
+                                <div
+                                    class="tag mb-3"
+                                    style="
+                                        color: var(--pink);
+                                        border-color: rgba(255, 45, 149, 0.3);
+                                    "
+                                >
+                                    เข้าซื้อลิขสิทธิ์
+                                </div>
+                                <h4
+                                    class="font-display text-xl text-white mb-2"
+                                >
+                                    ครอบครอง IP ทั้งหมดของ Jaleco
+                                </h4>
+                                <p
+                                    class="text-slate-400 text-sm leading-relaxed"
+                                >
+                                    ทุ่มเงินเข้ากว้านซื้อลิขสิทธิ์ทั้งหมดของค่าย
+                                    Jaleco มาไว้ในครอบครอง
+                                    ทำให้เกมคลาสสิกทั้งหมดไม่สูญหายไปตามกาลเวลา
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 2019 -->
+                        <div class="md:grid md:grid-cols-2 md:gap-12 relative">
+                            <div class="timeline-dot"></div>
+                            <div class="md:text-right md:pr-12">
+                                <div
+                                    class="font-display text-4xl neon-cyan font-bold mb-2"
+                                >
+                                    2019
+                                </div>
+                                <div class="tag mb-3 md:ml-auto">
+                                    ขยายอาณาจักร
+                                </div>
+                                <h4
+                                    class="font-display text-xl text-white mb-2"
+                                >
+                                    เข้าซื้อลิขสิทธิ์ Psikyo
+                                </h4>
+                                <p
+                                    class="text-slate-400 text-sm leading-relaxed"
+                                >
+                                    เพิ่มค่ายเกมดังอีกแห่งเข้าสู่คอลเลกชัน
+                                    ขยายแคตตาล็อกเกมคลาสสิกให้กว้างขวางยิ่งขึ้น
+                                </p>
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="cite">
+                    อ้างอิง: HandWiki หัวข้อ Company:City Connection
+                    และเว็บไซต์ทางการ city-connection.co.jp
+                </p>
+            </div>
+        </section>
+
+        <div class="neon-hr"></div>
+
+        <!-- ============ SECTION 4: CLARICE DISK ============ -->
+        <section id="sec4" class="relative py-24 md:py-32">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="reveal mb-16">
+                    <div class="section-num mb-5">CHAPTER 04</div>
+                    <h2 class="section-heading text-4xl md:text-6xl mb-6">
+                        <span class="neon-pink">Clarice Disk:</span><br />
+                        เพลงแท้ ถูกลิขสิทธิ์
+                    </h2>
+                    <p class="text-slate-400 max-w-2xl">
+                        อีกหนึ่งธุรกิจหลักของบริษัท City Connection ในปัจจุบัน
+                        คือการทำค่ายเพลงชื่อ "Clarice Disk" ตั้งตามชื่อนางเอก
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-6 mb-12 reveal">
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <i
+                                class="fas fa-music text-5xl text-white/80 relative z-10"
+                            ></i>
+                            <div
+                                class="absolute top-2 left-2 font-mono text-xs text-white/70"
+                            >
+                                CC-001
+                            </div>
+                        </div>
+                        <div
+                            class="font-display text-xs text-cyan-400 tracking-wider mb-1"
+                        >
+                            ORIGINAL SOUNDTRACK
+                        </div>
+                        <h4 class="font-display text-white text-lg mb-2">
+                            City Connection OST
+                        </h4>
+                        <p class="text-slate-400 text-xs">
+                            รีมาสเตอร์เพลงต้นฉบับจากเกมตู้ Arcade
+                        </p>
+                    </div>
+
+                    <div class="album-card">
+                        <div
+                            class="album-cover"
+                            style="
+                                background: linear-gradient(
+                                    135deg,
+                                    #aa1a64,
+                                    #006688
+                                );
+                            "
+                        >
+                            <i
+                                class="fas fa-headphones text-5xl text-white/80 relative z-10"
+                            ></i>
+                            <div
+                                class="absolute top-2 left-2 font-mono text-xs text-white/70"
+                            >
+                                CC-002
+                            </div>
+                        </div>
+                        <div
+                            class="font-display text-xs text-pink-400 tracking-wider mb-1"
+                        >
+                            REMIX · ARRANGEMENT
+                        </div>
+                        <h4 class="font-display text-white text-lg mb-2">
+                            Retro Re:birth
+                        </h4>
+                        <p class="text-slate-400 text-xs">
+                            นำเพลงเก่ามาทำดนตรีใหม่ให้ร่วมสมัย
+                        </p>
+                    </div>
+
+                    <div class="album-card">
+                        <div
+                            class="album-cover"
+                            style="
+                                background: linear-gradient(
+                                    135deg,
+                                    #006688,
+                                    #ffd23f
+                                );
+                            "
+                        >
+                            <i
+                                class="fas fa-compact-disc text-5xl text-white/80 relative z-10"
+                            ></i>
+                            <div
+                                class="absolute top-2 left-2 font-mono text-xs text-white/70"
+                            >
+                                CC-003
+                            </div>
+                        </div>
+                        <div
+                            class="font-display text-xs text-yellow-400 tracking-wider mb-1"
+                        >
+                            DOUJIN COLLAB
+                        </div>
+                        <h4 class="font-display text-white text-lg mb-2">
+                            Niche Selection
+                        </h4>
+                        <p class="text-slate-400 text-xs">
+                            ร่วมมือกับศิลปินวงการโดจินมิวสิค
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal">
+                    <div class="neon-sign neon-sign-cyan">
+                        <div class="flex items-start gap-4">
+                            <i
+                                class="fas fa-check-circle text-cyan-400 text-2xl mt-1"
+                            ></i>
+                            <div>
+                                <p
+                                    class="font-display text-cyan-300 font-semibold mb-2"
+                                >
+                                    ข้อเท็จจริงที่หลายคนเข้าใจผิด
+                                </p>
+                                <p class="text-slate-300 leading-relaxed">
+                                    ด้วยความที่การออกแบบปกอัลบั้มมักดูเฉพาะกลุ่ม
+                                    (Niche) การดึงศิลปินโดจินมาร่วม
+                                    และการไปตั้งบูธขายแผ่นตามงานอีเวนต์
+                                    ทำให้หลายคนเข้าใจผิดว่านี่คือ
+                                    "กลุ่มทำเพลงโดจิน"
+                                </p>
+                                <p class="text-white font-medium mt-3">
+                                    แต่ทุกอัลบั้มภายใต้ชื่อ Clarice Disk และ
+                                    City Connection คือ
+                                    <span class="neon-cyan"
+                                        >สินค้า Official ที่ถูกลิขสิทธิ์
+                                        100%</span
+                                    >
+                                    จากบริษัทเจ้าของ IP ตัวจริง
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="cite">
+                    อ้างอิง: ฐานข้อมูลรายชื่ออัลบั้มและเครดิตศิลปินจาก VGMdb
+                    หัวข้อค่ายเพลง City Connection
+                </p>
+            </div>
+        </section>
+
+        <div class="neon-hr"></div>
+
+        <!-- ============ SECTION 5: EASTER EGG ============ -->
+        <section id="sec5" class="relative py-24 md:py-32">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="reveal mb-16">
+                    <div class="section-num mb-5">CHAPTER 05</div>
+                    <h2 class="section-heading text-4xl md:text-6xl mb-6">
+                        เกร็ดลับสุดยอด:<br />
+                        ข้อความที่ซ่อนอยู่<br />
+                        ใน <span class="neon-yellow">บรรทัดโค้ด</span>
+                    </h2>
+                    <p class="text-slate-400 max-w-2xl">
+                        นอกจากตัวเกมเพลย์และเสียงเพลงแล้ว City Connection
+                        ยังมีความลับสุดคลาสสิกซ่อนอยู่ในระดับซอร์สโค้ดของเกมตู้
+                        Arcade ดั้งเดิม
+                    </p>
+                </div>
+
+                <div class="reveal">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span
+                                class="terminal-dot"
+                                style="background: #ff5f56"
+                            ></span>
+                            <span
+                                class="terminal-dot"
+                                style="background: #ffbd2e"
+                            ></span>
+                            <span
+                                class="terminal-dot"
+                                style="background: #27c93f"
+                            ></span>
+                            <span class="ml-3"
+                                >city_connection_arcade.asm — ROM
+                                DISASSEMBLY</span
+                            >
+                        </div>
+                        <div class="terminal-body">
+                            <div>
+                                <span class="comment"
+                                    >// ====== ARCADE ROM · JALECO 1985
+                                    ======</span
+                                >
+                            </div>
+                            <div>
+                                <span class="comment"
+                                    >// disassembled by retro code
+                                    archaeologists</span
+                                >
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                <span class="addr">0x7570:</span>
+                                <span class="comment"
+                                    >; hidden message section</span
+                                >
+                            </div>
+                            <div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="string"
+                                    >"KONO PROGRAM O"</span
+                                >
+                            </div>
+                            <div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="string"
+                                    >"HIROMI NI SASAGEMASU"</span
+                                >
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                <span class="comment"
+                                    >// แปล: "ขออุทิศโปรแกรมนี้ให้กับ
+                                    Hiromi"</span
+                                >
+                            </div>
+                            <div>
+                                <span class="comment"
+                                    >//
+                                    นักพัฒนาแอบฝังข้อความลับมอบให้คนสำคัญ</span
+                                >
+                            </div>
+                            <div>
+                                <span class="comment"
+                                    >// จนถึงปัจจุบัน ยังไม่มีการยืนยันว่า
+                                    Hiromi คือใคร</span
+                                >
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                <span class="comment"
+                                    >// > end of hidden block</span
+                                ><span class="cursor"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mt-10 reveal">
+                    <div class="neon-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-map-pin text-cyan-400"></i>
+                            <h4
+                                class="font-display text-cyan-300 tracking-wider text-sm"
+                            >
+                                ตำแหน่งในโค้ด
+                            </h4>
+                        </div>
+                        <p class="font-mono text-yellow-300 text-lg">
+                            Address 0x7570
+                        </p>
+                        <p class="text-slate-400 text-sm mt-2">
+                            ฝังอยู่ในซอร์สโค้ดของเกมตู้ Arcade ดั้งเดิม
+                        </p>
+                    </div>
+                    <div class="neon-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-heart text-pink-400"></i>
+                            <h4
+                                class="font-display text-pink-300 tracking-wider text-sm"
+                            >
+                                ความหมาย
+                            </h4>
+                        </div>
+                        <p class="text-white">
+                            "ขออุทิศโปรแกรมนี้ให้กับ Hiromi"
+                        </p>
+                        <p class="text-slate-400 text-sm mt-2">
+                            กิมมิคเล็กๆ ที่นักพัฒนายุค 80s มักฝังไว้ behind the
+                            scenes
+                        </p>
+                    </div>
+                </div>
+
+                <p class="cite">
+                    อ้างอิง: ฐานข้อมูลการชำแหละโค้ดเกม The Cutting Room Floor -
+                    TCRF
+                </p>
+            </div>
+        </section>
+
+        <div class="neon-hr"></div>
+
+        <!-- ============ CTA ============ -->
+        <section id="cta" class="relative py-24 md:py-32 overflow-hidden">
+            <div class="road-wrap" style="opacity: 0.4">
+                <div class="road-grid"></div>
+            </div>
+
+            <div
+                class="relative z-10 max-w-4xl mx-auto px-6 text-center reveal"
+            >
+                <div class="inline-flex items-center gap-3 mb-8">
+                    <i class="fas fa-gamepad text-cyan-400 text-2xl"></i>
+                    <span
+                        class="font-display text-cyan-300 tracking-[0.3em] text-sm"
+                        >READY · PLAYER · ONE</span
+                    >
+                    <i class="fas fa-gamepad text-cyan-400 text-2xl"></i>
+                </div>
+
+                <h2 class="section-heading text-4xl md:text-7xl mb-6">
+                    กลับไปสัมผัส<br />
+                    ความคลาสสิก<br />
+                    <span class="neon-cyan">อีกครั้ง</span>
+                </h2>
+
+                <p
+                    class="text-slate-300/85 text-lg max-w-2xl mx-auto mb-10 leading-loose"
+                >
+                    ไม่จำเป็นต้องไปงัดเครื่อง Famicom หรือตามหาตู้ Arcade เก่าๆ
+                    ปัจจุบัน
+                    <span class="text-cyan-300 font-medium"
+                        >Hamster Corporation</span
+                    >
+                    ได้นำ City Connection เวอร์ชันตู้ Arcade ดั้งเดิม (แบบเต็มๆ
+                    12 ด่าน) มาพอร์ตลงคอนโซลยุคใหม่แล้ว
+                </p>
+
+                <div
+                    class="flex flex-wrap items-center justify-center gap-4 mb-12"
+                >
+                    <div class="platform-badge">
+                        <i
+                            class="fas fa-nintendo-switch text-red-400 text-xl"
+                        ></i>
+                        <div class="text-left">
+                            <div class="font-display text-white text-sm">
+                                Nintendo Switch
+                            </div>
+                            <div class="text-xs text-slate-400">
+                                Arcade Archives
+                            </div>
+                        </div>
+                    </div>
+                    <div class="platform-badge">
+                        <i class="fab fa-playstation text-blue-400 text-xl"></i>
+                        <div class="text-left">
+                            <div class="font-display text-white text-sm">
+                                PlayStation 4
+                            </div>
+                            <div class="text-xs text-slate-400">
+                                Arcade Archives
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a
+                        href="#"
+                        onclick="
+                            alert(
+                                'เปิด eShop ได้จากเครื่อง Switch / PS4 ของคุณครับ',
+                            );
+                            return false;
+                        "
+                        class="cta-btn"
+                    >
+                        <i class="fas fa-download"></i>
+                        ดาวน์โหลดตอนนี้
+                    </a>
+                    <a href="#hero" class="cta-btn-outline">
+                        <i class="fas fa-arrow-up"></i>
+                        กลับไปอ่านใหม่
+                    </a>
+                </div>
+
+                <div class="mt-16 pt-10 border-t border-cyan-500/10">
+                    <p class="text-slate-400 text-sm italic">
+                        "ขับรถ Honda City ป่วนเมือง ฟังเพลง Tchaikovsky
+                        จังหวะเร้าใจ
+                        แล้วมาดูกันว่าคุณจะหลบแมวบนถนนได้เซียนแค่ไหน"
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ FOOTER ============ -->
+        <footer class="relative py-12 border-t border-cyan-500/10">
+            <div class="max-w-6xl mx-auto px-6">
+                <div
+                    class="flex flex-col md:flex-row items-center justify-between gap-6"
+                >
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-car-side text-cyan-400"></i>
+                        <span
+                            class="font-display text-sm tracking-[0.2em] text-slate-400"
+                            >CITY CONNECTION · TRIBUTE PAGE</span
+                        >
+                    </div>
+                    <div class="flex items-center gap-6 text-xs text-slate-500">
+                        <span
+                            >บทความอ้างอิงจาก Wikipedia · TCRF · VGMdb · Jaleco
+                            Wiki</span
+                        >
+                    </div>
+                </div>
+                <div class="text-center mt-6 text-xs text-slate-600 font-mono">
+                    [ PRESS START TO CONTINUE ]
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Progress bar
+            const progress = document.getElementById("progress");
+            window.addEventListener("scroll", () => {
+                const h = document.documentElement;
+                const scrolled =
+                    (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+                progress.style.width = scrolled + "%";
+            });
+
+            // Reveal on scroll
+            const reveals = document.querySelectorAll(".reveal");
+            const io = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("visible");
+                            io.unobserve(e.target);
+                        }
+                    });
+                },
+                { threshold: 0.12 },
+            );
+            reveals.forEach((r) => io.observe(r));
+
+            // Side nav active state
+            const sections = document.querySelectorAll("section[id]");
+            const sideDots = document.querySelectorAll(".side-dot");
+            const navIO = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            const id = e.target.id;
+                            sideDots.forEach((d) => {
+                                d.classList.toggle(
+                                    "active",
+                                    d.getAttribute("href") === "#" + id,
+                                );
+                            });
+                        }
+                    });
+                },
+                { threshold: 0.4 },
+            );
+            sections.forEach((s) => navIO.observe(s));
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach((a) => {
+                a.addEventListener("click", (e) => {
+                    const target = document.querySelector(
+                        a.getAttribute("href"),
+                    );
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: "smooth" });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

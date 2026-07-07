@@ -1,58 +1,72 @@
 [
   {
-    "id": "intro",
-    "title": "บทนำ",
-    "date": "2025-01-01",
-    "tags": ["intro", "meta"],
-    "file": "article/intro.md"
-  },
-  {
-    "id": "demystifying-ai-art",
-    "title": "คู่มือสร้างภาพ AI ฉบับรวบรัด",
-    "date": "2026-06-26",
-    "tags": ["ai", "tools"],
+    "id": "aiart",
+    "title": "Aiart",
+    "date": "",
+    "tags": [],
     "file": "article/aiart.md"
   },
   {
-    "id": "nescafe-redmug",
-    "title": "ตำนานแก้วแดง NesCafe",
-    "date": "2026-06-26",
-    "tags": ["coffee", "knowledge"],
-    "file": "article/nescafered.html"
-  },
-  {
-    "id": "wholestorewar2026",
-    "title": "สมรภูมิห้างสรรพสินค้าชื่อดังในอเมริกา ปี 2026",
-    "date": "2026-05-20",
-    "tags": ["stock", "bussiness"],
-    "file": "article/wholestore2026war.html"
-  },
-  {
-    "id": "ai-event-2026-first-half",
-    "title": "สรุปแวดวง AI ในครึ่งปีแรก 2026",
-    "date": "2026-06-29",
-    "tags": ["AI", "news"],
+    "id": "aievent2026firsthalf",
+    "title": "Aievent2026Firsthalf",
+    "date": "",
+    "tags": [],
     "file": "article/aievent2026firsthalf.html"
   },
   {
     "id": "bearbrands",
-    "title": "ตำนาน นมตราหมี พลังมังกร ทำจากน้ำนมวัว",
-    "date": "2026-04-12",
-    "tags": ["beverages", "meme", "trending"],
+    "title": "Bearbrands",
+    "date": "",
+    "tags": [],
     "file": "article/bearbrands.html"
   },
   {
+    "id": "cityconnect",
+    "title": "Cityconnect",
+    "date": "",
+    "tags": [],
+    "file": "article/cityconnect.html"
+  },
+  {
+    "id": "icescreamsanwich",
+    "title": "Icescreamsanwich",
+    "date": "",
+    "tags": [],
+    "file": "article/icescreamsanwich.html"
+  },
+  {
     "id": "imagemodelevolution",
-    "title": "วิวัฒนาการของ Open Weight Image Model AI",
-    "date": "2026-07-03",
-    "tags": ["ai", "model", "evolution"],
+    "title": "Imagemodelevolution",
+    "date": "",
+    "tags": [],
     "file": "article/imagemodelevolution.html"
   },
   {
+    "id": "intro",
+    "title": "Intro",
+    "date": "",
+    "tags": [],
+    "file": "article/intro.md"
+  },
+  {
+    "id": "nescafered",
+    "title": "Nescafered",
+    "date": "",
+    "tags": [],
+    "file": "article/nescafered.html"
+  },
+  {
     "id": "sovereign",
-    "title": "ทวิลักษณ์แห่งอำนาจ:ราชาผู้ไร้มลทิล",
-    "date": "2026-07-04",
-    "tags": ["ปรัชญา", "การเมือง", "ประวัติศาสตร์"],
+    "title": "Sovereign",
+    "date": "",
+    "tags": [],
     "file": "article/sovereign.html"
+  },
+  {
+    "id": "wholestore2026war",
+    "title": "Wholestore2026War",
+    "date": "",
+    "tags": [],
+    "file": "article/wholestore2026war.html"
   }
 ]
