@@ -1,0 +1,2450 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>คราบน้ำตา ทุนนิยม และเกมมาเฟียระดับโลก</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                background: #050505;
+                color: #f5f5f4;
+                overflow-x: hidden;
+            }
+            ::selection {
+                background: rgba(249, 115, 22, 0.3);
+            }
+
+            /* Scrollbar */
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #050505;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: rgba(249, 115, 22, 0.4);
+                border-radius: 3px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: rgba(249, 115, 22, 0.7);
+            }
+
+            /* Animations */
+            @keyframes slideUpFade {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes scaleReveal {
+                from {
+                    opacity: 0;
+                    transform: scale(1.08);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+            @keyframes breathe {
+                0%,
+                100% {
+                    opacity: 0.4;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.7;
+                    transform: scale(1.1);
+                }
+            }
+            @keyframes slow-zoom {
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+            }
+            @keyframes shine {
+                0% {
+                    left: -50%;
+                }
+                100% {
+                    left: 150%;
+                }
+            }
+            @keyframes scroll {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+            @keyframes pulse-ring {
+                0% {
+                    transform: scale(1);
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: scale(2.5);
+                    opacity: 0;
+                }
+            }
+            @keyframes typewriter {
+                from {
+                    width: 0;
+                }
+                to {
+                    width: 100%;
+                }
+            }
+            @keyframes blink {
+                50% {
+                    border-color: transparent;
+                }
+            }
+            @keyframes particle-float {
+                0% {
+                    transform: translateY(100vh) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-10vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+            @keyframes gradient-shift {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+
+            .animate-slide-up {
+                animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0;
+            }
+            .animate-scale-reveal {
+                animation: scaleReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1)
+                    forwards;
+                opacity: 0;
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-breathe {
+                animation: breathe 8s ease-in-out infinite;
+            }
+            .animate-slow-zoom {
+                animation: slow-zoom 20s ease-in-out infinite;
+            }
+
+            .delay-100 {
+                animation-delay: 100ms;
+            }
+            .delay-200 {
+                animation-delay: 200ms;
+            }
+            .delay-300 {
+                animation-delay: 300ms;
+            }
+            .delay-500 {
+                animation-delay: 500ms;
+            }
+            .delay-700 {
+                animation-delay: 700ms;
+            }
+            .delay-1000 {
+                animation-delay: 1000ms;
+            }
+
+            /* Scroll Reveal */
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .reveal-left {
+                opacity: 0;
+                transform: translateX(-40px);
+                transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal-left.active {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .reveal-right {
+                opacity: 0;
+                transform: translateX(40px);
+                transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal-right.active {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .reveal-scale {
+                opacity: 0;
+                transform: scale(0.9);
+                transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .reveal-scale.active {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* Gradient Text */
+            .gradient-text {
+                background: linear-gradient(135deg, #f97316, #fb923c, #fbbf24);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .gradient-text-cool {
+                background: linear-gradient(135deg, #a8a29e, #f5f5f4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* Card hover */
+            .card-hover {
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 0 40px -10px rgba(249, 115, 22, 0.15);
+                border-color: rgba(249, 115, 22, 0.3);
+            }
+
+            /* Shine button */
+            .btn-shine {
+                position: relative;
+                overflow: hidden;
+            }
+            .btn-shine::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -50%;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(
+                    to right,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent
+                );
+                transform: skewX(-20deg);
+            }
+            .btn-shine:hover::after {
+                animation: shine 0.75s;
+            }
+
+            /* Timeline */
+            .timeline-line {
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(
+                    to bottom,
+                    transparent,
+                    rgba(249, 115, 22, 0.5),
+                    rgba(249, 115, 22, 0.2),
+                    transparent
+                );
+                transform: translateX(-50%);
+            }
+            .timeline-dot {
+                position: absolute;
+                left: 50%;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #f97316;
+                transform: translateX(-50%);
+                z-index: 10;
+                box-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
+            }
+            .timeline-dot::before {
+                content: "";
+                position: absolute;
+                inset: -4px;
+                border-radius: 50%;
+                border: 2px solid rgba(249, 115, 22, 0.3);
+                animation: pulse-ring 2s ease-out infinite;
+            }
+
+            /* Quote block */
+            .quote-block {
+                position: relative;
+                border-left: 3px solid #f97316;
+                padding-left: 1.5rem;
+            }
+            .quote-block::before {
+                content: '"';
+                position: absolute;
+                top: -20px;
+                left: -10px;
+                font-size: 5rem;
+                color: rgba(249, 115, 22, 0.15);
+                font-family: Georgia, serif;
+                line-height: 1;
+            }
+
+            /* Particles */
+            .particle {
+                position: fixed;
+                width: 3px;
+                height: 3px;
+                background: rgba(249, 115, 22, 0.3);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            /* Expandable */
+            .expandable-content {
+                max-height: 0;
+                overflow: hidden;
+                transition:
+                    max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    padding 0.4s ease;
+            }
+            .expandable-content.open {
+                max-height: 2000px;
+            }
+            .expand-toggle .icon-rotate {
+                transition: transform 0.4s ease;
+            }
+            .expand-toggle.active .icon-rotate {
+                transform: rotate(180deg);
+            }
+
+            /* Progress bar */
+            #reading-progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #f97316, #fbbf24);
+                z-index: 9999;
+                transition: width 0.1s linear;
+            }
+
+            /* Divider */
+            .section-divider {
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    transparent,
+                    rgba(255, 255, 255, 0.15),
+                    transparent
+                );
+            }
+
+            /* Stat counter */
+            .stat-number {
+                font-variant-numeric: tabular-nums;
+            }
+
+            /* Marquee */
+            .marquee-track {
+                display: flex;
+                width: max-content;
+                animation: marquee 40s linear infinite;
+            }
+            .marquee-track:hover {
+                animation-play-state: paused;
+            }
+
+            /* TOC */
+            .toc-item {
+                position: relative;
+                padding-left: 1.25rem;
+                transition: all 0.3s ease;
+            }
+            .toc-item::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 50%;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: rgba(168, 162, 158, 0.4);
+                transform: translateY(-50%);
+                transition: all 0.3s ease;
+            }
+            .toc-item:hover::before,
+            .toc-item.active::before {
+                background: #f97316;
+                box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+            }
+            .toc-item.active {
+                color: #f97316;
+            }
+
+            /* Glow card */
+            .glow-card {
+                position: relative;
+                overflow: hidden;
+            }
+            .glow-card::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(
+                    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(249, 115, 22, 0.06) 0%,
+                    transparent 50%
+                );
+                pointer-events: none;
+                transition: opacity 0.3s;
+                opacity: 0;
+            }
+            .glow-card:hover::before {
+                opacity: 1;
+            }
+
+            /* Mobile timeline */
+            @media (max-width: 768px) {
+                .timeline-line {
+                    left: 20px;
+                }
+                .timeline-dot {
+                    left: 20px;
+                }
+            }
+
+            /* Number counter animation */
+            .counter {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Reading Progress Bar -->
+        <div id="reading-progress" style="width: 0%"></div>
+
+        <!-- Floating Particles -->
+        <div id="particles" class="pointer-events-none"></div>
+
+        <!-- Background Glows -->
+        <div class="fixed inset-0 pointer-events-none z-0">
+            <div
+                class="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] animate-breathe"
+            ></div>
+            <div
+                class="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-amber-500/3 rounded-full blur-[100px] animate-breathe"
+                style="animation-delay: 4s"
+            ></div>
+        </div>
+
+        <!-- Navigation -->
+        <nav
+            class="fixed top-0 left-0 right-0 h-20 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5"
+        >
+            <div
+                class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between"
+            >
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center"
+                    >
+                        <span
+                            class="iconify text-black text-lg"
+                            data-icon="mdi:scale-balance"
+                        ></span>
+                    </div>
+                    <span
+                        class="text-sm font-medium tracking-wider uppercase text-stone-400"
+                        >The Law Essay</span
+                    >
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a
+                        href="#section-1"
+                        class="text-xs font-semibold tracking-widest uppercase text-stone-500 hover:text-orange-400 transition-colors"
+                        >ประวัติศาสตร์</a
+                    >
+                    <a
+                        href="#section-2"
+                        class="text-xs font-semibold tracking-widest uppercase text-stone-500 hover:text-orange-400 transition-colors"
+                        >วิวัฒนาการ</a
+                    >
+                    <a
+                        href="#section-3"
+                        class="text-xs font-semibold tracking-widest uppercase text-stone-500 hover:text-orange-400 transition-colors"
+                        >อัพ Patch</a
+                    >
+                    <a
+                        href="#section-4"
+                        class="text-xs font-semibold tracking-widest uppercase text-stone-500 hover:text-orange-400 transition-colors"
+                        >อนุญาโตตุลาการ</a
+                    >
+                    <a
+                        href="#section-5"
+                        class="text-xs font-semibold tracking-widest uppercase text-stone-500 hover:text-orange-400 transition-colors"
+                        >สรุป</a
+                    >
+                </div>
+                <button
+                    id="mobile-menu-btn"
+                    class="md:hidden text-stone-400 hover:text-orange-400 transition-colors"
+                >
+                    <span class="iconify text-2xl" data-icon="mdi:menu"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div
+            id="mobile-menu"
+            class="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 transform translate-x-full transition-transform duration-500 md:hidden"
+        >
+            <button
+                id="mobile-menu-close"
+                class="absolute top-6 right-6 text-stone-400 hover:text-orange-400"
+            >
+                <span class="iconify text-3xl" data-icon="mdi:close"></span>
+            </button>
+            <a
+                href="#section-1"
+                class="mobile-nav-link text-2xl font-medium text-stone-300 hover:text-orange-400 transition-colors"
+                >ประวัติศาสตร์เบื้องลึก</a
+            >
+            <a
+                href="#section-2"
+                class="mobile-nav-link text-2xl font-medium text-stone-300 hover:text-orange-400 transition-colors"
+                >วิวัฒนาการวิถีหากิน</a
+            >
+            <a
+                href="#section-3"
+                class="mobile-nav-link text-2xl font-medium text-stone-300 hover:text-orange-400 transition-colors"
+                >ระบบอัพ Patch</a
+            >
+            <a
+                href="#section-4"
+                class="mobile-nav-link text-2xl font-medium text-stone-300 hover:text-orange-400 transition-colors"
+                >อนุญาโตตุลาการ</a
+            >
+            <a
+                href="#section-5"
+                class="mobile-nav-link text-2xl font-medium text-stone-300 hover:text-orange-400 transition-colors"
+                >เสาหลักแห่งความเป็นระเบียบ</a
+            >
+        </div>
+
+        <!-- ===================== HERO ===================== -->
+        <section class="relative min-h-screen flex items-end pb-20 pt-20">
+            <!-- Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img
+                    src="https://picsum.photos/seed/law-ancient-scroll/1920/1080.jpg"
+                    alt=""
+                    class="w-full h-full object-cover opacity-30 animate-slow-zoom"
+                />
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent"
+                ></div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-[#050505]/80 to-transparent"
+                ></div>
+            </div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+                <!-- Tag -->
+                <div class="animate-slide-up mb-8">
+                    <span
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-semibold tracking-widest uppercase text-stone-400"
+                    >
+                        <span
+                            class="iconify text-orange-500"
+                            data-icon="mdi:gavel"
+                        ></span>
+                        บทความวิเคราะห์
+                    </span>
+                </div>
+
+                <!-- Title -->
+                <h1
+                    class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium leading-[0.95] tracking-tighter animate-slide-up delay-200"
+                >
+                    <span class="block text-stone-400">คราบน้ำตา</span>
+                    <span class="block gradient-text">ทุนนิยม</span>
+                    <span class="block text-stone-400">และเกมมาเฟีย</span>
+                    <span class="block text-stone-100">ระดับโลก</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p
+                    class="mt-8 text-lg md:text-xl font-light leading-relaxed text-stone-500 max-w-2xl animate-slide-up delay-500"
+                >
+                    วิวัฒนาการ "นักกฎหมาย" จากล่ามหน้าบัลลังก์<br
+                        class="hidden sm:block"
+                    />สู่อีลีตผู้ชี้ชะตารัฐ
+                </p>
+
+                <!-- CTA -->
+                <div
+                    class="mt-10 flex flex-wrap items-center gap-4 animate-slide-up delay-700"
+                >
+                    <a
+                        href="#section-1"
+                        class="btn-shine inline-flex items-center gap-3 px-8 py-4 bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all"
+                        style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.3)"
+                    >
+                        เริ่มอ่าน
+                        <span class="iconify" data-icon="mdi:arrow-down"></span>
+                    </a>
+                    <div class="flex items-center gap-3 text-stone-600 text-sm">
+                        <span
+                            class="iconify text-lg"
+                            data-icon="mdi:clock-outline"
+                        ></span>
+                        <span>เวลาอ่าน ~15 นาที</span>
+                    </div>
+                </div>
+
+                <!-- Scroll indicator -->
+                <div
+                    class="absolute bottom-8 right-6 animate-float hidden md:block"
+                >
+                    <div
+                        class="flex flex-col items-center gap-2 text-stone-600"
+                    >
+                        <span
+                            class="text-[10px] tracking-widest uppercase"
+                            style="writing-mode: vertical-rl"
+                            >Scroll</span
+                        >
+                        <div
+                            class="w-px h-12 bg-gradient-to-b from-stone-600 to-transparent"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== MARQUEE ===================== -->
+        <div class="relative py-6 border-y border-white/5 overflow-hidden">
+            <div class="marquee-track">
+                <div
+                    class="flex items-center gap-12 px-6 text-stone-700 text-sm font-medium tracking-widest uppercase whitespace-nowrap"
+                >
+                    <span>Logographers</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Synégoros</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Emperor Claudius</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Canon Lawyer</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Trial by Ordeal</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>King's Court</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Arbitrator</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>New York Convention</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Bilateral Negotiation</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Ivy League</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Oxbridge</span
+                    ><span class="text-orange-500/30">◆</span>
+                </div>
+                <div
+                    class="flex items-center gap-12 px-6 text-stone-700 text-sm font-medium tracking-widest uppercase whitespace-nowrap"
+                >
+                    <span>Logographers</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Synégoros</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Emperor Claudius</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Canon Lawyer</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Trial by Ordeal</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>King's Court</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Arbitrator</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>New York Convention</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Bilateral Negotiation</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Ivy League</span
+                    ><span class="text-orange-500/30">◆</span>
+                    <span>Oxbridge</span
+                    ><span class="text-orange-500/30">◆</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== INTRO ===================== -->
+        <section class="relative py-32">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="reveal">
+                        <p
+                            class="text-xl md:text-2xl font-light leading-relaxed text-stone-400"
+                        >
+                            หากจะหาอาชีพใดในประวัติศาสตร์มนุษยชาติที่ตั้งอยู่บนรอยต่อระหว่าง
+                            <span class="text-stone-100 font-medium"
+                                >"ความจริง"</span
+                            >
+                            กับ
+                            <span class="text-orange-400 font-medium"
+                                >"คำลวง"</span
+                            >
+                            ระหว่าง
+                            <span class="text-stone-100 font-medium"
+                                >"ความถูกต้องตามกติกา"</span
+                            >
+                            กับ
+                            <span class="text-orange-400 font-medium"
+                                >"ความกลับกลอกของมนุษย์"</span
+                            >
+                        </p>
+                    </div>
+                    <div class="reveal mt-6" style="transition-delay: 200ms">
+                        <p
+                            class="text-xl md:text-2xl font-light leading-relaxed text-stone-400"
+                        >
+                            คงไม่มีอาชีพไหนชัดเจนไปกว่า
+                            <span
+                                class="text-3xl md:text-4xl font-medium gradient-text"
+                                >"นักกฎหมาย"</span
+                            >
+                            อีกแล้ว
+                        </p>
+                    </div>
+                    <div class="reveal mt-10" style="transition-delay: 400ms">
+                        <p
+                            class="text-lg font-light leading-relaxed text-stone-500"
+                        >
+                            ภาพจำในหัวของคนส่วนใหญ่คือภาพของคนในชุดครุยที่ยืนเถียงกับศาลอย่างฉะฉานเพื่อทวงคืนความยุติธรรม
+                            แต่ในความเป็นจริงของหน้าประวัติศาสตร์
+                            โลกของนักกฎหมายซับซ้อน เขี้ยวลากดิน
+                            และแห้งแล้งกว่านั้นมาก
+                        </p>
+                    </div>
+                    <div class="reveal mt-6" style="transition-delay: 500ms">
+                        <div
+                            class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl border border-orange-500/20 bg-orange-500/5"
+                        >
+                            <span
+                                class="iconify text-orange-500 text-xl"
+                                data-icon="mdi:update"
+                            ></span>
+                            <span class="text-sm text-orange-300/80"
+                                >มันคืออาชีพที่ไม่เคยหยุดนิ่ง เป็นอาชีพที่ถูก
+                                <strong class="text-orange-400"
+                                    >"อัพ Patch"</strong
+                                >
+                                ไปตามการเปลี่ยนผ่านของอำนาจโลก</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider max-w-7xl mx-auto"></div>
+
+        <!-- ===================== SECTION 1 ===================== -->
+        <section id="section-1" class="relative py-32">
+            <div class="max-w-7xl mx-auto px-6">
+                <!-- Section Header -->
+                <div class="reveal mb-20">
+                    <span
+                        class="text-xs font-semibold tracking-widest uppercase text-orange-500/60 mb-4 block"
+                        >Chapter 01</span
+                    >
+                    <h2
+                        class="text-3xl md:text-5xl font-medium tracking-tight leading-tight"
+                    >
+                        ประวัติศาสตร์เบื้องลึก
+                    </h2>
+                    <p
+                        class="mt-4 text-xl md:text-2xl font-light text-stone-500 italic"
+                    >
+                        "ฉันไม่ได้เถียง ฉันแค่มาช่วยเพื่อนพูด"
+                    </p>
+                </div>
+
+                <!-- Context -->
+                <div
+                    class="reveal max-w-4xl mb-16"
+                    style="transition-delay: 200ms"
+                >
+                    <p
+                        class="text-lg font-light leading-relaxed text-stone-400"
+                    >
+                        ในยุคโบราณที่มนุษย์ยังปกครองด้วยระบบเทวนิยม (Divine
+                        Right) หรือกษัตริย์นิยม
+                        อำนาจเบ็ดเสร็จเด็ดขาดในการชี้เป็นชี้ตายมนุษย์ตั้งอยู่บนพระราชโองการหรือความประสงค์ของเทพเจ้า
+                        การเดินสุ่มสี่สุ่มห้าเข้าไป "เถียง" ในศาล เท่ากับ
+                        <span class="text-orange-400"
+                            >ตั๋วเที่ยวเดียวสู่ลานประหาร</span
+                        >
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="relative max-w-5xl mx-auto">
+                    <!-- Hidden on mobile, visible on md+ -->
+                    <div class="timeline-line hidden md:block"></div>
+
+                    <!-- Event 1: Ancient Athens -->
+                    <div
+                        class="relative grid md:grid-cols-2 gap-8 md:gap-16 mb-20"
+                    >
+                        <div
+                            class="timeline-dot hidden md:block"
+                            style="top: 2rem"
+                        ></div>
+                        <div class="reveal-left md:text-right md:pr-12">
+                            <span
+                                class="text-xs font-semibold tracking-widest uppercase text-orange-500/60"
+                                >กรีกโบราณ</span
+                            >
+                            <h3
+                                class="text-2xl font-medium mt-2 mb-4 tracking-tight"
+                            >
+                                Ancient Athens
+                            </h3>
+                            <p
+                                class="text-stone-500 font-light leading-relaxed"
+                            >
+                                กฎหมายดั้งเดิมระบุว่า
+                                <em class="text-stone-300"
+                                    >"ทุกคนต้องว่าความให้ตัวเอง"</em
+                                >
+                                ห้ามจ้างคนอื่นมาพูดแทนเด็ดขาด
+                                เพราะศาลเชื่อว่าความบริสุทธิ์ใจจะสะท้อนผ่านน้ำเสียงของเจ้าตัว
+                            </p>
+                        </div>
+                        <div class="reveal-right md:pl-12">
+                            <!-- Card: Logographers -->
+                            <div
+                                class="glow-card card-hover p-6 rounded-2xl border border-white/10 bg-white/[0.02] mb-4"
+                            >
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="iconify text-orange-500 text-xl"
+                                            data-icon="mdi:feather"
+                                        ></span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-stone-200">
+                                            Logographers
+                                        </h4>
+                                        <span class="text-xs text-stone-600"
+                                            >คนเขียนสปีช</span
+                                        >
+                                    </div>
+                                </div>
+                                <p
+                                    class="text-sm text-stone-500 font-light leading-relaxed"
+                                >
+                                    เมื่อกฎหมายห้ามคนอื่นพูดแทน
+                                    ลูกความจึงหันไปจ้างนักคิดนักพูดเก่งๆ (เช่น
+                                    <em class="text-stone-400">Lysias</em> หรือ
+                                    <em class="text-stone-400">Demosthenes</em>)
+                                    ให้ช่วย "เขียนบทพูด"
+                                    จากนั้นลูกความก็นำบทนั้นไปท่องจำเพื่อพูดในศาล
+                                </p>
+                            </div>
+                            <!-- Card: Synégoros -->
+                            <div
+                                class="glow-card card-hover p-6 rounded-2xl border border-white/10 bg-white/[0.02]"
+                            >
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="iconify text-orange-500 text-xl"
+                                            data-icon="mdi:account-group"
+                                        ></span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-stone-200">
+                                            Synégoros
+                                        </h4>
+                                        <span class="text-xs text-stone-600"
+                                            >ผู้อุปถัมภ์พรรคพวก</span
+                                        >
+                                    </div>
+                                </div>
+                                <p
+                                    class="text-sm text-stone-500 font-light leading-relaxed"
+                                >
+                                    กฎหมายผ่อนปรนให้จำเลยพาเพื่อนมาช่วยพูดสนับสนุนได้
+                                    มนุษย์ผู้ชาญฉลาดจึงเริ่มหัวหมอ —
+                                    ลักลอบจ้างนักพูดฝีปากกล้ามาทำเนียนยืนข้างๆ
+                                    ในฐานะ "เพื่อนสนิท" โดยกฎหมายห้ามรับเงิน
+                                    แต่เบื้องหลังคือ
+                                    <span class="text-orange-400/80"
+                                        >สินบนใต้โต๊ะอย่างมโหฬาร</span
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 2: Ancient Rome -->
+                    <div class="relative grid md:grid-cols-2 gap-8 md:gap-16">
+                        <div
+                            class="timeline-dot hidden md:block"
+                            style="top: 2rem"
+                        ></div>
+                        <div
+                            class="reveal-left md:text-right md:pr-12 md:order-1 order-2"
+                        >
+                            <div
+                                class="glow-card card-hover p-6 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03]"
+                            >
+                                <div
+                                    class="flex items-center gap-3 mb-4 md:justify-end"
+                                >
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="iconify text-orange-500 text-xl"
+                                            data-icon="mdi:crown"
+                                        ></span>
+                                    </div>
+                                    <div class="md:text-right">
+                                        <h4 class="font-medium text-stone-200">
+                                            จักรพรรดิคลอดิอุส
+                                        </h4>
+                                        <span class="text-xs text-stone-600"
+                                            >Emperor Claudius · คริสต์ศตวรรษที่
+                                            1</span
+                                        >
+                                    </div>
+                                </div>
+                                <p
+                                    class="text-sm text-stone-500 font-light leading-relaxed md:text-right"
+                                >
+                                    ทรงตระหนักว่าการห้ามทนายรับเงินนั้นไม่สมจริงและทำให้เกิดปัญหาสินบนใต้โต๊ะ
+                                    พระองค์จึงประกาศให้
+                                    <span class="text-orange-400 font-medium"
+                                        >"อาชีพทนายความกลายเป็นอาชีพที่ถูกกฎหมายเป็นครั้งแรกในประวัติศาสตร์โลก"</span
+                                    >
+                                    และสามารถเรียกเก็บค่าธรรมเนียมได้อย่างเปิดเผย
+                                </p>
+                            </div>
+                        </div>
+                        <div class="reveal-right md:pl-12 md:order-2 order-1">
+                            <span
+                                class="text-xs font-semibold tracking-widest uppercase text-orange-500/60"
+                                >จักรวรรดิโรมัน</span
+                            >
+                            <h3
+                                class="text-2xl font-medium mt-2 mb-4 tracking-tight"
+                            >
+                                Ancient Rome
+                            </h3>
+                            <p
+                                class="text-stone-500 font-light leading-relaxed"
+                            >
+                                ระบบกฎหมายเริ่มถูกแยกออกจากเรื่องของศาสนา
+                                (Secularization) เปลี่ยนจากโองการเทพเจ้ามาเป็น
+                                <span class="text-stone-300"
+                                    >"กติกาของรัฐ"</span
+                                >
+                                จุดเปลี่ยนสำคัญที่วางรากฐานให้อาชีพทนายความเดินเข้าสู่แสงสว่างอย่างเป็นทางการ
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider max-w-7xl mx-auto"></div>
+
+        <!-- ===================== SECTION 2 ===================== -->
+        <section id="section-2" class="relative py-32">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="reveal mb-20">
+                    <span
+                        class="text-xs font-semibold tracking-widest uppercase text-orange-500/60 mb-4 block"
+                        >Chapter 02</span
+                    >
+                    <h2
+                        class="text-3xl md:text-5xl font-medium tracking-tight leading-tight"
+                    >
+                        การเอาตัวรอด<br class="hidden sm:block" />และวิถีหากิน
+                    </h2>
+                    <p class="mt-4 text-lg font-light text-stone-500">
+                        เมื่อประวัติศาสตร์เปลี่ยนผ่าน
+                        ทนายความก็ต้องกลายพันธุ์ตาม
+                    </p>
+                </div>
+
+                <!-- Era 1: Dark Ages -->
+                <div class="reveal-scale mb-12">
+                    <div
+                        class="glow-card card-hover rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden"
+                    >
+                        <div class="relative h-56 sm:h-64 overflow-hidden">
+                            <img
+                                src="https://picsum.photos/seed/dark-ages-fire/1200/500.jpg"
+                                alt="ยุคมืด"
+                                class="w-full h-full object-cover opacity-40"
+                            />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent"
+                            ></div>
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="iconify text-red-400 text-xl"
+                                            data-icon="mdi:fire"
+                                        ></span>
+                                    </div>
+                                    <span
+                                        class="text-xs font-semibold tracking-widest uppercase text-red-400/60"
+                                        >ยุคมืด · ยุคกลาง</span
+                                    >
+                                </div>
+                                <h3 class="text-2xl font-medium tracking-tight">
+                                    ยุคแห่งไฟชำระและศาสนจักร
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="p-6 md:p-8">
+                            <!-- Expandable -->
+                            <div>
+                                <button
+                                    class="expand-toggle w-full flex items-center justify-between text-left"
+                                    onclick="toggleExpand(this)"
+                                >
+                                    <p
+                                        class="text-stone-500 font-light leading-relaxed pr-4"
+                                    >
+                                        หลังโรมันล่มสลาย
+                                        ยุโรปตกอยู่ใต้ระบบศาสนาที่บ้าคลั่ง
+                                        ศาลเปลี่ยนไปใช้ระบบ
+                                        <span class="text-stone-300"
+                                            >Trial by Ordeal</span
+                                        >
+                                        — การพิสูจน์โดยสู้กับพระเจ้า...
+                                    </p>
+                                    <span
+                                        class="iconify icon-rotate text-stone-600 text-xl flex-shrink-0"
+                                        data-icon="mdi:chevron-down"
+                                    ></span>
+                                </button>
+                                <div class="expandable-content">
+                                    <div class="pt-4 space-y-4">
+                                        <p
+                                            class="text-stone-500 font-light leading-relaxed"
+                                        >
+                                            บีบให้จำเลยเอามือลุยไฟหรือโยนลงน้ำลึก
+                                            ถ้าพระเจ้าคุ้มครอง
+                                            (แผลไม่ติดเชื้อหรือจมน้ำแล้วรอด)
+                                            ถึงจะแปลว่าบริสุทธิ์
+                                            ในยุคที่ตรรกะพังทลายเช่นนี้
+                                            อาชีพทนายความแทบจะสูญพันธุ์ไปชั่วขณะ
+                                        </p>
+                                        <div
+                                            class="p-4 rounded-xl border border-white/5 bg-white/[0.02]"
+                                        >
+                                            <p
+                                                class="text-sm text-stone-500 font-light leading-relaxed"
+                                            >
+                                                จนกระทั่งศตวรรษที่ 12-13
+                                                เมื่อมีการก่อตั้งมหาวิทยาลัยในยุโรปและมีการรื้อฟื้นกฎหมายโรมัน
+                                                ทนายความจึงฟื้นคืนชีพกลับมาในฐานะ
+                                                <span class="text-orange-400/80"
+                                                    >"ผู้เชี่ยวชาญด้านกฎหมายศาสนจักร"
+                                                    (Canon Lawyer)</span
+                                                >
+                                                คอยช่วยว่าความในศาลของโบสถ์เพื่อสู้คดีวินัยของบาทหลวงหรือข้อพิพาทเรื่องที่ดินของคริสตจักร
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Era 2: Absolute Monarchy -->
+                <div class="reveal-scale" style="transition-delay: 200ms">
+                    <div
+                        class="glow-card card-hover rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden"
+                    >
+                        <div class="relative h-56 sm:h-64 overflow-hidden">
+                            <img
+                                src="https://picsum.photos/seed/royal-court-palace/1200/500.jpg"
+                                alt="ยุคสมบูรณาญาสิทธิราชย์"
+                                class="w-full h-full object-cover opacity-40"
+                            />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent"
+                            ></div>
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="iconify text-amber-400 text-xl"
+                                            data-icon="mdi:crown-outline"
+                                        ></span>
+                                    </div>
+                                    <span
+                                        class="text-xs font-semibold tracking-widest uppercase text-amber-400/60"
+                                        >ยุคสมบูรณาญาสิทธิราชย์</span
+                                    >
+                                </div>
+                                <h3 class="text-2xl font-medium tracking-tight">
+                                    ถ้อยคำสอพลอที่ซ่อนใบมีด
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="p-6 md:p-8">
+                            <div>
+                                <button
+                                    class="expand-toggle w-full flex items-center justify-between text-left"
+                                    onclick="toggleExpand(this)"
+                                >
+                                    <p
+                                        class="text-stone-500 font-light leading-relaxed pr-4"
+                                    >
+                                        ในยุคที่กษัตริย์มีอำนาจล้นพ้น
+                                        ทนายความไม่ได้หาญกล้าลุกขึ้นมาท้าทายราชบัลลังก์ตรงๆ
+                                        แต่หากินด้วย
+                                        <span class="text-stone-300"
+                                            >"โวหารและการตีความเอาตัวรอด"</span
+                                        >...
+                                    </p>
+                                    <span
+                                        class="iconify icon-rotate text-stone-600 text-xl flex-shrink-0"
+                                        data-icon="mdi:chevron-down"
+                                    ></span>
+                                </button>
+                                <div class="expandable-content">
+                                    <div class="pt-4 space-y-4">
+                                        <p
+                                            class="text-stone-500 font-light leading-relaxed"
+                                        >
+                                            ในศาลของกษัตริย์ (King's Court)
+                                            ทนายความอังกฤษจะต้องแต่งตัวสุภาพ
+                                            ใส่ลูกไม้
+                                            ใส่หมวกวิกผมสีขาวเพื่อแสดงความเคารพอย่างสูงสุด
+                                        </p>
+                                        <div class="quote-block">
+                                            <p
+                                                class="text-lg md:text-xl font-light leading-relaxed text-stone-300 italic"
+                                            >
+                                                "พระราชโองการอันเปี่ยมด้วยพระปรีชาสามารถของพระองค์ในปีก่อน
+                                                ทรงมีพระประสงค์ให้ใช้กับกรณีเอ...
+                                                แต่กรณีของลูกความข้าพระพุทธเจ้านั้นเข้าข่ายกรณีบี
+                                                ซึ่งสมควรได้รับพระเมตตาตามที่พระองค์ทรงเคยดำรัสไว้..."
+                                            </p>
+                                        </div>
+                                        <p
+                                            class="text-stone-500 font-light leading-relaxed"
+                                        >
+                                            มันคือการใช้ทักษะภาษาขั้นสูง
+                                            กลั่นกรองภาษาชาวบ้านให้กลายเป็นภาษากฎหมาย
+                                            ตีความคำสั่งของกษัตริย์ให้เข้าทางลูกความตัวเอง
+                                            เพื่อให้ได้เงินรางวัลโดยที่
+                                            <span class="text-orange-400/80"
+                                                >หัวของทนายไม่หลุดออกจากบ่าไปเสียก่อน</span
+                                            >
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider max-w-7xl mx-auto"></div>
+
+        <!-- ===================== SECTION 3 ===================== -->
+        <section id="section-3" class="relative py-32">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="reveal mb-20">
+                    <span
+                        class="text-xs font-semibold tracking-widest uppercase text-orange-500/60 mb-4 block"
+                        >Chapter 03</span
+                    >
+                    <h2
+                        class="text-3xl md:text-5xl font-medium tracking-tight leading-tight"
+                    >
+                        300-400 ปีก่อน<br
+                            class="hidden sm:block"
+                        />ระบบเริ่มเป็นรูปเป็นร่าง
+                    </h2>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                    <!-- Left: Content -->
+                    <div class="space-y-8">
+                        <div class="reveal">
+                            <p
+                                class="text-lg font-light leading-relaxed text-stone-400"
+                            >
+                                ระบบกฎหมายและอาชีพทนายความในแบบที่เห็นทุกวันนี้
+                                — มีออฟฟิศ มีการสอบใบอนุญาต
+                                มีการต่อสู้คดีอย่างเป็นระบบ —
+                                <span class="text-orange-400"
+                                    >เพิ่งจะเริ่มฟอร์มตัวเป็นรูปเป็นร่างชัดเจนเมื่อราวๆ
+                                    300-400 ปีที่แล้วนี่เอง</span
+                                >
+                                (ช่วงศตวรรษที่ 16-17)
+                            </p>
+                        </div>
+
+                        <div class="reveal" style="transition-delay: 200ms">
+                            <p
+                                class="text-lg font-light leading-relaxed text-stone-500"
+                            >
+                                เมื่อระบบเริ่มนิ่ง
+                                กฎหมายในแต่ละประเทศก็กลายเป็นเสาหลักในการปกป้องโครงสร้างสังคม
+                                และมันคือระบบที่ต้องถูก
+                                <span class="text-stone-300"
+                                    >"อัพเดต Patch"</span
+                                >
+                                เพื่ออุดรอยรั่วอยู่ตลอดเวลา
+                            </p>
+                        </div>
+
+                        <div class="reveal" style="transition-delay: 300ms">
+                            <p
+                                class="text-lg font-light leading-relaxed text-stone-500"
+                            >
+                                ในปัจจุบัน
+                                กฎหมายในระดับท้องถิ่นมักจะเขียนขึ้นมาแบบ
+                                "คลุมเครือ" จงใจเปิดช่องให้ศาลใช้
+                                <span class="text-stone-300"
+                                    >ดุลพินิจ (Judicial Discretion)</span
+                                >
+                                โดยพ่วงเอาหลักคุณธรรม จริยธรรม
+                                และมนุษยธรรมเข้ามาผสมผสาน
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Visual elements -->
+                    <div class="space-y-6">
+                        <!-- Stat card -->
+                        <div
+                            class="reveal-scale glow-card card-hover p-6 rounded-2xl border border-white/10 bg-white/[0.02]"
+                        >
+                            <div class="flex items-center gap-4 mb-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center"
+                                >
+                                    <span
+                                        class="iconify text-orange-500 text-2xl"
+                                        data-icon="mdi:clock-fast"
+                                    ></span>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-3xl font-medium stat-number gradient-text"
+                                        data-target="400"
+                                        data-suffix="+"
+                                    >
+                                        0
+                                    </p>
+                                    <p
+                                        class="text-xs text-stone-600 tracking-wider uppercase"
+                                    >
+                                        ปีที่ระบบกฎหมายสมัยใหม่ฟอร์มตัว
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patch note card -->
+                        <div
+                            class="reveal-scale glow-card card-hover p-6 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03]"
+                            style="transition-delay: 200ms"
+                        >
+                            <div class="flex items-center gap-2 mb-4">
+                                <span
+                                    class="iconify text-orange-500"
+                                    data-icon="mdi:tag-outline"
+                                ></span>
+                                <span
+                                    class="text-xs font-semibold tracking-widest uppercase text-orange-500/60"
+                                    >Patch Notes</span
+                                >
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <span
+                                        class="iconify text-green-400 text-sm mt-1 flex-shrink-0"
+                                        data-icon="mdi:plus-circle"
+                                    ></span>
+                                    <p
+                                        class="text-sm text-stone-400 font-light"
+                                    >
+                                        กฎหมายโลกโซเชียล: การด่าทอ,
+                                        ละเมิดลิขสิทธิ์, ฉ้อโกงในโลกเสมือม
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span
+                                        class="iconify text-yellow-400 text-sm mt-1 flex-shrink-0"
+                                        data-icon="mdi:alert-circle"
+                                    ></span>
+                                    <p
+                                        class="text-sm text-stone-400 font-light"
+                                    >
+                                        ยังลุ่มๆ ดอนๆ — วิ่งตามเทคโนโลยีไม่ทัน
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span
+                                        class="iconify text-blue-400 text-sm mt-1 flex-shrink-0"
+                                        data-icon="mdi:download-circle-outline"
+                                    ></span>
+                                    <p
+                                        class="text-sm text-stone-400 font-light"
+                                    >
+                                        รอคอย: Patch
+                                        กฎหมายสากลใหม่ควบคุมพฤติกรรมมนุษย์ยุคดิจิทัล
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nightmare card -->
+                        <div
+                            class="reveal-scale glow-card card-hover p-6 rounded-2xl border border-red-500/10 bg-red-500/[0.02]"
+                            style="transition-delay: 400ms"
+                        >
+                            <div class="flex items-center gap-2 mb-4">
+                                <span
+                                    class="iconify text-red-400"
+                                    data-icon="mdi:ghost"
+                                ></span>
+                                <span
+                                    class="text-xs font-semibold tracking-widest uppercase text-red-400/60"
+                                    >ฝันร้ายที่สุดของนักกฎหมาย</span
+                                >
+                            </div>
+                            <p
+                                class="text-sm text-stone-500 font-light leading-relaxed"
+                            >
+                                ไม่ใช่ความยากของตัวบทกฎหมาย แต่คือ
+                                <span class="text-red-400/80"
+                                    >"พฤติกรรมสุดคาดเดาและเหนือกฎเกณฑ์ของมนุษย์"</span
+                                >
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >โกหกทนายตัวเอง</span
+                                >
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >สารภาพกลางคดี</span
+                                >
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >แกล้งป่วย</span
+                                >
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >นั่งรถเข็น</span
+                                >
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >ความจำเสื่อม</span
+                                >
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs text-stone-600"
+                                    >แกล้งตาย</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider max-w-7xl mx-auto"></div>
+
+        <!-- ===================== SECTION 4 ===================== -->
+        <section id="section-4" class="relative py-32">
+            <!-- Background accent -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500/[0.03] rounded-full blur-[120px] pointer-events-none"
+            ></div>
+
+            <div class="relative max-w-7xl mx-auto px-6">
+                <div class="reveal mb-20 text-center">
+                    <span
+                        class="text-xs font-semibold tracking-widest uppercase text-orange-500/60 mb-4 block"
+                        >Chapter 04</span
+                    >
+                    <h2
+                        class="text-3xl md:text-5xl font-medium tracking-tight leading-tight"
+                    >
+                        จุดสูงสุดของนักกฎหมาย
+                    </h2>
+                    <p
+                        class="mt-4 text-xl md:text-2xl font-light text-stone-500"
+                    >
+                        "อนุญาโตตุลาการ" และเกมตัดช่องน้อยทวิภาคี
+                    </p>
+                </div>
+
+                <!-- What is Arbitration -->
+                <div class="reveal max-w-4xl mx-auto mb-20">
+                    <div
+                        class="glow-card card-hover p-8 md:p-10 rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-500/[0.05] to-transparent"
+                    >
+                        <div class="flex items-start gap-5 mb-6">
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center flex-shrink-0"
+                            >
+                                <span
+                                    class="iconify text-orange-500 text-3xl"
+                                    data-icon="mdi:gavel"
+                                ></span>
+                            </div>
+                            <div>
+                                <h3
+                                    class="text-2xl font-medium tracking-tight mb-2"
+                                >
+                                    อนุญาโตตุลาการ (Arbitrator)
+                                </h3>
+                                <p
+                                    class="text-sm text-orange-400/60 font-medium tracking-wider uppercase"
+                                >
+                                    ผู้พิพากษาเอกชนเหนือระบบศาลของรัฐ
+                                </p>
+                            </div>
+                        </div>
+                        <p
+                            class="text-stone-400 font-light leading-relaxed text-lg"
+                        >
+                            ทำงานในหมวด
+                            <span class="text-stone-200"
+                                >"การระงับข้อพิพาททางเลือก" (ADR)</span
+                            >
+                            ซึ่งเป็นศาลส่วนตัวที่ถูกสร้างขึ้นเพื่อตอบโจทย์
+                            "โลกทุนนิยมข้ามชาติ" —
+                            เมื่อบริษัทข้ามชาติระดับโลกทะเลาะกับรัฐบาลของประเทศใดประเทศหนึ่ง
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Why not local courts -->
+                <div
+                    class="reveal max-w-4xl mx-auto mb-16"
+                    style="transition-delay: 200ms"
+                >
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div
+                            class="p-5 rounded-2xl border border-white/5 bg-white/[0.02]"
+                        >
+                            <div class="flex items-center gap-2 mb-3">
+                                <span
+                                    class="iconify text-red-400"
+                                    data-icon="mdi:close-circle"
+                                ></span>
+                                <span class="text-sm font-medium text-stone-300"
+                                    >เอกชนไม่ยอมขึ้นศาลท้องถิ่น</span
+                                >
+                            </div>
+                            <p class="text-sm text-stone-600 font-light">
+                                กลัวรัฐบาลคุมศาล ไม่ได้รับความเป็นธรรม
+                            </p>
+                        </div>
+                        <div
+                            class="p-5 rounded-2xl border border-white/5 bg-white/[0.02]"
+                        >
+                            <div class="flex items-center gap-2 mb-3">
+                                <span
+                                    class="iconify text-red-400"
+                                    data-icon="mdi:close-circle"
+                                ></span>
+                                <span class="text-sm font-medium text-stone-300"
+                                    >รัฐบาลไม่ยอมไปศาลต่างชาติ</span
+                                >
+                            </div>
+                            <p class="text-sm text-stone-600 font-light">
+                                กลัวเสียเปรียบ เสียอำนาจอธิปไตย
+                            </p>
+                        </div>
+                        <div
+                            class="sm:col-span-2 p-5 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03]"
+                        >
+                            <div class="flex items-center gap-2 mb-3">
+                                <span
+                                    class="iconify text-orange-400"
+                                    data-icon="mdi:check-circle"
+                                ></span>
+                                <span
+                                    class="text-sm font-medium text-orange-300"
+                                    >ทางออก: อนุญาโตตุลาการระหว่างประเทศ</span
+                                >
+                            </div>
+                            <p class="text-sm text-stone-500 font-light">
+                                ตกลงกันเงียบๆ
+                                ตั้งแต่ตอนเซ็นสัญญาว่าจะใช้บริการอนุญาโตตุลาการบนแผ่นดินที่เป็นกลาง
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New York Convention -->
+                <div
+                    class="reveal max-w-4xl mx-auto mb-20"
+                    style="transition-delay: 300ms"
+                >
+                    <div
+                        class="relative p-8 rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden"
+                    >
+                        <div
+                            class="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-[60px]"
+                        ></div>
+                        <div class="relative">
+                            <div class="flex items-center gap-3 mb-6">
+                                <span
+                                    class="iconify text-orange-500 text-2xl"
+                                    data-icon="mdi:file-document-outline"
+                                ></span>
+                                <div>
+                                    <h4 class="font-medium text-stone-200">
+                                        New York Convention (1958)
+                                    </h4>
+                                    <span class="text-xs text-stone-600"
+                                        >ข้อตกลงระหว่างประเทศ</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="quote-block border-orange-500/50">
+                                <p
+                                    class="text-lg md:text-xl font-light leading-relaxed text-stone-300 italic"
+                                >
+                                    "ทุกประเทศต้องยอมรับและบังคับตามคำชี้ขาดของอนุญาโตตุลาการ"
+                                </p>
+                            </div>
+                            <p
+                                class="mt-6 text-stone-500 font-light leading-relaxed"
+                            >
+                                ทำให้คำตัดสินของลุงๆ
+                                นักกฎหมายไม่กี่คนที่นั่งคุยกันในห้องพิจารณาปิด
+                                มีอิทธิพลในการบังคับคดีข้ามโลก
+                                <span class="text-orange-400/80"
+                                    >สูงกว่าคำพิพากษาของศาลฎีกาในประเทศใดประเทศหนึ่งเสียอีก</span
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How it works -->
+                <div
+                    class="reveal max-w-4xl mx-auto mb-20"
+                    style="transition-delay: 200ms"
+                >
+                    <h3
+                        class="text-2xl font-medium tracking-tight mb-8 text-center"
+                    >
+                        ภายในห้องพิจารณาคดี
+                    </h3>
+                    <div class="grid sm:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4"
+                            >
+                                <span
+                                    class="iconify text-red-400 text-2xl"
+                                    data-icon="mdi:heart-off-outline"
+                                ></span>
+                            </div>
+                            <h4 class="text-sm font-medium text-stone-300 mb-2">
+                                ไม่มีคุณธรรม
+                            </h4>
+                            <p
+                                class="text-xs text-stone-600 font-light leading-relaxed"
+                            >
+                                หลักคุณธรรม จริยธรรม
+                                หรือความเมตตาธรรมจะถูกตัดทิ้งไปจนเหลือศูนย์
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4"
+                            >
+                                <span
+                                    class="iconify text-blue-400 text-2xl"
+                                    data-icon="mdi:database-search"
+                                ></span>
+                            </div>
+                            <h4 class="text-sm font-medium text-stone-300 mb-2">
+                                Data & Context
+                            </h4>
+                            <p
+                                class="text-xs text-stone-600 font-light leading-relaxed"
+                            >
+                                ขุด Digital Footprint ตั้งแต่สัญญา Draft แรก
+                                อีเมล รายงานประชุม
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto mb-4"
+                            >
+                                <span
+                                    class="iconify text-green-400 text-2xl"
+                                    data-icon="mdi:currency-usd"
+                                ></span>
+                            </div>
+                            <h4 class="text-sm font-medium text-stone-300 mb-2">
+                                เม็ดเงินเย็นชา
+                            </h4>
+                            <p
+                                class="text-xs text-stone-600 font-light leading-relaxed"
+                            >
+                                ทุกอย่างถูกแปลงเป็นมูลค่าเงินที่เย็นชาและไร้หัวใจ
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider mb-20"></div>
+
+                <!-- Bilateral Section -->
+                <div class="reveal max-w-4xl mx-auto mb-20">
+                    <div class="flex items-center gap-3 mb-8">
+                        <span
+                            class="text-xs font-semibold tracking-widest uppercase text-orange-500/60"
+                            >ยุทธศาสตร์เหนือระดับ</span
+                        >
+                    </div>
+                    <h3
+                        class="text-2xl md:text-3xl font-medium tracking-tight mb-6"
+                    >
+                        เกมตัดช่องน้อยแต่พอตัว:<br />
+                        <span class="gradient-text"
+                            >การเจรจาจบปัญหาแบบ "ทวิภาคี"</span
+                        >
+                    </h3>
+                    <p
+                        class="text-lg font-light leading-relaxed text-stone-400 mb-8"
+                    >
+                        สำหรับประเทศมหาอำนาจยักษ์ใหญ่ (สหรัฐฯ, จีน, รัสเซีย)
+                        พวกเขาเกลียดระบบอนุญาโตฯ ในบางกรณี เพราะ
+                        <span class="text-stone-200"
+                            >ระบบตัดสินแบบขาว-ดำ ชนะคือชนะ แพ้คือแพ้</span
+                        >
+                        และมหาอำนาจยอมเสียหน้าไม่ได้
+                    </p>
+
+                    <!-- Strategy reveal -->
+                    <div
+                        class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-8"
+                    >
+                        <h4
+                            class="text-sm font-semibold tracking-wider uppercase text-orange-500/60 mb-4"
+                        >
+                            กลยุทธ์: ล้มโต๊ะกระดานสากล
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 text-xs font-bold text-stone-500"
+                                >
+                                    1
+                                </div>
+                                <p
+                                    class="text-stone-400 font-light leading-relaxed"
+                                >
+                                    เล็งเห็นว่าการสู้คดีอนุญาโตฯ อาจเพลี่ยงพล้ำ
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 text-xs font-bold text-stone-500"
+                                >
+                                    2
+                                </div>
+                                <p
+                                    class="text-stone-400 font-light leading-relaxed"
+                                >
+                                    ล้มโต๊ะ ดึงคู่กรณีมาเจรจา
+                                    <span class="text-stone-200"
+                                        >แบบทวิภาคี (Bilateral) ตัวต่อตัว</span
+                                    >
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 text-xs font-bold text-stone-500"
+                                >
+                                    3
+                                </div>
+                                <p
+                                    class="text-stone-400 font-light leading-relaxed"
+                                >
+                                    ใช้
+                                    <span class="text-orange-400/80"
+                                        >อำนาจต่อรองที่เหนือกว่า</span
+                                    >
+                                    — มาตรการคว่ำบาตร ภาษีนำเข้า
+                                    การกดดันทางการทหาร
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 text-xs font-bold text-stone-500"
+                                >
+                                    4
+                                </div>
+                                <p
+                                    class="text-stone-400 font-light leading-relaxed"
+                                >
+                                    บีบให้ประเทศเล็กยอมเซ็นสัญญาที่มหาอำนาจได้เปรียบเต็มๆ
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-orange-500"
+                                >
+                                    5
+                                </div>
+                                <p
+                                    class="text-stone-300 font-light leading-relaxed"
+                                >
+                                    ออกมาจับมือยิ้มหน้ากล้องสร้างภาพลักษณ์
+                                    <span class="text-orange-400 font-medium"
+                                        >"วิน-วิน"</span
+                                    >
+                                    ให้โลกเห็น
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile: Who are they? -->
+                <div
+                    class="reveal max-w-5xl mx-auto"
+                    style="transition-delay: 200ms"
+                >
+                    <div
+                        class="relative rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden"
+                    >
+                        <div
+                            class="absolute top-0 right-0 w-60 h-60 bg-orange-500/5 rounded-full blur-[80px]"
+                        ></div>
+                        <div class="relative p-8 md:p-10">
+                            <div class="flex items-center gap-3 mb-8">
+                                <span
+                                    class="iconify text-orange-500 text-xl"
+                                    data-icon="mdi:account-tie"
+                                ></span>
+                                <span
+                                    class="text-xs font-semibold tracking-widest uppercase text-orange-500/60"
+                                    >โปรไฟล์: ใครคือพวกเขา?</span
+                                >
+                            </div>
+
+                            <div
+                                class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"
+                            >
+                                <div
+                                    class="p-4 rounded-xl border border-white/5 bg-white/[0.02] text-center"
+                                >
+                                    <span
+                                        class="iconify text-orange-500/60 text-2xl mb-2"
+                                        data-icon="mdi:school"
+                                    ></span>
+                                    <p
+                                        class="text-xs text-stone-500 font-light"
+                                    >
+                                        จบปริญญาเอก
+                                    </p>
+                                    <p
+                                        class="text-sm text-stone-300 font-medium mt-1"
+                                    >
+                                        Ivy League / Oxbridge
+                                    </p>
+                                </div>
+                                <div
+                                    class="p-4 rounded-xl border border-white/5 bg-white/[0.02] text-center"
+                                >
+                                    <span
+                                        class="iconify text-orange-500/60 text-2xl mb-2"
+                                        data-icon="mdi:bank"
+                                    ></span>
+                                    <p
+                                        class="text-xs text-stone-500 font-light"
+                                    >
+                                        อดีตตำแหน่ง
+                                    </p>
+                                    <p
+                                        class="text-sm text-stone-300 font-medium mt-1"
+                                    >
+                                        ศาลโลก / ศาลฎีกา
+                                    </p>
+                                </div>
+                                <div
+                                    class="p-4 rounded-xl border border-white/5 bg-white/[0.02] text-center"
+                                >
+                                    <span
+                                        class="iconify text-orange-500/60 text-2xl mb-2"
+                                        data-icon="mdi:briefcase"
+                                    ></span>
+                                    <p
+                                        class="text-xs text-stone-500 font-light"
+                                    >
+                                        ประสบการณ์
+                                    </p>
+                                    <p
+                                        class="text-sm text-stone-300 font-medium mt-1"
+                                    >
+                                        Senior Partner สำนักใหญ่
+                                    </p>
+                                </div>
+                                <div
+                                    class="p-4 rounded-xl border border-white/5 bg-white/[0.02] text-center"
+                                >
+                                    <span
+                                        class="iconify text-orange-500/60 text-2xl mb-2"
+                                        data-icon="mdi:earth"
+                                    ></span>
+                                    <p
+                                        class="text-xs text-stone-500 font-light"
+                                    >
+                                        จำนวนบนโลก
+                                    </p>
+                                    <p
+                                        class="text-sm text-stone-300 font-medium mt-1"
+                                    >
+                                        ไม่กี่พันคน
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Rate card -->
+                            <div
+                                class="p-6 rounded-2xl border border-orange-500/20 bg-gradient-to-r from-orange-500/[0.05] to-amber-500/[0.03]"
+                            >
+                                <div
+                                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                                >
+                                    <div>
+                                        <p
+                                            class="text-xs text-stone-600 tracking-wider uppercase mb-1"
+                                        >
+                                            ค่าตัวต่อชั่วโมง
+                                        </p>
+                                        <p
+                                            class="text-3xl md:text-4xl font-medium"
+                                        >
+                                            <span
+                                                class="stat-number gradient-text"
+                                                data-target="3000"
+                                                data-prefix="$"
+                                                data-suffix=""
+                                                >0</span
+                                            >
+                                        </p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p
+                                            class="text-xs text-stone-600 tracking-wider uppercase mb-1"
+                                        >
+                                            คดีหนึ่งคดี
+                                        </p>
+                                        <p
+                                            class="text-xl font-medium text-stone-300"
+                                        >
+                                            หลายสิบล้านบาท
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex items-center gap-2">
+                                    <span
+                                        class="iconify text-stone-600 text-sm"
+                                        data-icon="mdi:information-outline"
+                                    ></span>
+                                    <p
+                                        class="text-xs text-stone-600 font-light"
+                                    >
+                                        ราวๆ 50,000 – 100,000+ บาทต่อชั่วโมง
+                                        (ประมาณการ)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider max-w-7xl mx-auto"></div>
+
+        <!-- ===================== SECTION 5 ===================== -->
+        <section id="section-5" class="relative py-32">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="reveal mb-20">
+                    <span
+                        class="text-xs font-semibold tracking-widest uppercase text-orange-500/60 mb-4 block"
+                        >Chapter 05</span
+                    >
+                    <h2
+                        class="text-3xl md:text-5xl font-medium tracking-tight leading-tight"
+                    >
+                        เสาหลักแห่ง<br
+                            class="hidden sm:block"
+                        />ความเป็นระเบียบเรียบร้อย
+                    </h2>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div class="reveal">
+                        <p
+                            class="text-lg md:text-xl font-light leading-relaxed text-stone-400 mb-8"
+                        >
+                            เมื่อมองลึกลงไปในเนื้อแท้
+                            แม้ว่าคำตัดสินของศาลในหลายๆ
+                            ครั้งจะค้านสายตาคนทั่วไปจนชวนให้รู้สึกท้อใจ —
+                            บ้างก็มองว่าคนรวยหรือกลุ่มทุนข้ามชาติมักได้เปรียบเพราะมีเงินจ้างทนายฝีมือดี
+                        </p>
+                    </div>
+
+                    <div class="reveal" style="transition-delay: 200ms">
+                        <p
+                            class="text-lg md:text-xl font-light leading-relaxed text-stone-400 mb-10"
+                        >
+                            แต่เราต้องยอมรับความจริงข้อหนึ่งว่า
+                        </p>
+                    </div>
+
+                    <!-- Key message -->
+                    <div
+                        class="reveal-scale mb-12"
+                        style="transition-delay: 300ms"
+                    >
+                        <div
+                            class="relative p-8 md:p-12 rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-500/[0.08] to-transparent overflow-hidden"
+                        >
+                            <div
+                                class="absolute -top-20 -right-20 w-60 h-60 bg-orange-500/10 rounded-full blur-[80px]"
+                            ></div>
+                            <div class="relative">
+                                <span
+                                    class="iconify text-orange-500 text-4xl mb-6 block"
+                                    data-icon="mdi:pillar"
+                                ></span>
+                                <p
+                                    class="text-2xl md:text-3xl font-medium leading-snug tracking-tight"
+                                >
+                                    <span class="gradient-text"
+                                        >"ระบบกฎหมายและกระบวนการยุติธรรม"</span
+                                    >
+                                    คือเสาหลักสำคัญที่สุดที่ยึดโยงเพื่อรักษาความเป็นระเบียบเรียบร้อยภายในสังคมเอาไว้
+                                </p>
+                                <p
+                                    class="mt-6 text-stone-500 font-light leading-relaxed"
+                                >
+                                    หากโลกนี้ไร้ซึ่งขอบเขตของกฎหมาย
+                                    สังคมจะกลับไปสู่ยุคป่าเถื่อนที่ผู้ที่แข็งแกร่งกว่าย่อมมีสิทธิ์ทำลายผู้ที่อ่อนแอกว่าได้อย่างไร้ขีดจำกัด
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conclusion -->
+                    <div class="reveal" style="transition-delay: 400ms">
+                        <h3 class="text-xl font-medium tracking-tight mb-6">
+                            หนทางที่ดีที่สุด
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-1"
+                                >
+                                    <span
+                                        class="iconify text-green-400 text-xl"
+                                        data-icon="mdi:shield-check"
+                                    ></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-stone-200 mb-1">
+                                        อย่าทำผิดกฎหมาย
+                                    </h4>
+                                    <p
+                                        class="text-stone-500 font-light leading-relaxed"
+                                    >
+                                        เดินอยู่ในร่องในรอยของกติกาเพื่อเพลย์เซฟตัวเองให้ปลอดภัย
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-1"
+                                >
+                                    <span
+                                        class="iconify text-blue-400 text-xl"
+                                        data-icon="mdi:update"
+                                    ></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-stone-200 mb-1">
+                                        ผลักดันให้อัพ Patch กฎหมาย
+                                    </h4>
+                                    <p
+                                        class="text-stone-500 font-light leading-relaxed"
+                                    >
+                                        หากกติกาข้อใดล้าหลังหรือเอื้อประโยชน์ให้คนเฉพาะกลุ่ม
+                                        วิธีการที่ถูกต้องไม่ใช่การทำลายระบบ
+                                        แต่คือการใช้อำนาจและสิทธิ์ตามครรลอง
+                                        <span class="text-stone-300"
+                                            >ผลักดันให้ผู้บริหารประเทศหรือฝ่ายนิติบัญญัติทำการแก้ไข
+                                            Code กฎหมายข้อนั้นใหม่</span
+                                        >
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center flex-shrink-0 mt-1"
+                                >
+                                    <span
+                                        class="iconify text-orange-400 text-xl"
+                                        data-icon="mdi:target"
+                                    ></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-stone-200 mb-1">
+                                        ให้กติกาสะท้อนความเป็นธรรม
+                                    </h4>
+                                    <p
+                                        class="text-stone-500 font-light leading-relaxed"
+                                    >
+                                        เพื่อให้กติกาของสังคมสะท้อนความต้องการและความเป็นธรรมของประชาชนอย่างแท้จริงต่อไป
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== FOOTER ===================== -->
+        <footer class="relative py-20 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid md:grid-cols-12 gap-12">
+                    <div class="md:col-span-5">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center"
+                            >
+                                <span
+                                    class="iconify text-black text-lg"
+                                    data-icon="mdi:scale-balance"
+                                ></span>
+                            </div>
+                            <span
+                                class="text-sm font-medium tracking-wider uppercase text-stone-400"
+                                >The Law Essay</span
+                            >
+                        </div>
+                        <p
+                            class="text-sm text-stone-600 font-light leading-relaxed max-w-sm"
+                        >
+                            บทความวิเคราะห์เกี่ยวกับวิวัฒนาการของนักกฎหมาย
+                            จากอดีตสู่ปัจจุบัน
+                            และบทบาทที่ซ่อนอยู่เบื้องหลังระบบทุนนิยมระดับโลก
+                        </p>
+                    </div>
+                    <div class="md:col-span-3">
+                        <h4
+                            class="text-xs font-semibold tracking-widest uppercase text-stone-600 mb-4"
+                        >
+                            บทความ
+                        </h4>
+                        <div class="space-y-3">
+                            <a
+                                href="#section-1"
+                                class="block text-sm text-stone-500 hover:text-orange-400 transition-colors font-light"
+                                >ประวัติศาสตร์เบื้องลึก</a
+                            >
+                            <a
+                                href="#section-2"
+                                class="block text-sm text-stone-500 hover:text-orange-400 transition-colors font-light"
+                                >วิวัฒนาการวิถีหากิน</a
+                            >
+                            <a
+                                href="#section-3"
+                                class="block text-sm text-stone-500 hover:text-orange-400 transition-colors font-light"
+                                >ระบบอัพ Patch</a
+                            >
+                            <a
+                                href="#section-4"
+                                class="block text-sm text-stone-500 hover:text-orange-400 transition-colors font-light"
+                                >อนุญาโตตุลาการ</a
+                            >
+                            <a
+                                href="#section-5"
+                                class="block text-sm text-stone-500 hover:text-orange-400 transition-colors font-light"
+                                >เสาหลักแห่งความเป็นระเบียบ</a
+                            >
+                        </div>
+                    </div>
+                    <div class="md:col-span-4">
+                        <h4
+                            class="text-xs font-semibold tracking-widest uppercase text-stone-600 mb-4"
+                        >
+                            แนวคิดสำคัญ
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Logographers</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Trial by Ordeal</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Canon Lawyer</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Arbitrator</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >New York Convention</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Bilateral</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >ADR</span
+                            >
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/5 bg-white/[0.02] text-xs text-stone-600"
+                                >Judicial Discretion</span
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="section-divider mt-12 mb-8"></div>
+                <div
+                    class="flex flex-col sm:flex-row items-center justify-between gap-4"
+                >
+                    <p class="text-xs text-stone-700 font-light">
+                        © 2025 The Law Essay — บทความวิเคราะห์
+                    </p>
+                    <button
+                        onclick="
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                        "
+                        class="flex items-center gap-2 text-xs text-stone-600 hover:text-orange-400 transition-colors"
+                    >
+                        <span class="iconify" data-icon="mdi:arrow-up"></span>
+                        กลับด้านบน
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <!-- ===================== TABLE OF CONTENTS (Floating) ===================== -->
+        <div
+            id="toc-float"
+            class="fixed left-6 top-1/2 -translate-y-1/2 z-40 hidden xl:block"
+        >
+            <div class="flex flex-col gap-4">
+                <a
+                    href="#section-1"
+                    class="toc-item text-[10px] tracking-widest uppercase text-stone-600 hover:text-orange-400 transition-colors"
+                    data-section="section-1"
+                    >01</a
+                >
+                <a
+                    href="#section-2"
+                    class="toc-item text-[10px] tracking-widest uppercase text-stone-600 hover:text-orange-400 transition-colors"
+                    data-section="section-2"
+                    >02</a
+                >
+                <a
+                    href="#section-3"
+                    class="toc-item text-[10px] tracking-widest uppercase text-stone-600 hover:text-orange-400 transition-colors"
+                    data-section="section-3"
+                    >03</a
+                >
+                <a
+                    href="#section-4"
+                    class="toc-item text-[10px] tracking-widest uppercase text-stone-600 hover:text-orange-400 transition-colors"
+                    data-section="section-4"
+                    >04</a
+                >
+                <a
+                    href="#section-5"
+                    class="toc-item text-[10px] tracking-widest uppercase text-stone-600 hover:text-orange-400 transition-colors"
+                    data-section="section-5"
+                    >05</a
+                >
+            </div>
+        </div>
+
+        <script>
+            // ====== Reading Progress Bar ======
+            window.addEventListener("scroll", () => {
+                const scrollTop = window.scrollY;
+                const docHeight =
+                    document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                document.getElementById("reading-progress").style.width =
+                    progress + "%";
+            });
+
+            // ====== Scroll Reveal ======
+            const revealElements = document.querySelectorAll(
+                ".reveal, .reveal-left, .reveal-right, .reveal-scale",
+            );
+            const revealObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                        }
+                    });
+                },
+                { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+            );
+            revealElements.forEach((el) => revealObserver.observe(el));
+
+            // ====== Expandable Sections ======
+            function toggleExpand(btn) {
+                const content = btn.nextElementSibling;
+                const isOpen = content.classList.contains("open");
+
+                // Close all others
+                document
+                    .querySelectorAll(".expandable-content.open")
+                    .forEach((c) => {
+                        c.classList.remove("open");
+                        c.previousElementSibling.classList.remove("active");
+                    });
+
+                if (!isOpen) {
+                    content.classList.add("open");
+                    btn.classList.add("active");
+                }
+            }
+
+            // ====== Stat Counter Animation ======
+            const statElements = document.querySelectorAll(
+                ".stat-number[data-target]",
+            );
+            const statObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (
+                            entry.isIntersecting &&
+                            !entry.target.dataset.counted
+                        ) {
+                            entry.target.dataset.counted = "true";
+                            const target = parseInt(
+                                entry.target.dataset.target,
+                            );
+                            const prefix = entry.target.dataset.prefix || "";
+                            const suffix = entry.target.dataset.suffix || "";
+                            const duration = 2000;
+                            const start = performance.now();
+
+                            function update(now) {
+                                const elapsed = now - start;
+                                const progress = Math.min(
+                                    elapsed / duration,
+                                    1,
+                                );
+                                const eased = 1 - Math.pow(1 - progress, 3);
+                                const current = Math.floor(eased * target);
+                                entry.target.textContent =
+                                    prefix + current.toLocaleString() + suffix;
+                                if (progress < 1) requestAnimationFrame(update);
+                            }
+                            requestAnimationFrame(update);
+                        }
+                    });
+                },
+                { threshold: 0.5 },
+            );
+            statElements.forEach((el) => statObserver.observe(el));
+
+            // ====== TOC Active State ======
+            const sections = document.querySelectorAll("section[id]");
+            const tocItems = document.querySelectorAll(".toc-item");
+
+            window.addEventListener("scroll", () => {
+                let current = "";
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop - 200;
+                    if (window.scrollY >= sectionTop) {
+                        current = section.getAttribute("id");
+                    }
+                });
+                tocItems.forEach((item) => {
+                    item.classList.remove("active");
+                    if (item.dataset.section === current) {
+                        item.classList.add("active");
+                    }
+                });
+            });
+
+            // ====== Mobile Menu ======
+            const mobileMenu = document.getElementById("mobile-menu");
+            document
+                .getElementById("mobile-menu-btn")
+                .addEventListener("click", () => {
+                    mobileMenu.style.transform = "translateX(0)";
+                });
+            document
+                .getElementById("mobile-menu-close")
+                .addEventListener("click", () => {
+                    mobileMenu.style.transform = "translateX(100%)";
+                });
+            document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.style.transform = "translateX(100%)";
+                });
+            });
+
+            // ====== Glow Card Mouse Tracking ======
+            document.querySelectorAll(".glow-card").forEach((card) => {
+                card.addEventListener("mousemove", (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    card.style.setProperty("--mouse-x", x + "%");
+                    card.style.setProperty("--mouse-y", y + "%");
+                });
+            });
+
+            // ====== Floating Particles ======
+            function createParticles() {
+                const container = document.getElementById("particles");
+                const count = window.innerWidth < 768 ? 8 : 15;
+
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement("div");
+                    particle.className = "particle";
+                    particle.style.left = Math.random() * 100 + "vw";
+                    particle.style.width = Math.random() * 3 + 1 + "px";
+                    particle.style.height = particle.style.width;
+                    particle.style.opacity = Math.random() * 0.5 + 0.1;
+                    particle.style.animation = `particle-float ${Math.random() * 20 + 15}s linear infinite`;
+                    particle.style.animationDelay = Math.random() * 20 + "s";
+                    container.appendChild(particle);
+                }
+            }
+            createParticles();
+
+            // ====== Smooth anchor scroll with offset ======
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        const offset = 100;
+                        const top =
+                            target.getBoundingClientRect().top +
+                            window.scrollY -
+                            offset;
+                        window.scrollTo({ top, behavior: "smooth" });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

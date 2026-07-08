@@ -1,4 +1,4 @@
-# 🪐 Welcome to My Article Zone!
+﻿# 🪐 Welcome to My Article Zone!
 *Serinc's Playground GitHub Pages*
 
 ## 📖 ยินดีต้อนรับ! เลือกอ่านบทความที่สนใจได้เลย

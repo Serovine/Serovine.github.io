@@ -1,72 +1,86 @@
 [
   {
     "id": "aiart",
-    "title": "Aiart",
-    "date": "",
-    "tags": [],
+    "title": "ไกด์เอไอสร้างภาพ ฉบับรวบรัด",
+    "date": "25-05-2026",
+    "tags": ["ai", "illustrious", "SDXL"],
     "file": "article/aiart.md"
   },
   {
     "id": "aievent2026firsthalf",
-    "title": "Aievent2026Firsthalf",
-    "date": "",
-    "tags": [],
+    "title": "รวมเหตุการณ์ที่เกิดขึ้นวงการเอไอครึ่งปีแรก 2026",
+    "date": "29-06-2026",
+    "tags": ["ai", "news", "event"],
     "file": "article/aievent2026firsthalf.html"
   },
   {
+    "id": "arbitrator",
+    "title": "วิวัฒนาการ -นักกฎหมาย-",
+    "date": "09-07-2026",
+    "tags": ["history", "knowledge", "career"],
+    "file": "article/arbitrator.html"
+  },
+  {
     "id": "bearbrands",
-    "title": "Bearbrands",
-    "date": "",
-    "tags": [],
+    "title": "เปิดตำนาน -นมตราหมี-",
+    "date": "01-06-2026",
+    "tags": ["history", "bussiness", "brands"],
     "file": "article/bearbrands.html"
   },
   {
     "id": "cityconnect",
-    "title": "Cityconnect",
-    "date": "",
-    "tags": [],
+    "title": "ย้อนรอย เกมในตำนาน Cityconnect",
+    "date": "05-06-2026",
+    "tags": ["nes", "arcade", "retro", "game"],
     "file": "article/cityconnect.html"
   },
   {
     "id": "icescreamsanwich",
-    "title": "Icescreamsanwich",
-    "date": "",
-    "tags": [],
+    "title": "เกล็ดน่ารู้เกี่ยวกับ Ice Scream Sanwich",
+    "date": "06-07-2026",
+    "tags": ["icescream", "sweet", "history"],
     "file": "article/icescreamsanwich.html"
   },
   {
     "id": "imagemodelevolution",
-    "title": "Imagemodelevolution",
-    "date": "",
-    "tags": [],
+    "title": "วิวัฒนาการของ AI โมเดลสร้างภาพ",
+    "date": "03-06-2026",
+    "tags": ["AI", "Anima", "SDXL"],
     "file": "article/imagemodelevolution.html"
   },
   {
     "id": "intro",
-    "title": "Intro",
-    "date": "",
-    "tags": [],
+    "title": "Welcome to my Article Library",
+    "date": "01-01-2026",
+    "tags": ["ทักทาย"],
     "file": "article/intro.md"
   },
   {
     "id": "nescafered",
-    "title": "Nescafered",
-    "date": "",
-    "tags": [],
+    "title": "ตำนานแก้วแดง NesCafe",
+    "date": "01-02-2026",
+    "tags": ["nescafe", "history", "red mug"],
     "file": "article/nescafered.html"
   },
   {
     "id": "sovereign",
-    "title": "Sovereign",
-    "date": "",
-    "tags": [],
+    "title": "ปรัชญาการการเมืองเทวนิยม แห่ง องค์อธิปัตย์",
+    "date": "05-04-2026",
+    "tags": ["history", "sovereign", "theory"],
     "file": "article/sovereign.html"
   },
   {
     "id": "wholestore2026war",
-    "title": "Wholestore2026War",
-    "date": "",
-    "tags": [],
+    "title": "สถานการณ์สงครามห้างสรรพสินค้าในอเมริกา ปี 2026",
+    "date": "20-05-2026",
+    "tags": ["bussiness", "news", "whole store"],
     "file": "article/wholestore2026war.html"
+  },
+  {
+    "id": "parrotbrand",
+    "title": "เจาะลึกข้อมูลเกี่ยวกับ สบู่นกแก้ว",
+    "date": "15-05-2026",
+    "tags": ["bussiness", "history", "สบู่นกแก้ว"],
+    "file": "article/parrotbrand.html"
   }
 ]

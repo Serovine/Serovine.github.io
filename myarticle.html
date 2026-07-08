@@ -626,6 +626,26 @@
             ::-webkit-scrollbar-corner {
                 background: transparent;
             }
+            /* ── EXTERNAL LINK BUTTON ── */
+            .ext-link {
+                display: inline-block;
+                margin-left: 12px;
+                padding: 2px 8px;
+                font-family: var(--mono);
+                color: var(--cyan);
+                text-decoration: none;
+                border: 1px dashed var(--border);
+                border-radius: 3px;
+                background: rgba(0, 229, 255, 0.05);
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+            .ext-link:hover {
+                border-color: var(--cyan);
+                background: rgba(0, 229, 255, 0.15);
+                color: #fff;
+                box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+            }
         </style>
     </head>
     <body>
@@ -798,7 +818,11 @@
 
                         if (isHtmlFile) {
                             // .html file → iframe src โดยตรง ง่ายสุด isolated 100%
-                            mdBody.innerHTML = `<div class="article-date-stamp">✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}</div>`;
+                            mdBody.innerHTML = `
+                                    <div class="article-date-stamp">
+                                        ✦ ${art.date || "NO DATE"} &nbsp;|&nbsp; ${(art.tags || []).join(" · ")}
+                                        <a href="${art.file}" target="_blank" class="ext-link" title="Open in new tab">⧉ OPEN OUTSIDE</a>
+                                    </div>`;
                             const iframe = document.createElement("iframe");
                             iframe.id = "html-frame";
                             iframe.src = art.file;
