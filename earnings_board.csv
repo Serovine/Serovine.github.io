@@ -1,9 +1,9 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-AEHR,Aehr Test Systems,07-04-26,After Market,69.96,197.83%,NASDAQ,
-NRIX,Nurix Therapeutics Inc.,08-04-26,Before Market,23.97,37.05%,NASDAQ,
+AEHR,Aehr Test Systems,07-04-26,After Market,69.96,197.83%,NASDAQ,-0.43%
+NRIX,Nurix Therapeutics Inc.,08-04-26,Before Market,23.97,37.05%,NASDAQ,-2.21%
 ACI,Albertsons Companies Inc.,14-04-26,Before Market,14.13,-16.57%,NYSE,+0.63%
-EPAC,Enerpac Tool Group Corp.,07-07-26,After Market,34.87,-12.14%,NYSE,
-PENG,Penguin Solutions Inc.,07-07-26,After Market,61.47,191.74%,NASDAQ,
+EPAC,Enerpac Tool Group Corp.,07-07-26,After Market,34.87,-12.14%,NYSE,+3.56%
+PENG,Penguin Solutions Inc.,07-07-26,After Market,61.47,191.74%,NASDAQ,+3.65%
 AZZ,AZZ Inc.,08-07-26,After Market,150.01,35.57%,NYSE,
 LEVI,Levi Strauss & Co,08-07-26,After Market,24.41,16.49%,NYSE,
 PSMT,PriceSmart Inc.,08-07-26,After Market,197.9,56.33%,NASDAQ,
