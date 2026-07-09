@@ -27,14 +27,13 @@ tags: [translated, vocaloid, buzzG ,Hatsune Miku ]
 | . | _._ | . |
 | | | |
 | 暗い海に浮かぶ二人が　寂しくないように | _kurai umi ni ukabu futari ga sabishikunai you ni_ | เพื่อไม่ให้เราสองคนที่ลอยล่องอยู่ในทะเลอันมืดมิดต้องเหงาใจ |
-| เพื่อให้เราสองคนที่ลอยล่องอยู่ในทะเลมืดมิด ไม่รู้สึกโดดเดี่ยวใจ | _神様がきっと少しだけきっと　許した時間_ | kamisama ga kitto sukoshi dake kitto yurushita jikan |
-| พระผู้เป็นเจ้าคงจะ... อนุญาตเวลาให้เราเพียงเล็กน้อยเท่านั้น | _._ | . |
-| . | __ |  |
+| 神様がきっと少しだけきっと　許した時間 | _kamisama ga kitto sukoshi dake kitto yurushita jikan_ |พระผู้เป็นเจ้าคงจะ... อนุญาตเวลาให้เราเพียงเล็กน้อยเท่านั้น | 
+| . | _._ | . |
 | | | |
 | 重なり合う星のモノグラムに応えて | _kasanariau hoshi no monogaramu ni kotaete_ | ตอบรับรอยอักษรโมโนแกรม ของดวงดาวที่ซ้อนทับกัน |
 | あなたが来てるんだ　声を張り上げて軌道上の先へ | _anata ga kiterunda koe wo hariagete kidoujou no saki e_ | ตะโกนเสียงไปยังเบื้องหน้าของวงโคจร ที่คุณกำลังเคลื่อนเข้ามา |
 | あなただけの輝きに憧れ続けてたの | _anata dake no kagayaki ni akogaretsudzuketeta no_ | ในสายตายังคงหลงใหลในแสงประกายที่มีเพียงเธอเท่านั้น |
-| 真っ白なまま過ごしたあの頃には戻れないのに | _masshiro na mama sugoshita ano koro ni wa modorenai noni_ | ทั้งๆ ที่รู้ว่า ไม่อาจย้อนกลับไปวันวานสีขาวบริสุทธิ์ได้อีกแล้ว |
+| 真っ白なまま過ごしたあの頃には戻れないのに | _masshiro na mama sugoshita ano koro ni wa modorenai noni_ | ทั้งๆ ที่รู้ว่า ไม่อาจย้อนกลับไปวันวานสีขาวบริสุทธิ์ได้อีก |
 | . | _._ | . |
 | | | |
 | 別れの刻はすぐにやってきて | _wakare no toki wa sugu ni yattekite_ | เวลาลาจากมาถึงในชั่วพริบตา |

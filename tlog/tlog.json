@@ -47,6 +47,85 @@
     "catIcon": "🎵",
     "catType": "misc",
     "catDesc": "เพลงแปล",
+    "id": "itsjustlifeinochibakkari",
+    "title": "แปลเพลง Inochi Bakkari",
+    "date": "2026-07-10",
+    "tags": [
+      "translated",
+      "vocaloid"
+    ],
+    "file": "tlog/translatesong/inochibakkari.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "yoakenobellganaru",
+    "title": "แปลเพลง Yoake no Bell ga Naru",
+    "date": "2026-07-10",
+    "tags": [
+      "translated",
+      "Visual novel",
+      "J-music"
+    ],
+    "file": "tlog/translatesong/yoakebell.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "answer",
+    "title": "แปลเพลง Answer - ikuta Lilas",
+    "date": "2026-07-09",
+    "tags": [
+      "translated",
+      "J-pop"
+    ],
+    "file": "tlog/translatesong/answerlilas.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "prologue",
+    "title": "แปลเพลง Prologue - Uru",
+    "date": "2026-07-09",
+    "tags": [
+      "translated",
+      "Uru",
+      "J-pop"
+    ],
+    "file": "tlog/translatesong/prologue.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
+    "id": "einekleine",
+    "title": "แปลเพลง Eine Kleine",
+    "date": "2026-07-09",
+    "tags": [
+      "translated",
+      "Yonezu Kenshi",
+      "Hachi",
+      "J-pop"
+    ],
+    "file": "tlog/translatesong/einekleine.md"
+  },
+  {
+    "catId": "translatesong",
+    "catName": "เพลงแปล",
+    "catIcon": "🎵",
+    "catType": "misc",
+    "catDesc": "เพลงแปล",
     "id": "sadplanet",
     "title": "แปลเพลง From a Sad Star - Baby VOX",
     "date": "2026-07-07",
