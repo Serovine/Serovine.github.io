@@ -5,7 +5,7 @@ const LANG = {
   th: {
     // App
     app_title: "Celestial Arcana",
-    app_subtitle: "ไพ่ทาโรต์แห่งจักรราศี",
+    app_subtitle: "Celestial Arcana",
 
     // Screen 0 — Lang select (hardcoded, no translation needed)
 
@@ -37,33 +37,33 @@ const LANG = {
     // House names
     house_names: [
       "House I — ตัวตน",
-      "House II — ทรัพย์สิน",
-      "House III — การสื่อสาร",
-      "House IV — บ้านและครอบครัว",
-      "House V — ความรักและความสุข",
-      "House VI — สุขภาพและงาน",
-      "House VII — คู่ครอง",
-      "House VIII — การเปลี่ยนแปลง",
-      "House IX — ปรัชญาและการเดินทาง",
-      "House X — อาชีพและชื่อเสียง",
-      "House XI — มิตรภาพและความหวัง",
-      "House XII — จิตใต้สำนึก",
+      "House II — การเงิน",
+      "House III — สังคม",
+      "House IV — ที่อยู่ ครอบครัว",
+      "House V — ความรัก",
+      "House VI — หน้าที่การงาน",
+      "House VII — ความสัมพันธ์",
+      "House VIII — ความเปลี่ยนแปลง",
+      "House IX — การเดินทาง",
+      "House X — ชื่อเสียง",
+      "House XI — มิตรภาพ",
+      "House XII — จิตใจ",
     ],
 
     // House short labels (for spread circle)
     house_short: [
       "ตัวตน",
       "ทรัพย์",
-      "สื่อสาร",
+      "สังคม",
       "บ้าน",
       "ความรัก",
-      "สุขภาพ",
-      "คู่ครอง",
+      "ภาระ",
+      "ความสัมพันธ์",
       "เปลี่ยนแปลง",
-      "ปรัชญา",
-      "อาชีพ",
+      "การเดินทาง",
+      "ชื่อเสียง",
       "มิตร",
-      "จิตใต้สำนึก",
+      "จิตใจ",
     ],
 
     // Orb messages during draw (per house)
@@ -90,7 +90,7 @@ const LANG = {
     final_speech:
       "ไพ่สุดท้ายสามใบ\nจะเปิดเผยโชคชะตาอันใกล้นี้...\nจงเลือกด้วยหัวใจ",
     final_counter: "เลือก {n} / 3",
-    summary_labels: ["อนาคตอันใกล้", "สิ่งที่จะเผชิญ", "โชคชะตา"],
+    summary_labels: ["อนาคต", "คำแนะนำ", "โชคชะตา"],
     btn_confirm_summary: "รับทราบ",
 
     // Screen 6 — Result
