@@ -82,5 +82,12 @@
     "date": "15-05-2026",
     "tags": ["bussiness", "history", "สบู่นกแก้ว"],
     "file": "article/parrotbrand.html"
+  },
+  {
+    "id": "scp01",
+    "title": "SCP Foundation คือะไร",
+    "date": "12-07-2026",
+    "tags": ["SCP", "creepypasta", "horror","internet"],
+    "file": "article/scp.html"
   }
 ]

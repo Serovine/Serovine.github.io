@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCP FOUNDATION — SECURE. CONTAIN. PROTECT.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+Thai:wght@300;400;500;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== CSS VARIABLES ========== */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-dim: #1e1e1e;
+            --border-glow: #8b0000;
+            --accent-red: #c41e3a;
+            --accent-red-dim: #8b0000;
+            --accent-amber: #d4a017;
+            --accent-amber-dim: #8b6914;
+            --text-primary: #d4d4d4;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --text-redacted: #1a1a1a;
+            --safe-color: #2e7d32;
+            --euclid-color: #f9a825;
+            --keter-color: #c62828;
+            --thaumiel-color: #6a1b9a;
+            --apollyon-color: #1a1a1a;
+            --class-a: #1a237e;
+            --class-b: #283593;
+            --class-c: #5c6bc0;
+            --class-d: #e65100;
+            --class-e: #b71c1c;
+        }
+
+        /* ========== RESET & BASE ========== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-red-dim) var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-red-dim); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
+
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.85;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+        /* ========== SCANLINE OVERLAY ========== */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ========== ANIMATED NOISE BG ========== */
+        .noise-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(139,0,0,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(139,0,0,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(139,105,20,0.03) 0%, transparent 50%),
+                var(--bg-primary);
+        }
+
+        /* ========== TYPOGRAPHY ========== */
+        .font-mono { font-family: 'Share Tech Mono', monospace; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* ========== GLITCH TEXT ========== */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+        }
+        .glitch::before {
+            color: var(--accent-red);
+            animation: glitch-1 3s infinite linear alternate-reverse;
+            clip-path: inset(0 0 80% 0);
+        }
+        .glitch::after {
+            color: var(--accent-amber);
+            animation: glitch-2 2.5s infinite linear alternate-reverse;
+            clip-path: inset(80% 0 0 0);
+        }
+        @keyframes glitch-1 {
+            0%, 90% { transform: translate(0); }
+            91% { transform: translate(-3px, 1px); }
+            93% { transform: translate(3px, -1px); }
+            95% { transform: translate(-2px, 2px); }
+            97% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes glitch-2 {
+            0%, 88% { transform: translate(0); }
+            89% { transform: translate(3px, -1px); }
+            92% { transform: translate(-3px, 1px); }
+            94% { transform: translate(2px, 2px); }
+            96% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* ========== REDACTED TEXT ========== */
+        .redacted {
+            background: var(--text-redacted);
+            color: var(--text-redacted);
+            padding: 0 6px;
+            border-radius: 2px;
+            user-select: none;
+            transition: all 0.3s;
+            cursor: default;
+            position: relative;
+        }
+        .redacted:hover {
+            background: var(--accent-red-dim);
+            color: var(--accent-red);
+            text-shadow: 0 0 8px rgba(196,30,58,0.5);
+        }
+
+        /* ========== TYPING CURSOR ========== */
+        .typing-cursor::after {
+            content: '█';
+            animation: blink-cursor 1s step-end infinite;
+            color: var(--accent-red);
+        }
+        @keyframes blink-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ========== CLASSIFIED STAMP ========== */
+        .stamp {
+            display: inline-block;
+            border: 3px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 4px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            transform: rotate(-6deg);
+            position: relative;
+            opacity: 0.8;
+        }
+        .stamp::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid rgba(196,30,58,0.3);
+        }
+        .stamp-amber {
+            border-color: var(--accent-amber);
+            color: var(--accent-amber);
+        }
+        .stamp-amber::before { border-color: rgba(212,160,23,0.3); }
+
+        /* ========== HEADER / HERO ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+        }
+        .hero-logo {
+            width: 140px; height: 140px;
+            margin-bottom: 2rem;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .hero-logo svg {
+            width: 100%; height: 100%;
+            filter: drop-shadow(0 0 20px rgba(139,0,0,0.4));
+        }
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            color: #fff;
+            text-shadow: 0 0 40px rgba(139,0,0,0.5);
+            margin-bottom: 0.5rem;
+        }
+        .hero-subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(0.85rem, 2vw, 1.1rem);
+            color: var(--accent-red);
+            letter-spacing: 0.6em;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fade-up 1s 0.5s forwards;
+        }
+        .hero-warning {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            opacity: 0;
+            animation: fade-up 1s 1s forwards;
+            border-top: 1px solid var(--border-dim);
+            padding-top: 1rem;
+        }
+        .hero-scroll {
+            position: absolute;
+            bottom: 2rem;
+            opacity: 0;
+            animation: fade-up 1s 1.5s forwards;
+        }
+        .hero-scroll i {
+            color: var(--accent-red-dim);
+            font-size: 1.5rem;
+            animation: bounce-down 2s infinite;
+        }
+        @keyframes bounce-down {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(10px); opacity: 1; }
+        }
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== NAVIGATION ========== */
+        .side-nav {
+            position: fixed;
+            left: 0; top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 8px;
+            background: rgba(10,10,10,0.9);
+            border-right: 1px solid var(--border-dim);
+            border-top: 1px solid var(--border-dim);
+            border-bottom: 1px solid var(--border-dim);
+            border-radius: 0 8px 8px 0;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+        .side-nav.hidden { transform: translateY(-50%) translateX(-100%); }
+        .nav-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-dot:hover, .nav-dot.active {
+            background: var(--accent-red);
+            box-shadow: 0 0 8px rgba(196,30,58,0.6);
+            transform: scale(1.3);
+        }
+        .nav-dot .nav-label {
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: rgba(10,10,10,0.95);
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-dim);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .nav-dot:hover .nav-label { opacity: 1; }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-red-dim), transparent);
+            margin: 0 auto;
+            max-width: 900px;
+        }
+
+        /* ========== SECTION HEADER ========== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        .section-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent-red);
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-red-dim), transparent);
+        }
+        .section-title {
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--accent-red-dim);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-red-dim);
+            transform: translateX(4px);
+        }
+        .card:hover::before {
+            background: var(--accent-red);
+            box-shadow: 0 0 12px rgba(196,30,58,0.4);
+        }
+
+        /* ========== TABLE ========== */
+        .scp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        .scp-table thead th {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-amber);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--accent-red-dim);
+            background: rgba(139,0,0,0.05);
+        }
+        .scp-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-dim);
+            vertical-align: top;
+        }
+        .scp-table tbody tr {
+            transition: background 0.2s;
+        }
+        .scp-table tbody tr:hover {
+            background: rgba(139,0,0,0.04);
+        }
+
+        /* ========== BADGES ========== */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 1px solid;
+        }
+        .badge-safe { color: var(--safe-color); border-color: var(--safe-color); background: rgba(46,125,50,0.08); }
+        .badge-euclid { color: var(--euclid-color); border-color: var(--euclid-color); background: rgba(249,168,37,0.08); }
+        .badge-keter { color: var(--keter-color); border-color: var(--keter-color); background: rgba(198,40,40,0.08); }
+        .badge-thaumiel { color: var(--thaumiel-color); border-color: var(--thaumiel-color); background: rgba(106,27,154,0.08); }
+        .badge-apollyon { color: #666; border-color: #333; background: rgba(26,26,26,0.5); }
+
+        /* ========== UNIFORM BADGES ========== */
+        .uniform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid;
+            margin: 4px;
+        }
+        .uniform-white { color: #ccc; border-color: #555; background: rgba(200,200,200,0.06); }
+        .uniform-orange { color: #ff8f00; border-color: #e65100; background: rgba(230,81,0,0.08); }
+        .uniform-black { color: #999; border-color: #444; background: rgba(50,50,50,0.3); }
+
+        /* ========== PERSONNEL CLASS PYRAMID ========== */
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            margin: 2rem 0;
+        }
+        .pyramid-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: default;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        .pyramid-row:hover {
+            transform: scale(1.03);
+            z-index: 2;
+        }
+        .pyramid-row .class-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        .pyramid-row .class-desc {
+            font-size: 0.78rem;
+            opacity: 0.8;
+            margin-left: 8px;
+        }
+        .py-row-a { width: 45%; background: var(--class-a); color: #c5cae9; border-color: rgba(26,35,126,0.5); }
+        .py-row-a:hover { box-shadow: 0 0 20px rgba(26,35,126,0.4); }
+        .py-row-b { width: 55%; background: var(--class-b); color: #9fa8da; border-color: rgba(40,53,147,0.5); }
+        .py-row-b:hover { box-shadow: 0 0 20px rgba(40,53,147,0.4); }
+        .py-row-c { width: 65%; background: var(--class-c); color: #e8eaf6; border-color: rgba(92,107,192,0.5); }
+        .py-row-c:hover { box-shadow: 0 0 20px rgba(92,107,192,0.4); }
+        .py-row-d { width: 78%; background: var(--class-d); color: #ffe0b2; border-color: rgba(230,81,0,0.5); }
+        .py-row-d:hover { box-shadow: 0 0 20px rgba(230,81,0,0.4); }
+        .py-row-e { width: 90%; background: var(--class-e); color: #ffcdd2; border-color: rgba(183,28,28,0.5); }
+        .py-row-e:hover { box-shadow: 0 0 20px rgba(183,28,28,0.4); }
+
+        /* ========== CLEARANCE LEVEL BARS ========== */
+        .clearance-bar {
+            display: flex;
+            align-items: stretch;
+            margin: 8px 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-dim);
+            transition: all 0.3s;
+        }
+        .clearance-bar:hover {
+            border-color: var(--accent-red-dim);
+            transform: translateX(4px);
+        }
+        .clearance-level {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 14px 16px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .clearance-info {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+        }
+        .clearance-name {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--accent-amber);
+            letter-spacing: 1px;
+        }
+        .clearance-who {
+            font-size: 0.82rem;
+            color: var(--text-primary);
+        }
+        .clearance-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        .cl-0 { background: #37474f; }
+        .cl-1 { background: #455a64; }
+        .cl-2 { background: #607d8b; }
+        .cl-3 { background: #546e7a; }
+        .cl-4 { background: #37474f; border-right: 3px solid var(--accent-red); }
+        .cl-5 { background: #1a1a1a; border-right: 3px solid var(--accent-amber); }
+
+        /* ========== O5 COUNCIL ========== */
+        .o5-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            margin: 1.5rem 0;
+        }
+        .o5-member {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 2px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            transition: all 0.4s;
+            cursor: default;
+            position: relative;
+        }
+        .o5-member:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            box-shadow: 0 0 20px rgba(196,30,58,0.3);
+            transform: scale(1.1);
+        }
+        .o5-member.leader {
+            border-color: var(--accent-amber-dim);
+            color: var(--accent-amber);
+            background: rgba(139,105,20,0.06);
+        }
+        .o5-member.leader:hover {
+            border-color: var(--accent-amber);
+            box-shadow: 0 0 25px rgba(212,160,23,0.3);
+        }
+
+        /* ========== COLLAPSIBLE ========== */
+        .collapse-trigger {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 14px 20px;
+            color: var(--text-secondary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        .collapse-trigger:hover {
+            border-color: var(--accent-red-dim);
+            color: var(--text-primary);
+        }
+        .collapse-trigger i {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+        .collapse-trigger.open i { transform: rotate(180deg); }
+        .collapse-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .collapse-content.open { max-height: 800px; }
+        .collapse-inner {
+            padding: 1rem 0;
+        }
+
+        /* ========== HIGHLIGHT BOX ========== */
+        .highlight-box {
+            border-left: 3px solid var(--accent-amber);
+            background: rgba(139,105,20,0.05);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+        .highlight-box.red {
+            border-left-color: var(--accent-red);
+            background: rgba(139,0,0,0.05);
+        }
+
+        /* ========== SCP EXAMPLE CARDS ========== */
+        .scp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            transition: all 0.3s;
+        }
+        .scp-card:hover {
+            border-color: var(--accent-red-dim);
+            box-shadow: 0 4px 30px rgba(139,0,0,0.1);
+        }
+        .scp-card-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .scp-card-body { padding: 20px; }
+
+        /* ========== GAME GRID ========== */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 1.5rem 0;
+        }
+        .game-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 1.2rem;
+            transition: all 0.3s;
+        }
+        .game-card:hover {
+            border-color: var(--accent-red-dim);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .game-card h4 {
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .game-card .game-type {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-amber);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .game-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ========== PROJECT MOON SECTION ========== */
+        .pm-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1.2rem 0;
+            transition: all 0.3s;
+        }
+        .pm-card:hover {
+            border-color: var(--accent-amber-dim);
+            box-shadow: 0 4px 25px rgba(139,105,20,0.08);
+        }
+        .pm-card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .pm-year {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent-amber);
+            background: rgba(139,105,20,0.1);
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--accent-amber-dim);
+        }
+        .pm-card-body { padding: 16px 20px; }
+
+        /* ========== TIMELINE ========== */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 1.5rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 0;
+            width: 2px; height: 100%;
+            background: linear-gradient(to bottom, var(--accent-red-dim), var(--accent-amber-dim), transparent);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 16px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px; top: 8px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 10px rgba(196,30,58,0.5);
+        }
+        .timeline-year {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent-red);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .timeline-text {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            border-top: 1px solid var(--border-dim);
+            margin-top: 2rem;
+        }
+        .footer-logo {
+            width: 50px; height: 50px;
+            margin: 0 auto 1rem;
+            opacity: 0.3;
+        }
+
+        /* ========== TOAST NOTIFICATION ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            padding: 10px 18px;
+            background: rgba(20,20,20,0.95);
+            border: 1px solid var(--accent-red-dim);
+            border-radius: 6px;
+            color: var(--accent-red);
+            backdrop-filter: blur(10px);
+            animation: toast-in 0.4s ease-out, toast-out 0.4s 3s forwards;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        @keyframes toast-in { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toast-out { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
+
+        /* ========== STAT COUNTER ========== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 2rem 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 1.2rem;
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            background: var(--bg-card);
+            transition: all 0.3s;
+        }
+        .stat-item:hover {
+            border-color: var(--accent-red-dim);
+            box-shadow: 0 0 20px rgba(139,0,0,0.1);
+        }
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            line-height: 1;
+        }
+        .stat-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .side-nav { display: none; }
+            .pyramid-row { padding: 8px 12px; }
+            .pyramid-row .class-desc { display: none; }
+            .o5-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+            .clearance-level { min-width: 60px; padding: 10px 8px; font-size: 0.6rem; }
+            .game-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ========== PULSE ANIMATION ========== */
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(196,30,58,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(196,30,58,0); }
+        }
+        .pulse { animation: pulse-red 2s infinite; }
+
+        /* ========== FLICKER ========== */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.4; }
+        }
+        .flicker { animation: flicker 4s infinite; }
+    </style>
+</head>
+<body>
+
+<!-- NOISE BACKGROUND -->
+<div class="noise-bg"></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SIDE NAVIGATION -->
+<nav class="side-nav" id="sideNav">
+    <div class="nav-dot" data-target="hero"><span class="nav-label">TOP</span></div>
+    <div class="nav-dot" data-target="sec-history"><span class="nav-label">01 HISTORY</span></div>
+    <div class="nav-dot" data-target="sec-growth"><span class="nav-label">02 GROWTH</span></div>
+    <div class="nav-dot" data-target="sec-classes"><span class="nav-label">03 OBJECT CLASSES</span></div>
+    <div class="nav-dot" data-target="sec-org"><span class="nav-label">04 ORGANIZATION</span></div>
+    <div class="nav-dot" data-target="sec-uniform"><span class="nav-label">05 UNIFORMS</span></div>
+    <div class="nav-dot" data-target="sec-hierarchy"><span class="nav-label">06 HIERARCHY</span></div>
+    <div class="nav-dot" data-target="sec-omega"><span class="nav-label">07 OMEGA-7</span></div>
+    <div class="nav-dot" data-target="sec-examples"><span class="nav-label">08 SCP EXAMPLES</span></div>
+    <div class="nav-dot" data-target="sec-games"><span class="nav-label">09 GAMES</span></div>
+    <div class="nav-dot" data-target="sec-projectmoon"><span class="nav-label">10 PROJECT MOON</span></div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="hero">
+    <div class="hero-logo">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" fill="none" stroke="#8b0000" stroke-width="2" opacity="0.5"/>
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#8b0000" stroke-width="1.5" opacity="0.3"/>
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#c41e3a" stroke-width="2"/>
+            <!-- Inner ring segments -->
+            <path d="M100 40 A60 60 0 0 1 160 100" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M160 100 A60 60 0 0 1 100 160" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M100 160 A60 60 0 0 1 40 100" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M40 100 A60 60 0 0 1 100 40" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linecap="round"/>
+            <!-- Arrows -->
+            <polygon points="130,52 140,65 125,63" fill="#c41e3a"/>
+            <polygon points="148,130 135,140 137,125" fill="#c41e3a"/>
+            <polygon points="70,148 60,135 75,137" fill="#c41e3a"/>
+            <polygon points="52,70 65,60 63,75" fill="#c41e3a"/>
+            <!-- Center -->
+            <circle cx="100" cy="100" r="20" fill="none" stroke="#c41e3a" stroke-width="1.5"/>
+            <circle cx="100" cy="100" r="4" fill="#c41e3a"/>
+        </svg>
+    </div>
+
+    <h1 class="hero-title glitch" data-text="SCP FOUNDATION">SCP FOUNDATION</h1>
+    <p class="hero-subtitle">SECURE . CONTAIN . PROTECT</p>
+    <div class="stamp" style="margin-bottom: 1.5rem;">CLASSIFIED</div>
+    <p class="hero-warning">
+        <i class="fas fa-exclamation-triangle" style="color: var(--accent-amber); margin-right: 6px;"></i>
+        เอกสารฉบับนี้จัดประเภทระดับ <span style="color: var(--accent-red);">LEVEL 4 — TOP SECRET</span><br>
+        การเข้าถึงโดยไม่ได้รับอนุญาตจะถูกดำเนินการทางวินัยทันที
+    </p>
+    <div class="hero-scroll">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 01 HISTORY ==================== -->
+<section class="section" id="sec-history">
+    <div class="section-header">
+        <span class="section-number">01 // ORIGIN</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">ประวัติความเป็นมา</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        จุดเริ่มต้นของ SCP Foundation ไม่ได้มาจากสตูดิโอใหญ่หรือนักเขียนคนเดียว แต่เกิดจากโพสต์บนกระดานสนทนา <strong style="color:#fff;">4chan</strong> ในส่วน <span class="font-mono" style="color: var(--accent-red);">/x/</span> (สำหรับเรื่องลึกลับ) เมื่อวันที่ <strong style="color:#fff;">22 มิถุนายน 2007</strong>
+    </p>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-year">2007.06.22</div>
+            <div class="timeline-text">ผู้ใช้ชื่อ <strong style="color:#fff;">S.S. Walrus</strong> โพสต์เรื่องราวเกี่ยวกับ <span style="color: var(--accent-red);">SCP-173</span> — รูปปั้นที่จะฆ่าคนหากไม่ได้จ้องมอง สไตล์การเขียนแบบรายงานวิทยาศาสตร์แห้งๆ ทำให้แตกต่างจาก creepypasta ทั่วไป</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-year">2007.06 — 2008.01</div>
+            <div class="timeline-text">ความนิยมของ SCP-173 ทำให้มีผู้ใช้คนอื่นสร้างเรื่องราวในลักษณะเดียวกันขึ้นมาอีกมาก ทั้งที่ดีและไม่ดี</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-year">2008.01.19</div>
+            <div class="timeline-text">สร้างวิกิแรกบนเว็บไซต์ <strong style="color:#fff;">EditThis</strong> เพื่อรวบรวมเนื้อหาอย่างเป็นระบบ</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-year">2008 (ภายหลัง)</div>
+            <div class="timeline-text">ย้ายวิกิมาที่ <strong style="color:#fff;">Wikidot</strong> ด้วยเหตุผลด้านการดูแล ความยืดหยุ่น และปัญหาการเรียกเก็บเงิน — กลายเป็นฐานที่มั่นจนถึงปัจจุบัน</div>
+        </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 2rem;">
+        <i class="fas fa-info-circle" style="color: var(--accent-amber); margin-right: 6px;"></i>
+        <strong>หมายเหตุ:</strong> แม้จะเริ่มต้นจาก 4chan และมีเนื้อหาบางส่วนในช่วงแรกที่ไม่เป็นที่ยอมรับ แต่โครงการได้พัฒนากฎเกณฑ์อย่างต่อเนื่องจนกลายเป็นชุมชนสร้างสรรค์ที่มีมาตรฐานสูง
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 02 GROWTH ==================== -->
+<section class="section" id="sec-growth">
+    <div class="section-header">
+        <span class="section-number">02 // EXPANSION</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">การรวมตัวและจัดรวบรวม</h2>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-number" id="statArticles">0</div>
+            <div class="stat-label">SCP ARTICLES</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="statLanguages">0</div>
+            <div class="stat-label">LANGUAGES</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="statYears">0</div>
+            <div class="stat-label">YEARS ACTIVE</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number flicker" style="color: var(--accent-amber);">???</div>
+            <div class="stat-label">LOST SERIES</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">
+            <i class="fas fa-file-alt" style="color: var(--accent-red); margin-right: 6px;"></i>
+            รูปแบบการเขียน (Format)
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary);">
+            บทความ SCP เขียนเหมือนรายงานทางวิทยาศาสตร์หรือเอกสารลับ — ประกอบด้วยหมายเลข SCP, Object Class, Special Containment Procedures, คำอธิบาย และบันทึกการทดลอง
+        </p>
+    </div>
+    <div class="card">
+        <h3 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">
+            <i class="fas fa-gavel" style="color: var(--accent-red); margin-right: 6px;"></i>
+            ระบบกฎเกณฑ์ (Rule System)
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary);">
+            ระบบ Object Class จัดประเภทความยากในการกักกัน, ระบบ Security Clearance สำหรับบุคลากร, และกฎการเขียนที่ชัดเจนเพื่อรักษาคุณภาพ
+        </p>
+    </div>
+    <div class="card">
+        <h3 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">
+            <i class="fas fa-book-open" style="color: var(--accent-red); margin-right: 6px;"></i>
+            การขยายตัวของจักรวาล
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary);">
+            "Tales" เป็นเรื่องราวยาวที่เชื่อมโยงกับจักรวาล SCP และกลุ่มองค์กรภายนอก (GOIs) ที่มีเป้าหมายและวิธีการแตกต่างกัน เช่น Chaos Insurgency, GOC, Serpent's Hand
+        </p>
+    </div>
+
+    <div class="highlight-box red" style="margin-top: 1rem;">
+        <i class="fas fa-database" style="color: var(--accent-red); margin-right: 6px;"></i>
+        <strong>ตอนนี้ SCP Foundation มีบทความเกิน <span style="color: var(--accent-red); font-size: 1.1em;">10,000+</span> ตัวแล้ว</strong> — และนี่ยังไม่นับรวม "Lost Series" บทความที่ถูกลบออกเป็นการถาวรด้วยเหตุผลต่างๆ เช่น ปัญหาลิขสิทธิ์ ถูกฟ้องร้อง หรือคุณภาพไม่ถึงมาตรฐาน บางตัวใน Lost Series กลายเป็นตำนานในตัวเอง เพราะคนที่เคยอ่านตอนที่มันยังอยู่ก็ค่อยๆ นำเรื่องราวมาเล่าให้คนรุ่นหลังได้ฟัง
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 03 OBJECT CLASSES ==================== -->
+<section class="section" id="sec-classes">
+    <div class="section-header">
+        <span class="section-number">03 // CLASSIFICATION</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">ระบบ Object Classes</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        จัดประเภท <strong style="color: var(--accent-amber);">ความยากลำบากในการกักกัน</strong> — ไม่ใช่ความอันตราย
+    </p>
+
+    <table class="scp-table">
+        <thead>
+            <tr>
+                <th style="width: 120px;">CLASS</th>
+                <th>คำอธิบาย</th>
+                <th style="width: 100px;">ระดับ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-safe">SAFE</span></td>
+                <td>กักกันได้ง่ายและปลอดภัย มักเป็นสิ่งของที่ไม่ได้ทำอะไรเอง เช่น ปืนที่ต้องมีคนกดไก</td>
+                <td style="color: var(--safe-color);">ต่ำ</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-euclid">EUCILD</span></td>
+                <td>ต้องการทรัพยากรมากกว่า พฤติกรรมคาดเดาไม่ได้ มักเป็นเอนทิตี้ที่มีชีวิต</td>
+                <td style="color: var(--euclid-color);">กลาง</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-keter">KETER</span></td>
+                <td>กักกันได้ยากหรือไม่น่าเชื่อถือ เข้าใจไม่ลึกซึ้งหรือเทคโนโลยียังไม่ทัน</td>
+                <td style="color: var(--keter-color);">สูง</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-thaumiel">THAUMIEL</span></td>
+                <td>ใช้เพื่อช่วยกักกัน SCP ตัวอื่น การดำรงอยู่ถูกจำกัดเฉพาะ O5 Council</td>
+                <td style="color: var(--thaumiel-color);">พิเศษ</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-apollyon">APOLLYON</span></td>
+                <td>ไม่สามารถกักกันได้ มักเกี่ยวข้องกับภัยพิบัติระดับโลก (K-Class Scenario)</td>
+                <td style="color: #666;">วิกฤต</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- COLLAPSIBLE: Secondary Classes -->
+    <button class="collapse-trigger" onclick="toggleCollapse(this)">
+        <span><i class="fas fa-plus" style="margin-right: 8px; font-size: 0.7rem;"></i>Object Classes ระดับรอง</span>
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="collapse-content">
+        <div class="collapse-inner">
+            <div class="card" style="margin-bottom: 8px;">
+                <strong style="color: var(--accent-amber); font-size: 0.85rem;">ARCHON</strong>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">กักกันได้ในทฤษฎี แต่เลือกไม่ทำเพื่อหลีกเลี่ยงผลเสียร้ายแรง</p>
+            </div>
+            <div class="card" style="margin-bottom: 8px;">
+                <strong style="color: var(--accent-amber); font-size: 0.85rem;">CERNUNNOS</strong>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">กักกันได้แต่เลือกไม่ทำเพราะเหตุผลด้านจริยธรรมหรือโลจิสติกส์</p>
+            </div>
+            <div class="card" style="margin-bottom: 8px;">
+                <strong style="color: var(--accent-amber); font-size: 0.85rem;">TICONDEROGA</strong>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">ไม่สามารถกักกันได้และก็ไม่จำเป็นต้องกักกัน</p>
+            </div>
+            <div class="card">
+                <strong style="color: var(--accent-amber); font-size: 0.85rem;">EXPLAINED</strong>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">เดิมถูกจัดว่าแปลกประหลาด แต่ต่อมาอธิบายได้ด้วยวิทยาศาสตร์ปกติ</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 04 ORGANIZATION ==================== -->
+<section class="section" id="sec-org">
+    <div class="section-header">
+        <span class="section-number">04 // DOCTRINE</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">การออกแบบองค์กร</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.5rem 0;">
+        <div class="card" style="text-align: center; padding: 1.5rem 1rem;">
+            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--accent-red); margin-bottom: 8px;">S</div>
+            <div style="font-weight: 600; color: #fff; font-size: 0.9rem; margin-bottom: 4px;">SECURE</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">ค้นพบและเก็บรวบรวมสิ่งแปลกประหลาดให้พ้นมือสาธารณชน</div>
+        </div>
+        <div class="card" style="text-align: center; padding: 1.5rem 1rem;">
+            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--accent-amber); margin-bottom: 8px;">C</div>
+            <div style="font-weight: 600; color: #fff; font-size: 0.9rem; margin-bottom: 4px;">CONTAIN</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">กักกันภายในสิ่งอำนวยความสะดวกด้วยขั้นตอนเฉพาะ</div>
+        </div>
+        <div class="card" style="text-align: center; padding: 1.5rem 1rem;">
+            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--safe-color); margin-bottom: 8px;">P</div>
+            <div style="font-weight: 600; color: #fff; font-size: 0.9rem; margin-bottom: 4px;">PROTECT</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">ปกป้องมนุษยชาติและปกป้องสิ่งเหล่านั้นจากการใช้ในทางผิด</div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <i class="fas fa-exclamation-triangle" style="color: var(--accent-amber); margin-right: 6px;"></i>
+        Foundation ทำงานภายใต้หลักการ <strong style="color:#fff;">"ทำเพื่อประโยชน์ส่วนรวม"</strong> — ซึ่งอาจรวมถึงการละเมิดสิทธิมนุษยชน การทดลองที่ไม่ศีลธรรม และการตัดสินใจที่ยากลำบาก เพื่อปกป้องความลับและความปลอดภัยของโลก
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 05 UNIFORMS ==================== -->
+<section class="section" id="sec-uniform">
+    <div class="section-header">
+        <span class="section-number">05 // DRESS CODE</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">เครื่องแบบ: สีเสื้อคือชะตาชีวิต</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        เครื่องแบบใน SCP Foundation ไม่ใช่แฟชั่น — เป็น <strong style="color:#fff;">สัญลักษณ์ของหน้าที่ ระดับ และ "คุณค่าชีวิต"</strong> ที่แตกต่างกันอย่างสิ้นเชิง
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 2rem;">
+        <div class="uniform-badge uniform-white">
+            <i class="fas fa-user-tie"></i>
+            <div>
+                <div style="font-weight: 600; font-size: 0.9rem;">เสื้อขาว</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">นักวิจัย & นักวิทยาศาสตร์</div>
+            </div>
+        </div>
+        <div class="uniform-badge uniform-orange pulse">
+            <i class="fas fa-skull-crossbones"></i>
+            <div>
+                <div style="font-weight: 600; font-size: 0.9rem;">เสื้อส้ม</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">Class D — หนูทดลอง ใช้แล้วทิ้ง</div>
+            </div>
+        </div>
+        <div class="uniform-badge uniform-black">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+                <div style="font-weight: 600; font-size: 0.9rem;">ชุดทหารดำ</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">MTF หน่วยปฏิบัติการพิเศษ</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box red">
+        <i class="fas fa-exclamation-circle" style="color: var(--accent-red); margin-right: 6px;"></i>
+        <strong style="color: var(--accent-red);">ความจริงที่ต้องรู้:</strong> เสื้อส้ม <strong style="color:#fff;">ไม่ใช่</strong> เจ้าหน้าที่รักษาความปลอดภัย — แต่คือ <strong style="color: #ff8f00;">นักโทษผู้ต้องขัง Class D</strong> คนกลุ่มนี้ถูกดึงมาจากเรือนจำทั่วโลก (มักเป็นนักโทษประหารชีวิตหรือจำคุกตลอดชีพ) ใส่ชุดส้มเพื่อให้ <span class="redacted">มองเห็นและแยกแยะได้ทันที</span> พวกเขาไม่มีสิทธิ์อะไร ไม่มีระดับการเข้าถึงข้อมูล มีหน้าที่เดียวคือ <strong style="color: #ff8f00;">เดินเข้าหาความตายเพื่อเก็บข้อมูลวิจัย</strong> — เช่น ส่งไปสังเวยชีวิตให้หน้ากาก SCP-035 หรือเข้าไปในห้องของ SCP-173
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 06 HIERARCHY ==================== -->
+<section class="section" id="sec-hierarchy">
+    <div class="section-header">
+        <span class="section-number">06 // HIERARCHY</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">ระดับชั้นในองค์กร</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+        ระบบลำดับชั้นแบ่งออกเป็น <strong style="color:#fff;">3 ระบบย่อย</strong> ที่ทำงานคู่กันแต่มีความหมายต่างกัน
+    </p>
+
+    <!-- 6.1 Personnel Classes -->
+    <h3 style="color: #fff; font-size: 1.1rem; margin: 2.5rem 0 0.5rem;">
+        <span class="font-mono" style="color: var(--accent-red); font-size: 0.8rem; margin-right: 8px;">6.1</span>
+        ระดับชั้นบุคลากร (Personnel Classes)
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        ระบุ <strong style="color: var(--accent-amber);">"คุณค่าชีวิตและหน้าที่"</strong> — ใครอพยพก่อน ใครเข้าหาความตายก่อน
+    </p>
+
+    <div class="pyramid">
+        <div class="pyramid-row py-row-a">
+            <span class="class-label">CLASS A</span>
+            <span class="class-desc">มันสมอง — ห้ามเข้าใกล้ SCP เด็ดขาด — อพยพอันดับ 1</span>
+        </div>
+        <div class="pyramid-row py-row-b">
+            <span class="class-label">CLASS B</span>
+            <span class="class-desc">ปฏิบัติการ — สัมผัส Safe/Euclid เท่านั้น — อพยพรองจาก A</span>
+        </div>
+        <div class="pyramid-row py-row-c">
+            <span class="class-label">CLASS C</span>
+            <span class="class-desc">ทั่วไป — ไอที, ช่างซ่อม, ยาม — รู้แค่ว่ามีสิ่งประหลาด</span>
+        </div>
+        <div class="pyramid-row py-row-d">
+            <span class="class-label">CLASS D</span>
+            <span class="class-desc">ชุดส้ม ใช้แล้วทิ้ง — หนูทดลอง — เดินเข้าหาความตาย</span>
+        </div>
+        <div class="pyramid-row py-row-e">
+            <span class="class-label">CLASS E</span>
+            <span class="class-desc">ผู้ติดเชื้อ — เจ้าหน้าที่ที่สัมผัส SCP แล้วเกิดอาการแปลก — ถูกลดขั้นมาขังแยก</span>
+        </div>
+    </div>
+
+    <table class="scp-table" style="font-size: 0.85rem;">
+        <thead>
+            <tr>
+                <th style="width: 80px;">CLASS</th>
+                <th>ระดับ</th>
+                <th>คำอธิบาย</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="font-mono" style="color: #7986cb; font-weight: 700;">A</span></td>
+                <td style="color: #7986cb;">สูงสุด</td>
+                <td><strong style="color:#fff;">บุคลากรระดับมันสมอง</strong> — ผู้บริหารระดับสูง หัวหน้าสถานี นักวิทยาศาสตร์ระดับปรมาจารย์ <span class="redacted">ห้ามเข้าใกล้ห้องกักกัน SCP เด็ดขาด</span> เพราะถ้าตายหรือโดนสะกดจิต ความรู้ทั้งหมดจะรั่วไหล</td>
+            </tr>
+            <tr>
+                <td><span class="font-mono" style="color: #9fa8da; font-weight: 700;">B</span></td>
+                <td style="color: #9fa8da;">สูง</td>
+                <td><strong style="color:#fff;">เจ้าหน้าที่ระดับปฏิบัติการ</strong> — นักวิจัยระดับกลาง ทหารรักษาความปลอดภัยที่สัมผัส SCP ที่ "ค่อนข้างปลอดภัย" (Safe/Euclid บางตัว) อพยพรองจาก Class A</td>
+            </tr>
+            <tr>
+                <td><span class="font-mono" style="color: #c5cae9; font-weight: 700;">C</span></td>
+                <td style="color: #c5cae9;">กลาง</td>
+                <td><strong style="color:#fff;">เจ้าหน้าที่ทั่วไป</strong> — ไอที ช่างซ่อม พนักงานทำความสะอาด ยามเฝ้าประตู รู้แค่ว่ามีสิ่งประหลาด แต่ <strong style="color: var(--accent-amber);">ไม่มีสิทธิ์รู้รายละเอียดลึกๆ</strong></td>
+            </tr>
+            <tr>
+                <td><span class="font-mono" style="color: #ff8f00; font-weight: 700;">D</span></td>
+                <td style="color: #ff8f00;">ต่ำสุด</td>
+                <td><strong style="color: #ff8f00;">แก๊งชุดส้ม ใช้แล้วทิ้ง</strong> — หนูทดลองมนุษย์ ไม่มีสิทธิ์อะไร ไม่มีระดับการเข้าถึงข้อมูล <strong style="color: #ff8f00;">เดินเข้าหาความตายเพื่อเก็บข้อมูล</strong></td>
+            </tr>
+            <tr>
+                <td><span class="font-mono" style="color: #ef5350; font-weight: 700;">E</span></td>
+                <td style="color: #ef5350;">พิเศษ</td>
+                <td><strong style="color:#ef5350;">ผู้ติดเชื้อ/กักตัวชั่วคราว</strong> — เจ้าหน้าที่ที่สัมผัส SCP แล้วเกิดอาการแปลก ถูก <span class="redacted">ลดขั้นทันที</span> ถ้าหายก็กลับคลาสเดิม ถ้าไม่หาย... ก็อาจกลายเป็น SCP ตัวใหม่</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 6.2 Security Clearance -->
+    <h3 style="color: #fff; font-size: 1.1rem; margin: 3rem 0 0.5rem;">
+        <span class="font-mono" style="color: var(--accent-red); font-size: 0.8rem; margin-right: 8px;">6.2</span>
+        ระดับการเข้าถึงข้อมูล (Security Clearance)
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        ระบบ <strong style="color: var(--accent-amber);">"พาสเวิร์ด / การ์ดสี"</strong> — แยกจาก Personnel Classes คนเสื้อขาวอาจมี Level 2–3 ในขณะที่ยาม (Class C) อาจมีแค่ Level 0–1
+    </p>
+
+    <div class="clearance-bar">
+        <div class="clearance-level cl-0">LVL 0</div>
+        <div class="clearance-info">
+            <div class="clearance-name">FOR OFFICIAL USE ONLY</div>
+            <div class="clearance-who">พนักงานทำความสะอาด, เสมียนหน้าห้อง</div>
+            <div class="clearance-desc">รู้แค่ชื่อองค์กร ไม่รู้ว่ามี SCP ตัวไหนอยู่ในตึกบ้าง</div>
+        </div>
+    </div>
+    <div class="clearance-bar">
+        <div class="clearance-level cl-1">LVL 1</div>
+        <div class="clearance-info">
+            <div class="clearance-name">CONFIDENTIAL</div>
+            <div class="clearance-who">เจ้าหน้าที่รักษาความปลอดภัยทั่วไป</div>
+            <div class="clearance-desc">รู้ข้อมูลเฉพาะ SCP ตัวที่ตัวเองมีหน้าที่ยืนเฝ้าหน้าห้องเท่านั้น</div>
+        </div>
+    </div>
+    <div class="clearance-bar">
+        <div class="clearance-level cl-2">LVL 2</div>
+        <div class="clearance-info">
+            <div class="clearance-name">RESTRICTED</div>
+            <div class="clearance-who">ระดับมาตรฐานของแก๊งเสื้อขาวและทหารทั่วไป</div>
+            <div class="clearance-desc">เข้าถึงข้อมูล SCP ส่วนใหญ่ระดับ Safe และ Euclid เพื่อทำการวิจัยและควบคุมสถานการณ์</div>
+        </div>
+    </div>
+    <div class="clearance-bar">
+        <div class="clearance-level cl-3">LVL 3</div>
+        <div class="clearance-info">
+            <div class="clearance-name">SECRET</div>
+            <div class="clearance-who">หัวหน้าโครงการวิจัย, ผู้บังคับบัญชาหน่วย MTF</div>
+            <div class="clearance-desc">เปิดอ่านเอกสาร SCP ระดับอันตราย (Keter) ได้ — คอยสั่งการแก๊งเสื้อขาวอีกที</div>
+        </div>
+    </div>
+    <div class="clearance-bar">
+        <div class="clearance-level cl-4">LVL 4</div>
+        <div class="clearance-info">
+            <div class="clearance-name">TOP SECRET</div>
+            <div class="clearance-who">Site Director, ผู้อำนวยการภูมิภาค</div>
+            <div class="clearance-desc">รู้ข้อมูลเกือบทั้งหมด — มีอำนาจ <strong style="color: var(--accent-red);">สั่งปิดตึก ลบความจำเจ้าหน้าที่ทุกคน หรือกดปุ่มระเบิดนิวเคลียร์ทำลายศูนย์วิจัย</strong></div>
+        </div>
+    </div>
+    <div class="clearance-bar">
+        <div class="clearance-level cl-5">LVL 5</div>
+        <div class="clearance-info">
+            <div class="clearance-name">THAUMIEL / OMNISCIENT</div>
+            <div class="clearance-who">ผู้ที่ได้รับอนุญาตจาก O5 เท่านั้น</div>
+            <div class="clearance-desc">ระดับสูงสุด — เข้าถึง <span class="redacted">ความจริงทุกอย่างของจักรวาล</span> เอกสารที่ถูกเซนเซอร์ [DATA EXPUNGED] คนระดับนี้มองเห็นเป็นตัวหนังสือปกติทั้งหมด</div>
+        </div>
+    </div>
+
+    <!-- 6.3 O5 Council -->
+    <h3 style="color: #fff; font-size: 1.1rem; margin: 3rem 0 0.5rem;">
+        <span class="font-mono" style="color: var(--accent-red); font-size: 0.8rem; margin-right: 8px;">6.3</span>
+        ยอดพีระมิด: สภา O5
+        <span class="stamp" style="font-size: 0.6rem; padding: 2px 10px; margin-left: 12px; transform: rotate(-4deg);">ABOVE TOP SECRET</span>
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        เหนือกว่า Level 5 เหนือกว่าทุกระดับ — กลุ่ม <strong style="color:#fff;">ผู้ปกครองสูงสุด</strong> ของสถาบัน สมาชิกทั้งหมด <strong style="color: var(--accent-red);">13 คน</strong> (O5-1 ถึง O5-13)
+    </p>
+
+    <div class="o5-grid">
+        <div class="o5-member leader" title="O5-1 — ผู้นำสูงสุด">01</div>
+        <div class="o5-member">02</div>
+        <div class="o5-member">03</div>
+        <div class="o5-member">04</div>
+        <div class="o5-member">05</div>
+        <div class="o5-member">06</div>
+        <div class="o5-member">07</div>
+        <div class="o5-member">08</div>
+        <div class="o5-member">09</div>
+        <div class="o5-member">10</div>
+        <div class="o5-member">11</div>
+        <div class="o5-member">12</div>
+        <div class="o5-member">13</div>
+    </div>
+
+    <div class="highlight-box red" style="margin-top: 1rem;">
+        <i class="fas fa-eye" style="color: var(--accent-red); margin-right: 6px;"></i>
+        <strong>บุคคลลึกลับ:</strong> ไม่มีใครรู้ชื่อจริง ไม่มีตัวตนในประวัติศาสตร์โลก คอยสั่งการจากเบื้องหลังมิติที่ปลอดภัย มีข่าวลือว่า <span class="redacted">บางคนมีอายุหลายร้อยปี</span> เพราะใช้เทคโนโลยีหรือ SCP บางตัวช่วยยื้อชีวิต และพวกเขามีอำนาจ <strong style="color: var(--accent-red);">สั่งลบประเทศบางประเทศออกไปจากแผนที่โลก</strong> หากประเทศนั้นเสี่ยงต่อการทำให้ความจริงบิดเบี้ยว
+    </div>
+
+    <div class="highlight-box" style="margin-top: 0.5rem;">
+        <i class="fas fa-link" style="color: var(--accent-amber); margin-right: 6px;"></i>
+        <strong>สรุปความสัมพันธ์:</strong> คนคนหนึ่งอาจเป็น <strong style="color:#9fa8da;">Class B</strong> (ปฏิบัติการ) พร้อมกับมี <strong style="color: var(--accent-amber);">Security Clearance Level 3</strong> (อ่านเอกสาร Secret) ไปพร้อมกันได้ — สองระบบนี้วัดคนด้วยมิติที่ต่างกัน อันหนึ่งวัด <strong>"คุณค่าชีวิต"</strong> อันหนึ่งวัด <strong>"สิทธิ์รู้ความลับ"</strong>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 07 OMEGA-7 ==================== -->
+<section class="section" id="sec-omega">
+    <div class="section-header">
+        <span class="section-number">07 // CASE STUDY</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">Omega-7 "Pandora's Box"</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        ตัวอย่างของ <strong style="color:#fff;">จักรวาลที่เป็นหนึ่งเดียว (shared universe)</strong> — เรื่องราวเชื่อมโยงกันข้ามบทความ
+    </p>
+
+    <div class="card">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span class="font-mono" style="color: var(--accent-red); font-size: 0.8rem;">MTF Ω-7</span>
+            <span class="stamp-amber stamp" style="font-size: 0.55rem; padding: 2px 8px; transform: rotate(-3deg);">DISBANDED</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+            หน่วยปฏิบัติการพิเศษที่ <strong style="color:#fff;">ใช้ SCP ที่เป็นมนุษย์เป็นอาวุธ</strong> — แตกต่างจากมาตรฐานของ Foundation ที่มักหลีกเลี่ยงการใช้ SCP
+        </p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+            <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--accent-amber); background: rgba(139,105,20,0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--accent-amber-dim);">SCP-076-2 "Able" — นักรบอมตะ</span>
+            <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--accent-amber); background: rgba(139,105,20,0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--accent-amber-dim);">SCP-105 "Iris" — สาวน้อยถือกล้อง</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+            <i class="fas fa-times-circle" style="color: var(--accent-red); margin-right: 4px;"></i>
+            <strong style="color: var(--accent-red);">จุดจบ:</strong> ล้มเหลวและถูกยุบเลิก — ความขัดแย้งภายใน ความไม่น่าเชื่อถือของ Able และความสูญเสียอย่างหนัก เป็นบทเรียนที่ Foundation ไม่ลืม
+        </p>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 08 SCP EXAMPLES ==================== -->
+<section class="section" id="sec-examples">
+    <div class="section-header">
+        <span class="section-number">08 // FILES</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">ตัวอย่าง SCP ดังๆ</h2>
+
+    <div class="scp-card">
+        <div class="scp-card-header">
+            <div>
+                <span class="font-mono" style="color: var(--accent-red); font-size: 1rem; font-weight: 700;">SCP-682</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 8px;">"Hard-to-Destroy Reptile"</span>
+            </div>
+            <span class="badge badge-keter">KETER</span>
+        </div>
+        <div class="scp-card-body">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+                สัตว์เลื้อยคลานขนาดใหญ่ที่มีความสามารถ <strong style="color:#fff;">ฟื้นตัวและปรับตัว</strong> เพื่อเอาชีวิตรอดจากทุกสิ่งทุกอย่างที่ทำร้ายมัน มันเกลียดชังมนุษยชาติอย่างรุนแรง
+            </p>
+            <div class="highlight-box red" style="margin-bottom: 0; padding: 10px 14px;">
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--accent-red);">NOTE:</span>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);"> Foundation ไม่สามารถทำลายมันได้ การทดลองทำลายด้วย SCP อื่นๆ มักล้มเหลวและทำให้มัน <span class="redacted">แข็งแกร่งขึ้น</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="scp-card">
+        <div class="scp-card-header">
+            <div>
+                <span class="font-mono" style="color: var(--accent-red); font-size: 1rem; font-weight: 700;">SCP-096</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 8px;">"The Shy Guy"</span>
+            </div>
+            <span class="badge badge-euclid">EUCILD</span>
+        </div>
+        <div class="scp-card-body">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+                สิ่งมีชีวิตตัวสูงผอมเพรียวที่ <strong style="color:#fff;">ตื่นตระหนกอย่างรุนแรง</strong> หากใครมองหน้าของมัน — ไม่ว่าจะโดยตรง กล้อง หรือภาพถ่าย จะวิ่งไปฆ่าผู้นั้นด้วยความเร็วสูง ไม่มีอะไรขวางได้
+            </p>
+            <div class="highlight-box" style="margin-bottom: 0; padding: 10px 14px;">
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--accent-amber);">CONTAINMENT:</span>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);"> ห้องกักกันต้องมองไม่เห็นหน้ามัน การขนย้ายต้อง <span class="redacted">ระมัดระวังอย่างยิ่ง</span> เพราะภาพรั่วไหลอาจทำให้เกิดภัยพิบัติ</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 09 GAMES ==================== -->
+<section class="section" id="sec-games">
+    <div class="section-header">
+        <span class="section-number">09 // MEDIA</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">เกมที่ใช้ SCP เป็น Setting</h2>
+
+    <div class="game-grid">
+        <div class="game-card">
+            <h4>SCP: Containment Breach</h4>
+            <div class="game-type">HORROR / SURVIVAL</div>
+            <p>เกมแรกๆ ที่ผู้เล่นเป็นนักวิจัยต้องหลบหนี SCP-173 และ SCP-106 หลังเกิดเหตุรั่วไหล</p>
+        </div>
+        <div class="game-card">
+            <h4>SCP: Secret Laboratory</h4>
+            <div class="game-type">MULTIPLAYER / FPS</div>
+            <p>แบ่งทีมเป็น Foundation, SCP และ Chaos Insurgency สู้กันในสิ่งอำนวยความสะดวก</p>
+        </div>
+        <div class="game-card">
+            <h4>SCP: Secret Files</h4>
+            <div class="game-type">HORROR / ADVENTURE</div>
+            <p>รวบรวมเรื่องราวหลายเรื่องในจักรวาล SCP มาเล่าเป็นตอนๆ วางจำหน่ายบน Switch ด้วย</p>
+        </div>
+        <div class="game-card">
+            <h4>Control</h4>
+            <div class="game-type">ACTION / SUPERNATURAL</div>
+            <p>จาก Remedy Entertainment ได้รับแรงบันดาลใจอย่างมาก มีองค์กร "Federal Bureau of Control" คล้าย SCP</p>
+        </div>
+    </div>
+
+    <button class="collapse-trigger" onclick="toggleCollapse(this)" style="margin-top: 8px;">
+        <span><i class="fas fa-gamepad" style="margin-right: 8px; font-size: 0.7rem;"></i>เกมอื่นๆ ที่น่าสนใจ</span>
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="collapse-content">
+        <div class="collapse-inner">
+            <div class="game-grid">
+                <div class="game-card">
+                    <h4>SCP - Unity</h4>
+                    <div class="game-type">REMAKE</div>
+                    <p>เวอร์ชัน remake ของ Containment Breach ด้วย Unity กราฟิกสวยขึ้น</p>
+                </div>
+                <div class="game-card">
+                    <h4>SCP: Pandemic</h4>
+                    <div class="game-type">FPS</div>
+                    <p>ยิงปืนต่อสู้กับ SCP ที่ระบาดในเมือง</p>
+                </div>
+                <div class="game-card">
+                    <h4>SCP: Wander</h4>
+                    <div class="game-type">EXPLORATION</div>
+                    <p>สำรวจและแก้ปริศนาในสิ่งอำนวยความสะดวกของ Foundation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== 10 PROJECT MOON ==================== -->
+<section class="section" id="sec-projectmoon">
+    <div class="section-header">
+        <span class="section-number">10 // INSPIRED</span>
+        <div class="section-line"></div>
+    </div>
+    <h2 class="section-title">Project Moon: จักรวาลที่กำลังดัง</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        สตูดิโอเกมอิสระชาวเกาหลีใต้ที่สร้างจักรวาลของตัวเอง ด้วย <strong style="color: var(--accent-amber);">แรงบันดาลใจอย่างมากจาก SCP Foundation</strong>
+    </p>
+
+    <div class="pm-card">
+        <div class="pm-card-header">
+            <span class="pm-year">2018</span>
+            <h4 style="color: #fff; font-size: 1rem;">Lobotomy Corporation</h4>
+        </div>
+        <div class="pm-card-body">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+                ผู้เล่นเป็นผู้จัดการองค์กรที่ดูแล <strong style="color:#fff;">"Abnormalities"</strong> — สิ่งแปลกประหลาดคล้าย SCP โดยต้องสร้างพลังงานจากพวกมัน
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-primary); padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border-dim);">ระบบ Object Classes คล้าย SCP</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-primary); padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border-dim);">จัดการ & กักกัน Abnormalities</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-primary); padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border-dim);">เล่าเรื่องผ่านรายงาน & บันทึก</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="pm-card">
+        <div class="pm-card-header">
+            <span class="pm-year">2021</span>
+            <h4 style="color: #fff; font-size: 1rem;">Library of Ruina</h4>
+        </div>
+        <div class="pm-card-body">
+            <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                เกมต่อสู้บนจอภาพในห้องสมุดลึกลับ ขยายจักรวาลเดียวกัน มีการอ้างอิง Abnormalities และเหตุการณ์ในอดีต — โครงสร้างเรื่องราวซับซ้อนเช่นเดียวกับ Tales ของ SCP
+            </p>
+        </div>
+    </div>
+
+    <div class="pm-card">
+        <div class="pm-card-header">
+            <span class="pm-year">2023</span>
+            <h4 style="color: #fff; font-size: 1rem;">Limbus Company</h4>
+        </div>
+        <div class="pm-card-body">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+                RPG ผจญภัยสำรวจโลกภายนอกหลังเหตุการณ์ใน Lobotomy Corporation มีระบบ <strong style="color:#fff;">"E.G.O"</strong> — อาวุธที่ได้มาจาก Abnormalities
+            </p>
+            <div class="highlight-box" style="margin-bottom: 0; padding: 10px 14px;">
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">คล้ายกับการใช้ SCP เป็นอาวุธในโครงการ <strong style="color: var(--accent-red);">Omega-7</strong> ของ SCP Foundation</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 1.5rem;">
+        <i class="fas fa-lightbulb" style="color: var(--accent-amber); margin-right: 6px;"></i>
+        <strong>สรุป:</strong> Project Moon ไม่ได้คัดลอก SCP โดยตรง แต่ <strong style="color:#fff;">รับแรงบันดาลใจจากแนวคิดหลัก</strong> และสร้างจักรวาลของตัวเองที่มีเอกลักษณ์เฉพาะ โดยมีศิลปะและการเล่าเรื่องที่โดดเด่น กลายเป็นแฟรนไชส์ที่ได้รับความนิยมอย่างมากในวงการเกมอิสระ
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="section-divider"></div>
+<footer class="footer">
+    <div class="footer-logo">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#333" stroke-width="2"/>
+            <path d="M100 40 A60 60 0 0 1 160 100" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M160 100 A60 60 0 0 1 100 160" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M100 160 A60 60 0 0 1 40 100" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M40 100 A60 60 0 0 1 100 40" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="100" cy="100" r="4" fill="#333"/>
+        </svg>
+    </div>
+    <p class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px;">
+        SCP FOUNDATION — SECURE. CONTAIN. PROTECT.
+    </p>
+    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">
+        เอกสารฉบับนี้อยู่ภายใต้สัญญาอนุญาต Creative Commons 3.0 — เนื้อหาสร้างสรรค์โดยชุมชน
+    </p>
+    <p style="font-size: 0.7rem; color: #333; margin-top: 12px;">
+        [DOCUMENT END — CONNECTION TERMINATED]
+    </p>
+</footer>
+
+<script>
+    // ========== SCROLL REVEAL ==========
+    const sections = document.querySelectorAll('.section');
+    const navDots = document.querySelectorAll('.nav-dot');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+
+                // Update active nav dot
+                const id = entry.target.id;
+                navDots.forEach(dot => {
+                    dot.classList.toggle('active', dot.dataset.target === id);
+                });
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    sections.forEach(sec => observer.observe(sec));
+
+    // ========== NAV DOT CLICK ==========
+    navDots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            const target = document.getElementById(dot.dataset.target);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // ========== COLLAPSE ==========
+    function toggleCollapse(trigger) {
+        const content = trigger.nextElementSibling;
+        const isOpen = content.classList.contains('open');
+
+        // Close all others
+        document.querySelectorAll('.collapse-content.open').forEach(c => {
+            c.classList.remove('open');
+            c.previousElementSibling.classList.remove('open');
+        });
+
+        if (!isOpen) {
+            content.classList.add('open');
+            trigger.classList.add('open');
+        }
+    }
+
+    // ========== STAT COUNTER ANIMATION ==========
+    function animateCounter(el, target, duration) {
+        let start = 0;
+        const step = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += step;
+            if (start >= target) {
+                el.textContent = target.toLocaleString() + '+';
+                clearInterval(timer);
+            } else {
+                el.textContent = Math.floor(start).toLocaleString();
+            }
+        }, 16);
+    }
+
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(document.getElementById('statArticles'), 10000, 2000);
+                animateCounter(document.getElementById('statLanguages'), 14, 1500);
+                animateCounter(document.getElementById('statYears'), 18, 1200);
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    const statsRow = document.querySelector('.stats-row');
+    if (statsRow) statsObserver.observe(statsRow);
+
+    // ========== TOAST ON LOAD ==========
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            showToast('⚠ WARNING: ตรวจพบการเข้าถึงเอกสารลับ — กำลังบันทึกข้อมูลเซสชัน...');
+        }, 2000);
+        setTimeout(() => {
+            showToast('✓ BIOMETRIC SCAN COMPLETE — สิทธิ์การเข้าถึง: LEVEL 4');
+        }, 5000);
+    });
+
+    function showToast(message) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 3800);
+    }
+
+    // ========== HIDE NAV ON SCROLL DOWN ==========
+    let lastScroll = 0;
+    const sideNav = document.getElementById('sideNav');
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 300) {
+            sideNav.classList.add('hidden');
+        } else {
+            sideNav.classList.remove('hidden');
+        }
+        lastScroll = currentScroll;
+    }, { passive: true });
+</script>
+</body>
+</html>
