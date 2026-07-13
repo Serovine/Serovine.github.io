@@ -85,9 +85,16 @@
   },
   {
     "id": "scp01",
-    "title": "SCP Foundation คือะไร",
+    "title": "SCP Foundation คืออะไร",
     "date": "12-07-2026",
     "tags": ["SCP", "creepypasta", "horror","internet"],
     "file": "article/scp.html"
+  },
+  {
+    "id": "thaifalsemyth",
+    "title": "18 เรื่องที่คนไทยมักจะเข้าใจผิด",
+    "date": "13-07-2026",
+    "tags": ["thai", "lifestyle", "knowledge"],
+    "file": "article/18falsemyth.html"
   }
 ]
