@@ -1,6 +1,6 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-KMI,Kinder Morgan Inc.,22-04-26,After Market,32.12,21.59%,NYSE,
-RBCAA,Republic Bancorp Inc.,23-04-26,Before Market,88.15,28.96%,NASDAQ,
+KMI,Kinder Morgan Inc.,22-04-26,After Market,32.12,21.59%,NYSE,+0.03%
+RBCAA,Republic Bancorp Inc.,23-04-26,Before Market,88.15,28.96%,NASDAQ,+0.47%
 BAC,Bank of America Corporation,14-07-26,Before Market,59.67,9.29%,NYSE,+1.74%
 C,Citigroup Inc.,14-07-26,Before Market,140.79,20.81%,NYSE,-4.80%
 ERIC,Ericsson,14-07-26,Before Market,11.35,22.26%,NASDAQ,-13.87%
@@ -20,19 +20,19 @@ MS,Morgan Stanley,15-07-26,Before Market,222.28,20.44%,NYSE,-0.71%
 MTB,M&T Bank Corporation,15-07-26,Before Market,242.34,16.16%,NYSE,+2.13%
 PGR,Progressive Corporation,15-07-26,Before Market,230.72,6.67%,NYSE,-7.96%
 PNC,PNC Financial Services Group I,15-07-26,Before Market,251.91,18.57%,NYSE,+1.07%
-JBHT,J.B. Hunt Transport Services I,15-07-26,After Market,279.96,36.21%,NASDAQ,
-KARO,Karooooo Ltd.,15-07-26,After Market,57.73,24.71%,NASDAQ,
-UAL,United Airlines Holdings Inc.,15-07-26,After Market,126.0,9.29%,NASDAQ,
-ABT,Abbott Laboratories,16-07-26,Before Market,93.93,-23.78%,NYSE,
-CFG,Citizens Financial Group Inc.,16-07-26,Before Market,70.34,18.51%,NYSE,
-GE,GE Aerospace,16-07-26,Before Market,359.27,11.13%,NYSE,
-MAN,ManpowerGroup,16-07-26,Before Market,38.71,27.86%,NYSE,
-PLD,Prologis Inc.,16-07-26,Before Market,140.87,10.83%,NYSE,
-STT,State Street Corporation,16-07-26,Before Market,180.22,37.00%,NYSE,
-TSM,Taiwan Semiconductor Manufactur,16-07-26,Before Market,434.11,31.52%,NYSE,
-UNH,UnitedHealth Group Incorporated,16-07-26,Before Market,424.62,26.39%,NYSE,
-USB,U.S. Bancorp,16-07-26,Before Market,62.41,16.92%,NYSE,
-WIT,Wipro Limited,16-07-26,Before Market,1.87,-35.74%,NYSE,
+JBHT,J.B. Hunt Transport Services I,15-07-26,After Market,279.96,36.21%,NASDAQ,+7.12%
+KARO,Karooooo Ltd.,15-07-26,After Market,57.73,24.71%,NASDAQ,-1.25%
+UAL,United Airlines Holdings Inc.,15-07-26,After Market,126.0,9.29%,NASDAQ,-3.50%
+ABT,Abbott Laboratories,16-07-26,Before Market,93.93,-23.78%,NYSE,+6.73%
+CFG,Citizens Financial Group Inc.,16-07-26,Before Market,70.34,18.51%,NYSE,+2.69%
+GE,GE Aerospace,16-07-26,Before Market,359.27,11.13%,NYSE,-2.46%
+MAN,ManpowerGroup,16-07-26,Before Market,38.71,27.86%,NYSE,+21.48%
+PLD,Prologis Inc.,16-07-26,Before Market,140.87,10.83%,NYSE,+1.05%
+STT,State Street Corporation,16-07-26,Before Market,180.22,37.00%,NYSE,+1.80%
+TSM,Taiwan Semiconductor Manufactur,16-07-26,Before Market,434.11,31.52%,NYSE,-2.11%
+UNH,UnitedHealth Group Incorporated,16-07-26,Before Market,424.62,26.39%,NYSE,+9.70%
+USB,U.S. Bancorp,16-07-26,Before Market,62.41,16.92%,NYSE,-0.20%
+WIT,Wipro Limited,16-07-26,Before Market,1.87,-35.74%,NYSE,+0.82%
 AA,Alcoa Corporation,16-07-26,After Market,48.68,-25.63%,NYSE,
 ISRG,Intuitive Surgical Inc.,16-07-26,After Market,406.78,-28.98%,NASDAQ,
 NFLX,Netflix Inc.,16-07-26,After Market,73.37,-17.94%,NASDAQ,
