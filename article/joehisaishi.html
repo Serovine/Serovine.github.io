@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joe Hisaishi — A Composer's Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;500&family=Noto+Serif+Thai:wght@300;400;500;600&family=Roboto:wght@100;300;400&display=swap">
+
+<style>
+:root {
+  --bg:          #ede4d9;
+  --text:        #2a1810;
+  --text-emp:    #3d2417;
+  --text-mute:   #6b5544;
+  --text-faint:  #a89684;
+  --line:        #d4c0a8;
+  --inverse:     #ffffff;
+  --accent:      #8b5a2b;
+
+  --ease-quiet:    cubic-bezier(.22, 1, .36, 1);
+  --ease-precise:  cubic-bezier(.4, 0, .2, 1);
+  --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
+
+  --font-display: 'Oswald', sans-serif;
+  --font-serif:   'Noto Serif Thai', serif;
+  --font-sans:    'Roboto', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--bg); }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+::selection { background: var(--accent); color: var(--inverse); }
+
+/* === Noise overlay === */
+.noise-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  animation: noise 20s linear infinite;
+  mix-blend-mode: multiply;
+}
+@keyframes noise {
+  0%,100% { transform: translate(0,0); }
+  20%     { transform: translate(-10%, 5%); }
+  50%     { transform: translate(-10%, 5%); }
+  80%     { transform: translate(-15%, 0); }
+}
+
+/* === Typography helpers === */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--text-mute);
+}
+
+.italic { font-style: italic; }
+
+/* === Topbar === */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.5rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+.topbar .brand {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  color: var(--text-emp);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.topbar .brand .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+.topbar .meta {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  display: flex;
+  gap: 2rem;
+}
+
+/* === HERO === */
+.hero {
+  min-height: 100vh;
+  padding: 9rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero .eyebrow { margin-bottom: 3rem; }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(3.5rem, 12vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+  color: var(--text-emp);
+  margin-bottom: 2.5rem;
+}
+.hero-title .acc { color: var(--accent); font-style: italic; font-weight: 300; }
+
+.line-mask { overflow: hidden; display: block; }
+.line-mask .line {
+  display: block;
+  transform: translateY(110%);
+}
+
+.hero-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
+  font-weight: 300;
+  color: var(--text-emp);
+  line-height: 1.55;
+  max-width: 680px;
+  margin-bottom: 3rem;
+}
+.hero-sub em { color: var(--accent); font-style: italic; }
+
+.hero-meta {
+  display: flex;
+  gap: 4rem;
+  border-top: 1px solid var(--line);
+  padding-top: 2rem;
+  margin-top: 1rem;
+  max-width: 680px;
+  flex-wrap: wrap;
+}
+.hero-meta-item .label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.hero-meta-item .value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: var(--text-emp);
+  letter-spacing: 0.04em;
+}
+
+/* Coffee mark with steam */
+.coffee-mark {
+  position: absolute;
+  right: 4rem;
+  bottom: 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.85;
+}
+.steam-wrap {
+  height: 36px;
+  position: relative;
+  width: 50px;
+}
+.steam {
+  position: absolute;
+  bottom: 0;
+  width: 1.5px;
+  height: 22px;
+  background: var(--text-mute);
+  opacity: 0;
+  border-radius: 2px;
+  transform-origin: bottom;
+}
+.steam:nth-child(1) { left: 14px; animation: steam-rise 3.5s infinite ease-in-out 0.2s; }
+.steam:nth-child(2) { left: 24px; animation: steam-rise 3.5s infinite ease-in-out 1s; }
+.steam:nth-child(3) { left: 34px; animation: steam-rise 3.5s infinite ease-in-out 1.8s; }
+
+@keyframes steam-rise {
+  0%   { transform: translateY(0) scaleY(0.4); opacity: 0; }
+  25%  { opacity: 0.55; }
+  100% { transform: translateY(-32px) scaleY(1.4); opacity: 0; }
+}
+
+.cup {
+  width: 50px;
+  height: 36px;
+  border: 1.5px solid var(--text-emp);
+  border-radius: 0 0 18px 18px;
+  border-top: none;
+  position: relative;
+  background: var(--bg);
+}
+.cup::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 5px;
+  width: 12px;
+  height: 18px;
+  border: 1.5px solid var(--text-emp);
+  border-left: none;
+  border-radius: 0 50% 50% 0;
+}
+.cup-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-top: 0.3rem;
+}
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.scroll-cue .bar {
+  width: 40px;
+  height: 1px;
+  background: var(--text-mute);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-cue .bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateX(-100%);
+  animation: cue-slide 2.5s infinite var(--ease-quiet);
+}
+@keyframes cue-slide {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+/* === Intro / Drop cap === */
+.intro {
+  padding: 6rem 2rem 5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.intro-body {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  line-height: 1.85;
+  color: var(--text-emp);
+}
+.intro-body::first-letter {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 5.5rem;
+  line-height: 0.85;
+  float: left;
+  margin: 0.3rem 0.6rem 0 0;
+  color: var(--accent);
+}
+.intro-body em { font-style: italic; color: var(--accent); }
+
+/* === Chapter base === */
+section.chapter {
+  padding: 8rem 2rem;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.chapter-num {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(7rem, 16vw, 14rem);
+  line-height: 0.85;
+  color: var(--text-faint);
+  opacity: 0.35;
+  letter-spacing: -0.04em;
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  top: 4rem;
+  right: 2rem;
+  z-index: 0;
+}
+
+.chapter-header {
+  margin-bottom: 4rem;
+  max-width: 760px;
+  position: relative;
+  z-index: 1;
+}
+.chapter-header .eyebrow { margin-bottom: 1.5rem; }
+.chapter-header h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 3vw, 2.5rem);
+  line-height: 1.3;
+  color: var(--text-emp);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.005em;
+}
+.chapter-header h2 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* Body text */
+.body-text {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--text-emp);
+}
+.body-text p + p { margin-top: 1.5rem; }
+.body-text strong { font-weight: 500; color: var(--text-emp); }
+.body-text em { font-style: italic; color: var(--text-mute); }
+
+/* Frame hover */
+.frame {
+  padding: 12px;
+  border: 1px solid var(--line);
+  transition: border-color 500ms var(--ease-emphasis);
+  background: var(--bg);
+  display: block;
+  position: relative;
+}
+.frame:hover { border-color: var(--accent); }
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.caption {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  text-transform: uppercase;
+}
+.caption .num {
+  font-family: var(--font-display);
+  font-weight: 300;
+  color: var(--text-mute);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+.caption .sep { color: var(--text-faint); }
+
+/* Fade up */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1100ms var(--ease-quiet), transform 1100ms var(--ease-quiet);
+  will-change: transform, opacity;
+}
+.fade-up.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Bean divider */
+.bean-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 5rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.bean-divider .line-piece {
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+.bean-icon {
+  width: 26px;
+  height: 38px;
+  color: var(--text-mute);
+  flex-shrink: 0;
+}
+
+/* === Chapter 01 layout === */
+.ch01-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+.ch01-grid .text-col { padding-top: 2rem; }
+.ch01-grid .image-col .frame { aspect-ratio: 3/4; }
+
+.name-card {
+  margin-top: 2.5rem;
+  padding: 1.5rem 1.75rem;
+  border-left: 2px solid var(--accent);
+  background: rgba(255,255,255,0.35);
+}
+.name-card .label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 0.5rem;
+}
+.name-card .value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.3rem;
+  color: var(--text-emp);
+  letter-spacing: 0.03em;
+}
+.name-card .note {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-mute);
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+/* === Chapter 02 layout === */
+.ch02-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 5rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.ch02-grid .image-col .frame { aspect-ratio: 1/1; }
+.ch02-grid .text-col { padding-top: 1rem; }
+
+.album-card {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.4);
+}
+.album-card .vinyl {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--text-emp);
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.album-card .vinyl::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--text-mute);
+}
+.album-card .vinyl::after {
+  content: '';
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  z-index: 1;
+}
+.album-card .info { flex: 1; }
+.album-card .info .label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 0.4rem;
+}
+.album-card .info .title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: var(--text-emp);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.02em;
+}
+.album-card .info .year {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* === Chapter 03 — Three musketeers === */
+.ch03-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin: 3rem 0 4rem;
+  position: relative;
+  z-index: 1;
+}
+.ch03-trio .person .frame { aspect-ratio: 3/4; }
+.person-name {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: var(--text-emp);
+  margin-top: 1rem;
+  letter-spacing: 0.03em;
+}
+.person-role {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-top: 0.3rem;
+}
+.person-thai {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-mute);
+  margin-top: 0.3rem;
+}
+
+.ghibli-quote {
+  margin: 3rem 0;
+  padding: 2.5rem 3rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.ghibli-quote::before {
+  content: '"';
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-family: var(--font-display);
+  font-size: 4rem;
+  color: var(--accent);
+  line-height: 1;
+  opacity: 0.4;
+}
+.ghibli-quote p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--text-emp);
+  padding-left: 3rem;
+}
+.ghibli-quote .attr {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-top: 1.5rem;
+  padding-left: 3rem;
+}
+
+/* === Chapter 04 — One Summer's Day feature === */
+.ch04-feature {
+  padding: 8rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+.ch04-feature .eyebrow { margin-bottom: 2rem; }
+.ch04-title {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text-emp);
+  margin-bottom: 1rem;
+}
+.ch04-title .jp {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.35em;
+  color: var(--accent);
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.ch04-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  margin-top: 4rem;
+  align-items: start;
+}
+.ch04-grid .image-col .frame { aspect-ratio: 4/5; }
+.ch04-grid .text-col {
+  padding-top: 2rem;
+}
+.ch04-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.ch04-stat .label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.4rem;
+}
+.ch04-stat .value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.6rem;
+  color: var(--text-emp);
+}
+
+/* === Chapter 05 — Horizontal pin scroll === */
+.ch05-section {
+  position: relative;
+}
+.ch05-viewport {
+  position: relative;
+  width: 100%;
+}
+.ch05-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.ch05-track {
+  display: flex;
+  gap: 2.5rem;
+  padding: 0 6rem;
+  will-change: transform;
+  transition: transform 200ms var(--ease-quiet);
+}
+.ch05-track .card {
+  flex: 0 0 360px;
+  display: flex;
+  flex-direction: column;
+}
+.ch05-track .card .frame {
+  aspect-ratio: 1/1;
+  margin-bottom: 1.5rem;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: var(--text-emp);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.card-jp {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--accent);
+  margin-top: 0.3rem;
+}
+.card-meta {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+}
+.card-meta .year { color: var(--text-faint); }
+.card-desc {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-mute);
+  margin-top: 1rem;
+}
+
+.ch05-progress {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12rem;
+  height: 1px;
+  background: var(--line);
+}
+.ch05-progress .bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0;
+  transition: width 100ms linear;
+}
+.ch05-label {
+  position: absolute;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+/* === Chapter 06 — Mosaic === */
+.ch06-mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 180px;
+  gap: 1rem;
+  grid-auto-flow: dense;
+  margin-top: 3rem;
+}
+.ch06-mosaic .tile {
+  position: relative;
+  overflow: hidden;
+}
+.ch06-mosaic .tile .frame {
+  width: 100%; height: 100%;
+  padding: 8px;
+}
+.ch06-mosaic .tile .frame img {
+  width: 100%; height: 100%;
+}
+.ch06-mosaic .size-tall  { grid-row: span 2; }
+.ch06-mosaic .size-wide  { grid-column: span 2; }
+.ch06-mosaic .size-big   { grid-row: span 2; grid-column: span 2; }
+
+.tile-label {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--inverse);
+  background: rgba(42, 24, 16, 0.7);
+  padding: 0.4rem 0.7rem;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+/* === Chapter 07 — Manifesto === */
+.ch07-manifesto {
+  padding: 10rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+.ch07-manifesto .eyebrow { margin-bottom: 3rem; }
+.manifesto-text {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+  line-height: 1.65;
+  color: var(--text-emp);
+  letter-spacing: -0.005em;
+}
+.manifesto-text .word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(12px) brightness(40%);
+  will-change: filter, opacity;
+  margin-right: 0.18em;
+}
+.manifesto-text .word.acc {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* === Closing / Now Serving === */
+.closing {
+  padding: 8rem 2rem 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.closing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 5rem;
+  align-items: start;
+}
+.closing-left .now-playing {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.np-vinyl {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--text-emp);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin 8s linear infinite;
+}
+.np-vinyl::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--text-mute);
+}
+.np-vinyl::after {
+  content: '';
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.now-playing .text .label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+.now-playing .text .title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.2rem;
+  color: var(--text-emp);
+  margin-top: 0.2rem;
+  letter-spacing: 0.02em;
+}
+
+.closing-title {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  color: var(--text-emp);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+.closing-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.closing-body {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--text-mute);
+}
+
+/* Now serving menu */
+.menu-board {
+  border: 1px solid var(--line);
+  padding: 2.5rem 2.5rem 1rem;
+  background: rgba(255,255,255,0.4);
+}
+.menu-board .menu-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+.menu-board .menu-head .title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.3rem;
+  color: var(--text-emp);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.menu-board .menu-head .sub {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+.menu-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 1.25rem;
+  align-items: baseline;
+  padding: 1.1rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row .num {
+  font-family: var(--font-display);
+  font-weight: 300;
+  color: var(--accent);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+.menu-row .name {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--text-emp);
+  font-size: 1.05rem;
+}
+.menu-row .name .jp {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--text-mute);
+  font-size: 0.85rem;
+  margin-left: 0.6rem;
+}
+.menu-row .from {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  text-align: right;
+}
+
+/* Footer */
+footer {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--line);
+  max-width: 1400px;
+  margin: 4rem auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+footer .bean-mini {
+  width: 14px; height: 22px;
+  color: var(--text-mute);
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  .hero { padding: 7rem 1.5rem 4rem; }
+  .hero-meta { gap: 2rem; }
+  .coffee-mark { right: 1.5rem; bottom: 3rem; transform: scale(0.85); }
+  .scroll-cue { display: none; }
+
+  section.chapter { padding: 5rem 1.5rem; }
+  .chapter-num { font-size: 6rem; top: 2rem; right: 1rem; }
+
+  .ch01-grid, .ch02-grid, .ch04-grid, .closing-grid {
+    grid-template-columns: 1fr; gap: 3rem;
+  }
+
+  .ch03-trio { grid-template-columns: 1fr; gap: 3rem; }
+
+  .ch05-sticky { position: relative; height: auto; }
+  .ch05-track {
+    overflow-x: auto;
+    padding: 0 1.5rem;
+    scroll-snap-type: x mandatory;
+    transform: none !important;
+  }
+  .ch05-track .card {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+  }
+  .ch05-progress, .ch05-label { display: none; }
+
+  .ch06-mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 140px;
+  }
+  .ch06-mosaic .size-big { grid-row: span 2; grid-column: span 2; }
+
+  .ch07-manifesto { padding: 5rem 1.5rem; }
+
+  .menu-board { padding: 1.5rem 1.5rem 0.5rem; }
+  .menu-row { grid-template-columns: 24px 1fr; }
+  .menu-row .from { grid-column: 1 / -1; padding-left: calc(24px + 1.25rem); text-align: left; }
+
+  .topbar .meta { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .steam, .np-vinyl { animation: none !important; }
+  .line-mask .line { transform: none !important; }
+  .manifesto-text .word { opacity: 1 !important; filter: none !important; }
+  .fade-up { opacity: 1 !important; transform: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Noise overlay -->
+<div class="noise-overlay"></div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    Composer's Profile
+  </div>
+  <div class="meta">
+    <span>Vol. 01</span>
+    <span>Est. 1950</span>
+    <span>Nakano, JP</span>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="eyebrow fade-up">A Composer's Profile · Issue 01</div>
+
+  <h1 class="hero-title">
+    <span class="line-mask"><span class="line" data-line1>Joe Hisaishi</span></span>
+    <span class="line-mask"><span class="line acc" data-line2>— เจ้าของบทเพลงจากอนิเมะจิบลิ</span></span>
+  </h1>
+
+  <p class="hero-sub fade-up">
+    ผู้แต่งแต้มท่วงทำนองแห่งความทรงจำและจินตนาการ
+    คีตกวีระดับตำนานของญี่ปุ่น ผู้ไม่ได้เพียงแต่งเพลงประกอบภาพยนตร์ —
+    แต่เป็นผู้สร้าง <em>จิตวิญญาณ</em> ให้กับทุกเรื่องราวที่เขาได้สัมผัส
+  </p>
+
+  <div class="hero-meta fade-up">
+    <div class="hero-meta-item">
+      <div class="label">Born</div>
+      <div class="value">06 · 12 · 1950</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="label">Origin</div>
+      <div class="value">Nakano, Nagano</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="label">Birth Name</div>
+      <div class="value">Mamoru Fujisawa</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="label">Discipline</div>
+      <div class="value">Minimalism · Classical</div>
+    </div>
+  </div>
+
+  <!-- Coffee mark decoration -->
+  <div class="coffee-mark" aria-hidden="true">
+    <div class="steam-wrap">
+      <span class="steam"></span>
+      <span class="steam"></span>
+      <span class="steam"></span>
+    </div>
+    <div class="cup"></div>
+    <div class="cup-label">Now Brewing</div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll to brew</span>
+    <span class="bar"></span>
+  </div>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section class="intro">
+  <p class="intro-body fade-up">
+    หากความทรงจำในวัยเยาว์ของเรามีเสียงดนตรีประกอบ เสียงนั้นคงหนีไม่พ้นเสียงเปียโนที่พลิ้วไหว
+   และกลุ่มเครื่องสายที่อบอุ่นของ <em>Joe Hisaishi</em> คีตกวีระดับตำนานของญี่ปุ่น
+    ผู้ที่ไม่ได้เพียงแค่แต่งเพลงประกอบภาพยนตร์ แต่เป็นผู้สร้าง "จิตวิญญาณ"
+    ให้กับทุกเรื่องราวที่เขาได้สัมผัส
+  </p>
+</section>
+
+<!-- Bean divider -->
+<div class="bean-divider">
+  <span class="line-piece"></span>
+  <svg class="bean-icon" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1.2">
+    <ellipse cx="20" cy="30" rx="14" ry="27"/>
+    <path d="M 20 4 Q 13 30 20 56"/>
+  </svg>
+  <span class="line-piece"></span>
+</div>
+
+<!-- ============ CHAPTER 01 ============ -->
+<section class="chapter" id="ch01">
+  <div class="chapter-num">01</div>
+
+  <div class="chapter-header fade-up">
+    <div class="eyebrow">Chapter 01 · Origins</div>
+    <h2>จากเด็กชายเมืองนากาโนะ <em>สู่เส้นทางสายดนตรีคลาสสิก</em></h2>
+  </div>
+
+  <div class="ch01-grid">
+    <div class="text-col">
+      <div class="body-text fade-up">
+        <p>
+          Joe Hisaishi มีชื่อจริงว่า <strong>Mamoru Fujisawa (มาโมรุ ฟูจิซาวะ)</strong>
+          เกิดเมื่อวันที่ 6 ธันวาคม ค.ศ. 1950 ที่เมืองนากาโนะ ประเทศญี่ปุ่น
+          จุดเริ่มต้นในโลกดนตรีของเขาเกิดขึ้นตั้งแต่วัยเพียง <strong>4 ขวบ</strong>
+          เมื่อเขาเริ่มเรียนไวโอลิน และนั่นทำให้เขาค้นพบความหลงใหลในเสียงดนตรี
+          อย่างถอนตัวไม่ขึ้น
+        </p>
+        <p>
+          ในด้านการศึกษา ฮิไซชิเข้าศึกษาต่อในสาขาการประพันธ์เพลงที่
+          <strong>Kunitachi College of Music</strong> วิทยาลัยดนตรีชื่อดังของญี่ปุ่น
+          ในช่วงเวลานี้เองที่เขาได้หล่อหลอมความรู้ด้านดนตรีคลาสสิกอย่างเข้มข้น
+          ควบคู่ไปกับการเปิดรับดนตรีแนว <em>Minimalist</em>
+          และดนตรีอิเล็กทรอนิกส์ ซึ่งกลายมาเป็นรากฐานสำคัญ
+          ในการสร้างลายเซ็นทางดนตรีของเขาในเวลาต่อมา
+        </p>
+      </div>
+
+      <div class="name-card fade-up">
+        <div class="label">Stage Name Etymology</div>
+        <div class="value">Joe Hisaishi  ·  久石 譲</div>
+        <div class="note">
+          ได้แรงบันดาลใจมาจาก <em>Quincy Jones</em> — โปรดิวเซอร์และนักดนตรีแจ๊ส
+          ผิวสีระดับตำนานชาวอเมริกัน เมื่อเขียนเป็นคันจิ จะอ่านออกเสียงคล้าย
+          "ฮิไซชิ โจ"
+        </div>
+      </div>
+    </div>
+
+    <div class="image-col fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/joe-hisaishi-young-violin/800/1000" alt="Young Hisaishi with violin">
+      </a>
+      <div class="caption">
+        <span class="num">Fig. 01</span>
+        <span class="sep">/</span>
+        <span>Nakano, c. 1954 — first violin</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 02 ============ -->
+<section class="chapter" id="ch02">
+  <div class="chapter-num" style="left: 2rem; right: auto;">02</div>
+
+  <div class="chapter-header fade-up" style="margin-left: 18rem;">
+    <div class="eyebrow">Chapter 02 · Debut</div>
+    <h2>ก้าวแรกสู่วงการ และการประพันธ์เพลง <em>อย่างเป็นทางการ</em></h2>
+  </div>
+
+  <div class="ch02-grid">
+    <div class="image-col fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/hisaishi-synth-album-cover/800/800" alt="Information album era">
+      </a>
+      <div class="caption">
+        <span class="num">Fig. 02</span>
+        <span class="sep">/</span>
+        <span>Synth era, Tokyo — early 1980s</span>
+      </div>
+    </div>
+
+    <div class="text-col">
+      <div class="body-text fade-up">
+        <p>
+          ในช่วงเริ่มต้นอาชีพในยุค <strong>1970s</strong> ฮิไซชิทำงานในฐานะ
+          นักดนตรีแนว Minimalist และเริ่มทำเพลงประกอบให้แอนิเมชันทีวีซีรีส์อยู่บ้าง
+          เช่น <em>Gyaban (Space Sheriff Gavan)</em>
+        </p>
+        <p>
+          แต่ผลงานอัลบั้มเดี่ยวชุดแรกที่เป็นทางการของเขาคือ
+          <strong>"Information"</strong> ซึ่งปล่อยออกมาในปี ค.ศ. 1982
+          ดนตรีในยุคแรกของเขาจะมีความเป็นป็อปและอิเล็กทรอนิกส์ซินธิไซเซอร์ตามยุคสมัย
+          ซึ่งแสดงให้เห็นถึงความสามารถในการทดลองสิ่งใหม่ ๆ
+          ก่อนที่โชคชะตาจะนำพาให้เขาพบกับจุดเปลี่ยนครั้งใหญ่ในชีวิต
+        </p>
+      </div>
+
+      <div class="album-card fade-up">
+        <div class="vinyl"></div>
+        <div class="info">
+          <div class="label">First Solo Album</div>
+          <div class="title">Information</div>
+          <div class="year">1982 · Minimal / Synth-pop</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bean divider -->
+<div class="bean-divider">
+  <span class="line-piece"></span>
+  <svg class="bean-icon" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1.2">
+    <ellipse cx="20" cy="30" rx="14" ry="27"/>
+    <path d="M 20 4 Q 13 30 20 56"/>
+  </svg>
+  <span class="line-piece"></span>
+</div>
+
+<!-- ============ CHAPTER 03 ============ -->
+<section class="chapter" id="ch03">
+  <div class="chapter-num">03</div>
+
+  <div class="chapter-header fade-up">
+    <div class="eyebrow">Chapter 03 · The Trio</div>
+    <h2>สามทหารเสือแห่ง Studio Ghibli <em>มิยาซากิ · ซูซูกิ · ฮิไซชิ</em></h2>
+  </div>
+
+  <div class="body-text fade-up" style="max-width: 760px; margin-bottom: 3rem;">
+    <p>
+      ในปี ค.ศ. 1983 ระหว่างที่ <strong>Hayao Miyazaki (ฮายาโอะ มิยาซากิ)</strong>
+      กำลังเตรียมงานสร้างแอนิเมชันฟอร์มยักษ์เรื่อง
+      <em>Nausicaä of the Valley of the Wind</em>
+      ทาง <strong>Toshio Suzuki (โทชิโอะ ซูซูกิ)</strong> โปรดิวเซอร์คู่ใจ
+      ได้แนะนำให้มิยาซากิอ้างอิงเพลงจากอัลบั้มทดลองของฮิไซชิ
+    </p>
+    <p>
+      เมื่อมิยาซากิได้ยินดนตรีของฮิไซชิ เขาก็ตระหนักทันทีว่า
+      นี่คือ "เสียง" ที่เขากำลังตามหา — ดนตรีของฮิไซชิมีทั้งความยิ่งใหญ่
+      อ่อนโยน และแฝงไปด้วยความถวิลหาอดีต (<em>Nostalgia</em>)
+      ซึ่งเข้ากับปรัชญาและลายเส้นของมิยาซากิได้อย่างสมบูรณ์แบบ
+    </p>
+  </div>
+
+  <div class="ch03-trio">
+    <div class="person fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/miyazaki-director-portrait/600/800" alt="Hayao Miyazaki">
+      </a>
+      <div class="person-name">Hayao Miyazaki</div>
+      <div class="person-role">Director</div>
+      <div class="person-thai">ผู้กำกับตำนาน — ผู้วาดโลก</div>
+    </div>
+    <div class="person fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/suzuki-producer-portrait/600/800" alt="Toshio Suzuki">
+      </a>
+      <div class="person-name">Toshio Suzuki</div>
+      <div class="person-role">Producer</div>
+      <div class="person-thai">โปรดิวเซอร์คู่ใจ — ผู้เชื่อมเสียง</div>
+    </div>
+    <div class="person fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/hisaishi-composer-portrait/600/800" alt="Joe Hisaishi">
+      </a>
+      <div class="person-name">Joe Hisaishi</div>
+      <div class="person-role">Composer</div>
+      <div class="person-thai">คีตกวี — ผู้สร้างจิตวิญญาณ</div>
+    </div>
+  </div>
+
+  <div class="ghibli-quote fade-up">
+    <p>
+      นับตั้งแต่นั้นมา ทั้งสามคนก็กลายเป็นสามทหารเสือผู้อยู่เบื้องหลัง
+      ความสำเร็จของ Studio Ghibli ฮิไซชิกลายเป็นผู้ประพันธ์เพลงให้ภาพยนตร์ของมิยาซากิแทบทุกเรื่อง
+      ตั้งแต่ Laputa, Totoro, Mononoke ไปจนถึง Spirited Away
+    </p>
+    <div class="attr">— A partnership sealed in 1983</div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 04 — One Summer's Day ============ -->
+<section class="ch04-feature" id="ch04">
+  <div class="eyebrow fade-up">Chapter 04 · The Masterpiece</div>
+
+  <h2 class="ch04-title fade-up">
+    One Summer's Day
+    <span class="jp">あの夏へ — Ano Natsu he</span>
+  </h2>
+
+  <div class="ch04-grid">
+    <div class="image-col fade-up">
+      <a class="frame" href="#">
+        <img src="https://picsum.photos/seed/spirited-away-piano-keys/800/1000" alt="One Summer's Day">
+      </a>
+      <div class="caption">
+        <span class="num">Fig. 04</span>
+        <span class="sep">/</span>
+        <span>Spirited Away · 2001 · Opening theme</span>
+      </div>
+    </div>
+
+    <div class="text-col">
+      <div class="body-text fade-up">
+        <p>
+          หากจะพูดถึงบทเพลงที่เป็นเสมือนมาสเตอร์พีซของ Joe Hisaishi
+          คงไม่มีเพลงไหนเกินหน้า <strong>"One Summer's Day"</strong>
+          เพลงเปิดของภาพยนตร์แอนิเมชันรางวัลออสการ์อย่าง
+          <em>Spirited Away</em> (2001)
+        </p>
+        <p>
+          บทเพลงนี้เริ่มต้นด้วยเสียงเปียโนเดี่ยวที่เรียบง่ายแต่ทรงพลัง
+          ราวกับกำลังเปิดประตูพาผู้ฟังย้อนกลับไปสู่วันวานในวัยเด็ก
+          มันสะท้อนถึงความโดดเดี่ยว ความกล้าหาญ และความไร้เดียงสา
+          ของตัวละคร "จิฮิโร่" ได้อย่างหมดจด
+        </p>
+        <p>
+          ท่วงทำนองของเครื่องสายที่โหมกระหน่ำในเวลาต่อมา
+          ช่วยขยายความรู้สึกของ <em>"การเติบโตผ่านความเจ็บปวด"</em>
+          ทำให้ One Summer's Day ไม่ใช่แค่เพลงประกอบภาพยนตร์
+          แต่เป็นบทกวีทางดนตรีที่เข้าไปนั่งในใจของผู้คนทั่วโลก
+          และได้รับการยกย่องว่าเป็นหนึ่งในเพลงบรรเลงที่ไพเราะที่สุด
+          ในประวัติศาสตร์ภาพยนตร์
+        </p>
+      </div>
+
+      <div class="ch04-stats fade-up">
+        <div class="ch04-stat">
+          <div class="label">Film Release</div>
+          <div class="value">2001</div>
+        </div>
+        <div class="ch04-stat">
+          <div class="label">Academy Award</div>
+          <div class="value">Best Animated Feature</div>
+        </div>
+        <div class="ch04-stat">
+          <div class="label">Key Instrument</div>
+          <div class="value">Solo Piano · Strings</div>
+        </div>
+        <div class="ch04-stat">
+          <div class="label">Duration</div>
+          <div class="value">2:43 (Opening Cut)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bean divider -->
+<div class="bean-divider">
+  <span class="line-piece"></span>
+  <svg class="bean-icon" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1.2">
+    <ellipse cx="20" cy="30" rx="14" ry="27"/>
+    <path d="M 20 4 Q 13 30 20 56"/>
+  </svg>
+  <span class="line-piece"></span>
+</div>
+
+<!-- ============ CHAPTER 05 — Horizontal pin scroll ============ -->
+<section class="chapter ch05-section" id="ch05" style="max-width: none; padding-left: 0; padding-right: 0;">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+    <div class="chapter-header fade-up">
+      <div class="eyebrow">Chapter 05 · Discography</div>
+      <h2>มรดกทางดนตรี <em>และผลงานชิ้นเอกอื่น ๆ</em></h2>
+    </div>
+  </div>
+
+  <div class="ch05-viewport">
+    <div class="ch05-sticky">
+      <div class="ch05-track">
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/kikujiro-summer-piano/600/600" alt="Summer">
+          </a>
+          <div class="card-title">Summer</div>
+          <div class="card-jp">夏 — Natsu</div>
+          <div class="card-meta">
+            <span>Kikujiro</span>
+            <span class="year">· 1999</span>
+          </div>
+          <p class="card-desc">
+            เพลงเปียโนจังหวะสดใสที่กลายเป็นตัวแทนของความทรงจำในฤดูร้อน
+            ผลงานของผู้กำกับ Takeshi Kitano
+          </p>
+        </div>
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/howl-moving-castle-waltz/600/600" alt="Merry-Go-Round">
+          </a>
+          <div class="card-title">Merry-Go-Round of Life</div>
+          <div class="card-jp">人生のメリーゴーランド</div>
+          <div class="card-meta">
+            <span>Howl's Moving Castle</span>
+            <span class="year">· 2004</span>
+          </div>
+          <p class="card-desc">
+            เพลงวอลตซ์ที่หรูหรา อลังการ และเปี่ยมไปด้วยมนต์ขลัง —
+            หนึ่งในท่อนที่ถูกนำไป cover มากที่สุดตลอดกาล
+          </p>
+        </div>
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/totoro-path-of-wind/600/600" alt="Path of Wind">
+          </a>
+          <div class="card-title">The Path of the Wind</div>
+          <div class="card-jp">風のとおり道 — Kaze no Tōrimichi</div>
+          <div class="card-meta">
+            <span>My Neighbor Totoro</span>
+            <span class="year">· 1988</span>
+          </div>
+          <p class="card-desc">
+            เพลงที่ส่งต่อความสุขและความอบอุ่นให้เด็ก ๆ ทุกยุคทุกสมัย
+            เสียงเครื่องสายอ่อนโยนราวกับลมพัดผ่านทุ่งนา
+          </p>
+        </div>
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/totoro-tonari-no-totoro/600/600" alt="Tonari no Totoro">
+          </a>
+          <div class="card-title">Tonari no Totoro</div>
+          <div class="card-jp">となりのトトロ</div>
+          <div class="card-meta">
+            <span>My Neighbor Totoro</span>
+            <span class="year">· 1988</span>
+          </div>
+          <p class="card-desc">
+            เพลงเปิดที่กลายเป็นเพลงประจำใจของเด็ก ๆ ทั่วโลก
+            เรียบง่าย จริงใจ และเต็มไปด้วยความมหัศจรรย์ของวัยเด็ก
+          </p>
+        </div>
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/mononoke-ashitaka-san-theme/600/600" alt="Ashitaka and San">
+          </a>
+          <div class="card-title">Ashitaka and San</div>
+          <div class="card-jp">アシタカとサン</div>
+          <div class="card-meta">
+            <span>Princess Mononoke</span>
+            <span class="year">· 1997</span>
+          </div>
+          <p class="card-desc">
+            บทเพลงที่สะท้อนความขัดแย้งและการปรองดองระหว่างมนุษย์กับธรรมชาติ
+            ได้อย่างยิ่งใหญ่และซับซ้อน
+          </p>
+        </div>
+
+        <div class="card">
+          <a class="frame" href="#">
+            <img src="https://picsum.photos/seed/spirited-away-one-summer-day/600/600" alt="One Summer's Day">
+          </a>
+          <div class="card-title">One Summer's Day</div>
+          <div class="card-jp">あの夏へ — Ano Natsu he</div>
+          <div class="card-meta">
+            <span>Spirited Away</span>
+            <span class="year">· 2001</span>
+          </div>
+          <p class="card-desc">
+            บทเพลงที่เป็นทั้งความทรงจำ ความเจ็บปวด และความหวัง
+            เปียโนเดี่ยวที่เปิดประตูสู่โลกของจิฮิโร่
+          </p>
+        </div>
+
+      </div>
+
+      <div class="ch05-label">Drag · Scroll · Listen</div>
+      <div class="ch05-progress"><div class="bar"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 06 — Mosaic ============ -->
+<section class="chapter" id="ch06">
+  <div class="chapter-num" style="left: 2rem; right: auto;">06</div>
+
+  <div class="chapter-header fade-up" style="margin-left: 18rem;">
+    <div class="eyebrow">Chapter 06 · Lo-Fi Era</div>
+    <h2>การเดินทางข้ามกาลเวลา <em>จากแอนิเมชันสู่ Lo-Fi และ Long Play</em></h2>
+  </div>
+
+  <div class="body-text fade-up" style="max-width: 760px; margin-bottom: 3rem;">
+    <p>
+      เมื่อยุคสมัยเปลี่ยนผ่านเข้าสู่ยุคดิจิทัล ดนตรีของโจ ฮิไซชิ
+      ได้แตกแขนงไปสู่ป็อปคัลเจอร์ในรูปแบบใหม่ บนแพลตฟอร์มอย่าง YouTube
+      ได้เกิดปรากฏการณ์คลิปดนตรียาว ๆ (<em>Long Play</em> หรือรวมฮิต 1–3 ชั่วโมง)
+      ในรูปแบบ <strong>Lo-Fi Hip Hop, Cafe Music, Study Music</strong>
+      หรือคลิปสร้างบรรยากาศ <em>Nostalgic Atmosphere</em>
+    </p>
+    <p>
+      ท่วงทำนองดั้งเดิมของเขาถูกนำมา Remix ใส่บีทสโลว์ ๆ
+      เสียงฝนตก หรือเสียงซ่าของแผ่นเสียง กลายเป็นดนตรีบำบัดจิตใจ
+      ของคนรุ่นใหม่ในยามที่ต้องอ่านหนังสือโต้รุ่ง ทำงาน
+      หรือต้องการความสงบในค่ำคืนที่เหนื่อยล้า
+    </p>
+  </div>
+
+  <div class="ch06-mosaic fade-up">
+    <div class="tile size-big">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/lofi-cafe-rainy-window/800/800" alt="Lo-fi cafe"></a>
+      <span class="tile-label">Cafe · 02:00 AM</span>
+    </div>
+    <div class="tile size-tall">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/lofi-girl-studying-pastel/400/800" alt="Study session"></a>
+      <span class="tile-label">Study · Focus</span>
+    </div>
+    <div class="tile size-wide">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/ghibli-pastel-landscape-view/800/400" alt="Pastel landscape"></a>
+      <span class="tile-label">Nostalgic Atmosphere</span>
+    </div>
+    <div class="tile">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/vinyl-record-spinning-bw/400/400" alt="Vinyl"></a>
+      <span class="tile-label">Vinyl · 33 RPM</span>
+    </div>
+    <div class="tile">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/piano-keys-close-up-warm/400/400" alt="Piano keys"></a>
+      <span class="tile-label">Piano · Warm</span>
+    </div>
+    <div class="tile size-tall">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/lofi-night-city-window/400/800" alt="Night city"></a>
+      <span class="tile-label">Night · City Lights</span>
+    </div>
+    <div class="tile size-wide">
+      <a class="frame" href="#"><img src="https://picsum.photos/seed/lofi-rainy-day-desk/800/400" alt="Rainy desk"></a>
+      <span class="tile-label">Rain · 8 Hours</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 07 — Manifesto scrub blur ============ -->
+<section class="ch07-manifesto" id="ch07">
+  <div class="eyebrow fade-up">Chapter 07 · Timeless</div>
+
+  <p class="manifesto-text" id="manifesto-text">
+    ดนตรีของ Joe Hisaishi มีพลังที่ก้าวข้ามกรอบของเวลา แพลตฟอร์ม และภาษา
+    เด็ก ๆ เจน Z และเจน Alpha จำนวนมหาศาล คุ้นเคยและหลงรักเพลงเหล่านี้เป็นอย่างดี
+    พวกเขารู้สึกดื่มด่ำและอบอุ่นหัวใจทุกครั้งที่ได้ยินเสียงเปียโนนี้
+    แม้ว่าพวกเขาหลายคนจะไม่เคยดูแอนิเมชันของ Studio Ghibli เลยสักเรื่องก็ตาม
+    มันคือภาษาสากลที่เข้าถึงก้นบึ้งความรู้สึกของมนุษย์
+    และจะยังคงทำหน้าที่ปลอบประโลมหัวใจของผู้คน ไม่ว่าจะผ่านไปกี่ยุคสมัยก็ตาม
+  </p>
+</section>
+
+<!-- Bean divider -->
+<div class="bean-divider">
+  <span class="line-piece"></span>
+  <svg class="bean-icon" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1.2">
+    <ellipse cx="20" cy="30" rx="14" ry="27"/>
+    <path d="M 20 4 Q 13 30 20 56"/>
+  </svg>
+  <span class="line-piece"></span>
+</div>
+
+<!-- ============ CLOSING — Now Serving ============ -->
+<section class="closing">
+  <div class="closing-grid">
+    <div class="closing-left">
+      <div class="now-playing fade-up">
+        <div class="np-vinyl"></div>
+        <div class="text">
+          <div class="label">Now Playing · Forever</div>
+          <div class="title">Joe Hisaishi · The Essentials</div>
+        </div>
+      </div>
+
+      <h2 class="closing-title fade-up">
+        Brewed for <em>every generation</em>.
+      </h2>
+
+      <p class="closing-body fade-up">
+        จากห้องซ้อมดนตรีเล็ก ๆ ในโตเกียว สู่หูของเด็กสาวที่เปิด TikTok
+        ในเช้าวันจันทร์ — ท่วงทำนองของเขาไม่เคยเก่า ไม่เคยดังเกินไป
+        และไม่เคยเงียบจนไม่ได้ยิน มันเพียงพอ อบอุ่น และอยู่ตรงนั้น
+        เหมือนแก้วกาแฟร้อนในวันที่โลกหนาวเย็น
+      </p>
+    </div>
+
+    <div class="menu-board fade-up">
+      <div class="menu-head">
+        <div class="title">Now Serving</div>
+        <div class="sub">Tracklist · 6 Brews</div>
+      </div>
+
+      <div class="menu-row">
+        <span class="num">01</span>
+        <span class="name">One Summer's Day <span class="jp">あの夏へ</span></span>
+        <span class="from">Spirited Away · 2001</span>
+      </div>
+      <div class="menu-row">
+        <span class="num">02</span>
+        <span class="name">Merry-Go-Round of Life <span class="jp">人生のメリーゴーランド</span></span>
+        <span class="from">Howl's Moving Castle · 2004</span>
+      </div>
+      <div class="menu-row">
+        <span class="num">03</span>
+        <span class="name">Summer <span class="jp">夏</span></span>
+        <span class="from">Kikujiro · 1999</span>
+      </div>
+      <div class="menu-row">
+        <span class="num">04</span>
+        <span class="name">The Path of the Wind <span class="jp">風のとおり道</span></span>
+        <span class="from">My Neighbor Totoro · 1988</span>
+      </div>
+      <div class="menu-row">
+        <span class="num">05</span>
+        <span class="name">Ashitaka and San <span class="jp">アシタカとサン</span></span>
+        <span class="from">Princess Mononoke · 1997</span>
+      </div>
+      <div class="menu-row">
+        <span class="num">06</span>
+        <span class="name">Tonari no Totoro <span class="jp">となりのトトロ</span></span>
+        <span class="from">My Neighbor Totoro · 1988</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>© Composer's Profile · Vol. 01</span>
+  <svg class="bean-mini" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1.5">
+    <ellipse cx="20" cy="30" rx="14" ry="27"/>
+    <path d="M 20 4 Q 13 30 20 56"/>
+  </svg>
+  <span>Brewed with Linen · Oswald · Noto Serif Thai</span>
+</footer>
+
+<!-- ============ Scripts ============ -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* === Hero line-mask reveal === */
+window.addEventListener('load', () => {
+  if (reducedMotion) {
+    gsap.set('[data-line1], [data-line2]', { yPercent: 0 });
+    return;
+  }
+  gsap.to(['[data-line1]', '[data-line2]'], {
+    yPercent: 0,
+    duration: 1.2,
+    ease: 'power4.out',
+    stagger: 0.14,
+    delay: 0.2
+  });
+});
+
+/* === Fade-up IntersectionObserver === */
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-in');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('.fade-up').forEach((el) => fadeObserver.observe(el));
+
+/* === Manifesto scrub blur words === */
+document.fonts.ready.then(() => {
+  const textEl = document.getElementById('manifesto-text');
+  if (!textEl) return;
+  const raw = textEl.textContent.trim();
+  const words = raw.split(/\s+/);
+  textEl.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+
+  if (reducedMotion) {
+    gsap.set('.manifesto-text .word', { opacity: 1, filter: 'none' });
+    return;
+  }
+
+  gsap.to('.manifesto-text .word', {
+    opacity: 1,
+    filter: 'blur(0px) brightness(100%)',
+    stagger: 0.04,
+    ease: 'sine.out',
+    scrollTrigger: {
+      trigger: '#ch07',
+      start: 'top 80%',
+      end: 'center 55%',
+      scrub: true
+    }
+  });
+});
+
+/* === Horizontal pin scroll for Chapter 05 === */
+(function setupHorizontalScroll() {
+  const viewport = document.querySelector('.ch05-viewport');
+  const sticky = document.querySelector('.ch05-sticky');
+  const track = document.querySelector('.ch05-track');
+  const progress = document.querySelector('.ch05-progress .bar');
+  if (!viewport || !sticky || !track) return;
+
+  // Disable on mobile (CSS already converts to overflow-x: auto)
+  if (window.matchMedia('(max-width: 900px)').matches) return;
+  if (reducedMotion) return;
+
+  let scrollWidth = 0;
+  let lastY = window.scrollY;
+  let skewTimeout;
+
+  function recalc() {
+    scrollWidth = track.scrollWidth - window.innerWidth;
+    viewport.style.height = (window.innerHeight + Math.max(0, scrollWidth)) + 'px';
+  }
+
+  recalc();
+  window.addEventListener('resize', recalc);
+
+  window.addEventListener('scroll', () => {
+    const rect = viewport.getBoundingClientRect();
+    const top = rect.top;
+
+    if (top <= 0 && top >= -scrollWidth) {
+      const p = (-top) / scrollWidth;
+      track.style.transform = `translate3d(${-p * scrollWidth}px, 0, 0)`;
+      if (progress) progress.style.width = (p * 100) + '%';
+
+      const v = window.scrollY - lastY;
+      lastY = window.scrollY;
+      const skew = Math.max(-10, Math.min(10, v * 0.5));
+      track.querySelectorAll('.card').forEach(c => {
+        c.style.transform = `skewX(${skew}deg)`;
+      });
+      clearTimeout(skewTimeout);
+      skewTimeout = setTimeout(() => {
+        track.querySelectorAll('.card').forEach(c => {
+          c.style.transform = 'skewX(0deg)';
+        });
+      }, 200);
+    } else if (top > 0) {
+      track.style.transform = 'translate3d(0, 0, 0)';
+      if (progress) progress.style.width = '0%';
+    } else {
+      track.style.transform = `translate3d(${-scrollWidth}px, 0, 0)`;
+      if (progress) progress.style.width = '100%';
+    }
+  }, { passive: true });
+})();
+
+/* === Refresh ScrollTrigger after fonts === */
+document.fonts.ready.then(() => {
+  ScrollTrigger.refresh();
+});
+</script>
+
+</body>
+</html>

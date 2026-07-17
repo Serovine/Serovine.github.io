@@ -96,5 +96,19 @@
     "date": "13-07-2026",
     "tags": ["thai", "lifestyle", "knowledge"],
     "file": "article/18falsemyth.html"
+  },
+  {
+    "id": "ps2in2026",
+    "title": "PlayStation 2 ในปี 2026 ที่ยังมีคนเล่นอยู่",
+    "date": "14-07-2026",
+    "tags": ["game", "retro", "playstation"],
+    "file": "article/ps2in2026.html"
+  },
+  {
+    "id": "joehisaishi",
+    "title": "ตำนานนักแต่งเพลงขาประจำอนิเมะจิบลิ คุณ Joe Hisaishi",
+    "date": "18-07-2026",
+    "tags": ["Ghibli", "anime", "joe hisaishi"],
+    "file": "article/joehisaishi.html"
   }
 ]
