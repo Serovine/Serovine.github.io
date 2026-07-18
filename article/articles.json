@@ -110,5 +110,12 @@
     "date": "18-07-2026",
     "tags": ["Ghibli", "anime", "joe hisaishi"],
     "file": "article/joehisaishi.html"
+  },
+  {
+    "id": "oumuamua",
+    "title": "OUMUAMUA สิ่งแปลกปลอมจากนอกระบบสุริยะจักรวาล",
+    "date": "19-07-2026",
+    "tags": ["NASA", "SPACE", "STAR"],
+    "file": "article/oumuamua.html"
   }
 ]

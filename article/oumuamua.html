@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>'Oumuamua — แขกประหลาดจากดาวอื่นที่เปลี่ยนวงการดาราศาสตร์ไปตลอดกาล</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Design Tokens ===== */
+  :root{
+    --bg:#03050f;
+    --bg-2:#070c1f;
+    --bg-3:#0d1430;
+    --surface:rgba(15,22,48,.55);
+    --surface-2:rgba(25,35,65,.4);
+    --border:rgba(120,160,220,.12);
+    --border-strong:rgba(120,160,220,.28);
+    --text:#eef2fb;
+    --text-dim:#b4bee0;
+    --muted:#7a86b0;
+    --accent:#5eead4;     /* Oumuamua glow - teal */
+    --accent-2:#fbbf24;   /* Sun - amber */
+    --accent-3:#f472b6;   /* 3I/ATLAS - magenta */
+    --accent-4:#818cf8;   /* Borisov - indigo */
+    --red:#ef4444;        /* Oumuamua surface */
+    --grad-cosmic:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(94,234,212,.07), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 80%, rgba(244,114,182,.06), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 60% 50%, rgba(129,140,248,.05), transparent 60%);
+    --font-display:'Cormorant Garamond', serif;
+    --font-ui:'Space Grotesk', sans-serif;
+    --font-thai:'IBM Plex Sans Thai', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-thai);
+    font-size:clamp(16px,1.1vw,18px);
+    line-height:1.85;
+    font-weight:400;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ===== Cosmic background layers ===== */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background:var(--grad-cosmic);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:"";
+    position:fixed;inset:0;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(3,5,15,.4) 60%, var(--bg) 100%),
+      repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(255,255,255,.008) 2px, rgba(255,255,255,.008) 3px);
+    pointer-events:none;
+    z-index:1;
+  }
+  #starfield{
+    position:fixed;inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* ===== Progress bar ===== */
+  .progress{
+    position:fixed;top:0;left:0;
+    height:2px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-3));
+    width:0%;
+    z-index:1000;
+    box-shadow:0 0 10px var(--accent);
+    transition:width .1s linear;
+  }
+
+  /* ===== Top frame ===== */
+  .frame{
+    position:fixed;top:0;left:0;right:0;
+    z-index:50;
+    padding:20px clamp(20px,4vw,48px);
+    display:flex;justify-content:space-between;align-items:center;
+    backdrop-filter:blur(8px);
+    background:linear-gradient(180deg, rgba(3,5,15,.7), transparent);
+    border-bottom:1px solid var(--border);
+    font-family:var(--font-ui);
+    font-size:.78rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .frame .brand{display:flex;align-items:center;gap:10px;color:var(--text-dim)}
+  .frame .brand .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 12px var(--accent);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  .frame .meta{display:flex;gap:24px}
+  .frame .meta span{display:flex;align-items:center;gap:6px}
+  .frame .meta .live{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent-2);
+    box-shadow:0 0 8px var(--accent-2);
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+  /* ===== Layout ===== */
+  main{
+    position:relative;
+    z-index:2;
+    max-width:1280px;
+    margin:0 auto;
+    padding:0 clamp(20px,5vw,64px);
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    padding:120px 0 80px;
+  }
+  .hero-eyebrow{
+    font-family:var(--font-ui);
+    font-size:.8rem;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:36px;
+    display:flex;align-items:center;gap:16px;
+    opacity:0;animation:fadeIn 1.2s .2s forwards;
+  }
+  .hero-eyebrow::before{
+    content:"";
+    width:48px;height:1px;
+    background:linear-gradient(90deg, transparent, var(--accent));
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(3.5rem, 11vw, 9.5rem);
+    line-height:.95;
+    letter-spacing:-.02em;
+    margin-bottom:30px;
+    color:var(--text);
+    text-shadow:0 0 80px rgba(94,234,212,.15);
+    opacity:0;animation:fadeIn 1.4s .4s forwards;
+  }
+  .hero h1 .okina{
+    color:var(--accent);
+    font-family:var(--font-display);
+  }
+  .hero .subtitle{
+    font-family:var(--font-thai);
+    font-weight:300;
+    font-size:clamp(1.1rem, 2vw, 1.6rem);
+    line-height:1.5;
+    max-width:640px;
+    color:var(--text-dim);
+    margin-bottom:60px;
+    opacity:0;animation:fadeIn 1.4s .7s forwards;
+  }
+  .hero-stats{
+    display:flex;gap:48px;flex-wrap:wrap;
+    padding-top:32px;
+    border-top:1px solid var(--border);
+    opacity:0;animation:fadeIn 1.4s 1s forwards;
+  }
+  .hero-stat{
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .hero-stat .label{
+    font-family:var(--font-ui);
+    font-size:.7rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .hero-stat .value{
+    font-family:var(--font-mono);
+    font-size:1.3rem;
+    font-weight:500;
+    color:var(--text);
+  }
+  .hero-stat .value .unit{color:var(--accent);font-size:.85em;margin-left:4px}
+
+  /* Oumuamua tumbling visualization */
+  .oumuamua-vis{
+    position:absolute;
+    top:50%;right:-5%;
+    transform:translateY(-50%);
+    width:min(45vw, 600px);
+    height:min(45vw, 600px);
+    pointer-events:none;
+    opacity:0;animation:fadeIn 2s 1.2s forwards;
+  }
+  .oumuamua-vis svg{
+    width:100%;height:100%;
+    filter:drop-shadow(0 0 40px rgba(239,68,68,.25));
+  }
+  .oumuamua-body{
+    transform-origin:center;
+    animation:tumble 7.3s linear infinite;
+  }
+  @keyframes tumble{
+    0%{transform:rotate(0deg) rotateY(0deg)}
+    50%{transform:rotate(180deg) rotateY(180deg)}
+    100%{transform:rotate(360deg) rotateY(360deg)}
+  }
+  @keyframes fadeIn{to{opacity:1}}
+
+  .scroll-hint{
+    position:absolute;
+    bottom:32px;left:50%;
+    transform:translateX(-50%);
+    font-family:var(--font-ui);
+    font-size:.7rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    opacity:0;animation:fadeIn 1.4s 1.5s forwards;
+  }
+  .scroll-hint::after{
+    content:"";
+    width:1px;height:40px;
+    background:linear-gradient(180deg, var(--muted), transparent);
+    animation:scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+  /* ===== Chapter heading ===== */
+  .chapter{
+    padding:120px 0 60px;
+    position:relative;
+  }
+  .chapter-num{
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    letter-spacing:.4em;
+    color:var(--accent);
+    margin-bottom:20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .chapter-num::before{
+    content:"";width:32px;height:1px;background:var(--accent);
+  }
+  .chapter h2{
+    font-family:var(--font-thai);
+    font-weight:600;
+    font-size:clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height:1.25;
+    letter-spacing:-.01em;
+    margin-bottom:32px;
+    color:var(--text);
+    max-width:900px;
+  }
+  .chapter h2 em{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:500;
+    color:var(--accent);
+  }
+  .chapter p{
+    max-width:720px;
+    color:var(--text-dim);
+    margin-bottom:20px;
+    font-weight:300;
+  }
+  .chapter p strong{
+    color:var(--text);
+    font-weight:500;
+  }
+  .chapter p .hl{
+    color:var(--accent);
+    font-family:var(--font-mono);
+    font-weight:500;
+    background:rgba(94,234,212,.08);
+    padding:1px 8px;
+    border-radius:3px;
+    font-size:.9em;
+  }
+
+  /* ===== Pull quote ===== */
+  .pullquote{
+    margin:80px 0;
+    padding:48px clamp(20px,5vw,80px);
+    border-left:2px solid var(--accent);
+    position:relative;
+  }
+  .pullquote::before{
+    content:"";
+    position:absolute;
+    top:0;left:-2px;
+    width:2px;height:60px;
+    background:var(--accent);
+    box-shadow:0 0 20px var(--accent);
+  }
+  .pullquote p{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(1.4rem, 2.5vw, 2rem);
+    line-height:1.45;
+    color:var(--text);
+    max-width:780px !important;
+  }
+  .pullquote .attribution{
+    margin-top:20px;
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ===== Data callouts ===== */
+  .data-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:16px;
+    margin:48px 0;
+    max-width:900px;
+  }
+  .data-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+    transition:all .4s ease;
+  }
+  .data-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity:.5;
+  }
+  .data-card:hover{
+    border-color:var(--border-strong);
+    transform:translateY(-2px);
+    background:var(--surface-2);
+  }
+  .data-card .key{
+    font-family:var(--font-ui);
+    font-size:.7rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:12px;
+  }
+  .data-card .num{
+    font-family:var(--font-mono);
+    font-size:2rem;
+    font-weight:500;
+    color:var(--text);
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .data-card .num .small{font-size:.5em;color:var(--accent);margin-left:4px}
+  .data-card .desc{
+    font-size:.85rem;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  /* ===== Orbital diagram ===== */
+  .orbit-diagram{
+    margin:60px 0;
+    padding:48px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    max-width:900px;
+    position:relative;
+  }
+  .orbit-diagram svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .orbit-labels{
+    display:flex;justify-content:space-around;
+    margin-top:24px;
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+  }
+  .orbit-labels div{display:flex;align-items:center;gap:8px;color:var(--muted)}
+  .orbit-labels .swatch{width:14px;height:2px;border-radius:1px}
+
+  /* ===== Timeline ===== */
+  .timeline{
+    margin:60px 0;
+    position:relative;
+    padding-left:32px;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:8px;top:0;bottom:0;
+    width:1px;
+    background:linear-gradient(180deg, var(--accent), var(--accent-3), transparent);
+  }
+  .tl-item{
+    position:relative;
+    padding-bottom:40px;
+  }
+  .tl-item::before{
+    content:"";
+    position:absolute;
+    left:-28px;top:6px;
+    width:13px;height:13px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--accent);
+    box-shadow:0 0 12px var(--accent);
+  }
+  .tl-date{
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    color:var(--accent);
+    margin-bottom:6px;
+    letter-spacing:.05em;
+  }
+  .tl-title{
+    font-family:var(--font-thai);
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:8px;
+    font-size:1.1rem;
+  }
+  .tl-desc{
+    color:var(--text-dim);
+    font-size:.95rem;
+    font-weight:300;
+    max-width:560px;
+  }
+
+  /* ===== Comparison cards (3 interstellar objects) ===== */
+  .iso-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:20px;
+    margin:60px 0;
+  }
+  .iso-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:32px;
+    position:relative;
+    overflow:hidden;
+    transition:all .5s ease;
+  }
+  .iso-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:var(--iso-color, var(--accent));
+    opacity:.8;
+  }
+  .iso-card::after{
+    content:"";
+    position:absolute;
+    top:-50%;right:-50%;
+    width:200px;height:200px;
+    background:radial-gradient(circle, var(--iso-color, var(--accent)), transparent 70%);
+    opacity:.06;
+    pointer-events:none;
+  }
+  .iso-card:hover{transform:translateY(-4px);border-color:var(--iso-color, var(--accent))}
+  .iso-card .iso-id{
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    color:var(--iso-color, var(--accent));
+    letter-spacing:.1em;
+    margin-bottom:8px;
+  }
+  .iso-card .iso-name{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:1.8rem;
+    color:var(--text);
+    margin-bottom:4px;
+    font-weight:500;
+  }
+  .iso-card .iso-year{
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    color:var(--muted);
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    margin-bottom:24px;
+  }
+  .iso-card .iso-stats{
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .iso-stat{
+    display:flex;justify-content:space-between;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--border);
+    font-size:.9rem;
+  }
+  .iso-stat:last-child{border-bottom:none;padding-bottom:0}
+  .iso-stat .k{color:var(--muted);font-family:var(--font-ui);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+  .iso-stat .v{color:var(--text);font-family:var(--font-mono);font-weight:500}
+
+  /* ===== Big number block ===== */
+  .big-stat{
+    margin:80px 0;
+    text-align:center;
+    padding:60px 20px;
+    position:relative;
+  }
+  .big-stat .num{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(5rem, 14vw, 11rem);
+    line-height:1;
+    color:var(--text);
+    text-shadow:0 0 80px rgba(94,234,212,.2);
+    margin-bottom:16px;
+    letter-spacing:-.03em;
+  }
+  .big-stat .num .unit{
+    color:var(--accent);
+    font-size:.4em;
+    font-style:normal;
+    font-family:var(--font-ui);
+    margin-left:8px;
+    letter-spacing:.1em;
+  }
+  .big-stat .caption{
+    font-family:var(--font-thai);
+    font-size:1.1rem;
+    color:var(--text-dim);
+    max-width:560px;
+    margin:0 auto;
+    font-weight:300;
+  }
+  .big-stat .caption strong{color:var(--accent);font-weight:500}
+
+  /* ===== Section break ===== */
+  .section-break{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:80px 0;
+    gap:16px;
+  }
+  .section-break .line{
+    flex:1;max-width:200px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  }
+  .section-break .diamond{
+    width:6px;height:6px;
+    background:var(--accent);
+    transform:rotate(45deg);
+    box-shadow:0 0 12px var(--accent);
+  }
+
+  /* ===== Closing ===== */
+  .closing{
+    padding:160px 0 120px;
+    text-align:center;
+    position:relative;
+  }
+  .closing .eyebrow{
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:32px;
+  }
+  .closing h2{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(2rem, 5vw, 4rem);
+    line-height:1.2;
+    max-width:880px;
+    margin:0 auto 40px;
+    color:var(--text);
+  }
+  .closing p{
+    max-width:560px;
+    margin:0 auto;
+    color:var(--text-dim);
+    font-weight:300;
+  }
+  .closing .signature{
+    margin-top:80px;
+    font-family:var(--font-ui);
+    font-size:.7rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .closing .signature::before,
+  .closing .signature::after{
+    content:"";width:60px;height:1px;background:var(--border-strong);
+  }
+
+  /* ===== Footer ===== */
+  footer{
+    border-top:1px solid var(--border);
+    padding:40px clamp(20px,5vw,64px);
+    text-align:center;
+    color:var(--muted);
+    font-family:var(--font-ui);
+    font-size:.75rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    position:relative;z-index:2;
+  }
+
+  /* ===== Reveal animation ===== */
+  .reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 1s ease, transform 1s cubic-bezier(.2,.6,.2,1);
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ===== Custom scrollbar ===== */
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--bg-2)}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+  ::selection{background:var(--accent);color:var(--bg)}
+
+  /* ===== Responsive ===== */
+  @media (max-width:768px){
+    .oumuamua-vis{position:relative;right:auto;top:auto;transform:none;width:100%;max-width:380px;margin:40px auto 0;opacity:.6}
+    .hero{padding-top:100px}
+    .hero-stats{gap:24px}
+    .frame .meta{display:none}
+    .orbit-diagram{padding:24px}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="progress" id="progress"></div>
+
+<header class="frame">
+  <div class="brand"><span class="dot"></span><span>INTERSTELLAR DISPATCH · 01I</span></div>
+  <div class="meta">
+    <span><span class="live"></span>OBSERVING</span>
+    <span>v∞ = 26 km/s</span>
+    <span>e = 1.20</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="oumuamua-vis" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <defs>
+          <radialGradient id="oumGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fca5a5"/>
+            <stop offset="40%" stop-color="#dc2626"/>
+            <stop offset="100%" stop-color="#450a0a"/>
+          </radialGradient>
+          <filter id="oumGlow">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g class="oumuamua-body" filter="url(#oumGlow)">
+          <ellipse cx="200" cy="200" rx="140" ry="22" fill="url(#oumGrad)" transform="rotate(-20 200 200)"/>
+          <ellipse cx="200" cy="200" rx="120" ry="14" fill="rgba(0,0,0,.3)" transform="rotate(-20 200 200)"/>
+        </g>
+        <circle cx="60" cy="60" r="1" fill="#5eead4" opacity=".6"/>
+        <circle cx="340" cy="80" r="1.5" fill="#fff" opacity=".8"/>
+        <circle cx="320" cy="340" r="1" fill="#f472b6" opacity=".5"/>
+      </svg>
+    </div>
+
+    <div class="hero-eyebrow">บันทึกประวัติศาสตร์ดาราศาสตร์ · ตุลาคม 2017</div>
+    <h1><span class="okina">ʻ</span>Oumuamua</h1>
+    <p class="subtitle">แขกประหลาดจากดาวอื่นที่เปลี่ยนวงการดาราศาสตร์ไปตลอดกาล — วัตถุระหว่างดวงดาวดวงแรกที่มนุษยชาติเคยบันทึกได้</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="label">Designation</span>
+        <span class="value">1I/2017 U1</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Eccentricity</span>
+        <span class="value">1.20</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Velocity ∞</span>
+        <span class="value">26<span class="unit">km/s</span></span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Rotation</span>
+        <span class="value">7.3<span class="unit">hrs</span></span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Length ratio</span>
+        <span class="value">6:1–10:1</span>
+      </div>
+    </div>
+
+    <div class="scroll-hint">scroll to explore</div>
+  </section>
+
+  <!-- ============ CHAPTER 01 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 01 / ORIGIN</div>
+    <h2>หลักฐานว่ามันมาจากนอกระบบสุริยะ<em>จริง ๆ</em></h2>
+    <p>ทุกอย่างในระบบสุริยะของเรา ไม่ว่าจะเป็นดาวเคราะห์ ดาวหาง หรือดาวเคราะห์น้อย ล้วนโคจรรอบดวงอาทิตย์แบบวงรีปิด (ellipse) ค่าที่นักดาราศาสตร์ใช้วัดความ "รี" ของวงโคจรเรียกว่า <span class="hl">eccentricity</span> ถ้าค่าน้อยกว่า 1 คือวงโคจรปิด ยังไงก็วนกลับมา แต่ถ้ามากกว่า 1 แปลว่าเป็นวงโคจรไฮเปอร์โบลา (hyperbolic) ซึ่งหมายความว่าวัตถุนั้นจะพุ่งผ่านแล้วหลุดออกไปไม่กลับมาอีกเลย</p>
+    <p><strong>'Oumuamua มีค่า eccentricity อยู่ที่ 1.20</strong> ซึ่งสูงกว่า 1 ชัดเจน นี่คือหลักฐานทางคณิตศาสตร์ที่ฟันธงว่ามันไม่ได้เป็นสมาชิกของระบบสุริยะเรา แถมความเร็วตอนที่มันหลุดออกจากอิทธิพลแรงโน้มถ่วงดวงอาทิตย์ (ความเร็วที่ระยะอนันต์ หรือ v-infinity) วัดได้ประมาณ 26 กิโลเมตร/วินาที ซึ่งเร็วเกินกว่าที่วัตถุใด ๆ ในระบบสุริยะจะมีได้ถ้ามันไม่ได้มาจากที่อื่น</p>
+
+    <div class="orbit-diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="sunGrad"><stop offset="0%" stop-color="#fde68a"/><stop offset="60%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#92400e" stop-opacity="0"/></radialGradient>
+        </defs>
+        <!-- Sun -->
+        <circle cx="400" cy="140" r="40" fill="url(#sunGrad)"/>
+        <circle cx="400" cy="140" r="10" fill="#fde68a"/>
+        <text x="400" y="200" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-size="11" letter-spacing="2">SOL</text>
+
+        <!-- Elliptical orbit (e < 1) -->
+        <ellipse cx="400" cy="140" rx="280" ry="90" fill="none" stroke="#5eead4" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>
+        <ellipse cx="400" cy="140" rx="280" ry="90" fill="none" stroke="#5eead4" stroke-width="1.5" opacity=".4"/>
+        <circle cx="120" cy="140" r="4" fill="#5eead4"/>
+        <text x="120" y="125" text-anchor="middle" fill="#5eead4" font-family="Space Grotesk" font-size="10" letter-spacing="1">CLOSED ORBIT</text>
+        <text x="120" y="265" text-anchor="middle" fill="#7a86b0" font-family="JetBrains Mono" font-size="10">e &lt; 1 · returns</text>
+
+        <!-- Hyperbolic orbit (e > 1) -->
+        <path d="M 700 30 Q 450 140 700 250" fill="none" stroke="#f472b6" stroke-width="1.5" opacity=".7"/>
+        <path d="M 100 30 Q 350 140 100 250" fill="none" stroke="#f472b6" stroke-width="1.5" opacity=".7" stroke-dasharray="3 4"/>
+        <circle cx="600" cy="92" r="4" fill="#f472b6"/>
+        <text x="650" y="80" fill="#f472b6" font-family="Space Grotesk" font-size="10" letter-spacing="1">HYPERBOLIC</text>
+        <text x="700" y="265" text-anchor="middle" fill="#7a86b0" font-family="JetBrains Mono" font-size="10">e &gt; 1 · escapes</text>
+
+        <!-- Oumuamua position -->
+        <circle cx="600" cy="92" r="14" fill="none" stroke="#f472b6" stroke-width="1" opacity=".4"/>
+        <ellipse cx="600" cy="92" rx="10" ry="3" fill="#ef4444" transform="rotate(-30 600 92)"/>
+      </svg>
+      <div class="orbit-labels">
+        <div><span class="swatch" style="background:#5eead4"></span>วงโคจรปิด · สมาชิกระบบสุริยะ</div>
+        <div><span class="swatch" style="background:#f472b6"></span>วงโคจรไฮเปอร์โบลา · แขกจากดาวอื่น</div>
+      </div>
+    </div>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="key">Eccentricity</div>
+        <div class="num">1.20</div>
+        <div class="desc">ฟันธงว่าเป็นวงโคจรเปิด ไม่ใช่สมาชิกระบบสุริยะ</div>
+      </div>
+      <div class="data-card">
+        <div class="key">Velocity at ∞</div>
+        <div class="num">26<span class="small">km/s</span></div>
+        <div class="desc">เร็วเกินกว่าวัตถุในระบบสุริยะจะมีได้</div>
+      </div>
+      <div class="data-card">
+        <div class="key">Direction</div>
+        <div class="num">Lyra</div>
+        <div class="desc">มาจากทิศทางใกล้กับดาว Vega ในกลุ่มดาวพิณ</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-break"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+
+  <!-- ============ CHAPTER 02 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 02 / DISCOVERY</div>
+    <h2>การค้นพบที่<em>เกือบพลาด</em></h2>
+    <p>'Oumuamua ถูกค้นพบเมื่อวันที่ 19 ตุลาคม 2017 โดยกล้องโทรทรรศน์ <strong>Pan-STARRS1</strong> ของมหาวิทยาลัยฮาวาย บนยอดภูเขาไฟ Haleakala ผู้ที่สังเกตเห็นคนแรกคือ <strong>Robert Weryk</strong> นักดาราศาสตร์ชาวแคนาดา</p>
+    <p>จุดที่น่าเสียดายคือ ตอนที่เจอมันนั้น 'Oumuamua ได้ผ่านจุดใกล้ดวงอาทิตย์ที่สุด (perihelion) ไปแล้วตั้งแต่วันที่ 9 กันยายน 2017 หรือประมาณ 40 วันก่อนหน้า แปลว่านักดาราศาสตร์พลาดช่วงที่มันสว่างที่สุดไปแล้ว ตอนที่เจอมันอยู่ห่างจากโลกประมาณ 33 ล้านกิโลเมตร และกำลังเคลื่อนที่ห่างออกไปเรื่อย ๆ ด้วยความสว่างที่ลดลงอย่างรวดเร็ว ภายในสัปดาห์เดียวความสว่างลดลง 10 เท่า และในเวลาไม่ถึงเดือนลดลงถึง 100 เท่า ทำให้ทั่วโลกต้องรีบระดมกล้องโทรทรรศน์ทุกตัวที่มีเข้ามาสังเกตการณ์แข่งกับเวลาที่เหลืออยู่น้อยนิด รวมถึงกล้อง Very Large Telescope ของ ESO ในชิลี และกล้องอวกาศฮับเบิล</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">09 SEP 2017</div>
+        <div class="tl-title">Perihelion — ผ่านจุดใกล้ดวงอาทิตย์ที่สุด</div>
+        <div class="tl-desc">ไม่มีใครรู้ตอนนั้น วัตถุอยู่ที่ระยะ 0.255 AU จากดวงอาทิตย์ — สว่างที่สุดในประวัติศาสตร์การสังเกต</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">19 OCT 2017</div>
+        <div class="tl-title">ค้นพบโดย Pan-STARRS1</div>
+        <div class="tl-desc">Robert Weryk สังเกตเห็นวัตถุเคลื่อนที่เร็วผิดปกติ ตรวจย้อนภาพพบว่ามันปรากฏในภาพถ่ายตั้งแต่วันที่ 18 ตุลาคม</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">LATE OCT 2017</div>
+        <div class="tl-title">ความสว่างลด 10 เท่าภายในสัปดาห์</div>
+        <div class="tl-desc">โลกต้องระดมกล้องทุกตัว — VLT, ฮับเบิล, Gemini ทั้งเหนือและใต้ — แข่งกับเวลาที่เหลือน้อย</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">02 JAN 2018</div>
+        <div class="tl-title">ภาพสุดท้ายจากฮับเบิล</div>
+        <div class="tl-desc">หลังจากนี้ 'Oumuamua จางเกินกว่ากล้องใด ๆ จะมองเห็น และมุ่งหน้าสู่อวกาศระหว่างดวงดาวตลอดกาล</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PULLQUOTE ============ -->
+  <div class="pullquote reveal">
+    <p>"ต่างกันถึง 10 เท่าตลอดคาบการหมุน 7.3 ชั่วโมง — ไม่เคยมีดาวเคราะห์น้อยดวงไหนในระบบสุริยะเราที่ยาวขนาดนี้มาก่อน"</p>
+    <div class="attribution">— Light curve analysis · Nature Astronomy</div>
+  </div>
+
+  <!-- ============ CHAPTER 03 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 03 / FORM &amp; NAME</div>
+    <h2>รูปร่าง ลักษณะ และที่มาของ<em>ชื่อ</em></h2>
+    <p>นี่คือส่วนที่ทำให้ 'Oumuamua โด่งดังที่สุด เพราะความสว่างของมันแปรผันแบบสุดขั้วในขณะที่มันหมุนตัว — ต่างกันถึง 10 เท่า (2.5 magnitude) ตลอดคาบการหมุนประมาณ <span class="hl">7.3 ชั่วโมง</span> นักดาราศาสตร์แปลผลได้ว่ามันต้องมีรูปทรงที่ยาวมาก โดยประมาณอัตราส่วนความยาวต่อความกว้างไว้ที่ 6:1 ไปจนถึง 10:1 ซึ่งไม่เคยมีดาวเคราะห์น้อยหรือดาวหางดวงไหนในระบบสุริยะเราที่ยาวขนาดนี้มาก่อน (วัตถุที่ยาวที่สุดที่เคยเจอในบ้านเราก็แค่ราว 3:1 เท่านั้น)</p>
+    <p>ขนาดโดยประมาณของมันอยู่ที่ยาวสุดไม่เกินราว 400 เมตร (บางแบบจำลองประเมินไว้ถึง 800×80×80 เมตร) พื้นผิวมีสีแดง ซึ่งเป็นลักษณะที่พบได้ในวัตถุน้ำแข็งบริเวณขอบนอกระบบสุริยะ แต่ที่แปลกคือมันไม่มีหางฝุ่นหรือแก๊สแบบดาวหางเลยแม้จะเข้าใกล้ดวงอาทิตย์มาก แถมยังเร่งความเร็วขึ้นเล็กน้อยแบบผิดปกติ (non-gravitational acceleration) ซึ่งยังเป็นปริศนาที่ถกเถียงกันจนถึงทุกวันนี้ว่าเกิดจากอะไรกันแน่</p>
+    <p>ส่วนชื่อ <strong>'Oumuamua</strong> มาจากภาษาฮาวาย แปลว่า "ผู้มาเยือนจากแดนไกลที่มาถึงก่อนใคร" (scout หรือ messenger) ทีมค้นพบเลือกใช้ชื่อนี้โดยปรึกษาผู้เชี่ยวชาญภาษาฮาวายจากมหาวิทยาลัยฮาวายที่ฮิโล เพื่อสะท้อนความหมายว่ามันคือผู้ส่งสารที่เดินทางข้ามอวกาศมาไกลแสนไกลเพื่อ "ทักทาย" เราเป็นครั้งแรก และชื่ออย่างเป็นทางการทางวิทยาศาสตร์คือ <span class="hl">1I/2017 U1</span> โดย "1I" หมายถึงวัตถุระหว่างดวงดาว (Interstellar) ดวงแรกที่มนุษย์เคยบันทึกได้</p>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="key">Aspect ratio</div>
+        <div class="num">6:1–10:1</div>
+        <div class="desc">ยาวผิดปกติเมื่อเทียบกับวัตถุใด ๆ ในระบบสุริยะ</div>
+      </div>
+      <div class="data-card">
+        <div class="key">Max length</div>
+        <div class="num">~400<span class="small">m</span></div>
+        <div class="desc">บางแบบจำลองประเมินไว้ที่ 800×80×80 เมตร</div>
+      </div>
+      <div class="data-card">
+        <div class="key">Surface color</div>
+        <div class="num" style="color:#ef4444">RED</div>
+        <div class="desc">คล้ายวัตถุน้ำแข็งบริเวณขอบนอกระบบสุริยะ</div>
+      </div>
+      <div class="data-card">
+        <div class="key">Coma / tail</div>
+        <div class="num">NONE</div>
+        <div class="desc">ไม่มีหางดาวหาง แม้เข้าใกล้ดวงอาทิตย์มาก</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-break"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+
+  <!-- ============ CHAPTER 04 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 04 / IMPACT</div>
+    <h2>แรงสั่นสะเทือนที่ส่งถึง<em>วงการดาราศาสตร์</em></h2>
+    <p>ก่อนหน้าปี 2017 การมีอยู่ของวัตถุระหว่างดวงดาวเป็นแค่ทฤษฎี นักดาราศาสตร์คาดเดากันมานานว่าน่าจะมีเศษซากจากระบบดาวอื่นหลุดลอยเข้ามาในระบบสุริยะเราบ้าง แต่ไม่เคยมีใครจับภาพได้จริง การค้นพบ 'Oumuamua จึงเป็นหลักฐานเชิงประจักษ์ชิ้นแรกที่ยืนยันว่าเรื่องนี้เกิดขึ้นจริง และเปิดสาขาการศึกษาใหม่ทั้งสาขา <strong>(interstellar object science)</strong></p>
+    <p>มันยังบังคับให้วงการต้องคิดใหม่เรื่อง "อัตราการมาเยือน" ด้วย นักดาราศาสตร์ประเมินว่าอาจมีวัตถุแบบ 'Oumuamua ผ่านเข้ามาในระบบสุริยะชั้นในปีละครั้งโดยเฉลี่ย เพียงแต่ก่อนหน้านี้กล้องโทรทรรศน์ของเรายังไม่ไวพอที่จะจับพวกมันได้ทัน เพราะวัตถุพวกนี้ทั้งจาง ทั้งเคลื่อนที่เร็ว และมีเวลาให้สังเกตน้อยมาก นี่จึงเป็นจุดเปลี่ยนที่ทำให้โครงการสำรวจท้องฟ้าแบบครอบคลุมทั้งหมด (all-sky survey) กลายเป็นความจำเป็นเร่งด่วน ไม่ใช่แค่ของดีมีไว้เผื่อเลือก</p>
+  </section>
+
+  <!-- ============ CHAPTER 05 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 05 / VERA C. RUBIN OBSERVATORY</div>
+    <h2>Vera C. Rubin Observatory &amp; LSST — <em>เครื่องจักรล่าแขกจากดวงดาว</em></h2>
+    <p>นี่คือส่วนที่สนุกที่สุด เพราะหลัง 'Oumuamua วงการดาราศาสตร์แทบจะออกแบบเครื่องมือใหม่มาตอบโจทย์นี้โดยเฉพาะ</p>
+    <p>หอดูดาว <strong>Vera C. Rubin</strong> ตั้งอยู่บนยอดเขา Cerro Pachón ประเทศชิลี ใช้กล้องโทรทรรศน์ Simonyi Survey ขนาดกระจก 8.4 เมตร ติดตั้งกล้องดิจิทัลที่ใหญ่ที่สุดในโลกเท่าที่เคยสร้างมา ความละเอียด 3,200 ล้านพิกเซล (3.2 gigapixel) ภารกิจหลักของมันคือโครงการ <strong>Legacy Survey of Space and Time หรือ LSST</strong> ซึ่งจะสแกนท้องฟ้าซีกใต้ทั้งหมดซ้ำไปซ้ำมาทุก ๆ ไม่กี่คืน ต่อเนื่องยาวนานถึง 10 ปี</p>
+    <p>หอดูดาวนี้ได้ภาพแรก (first light) เมื่อเดือนมกราคม 2025 และเปิดตัวภาพสาธารณะชุดแรกอย่างเป็นทางการเมื่อวันที่ 23 มิถุนายน 2025 ซึ่งสร้างความฮือฮาไปทั่วโลก เพราะแค่การสังเกตการณ์เพียงประมาณ 10 ชั่วโมงเท่านั้น มันค้นพบดาวเคราะห์น้อยที่ไม่เคยมีใครเห็นมาก่อนถึง 2,104 ดวง รวมถึงดาวเคราะห์น้อยใกล้โลก (near-Earth asteroid) อีก 7 ดวง เทียบกับที่หอดูดาวทั่วโลกรวมกันค้นพบดาวเคราะห์น้อยได้ปีละราว 20,000 ดวงเท่านั้น พูดง่าย ๆ คือ Rubin ทำงานเทียบเท่าหอดูดาวทั้งโลกรวมกันได้ภายในไม่กี่ชั่วโมง</p>
+
+    <div class="big-stat">
+      <div class="num">2,104<span class="unit">asteroids</span></div>
+      <div class="caption">ดาวเคราะห์น้อยใหม่ที่ค้นพบใน <strong>10 ชั่วโมง</strong>แรกของ Rubin Observatory — เทียบเท่ากับงานหอดูดาวทั่วโลกรวมกันเกือบ 38 วัน</div>
+    </div>
+
+    <p>ในแง่ของวัตถุระหว่างดวงดาวโดยเฉพาะ งานวิจัยประเมินไว้หลายแบบ บางแบบจำลองบอกว่า Rubin อาจตรวจพบวัตถุแบบ 'Oumuamua ได้มากถึง 0–70 ดวงต่อปี ในขณะที่แบบจำลองที่ระมัดระวังกว่าประเมินไว้ราว 0.9–1.9 ดวงต่อปี หรือคิดเป็นประมาณ 15 ดวงตลอดโครงการ 10 ปี ไม่ว่าตัวเลขจริงจะออกมาเท่าไหร่ สิ่งที่แน่นอนคือ Rubin จะเปลี่ยนวัตถุระหว่างดวงดาวจากของหายากสุดขั้วให้กลายเป็นเรื่องที่พบเจอได้เรื่อย ๆ</p>
+  </section>
+
+  <div class="section-break"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+
+  <!-- ============ CHAPTER 06 ============ -->
+  <section class="chapter reveal">
+    <div class="chapter-num">CHAPTER 06 / 3I/ATLAS</div>
+    <h2>จาก 2 ดวง สู่ 3 ดวง: มาถึง<em>3I/ATLAS</em></h2>
+    <p>หลัง 'Oumuamua (1I) ตามมาด้วย 2I/Borisov ในปี 2019 แล้ววันที่ 1 กรกฎาคม 2025 ก็มีการค้นพบวัตถุระหว่างดวงดาวดวงที่สาม ชื่อว่า <strong>3I/ATLAS</strong> (หรือ C/2025 N1) โดยกล้องโทรทรรศน์ ATLAS ที่เมือง Rio Hurtado ประเทศชิลี ซึ่งเป็นเครือข่ายกล้องเพื่อการเฝ้าระวังดาวเคราะห์น้อยอันตรายของ NASA</p>
+    <p>3I/ATLAS ต่างจาก 'Oumuamua ชัดเจน มันมีค่า eccentricity สูงถึง <span class="hl">6.14</span> (เทียบกับ 1.20 ของ 'Oumuamua) ความเร็วที่ระยะอนันต์อยู่ที่ราว 58 กิโลเมตร/วินาที เร็วกว่า 'Oumuamua กว่า 2 เท่า และถือเป็นวัตถุที่เร็วที่สุดในบรรดา 3 ดวงที่เคยเจอ ตอนค้นพบมันมีความเร็วราว 221,000 กิโลเมตร/ชั่วโมง และเร่งขึ้นเป็นราว 246,000 กิโลเมตร/ชั่วโมงตอนผ่านจุดใกล้ดวงอาทิตย์ที่สุดในวันที่ 29 ตุลาคม 2025</p>
+    <p>ขนาดของมันก็ใหญ่กว่ามาก จากการสังเกตด้วยกล้องฮับเบิลเมื่อ 20 สิงหาคม 2025 ประเมินเส้นผ่านศูนย์กลางของนิวเคลียสไว้ระหว่าง 440 เมตร ถึง 5.6 กิโลเมตร และต่างจาก 'Oumuamua ตรงที่ 3I/ATLAS แสดงพฤติกรรมแบบดาวหางชัดเจน มีโคม่า (coma) หรือเมฆก๊าซฝุ่นห่อหุ้มตัวมันกว้างถึงราว 700,000 กิโลเมตร และข้อมูลสเปกตรัมจากกล้องเวบบ์ (JWST) พบว่ามันมีคาร์บอนไดออกไซด์มากผิดปกติเมื่อเทียบกับไอน้ำ ซึ่งต่างจากดาวหางทั่วไปในระบบสุริยะเรา นักวิทยาศาสตร์บางกลุ่มยังตั้งข้อสังเกตว่าความเร็วสุดขั้วของมันอาจบ่งชี้ว่ามันมาจากดาวฤกษ์รุ่นเก่าแก่ในย่านจานหนา (thick disk) ของกาแล็กซี ซึ่งอาจมีอายุมากถึง 9,000–13,000 ล้านปี เก่าแก่กว่าดวงอาทิตย์ของเราเสียอีก</p>
+    <p>จุดที่น่าสนใจคือ 3I/ATLAS ผ่านเข้ามาใกล้ดาวอังคารในระยะ 29 ล้านกิโลเมตร เมื่อ 3 ตุลาคม 2025 ทำให้ยานสำรวจของ ESA อย่าง Mars Express และ ExoMars ได้ถือโอกาสสังเกตการณ์มันแบบใกล้ชิด ส่วนโลกนั้นปลอดภัยแน่นอน เพราะจุดที่ใกล้โลกที่สุดของมันอยู่ห่างออกไปถึง 270 ล้านกิโลเมตร</p>
+
+    <!-- Comparison of three interstellar objects -->
+    <div class="iso-grid">
+      <div class="iso-card" style="--iso-color:#5eead4">
+        <div class="iso-id">1I/2017 U1</div>
+        <div class="iso-name">'Oumuamua</div>
+        <div class="iso-year">DISCOVERED · OCT 2017</div>
+        <div class="iso-stats">
+          <div class="iso-stat"><span class="k">Eccentricity</span><span class="v">1.20</span></div>
+          <div class="iso-stat"><span class="k">Velocity ∞</span><span class="v">26 km/s</span></div>
+          <div class="iso-stat"><span class="k">Size</span><span class="v">~400 m</span></div>
+          <div class="iso-stat"><span class="k">Shape</span><span class="v">6:1–10:1</span></div>
+          <div class="iso-stat"><span class="k">Activity</span><span class="v">None</span></div>
+          <div class="iso-stat"><span class="k">Origin</span><span class="v">Unknown</span></div>
+        </div>
+      </div>
+
+      <div class="iso-card" style="--iso-color:#818cf8">
+        <div class="iso-id">2I/2019 Q4</div>
+        <div class="iso-name">Borisov</div>
+        <div class="iso-year">DISCOVERED · AUG 2019</div>
+        <div class="iso-stats">
+          <div class="iso-stat"><span class="k">Eccentricity</span><span class="v">3.36</span></div>
+          <div class="iso-stat"><span class="k">Velocity ∞</span><span class="v">32 km/s</span></div>
+          <div class="iso-stat"><span class="k">Size</span><span class="v">0.4–1 km</span></div>
+          <div class="iso-stat"><span class="k">Shape</span><span class="v">Unknown</span></div>
+          <div class="iso-stat"><span class="k">Activity</span><span class="v">Coma + tail</span></div>
+          <div class="iso-stat"><span class="k">Origin</span><span class="v">Unknown</span></div>
+        </div>
+      </div>
+
+      <div class="iso-card" style="--iso-color:#f472b6">
+        <div class="iso-id">3I/2025 N1</div>
+        <div class="iso-name">ATLAS</div>
+        <div class="iso-year">DISCOVERED · JUL 2025</div>
+        <div class="iso-stats">
+          <div class="iso-stat"><span class="k">Eccentricity</span><span class="v">6.14</span></div>
+          <div class="iso-stat"><span class="k">Velocity ∞</span><span class="v">58 km/s</span></div>
+          <div class="iso-stat"><span class="k">Size</span><span class="v">0.44–5.6 km</span></div>
+          <div class="iso-stat"><span class="k">Coma width</span><span class="v">~700,000 km</span></div>
+          <div class="iso-stat"><span class="k">Activity</span><span class="v">CO₂-rich</span></div>
+          <div class="iso-stat"><span class="k">Origin</span><span class="v">Thick disk?</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-break"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+
+  <!-- ============ CLOSING ============ -->
+  <section class="closing reveal">
+    <div class="eyebrow">EPILOGUE · แล้วต่อจากนี้ล่ะ?</div>
+    <h2>เราเพิ่งเริ่มต้นเท่านั้น</h2>
+    <p>สิ่งที่น่าตื่นเต้นที่สุดคือ จาก 2017 ถึงตอนนี้ใช้เวลาแค่ราว 8 ปี เราไปจาก "ไม่เคยเจอวัตถุระหว่างดวงดาวเลยสักดวง" มาเป็น "เจอแล้ว 3 ดวง" และกำลังจะเข้าสู่ยุคที่ Rubin Observatory เดินเครื่องเต็มรูปแบบ ซึ่งอาจทำให้อัตราการค้นพบพุ่งขึ้นหลายเท่าตัวในไม่กี่ปีข้างหน้า</p>
+    <br>
+    <p>คำถามใหญ่ที่ยังรอคำตอบคือ วัตถุเหล่านี้บอกอะไรเราเกี่ยวกับการก่อตัวของระบบดาวอื่น ๆ ในกาแล็กซีบ้าง? ทำไม 'Oumuamua ถึงดูเป็นหินแห้ง ๆ ไม่มีกิจกรรมดาวหาง ในขณะที่ Borisov กับ ATLAS ดูมีน้ำแข็งและก๊าซมากมาย? และที่สำคัญ ยังมีนักวิทยาศาสตร์ที่เสนอไอเดียเรื่องภารกิจยานสำรวจที่จะพุ่งไปสกัดกั้นวัตถุระหว่างดวงดาวดวงต่อไปที่ผ่านเข้ามา เพื่อศึกษามันแบบใกล้ชิดจริง ๆ แทนที่จะมองผ่านกล้องโทรทรรศน์เพียงอย่างเดียว</p>
+    <br>
+    <p>จากแขกประหลาดที่แวะมาแบบไม่ทันตั้งตัวเมื่อปี 2017 'Oumuamua ได้กลายเป็นจุดเริ่มต้นของสาขาวิทยาศาสตร์ใหม่ทั้งสาขา และผลักดันให้มนุษย์สร้างเครื่องมือที่ทรงพลังที่สุดเท่าที่เคยมีมาเพื่อรอต้อนรับ "ผู้มาเยือน" คนต่อไปจากดวงดาวอื่น ๆ ที่อาจกำลังเดินทางเข้ามาในตอนนี้ก็ได้ — เราแค่ยังมองไม่เห็นมันเท่านั้นเอง</p>
+
+    <div class="signature">END OF TRANSMISSION · 1I/2017 U1</div>
+  </section>
+
+</main>
+
+<footer>
+  INTERSTELLAR DISPATCH · COMPILED FROM PAN-STARRS1 · ESO · NASA · JWST OBSERVATIONS
+</footer>
+
+<script>
+  /* ===== Starfield ===== */
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [], shootingStars = [], w, h;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    stars = [];
+    const count = Math.floor((w * h) / 4500);
+    for(let i = 0; i < count; i++){
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        z: Math.random() * 3 + 0.3,           // depth (size)
+        r: Math.random() * 1.2 + 0.2,
+        baseAlpha: Math.random() * 0.6 + 0.2,
+        twinkleSpeed: Math.random() * 0.02 + 0.005,
+        twinklePhase: Math.random() * Math.PI * 2,
+        color: Math.random() > 0.9 ? (Math.random() > 0.5 ? '#5eead4' : '#f472b6') : '#ffffff',
+        vy: Math.random() * 0.05 + 0.01       // slow drift
+      });
+    }
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function spawnShootingStar(){
+    if(Math.random() > 0.005) return;
+    const fromLeft = Math.random() > 0.5;
+    shootingStars.push({
+      x: fromLeft ? -50 : w + 50,
+      y: Math.random() * h * 0.6,
+      vx: (fromLeft ? 1 : -1) * (Math.random() * 8 + 6),
+      vy: Math.random() * 2 + 1,
+      life: 1,
+      length: Math.random() * 80 + 60
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    const t = performance.now() * 0.001;
+
+    // stars
+    for(const s of stars){
+      const alpha = s.baseAlpha + Math.sin(t * s.twinkleSpeed * 60 + s.twinklePhase) * 0.3;
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      ctx.fillStyle = s.color;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, Math.max(0.1, s.r * s.z), 0, Math.PI * 2);
+      ctx.fill();
+
+      // glow for brighter stars
+      if(s.z > 2){
+        ctx.globalAlpha = alpha * 0.3;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * s.z * 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // drift
+      s.y += s.vy;
+      if(s.y > h) s.y = 0;
+    }
+
+    // shooting stars
+    spawnShootingStar();
+    for(let i = shootingStars.length - 1; i >= 0; i--){
+      const ss = shootingStars[i];
+      ctx.globalAlpha = ss.life;
+      const grad = ctx.createLinearGradient(ss.x, ss.y, ss.x - ss.vx * ss.length / 10, ss.y - ss.vy * ss.length / 10);
+      grad.addColorStop(0, 'rgba(255,255,255,0.9)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(ss.x, ss.y);
+      ctx.lineTo(ss.x - ss.vx * ss.length / 10, ss.y - ss.vy * ss.length / 10);
+      ctx.stroke();
+      ss.x += ss.vx;
+      ss.y += ss.vy;
+      ss.life -= 0.012;
+      if(ss.life <= 0 || ss.x < -100 || ss.x > w + 100) shootingStars.splice(i, 1);
+    }
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  /* ===== Reading progress ===== */
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docHeight) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  /* ===== Scroll reveal ===== */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
