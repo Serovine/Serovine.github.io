@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Maker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header id="app-header">
+    <div class="app-title">Gen Model Character Wizard 1.0</div>
+    <button id="lang-toggle" class="btn-lang" onclick="app.toggleLanguage()">TH</button>
+  </header>
+
+  <nav id="section-tabs"><div class="tab-track"></div></nav>
+  <div id="active-tags-bar"></div>
+  <div id="color-bar" class="hidden"></div>
+
+  <div id="workspace">
+    <aside id="submenu"></aside>
+    <main id="content"></main>
+  </div> <footer id="prompt-bar">
+    <div id="prompt-label">Prompt</div>
+    <div id="prompt-text" contenteditable="true" spellcheck="false"></div>
+    <div id="prompt-actions">
+      <button class="btn-copy"   onclick="app.copyPrompt()">COPY</button>
+      <button class="btn-clear"  onclick="app.clearAll()">CLEAR</button>
+      <button class="btn-random" onclick="app.randomize()">RANDOM</button>
+    </div>
+  </footer>
+
+  <script>
+  // Threshold: groups with options > this use dropdown instead of grid
+  window.DROPDOWN_THRESHOLD = 12;
+
+  // Load all JSON data then boot app
+  Promise.all([
+    fetch('data/character_db.json').then(r => r.json()),
+    fetch('data/palette.json').then(r => r.json()),
+    fetch('data/pattern.json').then(r => r.json())
+  ]).then(([db, pal, pat]) => {
+
+    // flatten palette → { tag: hex }
+    window.PALETTES = {};
+    (pal.color || []).forEach(c => { window.PALETTES[c.tag] = c.hex; });
+    window.PALETTE_DATA = pal.color || [];
+
+    // flatten pattern → [ {tag, name_en, img} ]
+    window.PATTERNS = (pat.pattern || []).map(p => p.tag);
+    window.PATTERN_DATA = pat.pattern || [];
+
+    window.CHARACTER_DB = db;
+    app.boot();
+
+  }).catch(err => {
+    document.body.innerHTML = `<div style="color:#e05555;padding:20px">
+      ❌ โหลดข้อมูลไม่สำเร็จ: ${err.message}<br>
+      ต้องรันผ่าน local server เช่น <code>python -m http.server</code>
+    </div>`;
+  });
+  </script>
+  <script src="js/core.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
