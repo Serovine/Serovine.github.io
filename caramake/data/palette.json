@@ -1,0 +1,20 @@
+{
+  "color": [
+    {"tag": "aqua", "name_th": "ฟ้า", "name_en": "aqua", "hex": "#00BFFF"},
+    {"tag": "black", "name_th": "ดำ", "name_en": "black", "hex": "#000000"},
+    {"tag": "blue", "name_th": "น้ำเงิน", "name_en": "blue", "hex": "#0000FF"},
+    {"tag": "brown", "name_th": "น้ำตาล", "name_en": "brown", "hex": "#A52A2A"},
+    {"tag": "green", "name_th": "เขียว", "name_en": "green", "hex": "#008000"},
+    {"tag": "grey", "name_th": "เทา", "name_en": "grey", "hex": "#696969"},
+    {"tag": "orange", "name_th": "ส้ม", "name_en": "orange", "hex": "#FF4500"},
+    {"tag": "purple", "name_th": "ม่วง", "name_en": "purple", "hex": "#800080"},
+    {"tag": "pink", "name_th": "ชมพู", "name_en": "pink", "hex": "#FF1493"},
+    {"tag": "red", "name_th": "แดง", "name_en": "red", "hex": "#FF0000"},
+    {"tag": "white", "name_th": "ขาว", "name_en": "white", "hex": "#FFFFFF"},
+    {"tag": "yellow", "name_th": "เหลือง", "name_en": "yellow", "hex": "#FFFF00"},
+    {"tag": "blonde", "name_th": "บลอนด์", "name_en": "blonde", "hex": "#FAFAD2"},
+    {"tag": "platinum blonde", "name_th": "บลอนด์อ่อน", "name_en": "platinum blonde", "hex": "#EEE8AA"},
+    {"tag": "gold", "name_th": "ทอง", "name_en": "gold", "hex": "#FFD700"},
+    {"tag": "silver", "name_th": "เงิน", "name_en": "silver", "hex": "#C0C0C0"}
+  ]
+}

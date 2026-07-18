@@ -1,0 +1,793 @@
+/* ============================================================
+   Character Maker — Dark Navy Theme
+   ============================================================ */
+
+:root {
+  --bg-deep:      #0d1117;
+  --bg-panel:     #161d27;
+  --bg-card:      #1c2535;
+  --bg-card-hover:#243042;
+  --bg-selected:  #1a3a5c;
+
+  --border:       #2a3a50;
+  --border-accent:#2e5f96;
+
+  --accent:       #4a9eff;
+  --accent-dim:   #2a6abf;
+  --accent-glow:  rgba(74,158,255,0.18);
+
+  --text-primary: #e8edf5;
+  --text-secondary:#8a9ab5;
+  --text-muted:   #4a5a70;
+
+  --tab-active-bg:    #1a3a5c;
+  --tab-active-text:  #4a9eff;
+  --tab-done:         #2a6a3a;
+  --tab-done-text:    #5acf7a;
+
+  --btn-copy:     #4a9eff;
+  --btn-clear:    #cc3a3a;
+  --btn-random:   #c8a020;
+
+  --radius-sm:    4px;
+  --radius-md:    8px;
+  --radius-lg:    12px;
+
+  --font-ui:      'Segoe UI', system-ui, sans-serif;
+  --font-mono:    'Consolas', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-ui), serif;
+  font-size: 13px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   SECTION TABS
+   ============================================================ */
+#section-tabs {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.tab-track {
+  display: flex;
+  min-width: max-content;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 18px 6px;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  transition: background 0.15s;
+  user-select: none;
+  min-width: 80px;
+}
+
+.tab-item:hover { background: var(--bg-card); }
+
+.tab-item.active {
+  background: var(--tab-active-bg);
+  border-bottom: 2px solid var(--accent);
+}
+
+.tab-item .tab-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.tab-item.active .tab-name { color: var(--tab-active-text); }
+
+.tab-item .step-badge {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.tab-item.done .step-badge { color: var(--tab-done-text); }
+.tab-item.done .tab-name   { color: var(--tab-done-text); }
+
+/* ============================================================
+   COLOR / PATTERN BAR
+   ============================================================ */
+#color-bar {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 10px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#color-bar.hidden { display: none; }
+
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  width: 58px;
+  flex-shrink: 0;
+}
+
+.swatch-list, .chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+}
+
+.swatch:hover { transform: scale(1.15); }
+.swatch.selected { border-color: var(--accent) !important; }
+
+.pattern-chip {
+  padding: 2px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pattern-chip:hover  { border-color: var(--accent-dim); color: var(--text-primary); }
+.pattern-chip.selected {
+  background: var(--bg-selected);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.clear-btn:hover { border-color: var(--btn-clear); color: var(--btn-clear); }
+
+/* ============================================================
+   WORKSPACE
+   ============================================================ */
+#workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ---- SUBMENU ---- */
+#submenu {
+  width: 150px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-left: 3px solid transparent;
+}
+
+.submenu-item:hover { background: var(--bg-card); }
+
+.submenu-item.active {
+  background: var(--bg-selected);
+  border-left-color: var(--accent);
+}
+
+.submenu-item.done { border-left-color: var(--tab-done); }
+
+.submenu-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-accent);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--accent);
+  background: var(--bg-card);
+  transition: all 0.12s;
+}
+
+.submenu-item.done .submenu-checkbox {
+  background: var(--bg-selected);
+  border-color: var(--accent);
+}
+
+.submenu-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.submenu-item.active .submenu-name { color: var(--text-primary); }
+
+/* ---- CONTENT ---- */
+#content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  background: var(--bg-deep);
+}
+
+/* Simple mode (BASE) */
+.simple-section { display: flex; flex-direction: column; gap: 10px; }
+
+.simple-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.simple-row-label {
+  width: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.simple-options { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.simple-btn {
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.simple-btn:hover   { border-color: var(--accent-dim); color: var(--text-primary); }
+.simple-btn.selected {
+  background: var(--bg-selected);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Group header */
+.group-header {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 10px 0 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-header::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: var(--accent-dim);
+  border-radius: 2px;
+}
+
+.group-block { margin-bottom: 16px; }
+
+/* Option grid */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.option-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.option-card:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.option-card.selected {
+  border-color: var(--accent);
+  background: var(--bg-selected);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.option-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.option-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.option-img .no-img {
+  font-size: 28px;
+  opacity: 0.15;
+}
+
+.option-name {
+  padding: 5px 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: hidden;
+  word-break: break-word;
+  height: auto;
+  line-height: 1.4;
+}
+
+.option-card.selected .option-name { color: var(--text-primary); }
+
+/* ============================================================
+   PROMPT BAR
+   ============================================================ */
+#prompt-bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 44px;
+}
+
+#prompt-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+#prompt-text {
+  flex: 1;
+  padding: 8px 12px;
+  font-family: var(--font-mono), serif;
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+  overflow-y: auto;
+  max-height: 80px;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+#prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+#prompt-actions button {
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+#prompt-actions button:hover { opacity: 0.82; }
+
+.btn-copy   { background: var(--btn-copy);   color: #fff; }
+.btn-clear  { background: var(--btn-clear);  color: #fff; }
+.btn-random { background: var(--btn-random); color: #000; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+/* ============================================================
+   SLOT MODE additions
+   ============================================================ */
+
+/* drill arrow on slot-parent cards */
+.slot-parent-card { position: relative; }
+
+.slot-drill-hint {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 16px;
+  color: var(--accent-dim);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.slot-parent-card.selected .slot-drill-hint { color: var(--accent); }
+
+/* back button */
+.submenu-back {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+
+.submenu-back:hover { background: var(--bg-card); }
+
+.submenu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* ============================================================
+   CATEGORY HEADER (slot top-level grouping)
+   ============================================================ */
+.category-header {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  padding: 14px 2px 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.category-header:first-child { padding-top: 4px; }
+
+/* ============================================================
+   SUMMARY BAR (hair / eyes)
+   ============================================================ */
+.summary-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 4px 2px;
+  min-height: 28px;
+  align-items: center;
+}
+
+.summary-chip {
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--bg-selected);
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.summary-chip:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+
+.summary-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.color-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 5px;
+  margin-top: 2px;
+}
+
+/* locked color row */
+.color-row.locked {
+  opacity: 0.5;
+}
+
+.lock-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-left: 6px;
+}
+
+/* ============================================================
+   DROPDOWN + SEARCH (race / role)
+   ============================================================ */
+.dropdown-group { position: relative; }
+
+.dropdown-search {
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+  margin-bottom: 6px;
+  transition: border-color 0.15s;
+}
+
+.dropdown-search:focus { border-color: var(--accent-dim); }
+.dropdown-search::placeholder { color: var(--text-muted); }
+
+.dropdown-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.dropdown-chip {
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.dropdown-chip:hover { border-color: var(--accent-dim); color: var(--text-primary); }
+.dropdown-chip.selected {
+  background: var(--bg-selected);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================================
+   APP HEADER & TITLE
+   ============================================================ */
+#app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--bg-deep);
+  border-bottom: 2px solid var(--border-accent); /* เส้นคั่นหนาขึ้นนิดนึงให้ดูมีมิติ */
+}
+
+.app-title {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  /* เอฟเฟกต์ตัวหนังสือไล่สีจาก ฟ้า ไป เขียว */
+  background: linear-gradient(45deg, #4a9eff, #5acf7a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* เอฟเฟกต์เรืองแสงบางๆ */
+  text-shadow: 0 2px 10px rgba(74, 158, 255, 0.2);
+}
+
+/* ============================================================
+   LANGUAGE TOGGLE BUTTON
+   ============================================================ */
+.btn-lang {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 16px;
+  height: 32px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-lang:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow); /* ชี้แล้วปุ่มเรืองแสง */
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   PATTERN SWATCHES (ปรับสัดส่วนเป็น 5:3 อิงจาก 300x180)
+   ============================================================ */
+.pattern-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* เพิ่มระยะห่างระหว่างกรอบนิดหน่อยให้ดูไม่อึดอัด */
+  align-items: center;
+}
+
+.pattern-chip {
+  width: 75px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.pattern-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ตัดภาพให้พอดีกรอบ 5:3 เป๊ะๆ โดยไม่บี้แบน */
+}
+
+.pattern-chip:hover {
+  transform: translateY(-2px); /* เอาเมาส์ชี้แล้วเด้งขึ้นนิดนึงดูมีมิติ */
+  border-color: var(--accent-dim);
+}
+
+.pattern-chip.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   COLOR SWATCHES (ปรับเป็นสี่เหลี่ยมผืนผ้าแนวยาว)
+   ============================================================ */
+.swatch {
+  width: 45px;  /* ดึงความกว้างออกให้เป็นทรงผืนผ้า */
+  height: 24px; /* ความสูงเท่าเดิม */
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.swatch.selected {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--accent); /* ทำขอบซ้อนให้ดูชัดขึ้นตอนเลือก */
+  transform: scale(1.1);
+}
+
+/* ============================================================
+   ACTIVE TAGS BAR (แถบโชว์ของที่เลือกไว้)
+   ============================================================ */
+#active-tags-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  min-height: 48px;
+}
+
+.tag-badge {
+  display: flex;
+  align-items: center;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 16px; /* ขอบโค้งมนแบบแคปซูล */
+  font-size: 12px;
+  font-weight: bold;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.tag-badge:hover {
+  transform: translateY(-2px);
+}
+
+.tag-badge-text {
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tag-badge-text:hover {
+  background: rgba(255, 255, 255, 0.2); /* เอาเมาส์ชี้แล้วสว่างขึ้น */
+}
+
+.tag-badge-remove {
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tag-badge-remove:hover {
+  background: rgba(255, 50, 50, 0.8); /* ปุ่มลบเป็นสีแดงตอนเอาเมาส์ชี้ */
+}

@@ -1,0 +1,12 @@
+{
+  "pattern": [
+    {"tag": "checkered", "name_th": "ลายตารางขวาง", "name_en": "Checkered", "img": "img/pattern/checkered.webp"},
+    {"tag": "camouflage", "name_th": "ลายพราง", "name_en": "Camouflage", "img": "img/pattern/camouflage.webp"},
+    {"tag": "hawaiian", "name_th": "ลายฮาวาย", "name_en": "Hawaiian", "img": "img/pattern/hawaiian.webp"},
+    {"tag": "plaid", "name_th": "ลายสก๊อต", "name_en": "Plaid", "img": "img/pattern/plaid.webp"},
+    {"tag": "polka dot", "name_th": "ลายจุด", "name_en": "Polka dot", "img": "img/pattern/polkadot.webp"},
+    {"tag": "print", "name_th": "สกรีนลาย", "name_en": "Print", "img": "img/pattern/print.webp"},
+    {"tag": "striped", "name_th": "ลายทาง", "name_en": "Striped", "img": "img/pattern/striped.webp"},
+    {"tag": "vertical-striped", "name_th": "ลายทางแนวตั้ง", "name_en": "Vertical-Striped", "img": "img/pattern/vstriped.webp"}
+  ]
+}
