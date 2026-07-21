@@ -1,9 +1,9 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-DHR,Danaher Corporation,21-07-26,Before Market,203.83,-12.65%,NYSE,-16.60%
-HAL,Halliburton Company,21-07-26,Before Market,35.22,10.86%,NYSE,-4.93%
-MSCI,MSCI Inc.,21-07-26,Before Market,628.66,8.42%,NYSE,-10.41%
-NOC,Northrop Grumman Corporation,21-07-26,Before Market,521.57,-20.05%,NYSE,-7.31%
-SCHW,Charles Schwab Corporation (The,21-07-26,Before Market,101.56,1.27%,NYSE,-0.04%
+DHR,Danaher Corporation,21-07-26,Before Market,203.83,-12.65%,NYSE,-13.18%
+HAL,Halliburton Company,21-07-26,Before Market,35.22,10.86%,NYSE,-5.37%
+MSCI,MSCI Inc.,21-07-26,Before Market,628.66,8.42%,NYSE,-8.37%
+NOC,Northrop Grumman Corporation,21-07-26,Before Market,521.57,-20.05%,NYSE,-2.35%
+SCHW,Charles Schwab Corporation (The,21-07-26,Before Market,101.56,1.27%,NYSE,+0.05%
 CB,Chubb Limited,21-07-26,After Market,352.16,17.68%,NYSE,
 COF,Capital One Financial Corporati,21-07-26,After Market,208.03,-8.31%,NYSE,
 EQT,EQT Corporation,21-07-26,After Market,49.56,-3.19%,NYSE,
@@ -58,4 +58,4 @@ HCA,HCA Healthcare Inc.,24-07-26,Before Market,371.18,-19.79%,NYSE,
 NEE,NextEra Energy Inc.,24-07-26,Before Market,88.8,7.84%,NYSE,
 SLB,SLB Limited,24-07-26,Before Market,46.99,2.29%,NYSE,
 VZ,Verizon Communications Inc.,24-07-26,Before Market,43.59,15.15%,NYSE,
-SCCO,Southern Copper Corporation,27-07-26,After Market,172.48,-4.77%,NYSE,+4.17%
+SCCO,Southern Copper Corporation,27-07-26,After Market,172.48,-4.77%,NYSE,+5.74%
