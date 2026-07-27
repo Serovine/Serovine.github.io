@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สุนัขจิ้งจอก — ตำนานอมตะในวัฒนธรรมเอเชีย</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Serif+Thai:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5ecd9;
+    --paper-2: #ede0c5;
+    --paper-3: #e8d9b8;
+    --ink: #1c1410;
+    --ink-2: #3d2f24;
+    --ink-3: #6b5d52;
+    --vermillion: #c8102e;
+    --vermillion-deep: #8b1a1a;
+    --vermillion-bright: #e63946;
+    --gold: #b8893f;
+    --gold-bright: #d4a857;
+    --night: #14171f;
+    --night-2: #1f2330;
+    --mist: #6b5d52;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Serif Thai', serif;
+    background: var(--paper);
+    color: var(--ink);
+    margin: 0;
+    overflow-x: hidden;
+    line-height: 1.85;
+    font-weight: 400;
+  }
+
+  .font-jp { font-family: 'Shippori Mincho', serif; }
+  .font-en { font-family: 'Cormorant Garamond', serif; }
+  .font-th-serif { font-family: 'Noto Serif Thai', serif; }
+
+  /* Paper texture overlay */
+  .paper-texture {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(184, 137, 63, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(200, 16, 46, 0.04) 0%, transparent 45%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* Hero section */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 70% 20%, rgba(212, 168, 87, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 80%, rgba(200, 16, 46, 0.12) 0%, transparent 50%),
+      linear-gradient(180deg, #0d0a08 0%, #1a0f0a 50%, #2a0f0a 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #particles-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .moon {
+    position: absolute;
+    top: 12%; right: 12%;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fef3c7 0%, #f5d785 40%, #c9a961 75%, #8b6f3f 100%);
+    box-shadow:
+      0 0 60px rgba(245, 215, 133, 0.5),
+      0 0 120px rgba(245, 215, 133, 0.3),
+      0 0 200px rgba(200, 16, 46, 0.15),
+      inset -20px -20px 40px rgba(0,0,0,0.2);
+    z-index: 1;
+    animation: moon-glow 6s ease-in-out infinite;
+  }
+
+  .moon::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: 25%;
+    width: 25px; height: 25px;
+    border-radius: 50%;
+    background: rgba(139, 111, 63, 0.4);
+    box-shadow:
+      40px 20px 0 -5px rgba(139, 111, 63, 0.3),
+      -10px 60px 0 -8px rgba(139, 111, 63, 0.35),
+      60px 70px 0 -3px rgba(139, 111, 63, 0.25);
+  }
+
+  @keyframes moon-glow {
+    0%, 100% { box-shadow: 0 0 60px rgba(245, 215, 133, 0.5), 0 0 120px rgba(245, 215, 133, 0.3), 0 0 200px rgba(200, 16, 46, 0.15), inset -20px -20px 40px rgba(0,0,0,0.2); }
+    50% { box-shadow: 0 0 80px rgba(245, 215, 133, 0.7), 0 0 160px rgba(245, 215, 133, 0.4), 0 0 240px rgba(200, 16, 46, 0.2), inset -20px -20px 40px rgba(0,0,0,0.2); }
+  }
+
+  .hero-mist {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 30%;
+    background: linear-gradient(180deg, transparent 0%, rgba(200, 16, 46, 0.08) 60%, rgba(200, 16, 46, 0.15) 100%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: var(--paper);
+    padding: 0 1.5rem;
+    max-width: 1100px;
+  }
+
+  .hero-jp {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--vermillion-bright);
+    letter-spacing: 0.5em;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fade-in 1.5s ease-out 0.3s forwards;
+    text-shadow: 0 0 30px rgba(230, 57, 70, 0.5);
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fade-in 1.5s ease-out 0.7s forwards;
+    background: linear-gradient(180deg, #fef3c7 0%, #f5d785 50%, #d4a857 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 20px rgba(212, 168, 87, 0.3));
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    color: rgba(245, 236, 217, 0.75);
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    opacity: 0;
+    animation: fade-in 1.5s ease-out 1.1s forwards;
+  }
+
+  .hero-divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+    margin: 0 auto 1.5rem;
+    opacity: 0;
+    animation: fade-in 1s ease-out 1.4s forwards;
+  }
+
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    opacity: 0;
+    animation: fade-in 1s ease-out 1.6s forwards;
+  }
+
+  @keyframes fade-in {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    color: rgba(245, 236, 217, 0.5);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-indicator::after {
+    content: '';
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(180deg, var(--gold-bright), transparent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* Section base styles */
+  .section {
+    padding: 6rem 1.5rem;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .container-narrow {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* Section header */
+  .section-header {
+    margin-bottom: 4rem;
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--vermillion);
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 1rem 0;
+    letter-spacing: -0.01em;
+  }
+
+  .section-jp {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--vermillion);
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+    display: block;
+    opacity: 0.8;
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 2px;
+    background: var(--vermillion);
+    margin-top: 1.5rem;
+    position: relative;
+  }
+
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background: var(--vermillion);
+    border-radius: 50%;
+  }
+
+  /* Drop cap */
+  .drop-cap::first-letter {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    float: left;
+    line-height: 0.85;
+    margin: 0.3rem 0.8rem 0 0;
+    color: var(--vermillion);
+    text-shadow: 2px 2px 0 rgba(200, 16, 46, 0.1);
+  }
+
+  /* Body text */
+  .prose-text {
+    font-size: 1.1rem;
+    line-height: 1.95;
+    color: var(--ink-2);
+    margin-bottom: 1.5rem;
+  }
+
+  .prose-text strong {
+    color: var(--vermillion-deep);
+    font-weight: 600;
+  }
+
+  /* Card styles */
+  .card {
+    background: rgba(255, 252, 245, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(184, 137, 63, 0.2);
+    border-radius: 4px;
+    padding: 2rem;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--vermillion), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(28, 20, 16, 0.15);
+    border-color: rgba(200, 16, 46, 0.3);
+  }
+
+  .card:hover::before {
+    transform: scaleX(1);
+  }
+
+  /* Zenko vs Yako section */
+  .duality-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .duality-grid { grid-template-columns: 1fr; }
+  }
+
+  .duality-card {
+    padding: 3rem 2.5rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .zenko-card {
+    background: linear-gradient(135deg, #fffaeb 0%, #f5e6c3 100%);
+    border: 1px solid rgba(212, 168, 87, 0.4);
+  }
+
+  .yako-card {
+    background: linear-gradient(135deg, #1f2330 0%, #14171f 100%);
+    color: var(--paper);
+    border: 1px solid rgba(200, 16, 46, 0.3);
+  }
+
+  .duality-icon {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .zenko-card .duality-icon { color: var(--gold); }
+  .yako-card .duality-icon { color: var(--vermillion-bright); }
+
+  .duality-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .duality-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .duality-desc {
+    font-size: 1rem;
+    line-height: 1.8;
+    flex-grow: 1;
+  }
+
+  /* Hierarchy list */
+  .hierarchy-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .hierarchy-item {
+    background: rgba(255, 252, 245, 0.5);
+    border-left: 3px solid var(--gold);
+    padding: 1.25rem 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .hierarchy-item:hover {
+    transform: translateX(4px);
+    background: rgba(255, 252, 245, 0.9);
+    border-left-color: var(--vermillion);
+  }
+
+  .hierarchy-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .hierarchy-name {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--ink);
+  }
+
+  .hierarchy-desc {
+    font-size: 0.9rem;
+    color: var(--ink-3);
+    margin-top: 0.4rem;
+  }
+
+  /* Country cards */
+  .country-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 900px) {
+    .country-grid { grid-template-columns: 1fr; }
+  }
+
+  .country-card {
+    padding: 2.5rem 2rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(255, 252, 245, 0.6);
+    border: 1px solid rgba(184, 137, 63, 0.25);
+  }
+
+  .country-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(28, 20, 16, 0.2);
+  }
+
+  .country-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    right: 0;
+    height: 6px;
+  }
+
+  .country-card.china::before { background: linear-gradient(90deg, #de2910, #ffde00); }
+  .country-card.korea::before { background: linear-gradient(90deg, #003478, #c60c30); }
+  .country-card.japan::before { background: linear-gradient(90deg, #bc002d, #ffffff); }
+
+  .country-flag {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-3);
+    margin-bottom: 0.5rem;
+  }
+
+  .country-name {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .country-name-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--vermillion);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  /* Tamamo section - cinematic dark */
+  .tamamo-section {
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(200, 16, 46, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(139, 26, 26, 0.2) 0%, transparent 50%),
+      linear-gradient(180deg, #0a0808 0%, #1a0a0a 100%);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tamamo-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.8 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise2)'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .tamamo-section .section-title { color: var(--paper); }
+  .tamamo-section .section-number { color: var(--vermillion-bright); }
+  .tamamo-section .section-divider { background: var(--vermillion-bright); }
+  .tamamo-section .section-divider::after { background: var(--vermillion-bright); }
+  .tamamo-section .section-jp { color: var(--vermillion-bright); }
+
+  .tamamo-quote {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-style: italic;
+    color: var(--vermillion-bright);
+    line-height: 1.5;
+    text-align: center;
+    margin: 3rem 0;
+    text-shadow: 0 0 30px rgba(230, 57, 70, 0.4);
+    position: relative;
+    z-index: 2;
+  }
+
+  .tamamo-timeline {
+    position: relative;
+    z-index: 2;
+    margin-top: 3rem;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(230, 57, 70, 0.15);
+    align-items: start;
+  }
+
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--gold-bright);
+    font-weight: 500;
+  }
+
+  .timeline-content strong {
+    color: var(--vermillion-bright);
+    font-weight: 600;
+  }
+
+  /* Pop culture grid */
+  .popculture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .popcard {
+    padding: 2rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    background: var(--paper-2);
+    border: 1px solid rgba(184, 137, 63, 0.2);
+    cursor: default;
+  }
+
+  .popcard::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.03) 100%);
+    pointer-events: none;
+  }
+
+  .popcard:hover {
+    transform: translateY(-6px) rotate(-0.5deg);
+    box-shadow: 0 15px 35px -8px rgba(28, 20, 16, 0.2);
+  }
+
+  .popcard-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+
+  .popcard-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--vermillion);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .popcard-desc {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+
+  .popcard.naruto { border-top: 4px solid #ff8c00; }
+  .popcard.pokemon { border-top: 4px solid #c9a961; }
+  .popcard.lol { border-top: 4px solid #3ba7c5; }
+  .popcard.anime1 { border-top: 4px solid #c8102e; }
+  .popcard.anime2 { border-top: 4px solid #6b5b95; }
+  .popcard.anime3 { border-top: 4px solid #2a9d8f; }
+
+  /* Inari section */
+  .inari-section {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(200, 16, 46, 0.08) 0%, transparent 60%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+    position: relative;
+  }
+
+  .inari-highlight {
+    background: linear-gradient(135deg, rgba(200, 16, 46, 0.05), rgba(212, 168, 87, 0.05));
+    border-left: 4px solid var(--vermillion);
+    padding: 2rem 2.5rem;
+    margin: 2rem 0;
+    border-radius: 0 4px 4px 0;
+    position: relative;
+  }
+
+  .inari-highlight::before {
+    content: '※';
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    font-size: 2rem;
+    color: var(--vermillion);
+    opacity: 0.3;
+  }
+
+  /* God list */
+  .god-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .god-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 252, 245, 0.6);
+    border-radius: 4px;
+    border: 1px solid rgba(184, 137, 63, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .god-item:hover {
+    background: rgba(200, 16, 46, 0.05);
+    border-color: var(--vermillion);
+    transform: translateX(4px);
+  }
+
+  .god-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--vermillion);
+    font-weight: 600;
+    min-width: 30px;
+  }
+
+  .god-name {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+  /* Stats section */
+  .stats-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4rem 1.5rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 700;
+    color: var(--vermillion-bright);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(230, 57, 70, 0.4);
+  }
+
+  .stat-label {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 0.95rem;
+    color: rgba(245, 236, 217, 0.7);
+    letter-spacing: 0.1em;
+  }
+
+  /* Reasons */
+  .reasons-list {
+    counter-reset: reason;
+    margin-top: 2rem;
+  }
+
+  .reason-item {
+    counter-increment: reason;
+    padding: 2rem 2rem 2rem 5rem;
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 252, 245, 0.5);
+    border-radius: 4px;
+    border: 1px solid rgba(184, 137, 63, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .reason-item:hover {
+    background: rgba(255, 252, 245, 0.9);
+    transform: translateX(8px);
+    border-color: var(--vermillion);
+  }
+
+  .reason-item::before {
+    content: counter(reason, decimal-leading-zero);
+    position: absolute;
+    left: 1.5rem; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--vermillion);
+  }
+
+  .reason-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Food section */
+  .food-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .food-grid { grid-template-columns: 1fr; }
+  }
+
+  .food-card {
+    background: linear-gradient(135deg, #fffaeb 0%, #f5e6c3 100%);
+    border: 1px solid rgba(212, 168, 87, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .food-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(184, 137, 63, 0.3);
+  }
+
+  .food-visual {
+    height: 180px;
+    background: linear-gradient(135deg, #d4a857, #b8893f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .food-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3), transparent 50%);
+  }
+
+  .food-emoji {
+    font-size: 5rem;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
+
+  .food-content {
+    padding: 2rem;
+  }
+
+  .food-jp {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--vermillion);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+  }
+
+  .food-name {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .food-desc {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+
+  /* Shrines list */
+  .shrine-list {
+    margin-top: 3rem;
+  }
+
+  .shrine-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 2rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(184, 137, 63, 0.25);
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .shrine-item:hover {
+    padding-left: 1rem;
+    border-bottom-color: var(--vermillion);
+  }
+
+  @media (max-width: 700px) {
+    .shrine-item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+
+  .shrine-marker {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 2.5rem;
+    color: var(--vermillion);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .shrine-name {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .shrine-name-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 0.95rem;
+  }
+
+  .shrine-location {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: var(--vermillion);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Quote callout */
+  .quote-callout {
+    background: linear-gradient(135deg, rgba(200, 16, 46, 0.03), rgba(212, 168, 87, 0.05));
+    border-left: 3px solid var(--vermillion);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: var(--ink-2);
+    position: relative;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .quote-callout::before {
+    content: '"';
+    position: absolute;
+    top: -0.5rem; left: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    color: var(--vermillion);
+    opacity: 0.2;
+    line-height: 1;
+  }
+
+  /* Conclusion */
+  .conclusion-section {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(200, 16, 46, 0.08) 0%, transparent 70%),
+      linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%);
+    padding: 6rem 1.5rem;
+    position: relative;
+  }
+
+  .conclusion-text {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.3rem;
+    line-height: 1.9;
+    color: var(--ink);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+
+  .conclusion-text strong {
+    color: var(--vermillion);
+    font-weight: 600;
+  }
+
+  .signature-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    text-align: center;
+    color: var(--ink-3);
+    max-width: 700px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    border-top: 1px solid rgba(184, 137, 63, 0.3);
+    border-bottom: 1px solid rgba(184, 137, 63, 0.3);
+  }
+
+  /* Footer */
+  footer {
+    background: var(--ink);
+    color: rgba(245, 236, 217, 0.6);
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+  }
+
+  footer .fox-mark {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--vermillion-bright);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* Reveal animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Decorative elements */
+  .vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: 'Shippori Mincho', serif;
+    color: var(--vermillion);
+    opacity: 0.15;
+    font-size: 8rem;
+    font-weight: 700;
+    position: absolute;
+    top: 5rem;
+    right: 2rem;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.2em;
+  }
+
+  /* Torii decoration */
+  .torii-divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 4rem 0;
+    gap: 1rem;
+  }
+
+  .torii-divider::before,
+  .torii-divider::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    max-width: 200px;
+    background: linear-gradient(90deg, transparent, var(--vermillion), transparent);
+  }
+
+  .torii-icon {
+    color: var(--vermillion);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  /* Custom selection */
+  ::selection {
+    background: var(--vermillion);
+    color: var(--paper);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--paper-2); }
+  ::-webkit-scrollbar-thumb { background: var(--vermillion); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--vermillion-deep); }
+
+  /* Reading progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--vermillion), var(--gold));
+    z-index: 1000;
+    transition: width 0.1s ease;
+    width: 0%;
+  }
+
+  /* Side nav */
+  .side-nav {
+    position: fixed;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 1100px) {
+    .side-nav { display: none; }
+  }
+
+  .side-nav a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(200, 16, 46, 0.25);
+    border: 1px solid var(--vermillion);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .side-nav a:hover, .side-nav a.active {
+    background: var(--vermillion);
+    transform: scale(1.4);
+  }
+
+  .side-nav a::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    color: var(--vermillion);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  .side-nav a:hover::before { opacity: 1; }
+</style>
+</head>
+<body class="paper-texture">
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Side navigation -->
+<nav class="side-nav">
+  <a href="#intro" data-label="บทนำ"></a>
+  <a href="#duality" data-label="คู่ธรรม"></a>
+  <a href="#nine-tails" data-label="เก้าหาง"></a>
+  <a href="#tamamo" data-label="ทามาโมะ"></a>
+  <a href="#popculture" data-label="สื่อร่วมสมัย"></a>
+  <a href="#inari" data-label="อินาริ"></a>
+  <a href="#shrines" data-label="ศาลเจ้า"></a>
+  <a href="#food" data-label="อาหาร"></a>
+  <a href="#conclusion" data-label="บทสรุป"></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="particles-canvas"></canvas>
+  <div class="moon"></div>
+  <div class="hero-mist"></div>
+
+  <div class="hero-content">
+    <div class="hero-jp">狐・九尾</div>
+    <h1 class="hero-title">สุนัขจิ้งจอก</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-subtitle">สัตว์ที่มีสถานะมากมายในตำนานเอเชีย<br>ทั้งเทพผู้ปกปักษ์ และอสูรผู้พลิกแผ่นดิน</p>
+    <div class="hero-tagline">A Tale Across Three Thousand Years</div>
+  </div>
+
+  <div class="scroll-indicator">Scroll</div>
+</section>
+
+<!-- INTRO -->
+<section id="intro" class="section">
+  <div class="vertical-text">狐</div>
+  <div class="container-narrow">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๑ —</span>
+      <h2 class="section-title">สุนัขจิ้งจอกในตำนานพื้นบ้านแห่งเอเชีย</h2>
+      <span class="section-jp">東洋の狐伝説</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="prose-text drop-cap reveal">
+      ในบรรดาสัตว์ที่ปรากฏในตำนานพื้นบ้านทั่วเอเชียตะวันออก คงไม่มีตัวไหนที่มี "บุคลิกหลายหน้า" เท่ากับ <strong>จิ้งจอก</strong> อีกแล้ว มันถูกเล่าขานทั้งในฐานะปีศาจร้ายกาจที่ล่อลวงกษัตริย์จนบ้านเมืองล่มสลาย และในฐานะเทพเจ้าผู้ปกปักรักษาพืชผลและความมั่งคั่งของผู้คน ความย้อนแย้งนี้เองที่ทำให้จิ้งจอกกลายเป็นหนึ่งในสัญลักษณ์ทางวัฒนธรรมที่ทรงพลังและถูกนำไปตีความซ้ำแล้วซ้ำเล่ามาหลายศตวรรษ
+    </p>
+
+    <h3 class="reveal" style="font-family: 'Noto Serif Thai', serif; font-size: 1.5rem; font-weight: 600; color: var(--ink); margin: 2.5rem 0 1rem;">
+      ทำไมจิ้งจอกถึงมีตำนานหลากหลายเหลือเกิน
+    </h3>
+
+    <p class="prose-text reveal">
+      จิ้งจอกเป็นสัตว์ที่ฉลาด ปราดเปรียว หากินเวลากลางคืน และปรับตัวเข้ากับพื้นที่ใกล้มนุษย์ได้ดี คุณสมบัติเหล่านี้ทำให้คนโบราณมองมันด้วยความรู้สึกสองขั้ว—ทั้งเกรงขามในไหวพริบและระแวงในความเจ้าเล่ห์ ตำนานจิ้งจอกจึงแตกแขนงไปตามแต่ละวัฒนธรรม ไม่ว่าจะเป็นอินเดีย จีน เกาหลี หรือญี่ปุ่น และมักผสมผสานกันผ่านเส้นทางการค้าและวัฒนธรรมอย่างเส้นทางสายไหม จนเกิดเป็นภาพจิ้งจอกวิเศษที่มีทั้งฝั่งดีและฝั่งเลวปะปนกันไป
+    </p>
+
+    <p class="prose-text reveal">
+      ในความเชื่อของญี่ปุ่นซึ่งได้รับอิทธิพลจากลัทธิชินโตและพุทธศาสนา จิ้งจอกหรือ <strong>คิทสึเนะ (狐)</strong> ถูกแบ่งออกเป็นสองฝ่ายอย่างชัดเจน
+    </p>
+  </div>
+</section>
+
+<!-- DUALITY: Zenko vs Yako -->
+<section id="duality" class="section" style="background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);">
+  <div class="container">
+    <div class="section-header reveal" style="text-align: center;">
+      <span class="section-number">— บทที่ ๒ —</span>
+      <h2 class="section-title">สองฝ่ายแห่งคิทสึเนะ</h2>
+      <span class="section-jp">善狐 と 野狐</span>
+      <div class="section-divider" style="margin: 1.5rem auto 0;"></div>
+    </div>
+
+    <div class="duality-grid">
+      <!-- Zenko -->
+      <div class="duality-card zenko-card reveal">
+        <div class="duality-icon">善</div>
+        <div class="duality-label">The Celestial Fox</div>
+        <h3 class="duality-title">ฝั่งดี: เซนโกะ <span class="font-jp" style="font-size: 1.2rem;">善狐</span></h3>
+        <p class="duality-desc">
+          เซนโกะ หรือ เรโกะ (Reiko) คือจิ้งจอกฝ่ายดีที่รับใช้เทพเจ้า โดยเฉพาะ <strong style="color: var(--vermillion-deep);">อินาริ โอคามิ</strong> หรือ <strong style="color: var(--vermillion-deep);">เทพีดากินี</strong> (Dakini) ในบริบทพุทธศาสนา เซนโกะเป็นสื่อสารระหว่างโลกมนุษย์และสวรรค์ นำพาความโชคดี ความอุดมสมบูรณ์ และคำแนะนำศักดิ์สิทธิ์มาสู่ผู้ศรัทธา
+        </p>
+      </div>
+
+      <!-- Yako -->
+      <div class="duality-card yako-card reveal reveal-delay-1">
+        <div class="duality-icon">野</div>
+        <div class="duality-label">The Wild Fox</div>
+        <h3 class="duality-title">ฝั่งเลว: ยาโกะ <span class="font-jp" style="font-size: 1.2rem;">野狐</span></h3>
+        <p class="duality-desc">
+          อีกด้านหนึ่งคือ ยาโกะ หรือ โนกิทสึเนะ ซึ่งหมายถึง "จิ้งจอกป่า" ที่ไม่ได้รับใช้เทพเจ้า มักมีนิสัยซุกซน หลอกลวงมนุษย์ และบางครั้งก็ก่อภัยพิบัติ โนกิทสึเนะสามารถสิงร่างมนุษย์ได้ (เรียกว่า <strong style="color: var(--vermillion-bright);">คิทสึเนะซึกิ — Kitsune-tsuki</strong>) โดยเฉพาะผู้หญิง และดูดซับพลังชีวิตจากเหยื่อ
+        </p>
+      </div>
+    </div>
+
+    <div class="quote-callout reveal" style="margin-top: 3rem;">
+      การแบ่งเป็นฝ่ายดีและฝ่ายร้ายนั้นไม่ใช่เรื่องขาวดำเสมอไป ในตำนานพื้นบ้าน จิ้งจอกบางตัวอาจช่วยเหลือมนุษย์ด้วยความจริงใจ แต่ก็มีบางตัวที่หลอกลวงเพื่อความสนุกสนานหรือแก้แค้น
+    </div>
+
+    <!-- Hierarchy -->
+    <div class="reveal" style="margin-top: 4rem;">
+      <h3 style="font-family: 'Noto Serif Thai', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem;">
+        ลำดับชั้นภายในกลุ่มเซนโกะ
+      </h3>
+      <p style="color: var(--ink-3); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        จิ้งจอกฝ่ายดีมีการจัดลำดับตามสีและพลังอำนาจ จากสวรรค์สูงสุดไปจนถึงสัญลักษณ์แห่งกลุ่มดาว
+      </p>
+
+      <div class="hierarchy-list">
+        <div class="hierarchy-item">
+          <div>
+            <span class="hierarchy-dot" style="background: linear-gradient(135deg, #d4a857, #c8102e, #2a9d8f); color: #d4a857;"></span>
+            <span class="hierarchy-name">เทนโกะ <span class="font-jp" style="color: var(--ink-3); font-weight: 400;">Tenko</span></span>
+          </div>
+          <p class="hierarchy-desc">จิ้งจอกสวรรค์สูงสุด อายุนับพันปี มีพลังเหนือธรรมชาติ</p>
+        </div>
+
+        <div class="hierarchy-item">
+          <div>
+            <span class="hierarchy-dot" style="background: #d4a857; color: #d4a857;"></span>
+            <span class="hierarchy-name">คิงโกะ <span class="font-jp" style="color: var(--ink-3); font-weight: 400;">Kinko</span></span>
+          </div>
+          <p class="hierarchy-desc">จิ้งจอกสีทอง สัญลักษณ์แห่งดวงอาทิตย์</p>
+        </div>
+
+        <div class="hierarchy-item">
+          <div>
+            <span class="hierarchy-dot" style="background: #c0c0c0; color: #c0c0c0;"></span>
+            <span class="hierarchy-name">กิงโกะ <span class="font-jp" style="color: var(--ink-3); font-weight: 400;">Ginko</span></span>
+          </div>
+          <p class="hierarchy-desc">จิ้งจอกสีเงิน สัญลักษณ์แห่งดวงจันทร์</p>
+        </div>
+
+        <div class="hierarchy-item">
+          <div>
+            <span class="hierarchy-dot" style="background: #fafafa; color: #fafafa; border: 1px solid #ccc;"></span>
+            <span class="hierarchy-name">เบียคโกะ <span class="font-jp" style="color: var(--ink-3); font-weight: 400;">Byakko</span></span>
+          </div>
+          <p class="hierarchy-desc">จิ้งจอกสีขาว สื่อสารของอินาริ โอคามิ</p>
+        </div>
+
+        <div class="hierarchy-item">
+          <div>
+            <span class="hierarchy-dot" style="background: #1a1a1a; color: #1a1a1a;"></span>
+            <span class="hierarchy-name">โคคุโกะ <span class="font-jp" style="color: var(--ink-3); font-weight: 400;">Kokuko</span></span>
+          </div>
+          <p class="hierarchy-desc">จิ้งจอกสีดำ สัญลักษณ์ของกลุ่มดาวลูกไก่</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NINE-TAILED FOX ACROSS ASIA -->
+<section id="nine-tails" class="section paper-texture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๓ —</span>
+      <h2 class="section-title">จิ้งจอกเก้าหาง: ชื่อและตำนานในแต่ละแผ่นดิน</h2>
+      <span class="section-jp">九尾狐の三國伝説</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="prose-text reveal" style="max-width: 800px;">
+      จิ้งจอกเก้าหางเป็นสัญลักษณ์ของอำนาจและภูมิปัญญาสูงสุด โดยเชื่อว่าจิ้งจอกจะงอกหางเพิ่มทุก ๆ <strong>100 ปี</strong> และเมื่อครบ <strong>9 หาง</strong> ในอายุ <strong>900 ปี</strong> จะกลายเป็นสิ่งมีชีวิตที่เข้าใกล้ระดับเทพเจ้า
+    </p>
+
+    <div class="country-grid">
+      <!-- China -->
+      <div class="country-card china reveal">
+        <div class="country-flag">中華民國 · CHINA</div>
+        <h3 class="country-name">หูหลี่จิง</h3>
+        <span class="country-name-en">Huli Jing / 狐狸精</span>
+        <p style="font-size: 0.95rem; color: var(--ink-2); line-height: 1.7; margin-bottom: 1.5rem;">
+          ในตำนานจีน จิ้งจอกเก้าหากเรียก <strong>หูหลี่จิง</strong> หรือ <strong>จิ่วเหว่ย์หู</strong> มีทั้งฝ่ายดีที่บำเพ็ญเพียรเพื่อเป็นสังขารเป็นอมตะ และฝ่ายร้ายที่ดูดซับ "หยาง" จากมนุษย์
+        </p>
+        <div style="padding-top: 1.5rem; border-top: 1px dashed rgba(184, 137, 63, 0.3);">
+          <p style="font-size: 0.85rem; color: var(--ink-3); margin-bottom: 0.5rem; letter-spacing: 0.1em;">ตัวละครโด่งดัง</p>
+          <p style="font-family: 'Shippori Mincho', serif; font-size: 1.3rem; color: var(--vermillion); font-weight: 600;">ต๋าจี๋</p>
+          <p style="font-size: 0.9rem; color: var(--ink-2); margin-top: 0.5rem;">
+            หญิงงามที่ถูกจิ้งจอกสิงร่าง กลายเป็นสนมเอกของกษัตริย์โจวแห่งราชวงศ์ชาง จนนำมาซึ่งการล่มสลายของราชวงศ์
+          </p>
+        </div>
+      </div>
+
+      <!-- Korea -->
+      <div class="country-card korea reveal reveal-delay-1">
+        <div class="country-flag">大韓民國 · KOREA</div>
+        <h3 class="country-name">กูมิโฮ</h3>
+        <span class="country-name-en">Gumiho / 구미호</span>
+        <p style="font-size: 0.95rem; color: var(--ink-2); line-height: 1.7; margin-bottom: 1.5rem;">
+          ในเกาหลี จิ้งจอกเก้าหางเรียก <strong>กูมิโฮ</strong> โดยทั่วไปมีภาพลักษณ์เป็นอสูรกลืนกินตับหรือหัวใจมนุษย์ มี <strong>ยอวูกูซึล</strong> หรือลูกแก้ววิเศษเป็นพลังหลัก
+        </p>
+        <div style="padding-top: 1.5rem; border-top: 1px dashed rgba(184, 137, 63, 0.3);">
+          <p style="font-size: 0.85rem; color: var(--ink-3); margin-bottom: 0.5rem; letter-spacing: 0.1em;">ตำนานความรัก</p>
+          <p style="font-family: 'Shippori Mincho', serif; font-size: 1.3rem; color: var(--vermillion); font-weight: 600;">การไถ่บาป</p>
+          <p style="font-size: 0.9rem; color: var(--ink-2); margin-top: 0.5rem;">
+            หากกูมิโฮสามารถงดเว้นการกินเนื้อมนุษย์ได้นานพอ ก็อาจกลายเป็นมนุษย์ได้ โดยเฉพาะเมื่อมันมีความรักกับมนุษย์
+          </p>
+        </div>
+      </div>
+
+      <!-- Japan -->
+      <div class="country-card japan reveal reveal-delay-2">
+        <div class="country-flag">日本國 · JAPAN</div>
+        <h3 class="country-name">คิวบิ โน คิทสึเนะ</h3>
+        <span class="country-name-en">Kyūbi no Kitsune / 九尾の狐</span>
+        <p style="font-size: 0.95rem; color: var(--ink-2); line-height: 1.7; margin-bottom: 1.5rem;">
+          ในญี่ปุ่น จิ้งจอกเก้าหางเรียก <strong>คิวบิ โน คิทสึเนะ</strong> หรือ <strong>คิวบิโกะ</strong> โดยมีตำนานที่โด่งดังที่สุดคือเรื่องของ <strong>ทามาโมะ โน มาเอะ</strong>
+        </p>
+        <div style="padding-top: 1.5rem; border-top: 1px dashed rgba(184, 137, 63, 0.3);">
+          <p style="font-size: 0.85rem; color: var(--ink-3); margin-bottom: 0.5rem; letter-spacing: 0.1em;">ตำนานสยองขวัญ</p>
+          <p style="font-family: 'Shippori Mincho', serif; font-size: 1.3rem; color: var(--vermillion); font-weight: 600;">ทามาโมะ โน มาเอะ</p>
+          <p style="font-size: 0.9rem; color: var(--ink-2); margin-top: 0.5rem;">
+            หนึ่งในสามอสูรร้ายที่สุดของญี่ปุ่น เดินทางข้ามแผ่นดินเป็นเวลา 3,500 ปี ก่อนจะถูกปลิดชีพที่ทุ่งนาซุโนะ
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAMAMO NO MAE - Cinematic dark section -->
+<section id="tamamo" class="section tamamo-section">
+  <div class="container-narrow" style="position: relative; z-index: 2;">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๔ —</span>
+      <h2 class="section-title">วีรกรรมสยองขวัญ: ทามาโมะ โน มาเอะ</h2>
+      <span class="section-jp">玉藻前 — พลิกแผ่นดินด้วยเสน่ห์อันตราย</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="prose-text reveal" style="color: rgba(245, 236, 217, 0.85);">
+      <strong style="color: var(--vermillion-bright);">ทามาโมะ โน มาเอะ</strong> ถือเป็นหนึ่งในสามอสูรร้ายที่สุดของญี่ปุ่น (<strong style="color: var(--vermillion-bright);">นิฮงซันไดอะคุโยไค</strong>) ตำนานเล่าว่าเธอมีอายุกว่า 3,500 ปี เดินทางข้ามแผ่นดินในร่างหญิงงามคนแล้วคนเล่า ก่อนจะมาถึงจุดจบที่ญี่ปุ่น
+    </p>
+
+    <div class="tamamo-quote reveal">
+      "เธอเป็นทั้งความงามสูงสุด<br>และความชั่วร้ายสูงสุดในตัวเดียวกัน"
+    </div>
+
+    <div class="tamamo-timeline reveal">
+      <div class="timeline-item">
+        <div class="timeline-year">จีน</div>
+        <div class="timeline-content">
+          <strong>ต๋าจี๋ (Daji)</strong> — เริ่มต้นชีวิตในฐานะสนมเอกของกษัตริย์โจวแห่งราชวงศ์ชาง จนนำพาการล่มสลายของราชวงศ์
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">อินเดีย</div>
+        <div class="timeline-content">
+          <strong>เลดี้ คาโย (Lady Kayō)</strong> — หลี้หนีไปอินเดีย ใช้ชีวิตในร่างหญิงงามผู้มีเสน่ห์ลึกลับ
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">จีน</div>
+        <div class="timeline-content">
+          <strong>เปา ซือ (Bao Si)</strong> — กลับมาจีนอีกครั้ง เป็นหญิงงามที่ทำให้กษัตริย์หยวนหวางหัวเราะ จนนำมาซึ่งการล่มสลายของราชวงศ์โจวตะวันตก
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">ญี่ปุ่น</div>
+        <div class="timeline-content">
+          <strong>มิคุซึเมะ (Mikuzume)</strong> — เดินทางมาญี่ปุ่นในยุคเฮอัง ปรากฏตัวเป็นเด็กหญิงที่มีความงดงามและสติปัญญาสูงล้ำ จักรพรรดิโทบะทรงหลงใหลและตั้งเป็นสนม แต่หลังจากนั้นพระองค์ทรงประชวรอย่างหนัก
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">เปิดโปง</div>
+        <div class="timeline-content">
+          โอมเมียวจิ <strong>อาเบะ โนะ ยาสึนาริ</strong> (บิดาของอาเบะ โนะ เซเมย์ผู้โด่งดัง) ทำพิธีเปิดโปงตัวตนที่แท้จริงของนาง เมื่อถูกเปิดโปง ทามาโมะหนีไปยังทุ่งนาซุโนะ (Nasuno) ในจังหวัดโทชิงิ
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">ล่าสังหาร</div>
+        <div class="timeline-content">
+          จักรพรรดิทรงส่งกองทัพ <strong>80,000 นาย</strong> ไปล่า โดยมี <strong>คาซุซาโนะซุเกะ</strong> และ <strong>มิอุระโนะซุเกะ</strong> เป็นผู้นำ สุดท้ายมิอุระโนะซุเกะยิงธนูถูกจิ้งจอกและปลิดชีวิตมันได้
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">คำสาป</div>
+        <div class="timeline-content">
+          วิญญาณของนางเข้าสิงก้อนหินชื่อ <strong>เซ็ชโช เซกิ (Sesshō-seki)</strong> หรือ <strong>"หินฆ่าชีวิต"</strong> ทุกสิ่งมีชีวิตที่เข้าใกล้หินนี้จะตายในทันที จนกระทั่งพระภิกษุ <strong>เง็นโนะ (Gennō)</strong> เดินทางมาทำพิธีไล่อาถรรพ์ และทำลายหินนั้นเป็นชิ้น ๆ ซึ่งกระจายไปทั่วญี่ปุ่น
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POP CULTURE -->
+<section id="popculture" class="section paper-texture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๕ —</span>
+      <h2 class="section-title">จิ้งจอกเก้าหางในสื่อร่วมสมัย</h2>
+      <span class="section-jp">現代文化における九尾狐</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="prose-text reveal" style="max-width: 800px;">
+      ความน่าหลงใหลของจิ้งจอกเก้าหางทำให้มันถูกนำไปใช้ในสื่อบันเทิงร่วมสมัยมากมาย จากอนิเมะ โปเกมอน วิดีโอเกม ไปจนถึงนิยายนับไม่ถ้วน ที่ใช้จิ้งจอกเป็นสัญลักษณ์ของความลึกลับ ความเย้ายวน และพลังเหนือธรรมชาติ
+    </p>
+
+    <div class="popculture-grid">
+      <div class="popcard naruto reveal">
+        <h3 class="popcard-title">Naruto</h3>
+        <span class="popcard-name">Kurama — クラマ</span>
+        <p class="popcard-desc">จิ้งจอกเก้าหางที่ถูกผนึกในร่างของนารูโตะ เป็นหนึ่งในตัวละครที่มีบทบาทสำคัญที่สุดในเรื่อง</p>
+      </div>
+
+      <div class="popcard pokemon reveal reveal-delay-1">
+        <h3 class="popcard-title">Pokémon</h3>
+        <span class="popcard-name">Ninetales — キュウコン</span>
+        <p class="popcard-desc">โปเกมอนจิ้งจอกเก้าหางที่สามารถสาปแช่งผู้ที่แตะต้องหางของมัน มีอายุยืนยาวถึง 1,000 ปี</p>
+      </div>
+
+      <div class="popcard lol reveal reveal-delay-2">
+        <h3 class="popcard-title">League of Legends</h3>
+        <span class="popcard-name">Ahri — 아리</span>
+        <p class="popcard-desc">แชมเปี้ยนจิ้งจอกเก้าหางที่ได้รับแรงบันดาลใจหลักจาก กูมิโฮ ของเกาหลี มีความสามารถในการดูดซับพลังวิญญาณและเสน่ห์เหยื่อ</p>
+      </div>
+
+      <div class="popcard anime1 reveal">
+        <h3 class="popcard-title">Inari, Konkon, Koi Iroha</h3>
+        <span class="popcard-name">いなり、こんこん、恋いろは。</span>
+        <p class="popcard-desc">อนิเมะที่เล่าเรื่องความสัมพันธ์ระหว่างมนุษย์กับจิ้งจอกศาลเจ้าอินาริ</p>
+      </div>
+
+      <div class="popcard anime2 reveal reveal-delay-1">
+        <h3 class="popcard-title">Kamisama Kiss</h3>
+        <span class="popcard-name">神様はじめました</span>
+        <p class="popcard-desc">มีจิ้งจอกเป็นตัวละครสำคัญ ผสมผสานความเชื่อเทพเจ้าและโรแมนติกคอเมดี้</p>
+      </div>
+
+      <div class="popcard anime3 reveal reveal-delay-2">
+        <h3 class="popcard-title">Natsume's Book of Friends</h3>
+        <span class="popcard-name">夏目友人帳</span>
+        <p class="popcard-desc">ซีรีส์อนิเมะที่มีจิ้งจอกเป็นตัวละครสำคัญ สะท้อนมุมมองอ่อนโยนต่อโลกวิญญาณ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INARI SECTION -->
+<section id="inari" class="section inari-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๖ —</span>
+      <h2 class="section-title">จิ้งจอกฝั่งดีตัวจริง: เทพอินาริ โอคามิ</h2>
+      <span class="section-jp">稲荷大神 — เทพเจ้าแห่งข้าวและความอุดมสมบูรณ์</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="inari-highlight reveal">
+      <p style="font-size: 1.15rem; line-height: 1.8; color: var(--ink); margin: 0;">
+        <strong style="color: var(--vermillion);">อินาริ โอคามิ (Inari Ōkami / 稲荷大神)</strong> เป็นเทพเจ้าที่สำคัญที่สุดองค์หนึ่งในศาสนาชินโตของญี่ปุ่น แต่ความจริงแล้ว <strong style="color: var(--vermillion);">อินาริไม่ใช่จิ้งจอก</strong> — จิ้งจอกเป็นเพียง <strong>ผู้ส่งสารศักดิ์สิทธิ์</strong> ของพระองค์เท่านั้น
+      </p>
+    </div>
+
+    <p class="prose-text reveal">
+      อินาริเป็นเทพเจ้าแห่ง <strong>ข้าว อาหาร ความอุดมสมบูรณ์ และความมั่งคั่ง</strong> ชื่อ "อินาริ" มาจากคำโบราณว่า <em>ine nari</em> หรือ <em>ine ni naru</em> แปลว่า "ข้าวสุก" หรือ "ข้าวที่เจริญงอกงาม" นอกจากนี้ยังเป็นที่เคารพในฐานะเทพแห่งการค้า อุตสาหกรรม ความปลอดภัยในครัวเรือน และความปลอดภัยในการจราจร
+    </p>
+
+    <h3 class="reveal" style="font-family: 'Noto Serif Thai', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin: 2.5rem 0 1rem;">
+      เทพเจ้าองค์รวม 5 องค์ ที่ศาลเจ้าฟุชิมิ อินาริ ไทชะ
+    </h3>
+
+    <div class="god-grid">
+      <div class="god-item reveal">
+        <div class="god-num">1</div>
+        <div>
+          <div class="god-name">อุคาโนะมิตามะ โน โอคามิ</div>
+          <div style="font-size: 0.85rem; color: var(--ink-3);">เทพีองค์กลาง</div>
+        </div>
+      </div>
+
+      <div class="god-item reveal">
+        <div class="god-num">2</div>
+        <div>
+          <div class="god-name">ซาตะฮิโกะ โน โอคามิ</div>
+          <div style="font-size: 0.85rem; color: var(--ink-3);">—</div>
+        </div>
+      </div>
+
+      <div class="god-item reveal">
+        <div class="god-num">3</div>
+        <div>
+          <div class="god-name">โอมิยาโนเมะ โน โอคามิ</div>
+          <div style="font-size: 0.85rem; color: var(--ink-3);">—</div>
+        </div>
+      </div>
+
+      <div class="god-item reveal">
+        <div class="god-num">4</div>
+        <div>
+          <div class="god-name">ทานากะ โน โอคามิ</div>
+          <div style="font-size: 0.85rem; color: var(--ink-3);">—</div>
+        </div>
+      </div>
+
+      <div class="god-item reveal">
+        <div class="god-num">5</div>
+        <div>
+          <div class="god-name">ชิโนะ โน โอคามิ</div>
+          <div style="font-size: 0.85rem; color: var(--ink-3);">—</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="reveal" style="font-family: 'Noto Serif Thai', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin: 3rem 0 1rem;">
+      ทำไมจิ้งจอกถึงเป็นสื่อสารของอินาริ?
+    </h3>
+
+    <p class="prose-text reveal">
+      มีหลายทฤษฎี แต่ทฤษฎีที่น่าเชื่อถือที่สุดคือ ในสมัยก่อน จิ้งจอกมักปรากฏตัวใกล้ทุ่งนา และกินหนูหรือศัตรูพืชที่ทำลายข้าว จึงถูกมองว่าเป็นผู้ปกป้องพืชผล นอกจากนี้ยังมีอิทธิพลจากพุทธศาสนา โดยเทพี <strong>ดากินีเทน (Dakiniten)</strong> ซึ่งมักขี่จิ้งจอกสีขาว ทำให้เกิดการผสมผสานความเชื่อระหว่างชินโตและพุทธ
+    </p>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="reveal">
+      <div class="stat-number">32,000+</div>
+      <div class="stat-label">ศาลเจ้าอินาริทั่วญี่ปุ่น</div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="stat-number">1/3</div>
+      <div class="stat-label">ของศาลเจ้าชินโตทั้งหมด</div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="stat-number">10,000</div>
+      <div class="stat-label">โทริอิที่ฟุชิมิ อินาริ</div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="stat-number">711</div>
+      <div class="stat-label">ปีที่ก่อตั้งศาลเจ้าหลัก</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY SO MANY SHRINES -->
+<section class="section paper-texture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๗ —</span>
+      <h2 class="section-title">ทำไมศาลเจ้าอินาริถึงมีมากมายทั่วญี่ปุ่น</h2>
+      <span class="section-jp">稲荷神社が多い理由</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="inari-highlight reveal" style="background: linear-gradient(135deg, rgba(200, 16, 46, 0.08), rgba(212, 168, 87, 0.08));">
+      <p style="font-size: 1.4rem; font-weight: 600; color: var(--vermillion); margin: 0; text-align: center; font-family: 'Noto Serif Thai', serif;">
+        คำตอบสั้น ๆ คือ — "เพราะทุกคนอยากรวย"
+      </p>
+    </div>
+
+    <p class="prose-text reveal">
+      หนึ่งในเรื่องที่คนต่างชาติมักตกใจเมื่อไปเที่ยวญี่ปุ่นคือปริมาณของศาลเจ้าอินาริที่มีอยู่แทบทุกพื้นที่ ตั้งแต่ศาลเจ้าใหญ่โตอย่างฟุชิมิอินาริไทฉะในเกียวโต ไปจนถึงศาลเจ้าเล็ก ๆ ริมทางหรือมุมตึกในเมือง จากการสำรวจของสมาคมศาลเจ้าชินโตแห่งชาติเมื่อปี ค.ศ. 1985 พบว่ามีศาลเจ้าที่อุทิศให้เทพอินาริโดยตรงมากกว่า 32,000 แห่งทั่วประเทศ
+    </p>
+
+    <div class="reasons-list">
+      <div class="reason-item reveal">
+        <h4 class="reason-title">ข้าว = ความมั่งคั่ง</h4>
+        <p style="color: var(--ink-2); font-size: 0.98rem; margin: 0;">
+          ในอดีตข้าวไม่ใช่แค่อาหาร แต่เป็นสกุลเงินและตัววัดความร่ำรวย เมื่อสังคมเปลี่ยนจากเกษตรกรรมสู่การค้าและอุตสาหกรรม อินาริจึงกลายเป็นเทพแห่งธุรกิจไปด้วย ร้านค้า โรงงาน และบริษัทต่าง ๆ จึงสร้างศาลเจ้าอินาริเป็นของตนเองเพื่อขอพรความเจริญรุ่งเรือง
+        </p>
+      </div>
+
+      <div class="reason-item reveal reveal-delay-1">
+        <h4 class="reason-title">ศาลเจ้าส่วนบุคคลได้</h4>
+        <p style="color: var(--ink-2); font-size: 0.98rem; margin: 0;">
+          ชาวญี่ปุ่นสามารถสร้างศาลเจ้าอินาริขนาดเล็กในบ้านหรือที่ทำงานได้ โดยไม่จำเป็นต้องผูกขาดกับศาลเจ้าใหญ่ ทำให้เกิดศาลเจ้าขนาดจิ๋วนับหมื่นแห่ง
+        </p>
+      </div>
+
+      <div class="reason-item reveal reveal-delay-2">
+        <h4 class="reason-title">ความยืดหยุ่นทางศาสนา</h4>
+        <p style="color: var(--ink-2); font-size: 0.98rem; margin: 0;">
+          อินาริมีลักษณะเป็น "เทพพื้นบ้าน" ที่ไม่มีลัทธิเข้มงวด ผู้คนสามารถบูชาในแบบของตนเองได้ แม้แต่ในยุคเมจิที่รัฐบังคับแยกชินโตกับพุทธ ศาลเจ้าอินาริก็ยังเติบโตเพราะความนิยมล้นหลาม
+        </p>
+      </div>
+    </div>
+
+    <h3 class="reveal" style="font-family: 'Noto Serif Thai', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin: 3rem 0 1.5rem;">
+      เหตุผลที่เทพอินาริโด่งดังเป็นพิเศษ
+    </h3>
+
+    <div class="popculture-grid">
+      <div class="card reveal">
+        <h4 style="font-family: 'Noto Serif Thai', serif; font-weight: 700; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.75rem;">
+          ครอบคลุมทุกมิติของชีวิต
+        </h4>
+        <p style="font-size: 0.95rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          ตั้งแต่เรื่องปากท้อง การงาน การเงิน สุขภาพ ไปจนถึงการสอบผ่าน ทำให้คนทุกกลุ่มรู้สึกเชื่อมโยงกับเทพองค์นี้ได้
+        </p>
+      </div>
+
+      <div class="card reveal reveal-delay-1">
+        <h4 style="font-family: 'Noto Serif Thai', serif; font-weight: 700; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.75rem;">
+          ภาพลักษณ์ที่จดจำง่าย
+        </h4>
+        <p style="font-size: 0.95rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          เสาโทริอิสีแดงชาดเรียงกันเป็นแนวยาวและรูปปั้นจิ้งจอกเป็นเอกลักษณ์ทางสายตาที่โดดเด่น กลายเป็นหนึ่งในภาพแทนของญี่ปุ่น
+        </p>
+      </div>
+
+      <div class="card reveal reveal-delay-2">
+        <h4 style="font-family: 'Noto Serif Thai', serif; font-weight: 700; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.75rem;">
+          ผูกกับความเชื่อเรื่องจิ้งจอก
+        </h4>
+        <p style="font-size: 0.95rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          ซึ่งเป็นสัตว์ที่มีเสน่ห์ลึกลับอยู่แล้วในวัฒนธรรมญี่ปุ่น ทำให้เรื่องราวของอินาริถูกเล่าต่อและตีความใหม่ได้ไม่รู้จบ
+        </p>
+      </div>
+    </div>
+
+    <div class="torii-divider">
+      <span class="torii-icon">鳥居</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+      <div class="card reveal" style="border-left: 3px solid var(--vermillion);">
+        <h4 style="font-family: 'Shippori Mincho', serif; color: var(--vermillion); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 0.1em;">TORII · 鳥居</h4>
+        <p style="font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.5rem;">โทริอิสีแดงสด</p>
+        <p style="font-size: 0.92rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          สีแดงสดใสเป็นสีป้องกันสิ่งชั่วร้าย และเป็นสัญลักษณ์ของความอุดมสมบูรณ์ ที่ฟุชิมิ อินาริ มีโทริอิกว่า 10,000 ต้น เรียงรายขึ้นเขา
+        </p>
+      </div>
+
+      <div class="card reveal reveal-delay-1" style="border-left: 3px solid var(--gold);">
+        <h4 style="font-family: 'Shippori Mincho', serif; color: var(--gold); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 0.1em;">狐の像 · FOX STATUE</h4>
+        <p style="font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.5rem;">รูปปั้นจิ้งจอกคู่</p>
+        <p style="font-size: 0.92rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          มักตั้งอยู่หน้าศาลเจ้า จิ้งจอกตัวหนึ่งอาจคาบ กุญแจยุ้งฉาง อีกตัวอาจคาบ ลูกแก้ว หรือ คัมภีร์
+        </p>
+      </div>
+
+      <div class="card reveal reveal-delay-2" style="border-left: 3px solid var(--ink);">
+        <h4 style="font-family: 'Shippori Mincho', serif; color: var(--ink); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 0.1em;">大晦日 · NEW YEAR EVE</h4>
+        <p style="font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.5rem;">เทศกาลปีใหม่</p>
+        <p style="font-size: 0.92rem; color: var(--ink-2); margin: 0; line-height: 1.7;">
+          ตำนานเล่าว่าในคืนวันส่งท้ายปีเก่า จิ้งจอกจากทั่วคันโตจะมารวมตัวกัน แล้วแปลงร่างเป็นมนุษย์ไปกราบไหว้ ชาวบ้านจะนับแสงจิ้งจอก (คิทสึเนะบิ) เพื่อทำนายผลผลิตปีหน้า
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOD SECTION -->
+<section id="food" class="section" style="background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๘ —</span>
+      <h2 class="section-title">เมื่อจิ้งจอกกลายเป็นอาหาร</h2>
+      <span class="section-jp">狐と食 — อินาริซูชิ และ คิทสึเนะอุด้ง</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="prose-text reveal" style="max-width: 800px;">
+      ความเชื่อเรื่องจิ้งจอกยังลงลึกไปถึงวัฒนธรรมอาหารญี่ปุ่นด้วย เพราะเชื่อกันว่าจิ้งจอก (โดยเฉพาะบริวารของเทพอินาริ) ชื่นชอบ <strong>เต้าหู้ทอด (อาบุระอาเงะ)</strong> เป็นพิเศษ จึงเกิดเมนูที่ตั้งชื่อตามความเชื่อนี้ขึ้นมา
+    </p>
+
+    <div class="food-grid">
+      <div class="food-card reveal">
+        <div class="food-visual">
+          <div class="food-emoji">🍙</div>
+        </div>
+        <div class="food-content">
+          <div class="food-jp">稲荷寿司</div>
+          <h3 class="food-name">อินาริซูชิ</h3>
+          <p class="food-desc">
+            ข้าวปั้นที่ห่อด้วยเต้าหู้ทอดปรุงรสหวานเค็ม ตั้งชื่อตามเทพอินาริโดยตรง เชื่อกันว่าเป็นการถวายอาหารอันโอชะแก่จิ้งจอกบริวารของเทพ นิยมทำถวายในเทศกาลหรือทำกินกันในครอบครัว
+          </p>
+        </div>
+      </div>
+
+      <div class="food-card reveal reveal-delay-1">
+        <div class="food-visual" style="background: linear-gradient(135deg, #b8893f, #8b6f3f);">
+          <div class="food-emoji">🍜</div>
+        </div>
+        <div class="food-content">
+          <div class="food-jp">きつねうどん</div>
+          <h3 class="food-name">คิทสึเนะอุด้ง</h3>
+          <p class="food-desc">
+            เส้นอุด้งในน้ำซุปใสราดด้วยเต้าหู้ทอดชิ้นใหญ่ ชื่อ "คิทสึเนะ" ที่แปลว่าจิ้งจอกมาจากความเชื่อเดียวกัน คือการเปรียบเปรยว่าเต้าหู้ทอดเป็นของโปรดของจิ้งจอกนั่นเอง
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-callout reveal" style="margin-top: 3rem;">
+      อาหารทั้งสองเมนูนี้จึงไม่ได้เป็นเพียงของอร่อยธรรมดา แต่ยังสะท้อนความเชื่อและความผูกพันระหว่างชาวญี่ปุ่นกับเทพอินาริและจิ้งจอกที่ฝังรากลึกอยู่ในชีวิตประจำวันมานานหลายร้อยปี
+    </div>
+  </div>
+</section>
+
+<!-- FAMOUS SHRINES -->
+<section id="shrines" class="section paper-texture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-number">— บทที่ ๙ —</span>
+      <h2 class="section-title">ศาลเจ้าอินาริ: สถานที่ศักดิ์สิทธิ์ที่เชื่อมโยงมนุษย์กับจิ้งจอก</h2>
+      <span class="section-jp">稲荷神社 — สถานที่ศักดิ์สิทธิ์</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="inari-highlight reveal" style="margin-bottom: 3rem;">
+      <h3 style="font-family: 'Noto Serif Thai', serif; font-size: 1.4rem; font-weight: 700; color: var(--vermillion); margin: 0 0 0.5rem;">
+        ฟุชิมิ อินาริ ไทชะ
+      </h3>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-3); margin: 0 0 1rem;">Fushimi Inari Taisha — ศาลเจ้าหลัก</p>
+      <p style="color: var(--ink-2); margin: 0; line-height: 1.8;">
+        ตั้งอยู่ในเมืองเกียวโต ก่อตั้งเมื่อปี <strong style="color: var(--vermillion);">ค.ศ. 711</strong> เป็นศาลเจ้าอินาริที่เก่าแก่และมีชื่อเสียงที่สุด บริเวณเขาอินาริมีโทริอิสีแดงเรียงรายกว่า 10,000 ต้น กลายเป็นหนึ่งในภาพที่ถ่ายบ่อยที่สุดของญี่ปุ่น
+      </p>
+    </div>
+
+    <h3 class="reveal" style="font-family: 'Noto Serif Thai', serif; font-size: 1.3rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem;">
+      ศาลเจ้าอินาริอื่น ๆ ที่สำคัญ
+    </h3>
+
+    <div class="shrine-list">
+      <div class="shrine-item reveal">
+        <div class="shrine-marker">鳥</div>
+        <div>
+          <div class="shrine-name">ยูโทกุ อินาริ</div>
+          <div class="shrine-name-en">Yutoku Inari Shrine</div>
+        </div>
+        <div class="shrine-location">จ. ซากะ</div>
+      </div>
+
+      <div class="shrine-item reveal">
+        <div class="shrine-marker">居</div>
+        <div>
+          <div class="shrine-name">คาซามะ อินาริ</div>
+          <div class="shrine-name-en">Kasama Inari Shrine — ประวัติกว่า 1,500 ปี</div>
+        </div>
+        <div class="shrine-location">จ. อิบารากิ</div>
+      </div>
+
+      <div class="shrine-item reveal">
+        <div class="shrine-marker">稲</div>
+        <div>
+          <div class="shrine-name">โทโยกาวะ อินาริ</div>
+          <div class="shrine-name-en">Toyokawa Inari — มีรูปปั้นจิ้งจอกกว่า 1,000 ตัว</div>
+        </div>
+        <div class="shrine-location">จ. ไอจิ</div>
+      </div>
+
+      <div class="shrine-item reveal">
+        <div class="shrine-marker">荷</div>
+        <div>
+          <div class="shrine-name">ฮิเอะ จิงจะ</div>
+          <div class="shrine-name-en">Hie Jinja — ศาลเจ้าอินาริใหญ่ที่สุดในโตเกียว</div>
+        </div>
+        <div class="shrine-location">โตเกียว</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section id="conclusion" class="conclusion-section">
+  <div class="container-narrow">
+    <div class="section-header reveal" style="text-align: center;">
+      <span class="section-number">— บทสรุป —</span>
+      <h2 class="section-title">จิ้งจอก — สัญลักษณ์แห่งความเป็นอมตะ</h2>
+      <span class="section-jp">狐 — 永遠の象徴</span>
+      <div class="section-divider" style="margin: 1.5rem auto 0;"></div>
+    </div>
+
+    <p class="conclusion-text reveal">
+      จากตำนานโบราณสู่สื่อร่วมสมัย จากเทพเจ้าองค์รักษ์สู่อสูรกลืนกิน จิ้งจอกเป็นสัญลักษณ์ที่สะท้อนความซับซ้อนของจิตใจมนุษย์ — <strong>เราทั้งต้องการถูกปกป้อง และกลัวสิ่งที่เราไม่เข้าใจ</strong>
+    </p>
+
+    <p class="conclusion-text reveal reveal-delay-1">
+      ไม่ว่าจะเป็น <strong>เซนโกะ</strong> ที่คอยนำพาพรจากอินาริ โอคามิ หรือ <strong>ทามาโมะ โน มาเอะ</strong> ที่พลิกแผ่นดินด้วยเสน่ห์อันตราย จิ้งจอกยังคงเป็นสิ่งมีชีวิตในจินตนาการที่ไม่มีวันตาย และจะยังคงวิ่งเล่นอยู่บนทุ่งนา ในอนิเมะ ในเกม และในความฝันของเราต่อไปอีกนานแสนนาน
+    </p>
+
+    <div class="signature-note reveal">
+      <p style="margin: 0 0 1rem 0; font-size: 1.05rem; color: var(--ink-2);">
+        หากคุณเดินทางไปญี่ปุ่น อย่าลืมแวะศาลเจ้าอินาริสักแห่ง ไหว้ขอพรความอุดมสมบูรณ์ แล้วลองชิมอินาริซูชิหรือคิทสึเนะอุด้งสักชาม — แล้วคุณจะเข้าใจว่าทำไมจิ้งจอกถึงครองใจชาวญี่ปุ่นมาหลายพันปี
+      </p>
+      <p style="margin: 0; font-size: 0.85rem; color: var(--ink-3); letter-spacing: 0.1em;">
+        — บทความนี้รวบรวมและเรียบเรียงจากตำนานพื้นบ้านและข้อมูลทางวัฒนธรรมของญี่ปุ่น จีน และเกาหลี เพื่อการศึกษาและความบันเทิงเท่านั้น
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fox-mark">狐</div>
+  <p style="margin: 0; letter-spacing: 0.2em;">KITSUNE · 狐 · สุนัขจิ้งจอก</p>
+  <p style="margin: 1rem 0 0; font-size: 0.85rem; opacity: 0.5;">
+    A Tale Across Three Thousand Years · ตำนานอมตะในวัฒนธรรมเอเชีย
+  </p>
+</footer>
+
+<script>
+  // ========== Particle System (Kitsunebi - Fox Fires) ==========
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Particle {
+    constructor() {
+      this.reset();
+      this.y = Math.random() * canvas.height;
+    }
+
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + Math.random() * 50;
+      this.size = Math.random() * 3 + 1;
+      this.speedY = -(Math.random() * 0.8 + 0.3);
+      this.speedX = (Math.random() - 0.5) * 0.4;
+      this.opacity = 0;
+      this.maxOpacity = Math.random() * 0.6 + 0.3;
+      this.fadeSpeed = Math.random() * 0.01 + 0.005;
+      this.fadingIn = true;
+
+      // Color variations - warm fox fire colors
+      const colors = [
+        [230, 57, 70],   // vermillion red
+        [212, 168, 87],  // gold
+        [245, 215, 133], // bright gold
+        [255, 180, 100], // amber
+      ];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    update() {
+      this.y += this.speedY;
+      this.x += this.speedX;
+      this.speedX += (Math.random() - 0.5) * 0.05;
+      this.speedX = Math.max(-0.8, Math.min(0.8, this.speedX));
+
+      if (this.fadingIn) {
+        this.opacity += this.fadeSpeed * 20;
+        if (this.opacity >= this.maxOpacity) {
+          this.opacity = this.maxOpacity;
+          this.fadingIn = false;
+        }
+      } else {
+        this.opacity -= this.fadeSpeed;
+      }
+
+      if (this.opacity <= 0 || this.y < -20) {
+        this.reset();
+      }
+    }
+
+    draw() {
+      const [r, g, b] = this.color;
+      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 4);
+      gradient.addColorStop(0, `rgba(${r},${g},${b},${this.opacity})`);
+      gradient.addColorStop(0.4, `rgba(${r},${g},${b},${this.opacity * 0.4})`);
+      gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Core
+      ctx.fillStyle = `rgba(255, 240, 200, ${this.opacity * 0.9})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Initialize particles
+  for (let i = 0; i < 80; i++) {
+    particles.push(new Particle());
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // ========== Scroll Reveal ==========
+  const observerOptions = {
+    threshold: 0.12,
+    rootMargin: '0px 0px -80px 0px'
+  };
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  // ========== Progress Bar ==========
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    progressBar.style.width = scrollPercent + '%';
+  });
+
+  // ========== Side Navigation Active State ==========
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const sections = document.querySelectorAll('section[id]');
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(section => navObserver.observe(section));
+
+  // ========== Smooth Scroll for Side Nav ==========
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href');
+      const targetSection = document.querySelector(targetId);
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ========== Parallax Moon ==========
+  const moon = document.querySelector('.moon');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    if (scrolled < window.innerHeight) {
+      moon.style.transform = `translateY(${scrolled * 0.3}px) translateX(${scrolled * -0.1}px)`;
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -117,5 +117,19 @@
     "date": "19-07-2026",
     "tags": ["NASA", "SPACE", "STAR"],
     "file": "article/oumuamua.html"
+  },
+  {
+    "id": "percento",
+    "title": "ประวัติศาสตร์พลิกโลกของ สมการ และ เปอร์เซ็นต์",
+    "date": "20-07-2026",
+    "tags": ["history", "math", "percent"],
+    "file": "article/historypercento.html"
+  },
+  {
+    "id": "iinari",
+    "title": "สุนัขจิ้งจอก และตำนานอันหลากหลาย",
+    "date": "28-07-2026",
+    "tags": ["history", "myth", "fox"],
+    "file": "article/iinari.html"
   }
 ]
