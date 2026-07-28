@@ -1,17 +1,17 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-AZN,AstraZeneca PLC,27-07-26,After Market,169.26,-9.25%,NYSE,
-CDNS,Cadence Design Systems Inc.,27-07-26,After Market,326.24,1.31%,NASDAQ,
-FFIV,F5 Inc.,27-07-26,After Market,392.21,46.65%,NASDAQ,
-WELL,Welltower Inc.,27-07-26,After Market,252.07,38.23%,NYSE,
-BA,Boeing Company ,28-07-26,Before Market,209.52,-15.66%,NYSE,
-DINO,HF Sinclair Corporation,28-07-26,Before Market,88.3,81.99%,NYSE,
-ECL,Ecolab Inc.,28-07-26,Before Market,268.75,-4.75%,NYSE,
-GLW,Corning Incorporated,28-07-26,Before Market,146.65,54.98%,NYSE,
-KO,Coca-Cola Company ,28-07-26,Before Market,82.25,14.87%,NYSE,
-PCAR,PACCAR Inc.,28-07-26,Before Market,132.24,8.92%,NASDAQ,
-SHW,Sherwin-Williams Company ,28-07-26,Before Market,317.51,-8.41%,NYSE,
-SPGI,S&P Global Inc.,28-07-26,Before Market,426.4,-15.40%,NYSE,
-UPS,United Parcel Service Inc.,28-07-26,Before Market,114.79,10.64%,NYSE,
+AZN,AstraZeneca PLC,27-07-26,After Market,169.26,-9.25%,NYSE,+1.07%
+CDNS,Cadence Design Systems Inc.,27-07-26,After Market,326.24,1.31%,NASDAQ,+2.62%
+FFIV,F5 Inc.,27-07-26,After Market,392.21,46.65%,NASDAQ,-8.08%
+WELL,Welltower Inc.,27-07-26,After Market,252.07,38.23%,NYSE,+1.30%
+BA,Boeing Company ,28-07-26,Before Market,209.52,-15.66%,NYSE,-0.17%
+DINO,HF Sinclair Corporation,28-07-26,Before Market,88.3,81.99%,NYSE,+1.10%
+ECL,Ecolab Inc.,28-07-26,Before Market,268.75,-4.75%,NYSE,+2.16%
+GLW,Corning Incorporated,28-07-26,Before Market,146.65,54.98%,NYSE,-13.92%
+KO,Coca-Cola Company ,28-07-26,Before Market,82.25,14.87%,NYSE,+3.39%
+PCAR,PACCAR Inc.,28-07-26,Before Market,132.24,8.92%,NASDAQ,-0.80%
+SHW,Sherwin-Williams Company ,28-07-26,Before Market,317.51,-8.41%,NYSE,+5.66%
+SPGI,S&P Global Inc.,28-07-26,Before Market,426.4,-15.40%,NYSE,-5.76%
+UPS,United Parcel Service Inc.,28-07-26,Before Market,114.79,10.64%,NYSE,-6.36%
 CAKE,The Cheesecake Factory Incorpor,28-07-26,After Market,84.72,49.11%,NASDAQ,
 F,Ford Motor Company,28-07-26,After Market,14.37,9.44%,NYSE,
 MDLZ,Mondelez International Inc.,28-07-26,After Market,60.52,5.17%,NASDAQ,
