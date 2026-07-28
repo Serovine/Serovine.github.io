@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Music Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #05050f;
+            --bg-panel: rgba(15, 15, 30, 0.75);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            position: relative;
+        }
+
+        /* เอฟเฟกต์หมอกดาราจักร (Nebula) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(76, 29, 149, 0.25) 0%, transparent 35%),
+                radial-gradient(circle at 85% 75%, rgba(30, 58, 138, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(190, 24, 93, 0.15) 0%, transparent 30%);
+            z-index: -2;
+            animation: nebulaShift 30s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        /* เอฟเฟกต์ดวงดาวกระพริบ (Stars) */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 50px 160px, #fff, transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+                radial-gradient(1px 1px at 200px 50px, rgba(192, 132, 252, 0.5), transparent),
+                radial-gradient(2px 2px at 250px 100px, rgba(56, 189, 248, 0.4), transparent);
+            background-size: 300px 300px;
+            background-repeat: repeat;
+            z-index: -1;
+            animation: twinkle 6s ease-in-out infinite alternate;
+            pointer-events: none;
+            will-change: opacity;
+        }
+
+        @keyframes nebulaShift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 20px) scale(1.1); }
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.9; }
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 300px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            color: var(--accent-purple);
+            font-size: 1.4rem;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+        }
+
+        .menu-close {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        #song-list {
+            list-style: none;
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        #song-list li {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 400;
+        }
+
+        #song-list li i {
+            font-size: 0.8rem;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        #song-list li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        #song-list li.active {
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, transparent 100%);
+            color: var(--accent-blue);
+            border-left: 2px solid var(--accent-blue);
+        }
+
+        #song-list li.active i {
+            color: var(--accent-blue);
+            opacity: 1;
+            text-shadow: 0 0 8px var(--accent-blue);
+        }
+
+        /* Main Content */
+        #main-content {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header Section */
+        .song-header {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .song-title {
+            font-family: 'Inter', 'Sarabun', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Meta Pills */
+        .meta-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .meta-pill {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(4px);
+            border: var(--glass-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .meta-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .meta-pill strong {
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-pill span {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .meta-pill a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .description-box {
+            margin-top: 15px;
+            padding: 15px 20px;
+            background: rgba(56, 189, 248, 0.03);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Lyrics */
+        .lyrics-block {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: 100px;
+        }
+
+        .lyric-line {
+            padding: 8px 0;
+            border-radius: 6px;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .lyric-line:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .lyric-jp {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.35rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+
+        .lyric-romaji {
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+            font-style: italic;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .lyric-th {
+            font-size: 1.05rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .stanza-break {
+            height: 15px;
+        }
+
+        /* Loading & Error */
+        .loading, .error {
+            text-align: center;
+            margin-top: 40vh;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        .error { color: #ef4444; }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 200;
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: var(--glass-border);
+            font-size: 1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 99;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                box-shadow: 4px 0 30px rgba(0,0,0,0.8);
+            }
+
+            #sidebar.open { transform: translateX(0); }
+            /* สั่งแสดง Overlay ผ่าน CSS ทันทีที่ sidebar มีคลาส open ในมือถือ */
+            #sidebar.open ~ .overlay { display: block; }
+
+            .menu-close { display: block; }
+
+            #main-content {
+                padding: 60px 16px 40px;
+            }
+
+            .song-title { font-size: 2rem; }
+
+            .lyric-jp { font-size: 1.2rem; }
+            .lyric-romaji { font-size: 0.85rem; }
+            .lyric-th { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-meteor"></i>
+                <span>Lyrics Library</span>
+            </div>
+            <button class="menu-close" id="menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul id="song-list">
+            <li class="loading"><i class="fas fa-spinner fa-spin"></i> กำลังโหลด...</li>
+        </ul>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main id="main-content">
+        <div class="content-wrapper">
+            <div class="loading"><i class="fas fa-music"></i> กรุณาเลือกเพลง</div>
+        </div>
+    </main>
+
+    <script>
+        const BASE_PATH = 'translatedsong/';
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const songListElement = document.getElementById('song-list');
+        const mainContent = document.getElementById('main-content');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+        }
+
+        document.getElementById('menu-toggle').addEventListener('click', openSidebar);
+        document.getElementById('menu-close').addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        async function loadSongList() {
+            try {
+                const response = await fetch(`${BASE_PATH}index.json`);
+                if (!response.ok) throw new Error('ไม่พบไฟล์ index.json');
+                const songs = await response.json();
+
+                if (!Array.isArray(songs) || songs.length === 0) {
+                    throw new Error('ไฟล์ JSON ว่างเปล่า หรือไม่ใช่ Array');
+                }
+
+                renderSongList(songs);
+            } catch (error) {
+                songListElement.innerHTML = `<li class="error" style="display:block; text-align:center; padding:20px;">
+                    <i class="fas fa-exclamation-circle"></i><br><br>
+                    ดึงข้อมูลไม่ได้<br>
+                    <small>${error.message}</small>
+                </li>`;
+            }
+        }
+
+        function renderSongList(songs) {
+            songListElement.innerHTML = '';
+            songs.forEach((song, index) => {
+                const fileName = typeof song === 'string' ? song : song.file;
+                if (!fileName) return;
+
+                const displayName = typeof song === 'string' ? song.replace('.txt', '') : (song.title || fileName);
+
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-music"></i> ${displayName}`;
+                li.dataset.file = fileName;
+
+                li.addEventListener('click', () => {
+                    document.querySelectorAll('#song-list li').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    loadSong(fileName, displayName);
+                    if (window.innerWidth <= 768) closeSidebar();
+                });
+
+                songListElement.appendChild(li);
+
+                if (index === 0) {
+                    li.click();
+                }
+            });
+        }
+
+        async function loadSong(fileName, fallbackTitle) {
+            if (!fileName) return;
+            mainContent.innerHTML = '<div class="content-wrapper"><div class="loading"><i class="fas fa-compact-disc fa-spin"></i> กำลังโหลด...</div></div>';
+            try {
+                const response = await fetch(`${BASE_PATH}${fileName}`);
+                if (!response.ok) throw new Error(`ไม่พบไฟล์ ${fileName}`);
+                const text = await response.text();
+
+                const parsedData = parseLyrics(text);
+                if (!parsedData) {
+                    throw new Error('รูปแบบไฟล์เพลงไม่ถูกต้อง (ขาดแท็ก [meta] หรือ [lyrics])');
+                }
+
+                renderSong(parsedData, fallbackTitle);
+            } catch (error) {
+                mainContent.innerHTML = `<div class="content-wrapper"><div class="error"><i class="fas fa-frown"></i> ${error.message}</div></div>`;
+            }
+        }
+
+        function parseLyrics(text) {
+            const meta = {};
+            const lyrics = [];
+
+            const metaMatch = text.match(/\[\s*meta\s*\]([\s\S]*?)(?=\[\s*lyrics?\s*\]|$)/i);
+            const lyricMatch = text.match(/\[\s*lyrics?\s*\]([\s\S]*)/i);
+
+            if (!lyricMatch) return null;
+
+            if (metaMatch) {
+                const metaLines = metaMatch[1].trim().split('\n');
+                let isDescription = false;
+
+                metaLines.forEach(line => {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) {
+                        isDescription = false;
+                        return;
+                    }
+
+                    if (trimmedLine.startsWith('http')) {
+                        meta['url'] = trimmedLine;
+                        isDescription = false;
+                    } else {
+                        const match = trimmedLine.match(/^([A-Za-z][A-Za-z0-9\s]*)\s*[:：]\s*(.*)/);
+                        if (match) {
+                            const key = match[1].trim().toLowerCase();
+                            const value = match[2].trim();
+                            if (key === 'description') {
+                                meta['description'] = value.replace(/<br\s*\/?>/gi, '\n').trim();
+                                isDescription = true;
+                            } else {
+                                meta[key] = value;
+                                isDescription = false;
+                            }
+                        } else if (isDescription) {
+                            meta['description'] += '\n' + trimmedLine.replace(/<br\s*\/?>/gi, '\n').trim();
+                        }
+                    }
+                });
+            }
+
+            const rawLyrics = lyricMatch[1].trim();
+            const lines = rawLyrics.split('\n');
+            let currentBlock = [];
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                // เมื่อเจอบรรทัดว่าง หรือจุด ... ให้ทำการตัดจบวรรค (Stanza Break)
+                if (trimmed === '' || trimmed.match(/^[.]+$/)) {
+                    if (currentBlock.length > 0) {
+                        lyrics.push(currentBlock);
+                        currentBlock = [];
+                        lyrics.push('break');
+                    } else if (lyrics.length > 0 && lyrics[lyrics.length - 1] !== 'break') {
+                        // ป้องกันการใส่ break ซ้อนกันหลายรอบกรณีมีบรรทัดว่างติดกันหลายบรรทัด
+                        lyrics.push('break');
+                    }
+                } else {
+                    currentBlock.push(trimmed);
+                    // ตัดเก็บเข้า Array ทุก ๆ 3 บรรทัดตามลำดับ ญี่ปุ่น -> โรมาจิ -> ไทย
+                    if (currentBlock.length === 3) {
+                        lyrics.push(currentBlock);
+                        currentBlock = [];
+                    }
+                }
+            });
+            if (currentBlock.length > 0) lyrics.push(currentBlock);
+
+            return { meta, lyrics };
+        }
+
+        function renderSong(data, fallbackTitle) {
+            const { meta, lyrics } = data;
+
+            let metaHtml = '';
+            const ignoreKeys = ['description', 'url', 'song', 'title', 'name'];
+
+            Object.keys(meta).forEach(key => {
+                if (!ignoreKeys.includes(key)) {
+                    const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+                    metaHtml += `
+                        <div class="meta-pill">
+                            <strong>${displayKey}</strong>
+                            <span>${meta[key]}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if (meta.url) {
+                metaHtml += `
+                    <div class="meta-pill">
+                        <a href="${meta.url}" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-youtube"></i> ฟังเพลง
+                        </a>
+                    </div>
+                `;
+            }
+
+            const songTitle = meta.song || meta.title || meta.name || fallbackTitle || 'Unknown';
+
+            let html = `
+                <div class="song-header">
+                    <h1 class="song-title">${songTitle}</h1>
+                    <div class="meta-container">
+                        ${metaHtml}
+                    </div>
+                    ${meta.description ? `<div class="description-box">${meta.description}</div>` : ''}
+                </div>
+                <div class="lyrics-block">
+            `;
+
+            lyrics.forEach(item => {
+                if (item === 'break') {
+                    html += `<div class="stanza-break"></div>`;
+                } else {
+                    html += `
+                        <div class="lyric-line">
+                            <div class="lyric-jp">${item[0] || ''}</div>
+                            <div class="lyric-romaji">${item[1] || ''}</div>
+                            <div class="lyric-th">${item[2] || ''}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            html += `</div>`;
+            mainContent.innerHTML = `<div class="content-wrapper">${html}</div>`;
+            mainContent.scrollTop = 0;
+        }
+
+        // Start
+        loadSongList();
+    </script>
+</body>
+</html>
