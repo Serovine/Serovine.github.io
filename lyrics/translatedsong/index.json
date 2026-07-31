@@ -16,5 +16,7 @@
   { "title": "PENGUIN RESEARCH - Button", "file": "button.txt" },
   { "title": "KEMU - Chikyuu Saigo no Kokuhaku wo", "file": "chikyuusaigo.txt" },
   { "title": "40mP - Kimiboshi", "file": "kimiboshi.txt" },
-  { "title": "Yumeno Yuki - Utopia or Dystopia", "file": "dystopiaorutopia.txt" }
+  { "title": "Yumeno Yuki - Utopia or Dystopia", "file": "dystopiaorutopia.txt" },
+  { "title": "Neru - How to Sekai Seifuku", "file": "howtoseifuku.txt" },
+  { "title": "Yorushika - Hana ni Bourei", "file": "hananibourei.txt" }
 ]

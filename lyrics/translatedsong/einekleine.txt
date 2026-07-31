@@ -52,7 +52,7 @@ Sou yatte anata made mo
 แต่ถ้าทำแบบนั้นล่ะก็
 知らないままで
 Shiranai mama de
-เธอไม่ได้รู้จักฉันอีก
+เธอก็คงไม่ได้เจอฉันอีก
 .
 .
 .
@@ -129,6 +129,7 @@ Ima komayaka de tashikana minai furi
 Kitto kurikaeshi nagara
 เพื่อประคองให้เป็นแบบนี้ต่อไป
 笑い合うんだ
+Warai aunda
 ให้ยังคงหัวเราะด้วยกันได้
 .
 .
