@@ -1,25 +1,25 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
 MAR,Marriott International,03-08-26,Before Market,372.83,17.22%,NASDAQ,-7.52%
-FANG,Diamondback Energy Inc.,03-08-26,After Market,202.95,29.40%,NASDAQ,
-OKE,ONEOK Inc.,03-08-26,After Market,90.81,22.01%,NYSE,
-PLTR,Palantir Technologies Inc.,03-08-26,After Market,123.06,-16.72%,NASDAQ,
-UCTT,Ultra Clean Holdings Inc.,03-08-26,After Market,83.31,80.83%,NASDAQ,
-VRTX,Vertex Pharmaceuticals Incorpor,03-08-26,After Market,477.1,1.08%,NASDAQ,
-WMB,Williams Companies Inc. ,03-08-26,After Market,71.54,9.42%,NYSE,
-AME,AMETEK Inc.,04-08-26,Before Market,241.71,6.47%,NYSE,
-CAT,Caterpillar Inc.,04-08-26,Before Market,814.81,18.38%,NYSE,
-CMI,Cummins Inc.,04-08-26,Before Market,634.2,7.26%,NYSE,
-DOCN,DigitalOcean Holdings Inc.,04-08-26,Before Market,117.5,96.46%,NYSE,
-DUK,Duke Energy Corporation,04-08-26,Before Market,125.43,6.78%,NYSE,
-ET,Energy Transfer LP,04-08-26,Before Market,20.36,16.32%,NYSE,
-HUT,Hut 8 Corp.,04-08-26,Before Market,107.63,91.58%,NASDAQ,
-MCD,McDonald's Corporation,04-08-26,Before Market,270.64,-13.98%,NYSE,
-MPC,Marathon Petroleum Corporation,04-08-26,Before Market,316.47,80.47%,NYSE,
-MRK,Merck & Company Inc.,04-08-26,Before Market,130.2,16.53%,NYSE,
-PFE,Pfizer Inc.,04-08-26,Before Market,25.01,-2.97%,NYSE,
-ROK,Rockwell Automation Inc.,04-08-26,Before Market,480.08,12.60%,NYSE,
-SPOT,Spotify Technology S.A.,04-08-26,Before Market,499.94,-1.70%,NYSE,
-TM,Toyota Motor Corporation,04-08-26,Before Market,188.99,-18.39%,NYSE,
+FANG,Diamondback Energy Inc.,03-08-26,After Market,202.95,29.40%,NASDAQ,-2.30%
+OKE,ONEOK Inc.,03-08-26,After Market,90.81,22.01%,NYSE,-2.94%
+PLTR,Palantir Technologies Inc.,03-08-26,After Market,123.06,-16.72%,NASDAQ,+18.58%
+UCTT,Ultra Clean Holdings Inc.,03-08-26,After Market,83.31,80.83%,NASDAQ,+8.41%
+VRTX,Vertex Pharmaceuticals Incorpor,03-08-26,After Market,477.1,1.08%,NASDAQ,+1.24%
+WMB,Williams Companies Inc. ,03-08-26,After Market,71.54,9.42%,NYSE,-2.30%
+AME,AMETEK Inc.,04-08-26,Before Market,241.71,6.47%,NYSE,+5.30%
+CAT,Caterpillar Inc.,04-08-26,Before Market,814.81,18.38%,NYSE,+11.80%
+CMI,Cummins Inc.,04-08-26,Before Market,634.2,7.26%,NYSE,-9.65%
+DOCN,DigitalOcean Holdings Inc.,04-08-26,Before Market,117.5,96.46%,NYSE,-6.42%
+DUK,Duke Energy Corporation,04-08-26,Before Market,125.43,6.78%,NYSE,-1.18%
+ET,Energy Transfer LP,04-08-26,Before Market,20.36,16.32%,NYSE,+1.53%
+HUT,Hut 8 Corp.,04-08-26,Before Market,107.63,91.58%,NASDAQ,-5.50%
+MCD,McDonald's Corporation,04-08-26,Before Market,270.64,-13.98%,NYSE,+1.78%
+MPC,Marathon Petroleum Corporation,04-08-26,Before Market,316.47,80.47%,NYSE,-0.40%
+MRK,Merck & Company Inc.,04-08-26,Before Market,130.2,16.53%,NYSE,+1.13%
+PFE,Pfizer Inc.,04-08-26,Before Market,25.01,-2.97%,NYSE,-0.76%
+ROK,Rockwell Automation Inc.,04-08-26,Before Market,480.08,12.60%,NYSE,-8.35%
+SPOT,Spotify Technology S.A.,04-08-26,Before Market,499.94,-1.70%,NYSE,-2.35%
+TM,Toyota Motor Corporation,04-08-26,Before Market,188.99,-18.39%,NYSE,+0.15%
 ALAB,Astera Labs Inc.,04-08-26,After Market,311.23,104.17%,NASDAQ,
 AMD,Advanced Micro Devices Inc.,04-08-26,After Market,476.15,93.34%,NASDAQ,
 AMGN,Amgen Inc.,04-08-26,After Market,385.16,13.37%,NASDAQ,
