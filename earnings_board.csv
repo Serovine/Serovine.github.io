@@ -2,14 +2,14 @@ Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
 VIPS,Vipshop Holdings Limited,21-05-26,Before Market,14.18,-16.04%,NYSE,
 WSM,Williams-Sonoma Inc.,21-05-26,Before Market,241.58,14.89%,NYSE,
 HTHT,H World Group Limited,17-08-26,Before Market,41.88,-20.44%,NASDAQ,+7.21%
-BHP,BHP Group Limited,17-08-26,After Market,86.78,19.11%,NYSE,
-FN,Fabrinet,17-08-26,After Market,570.22,14.78%,NYSE,
-XP,XP Inc.,17-08-26,After Market,15.82,-18.61%,NASDAQ,
-AS,Amer Sports Inc.,18-08-26,Before Market,32.87,-18.36%,NYSE,
-BIDU,Baidu Inc.,18-08-26,Before Market,103.67,-24.51%,NASDAQ,
-HD,Home Depot Inc. (The),18-08-26,Before Market,338.86,-10.27%,NYSE,
-KLAR,Klarna Group plc,18-08-26,Before Market,20.79,8.17%,NYSE,
-PONY,Pony AI Inc.,18-08-26,Before Market,8.14,-40.89%,NASDAQ,
+BHP,BHP Group Limited,17-08-26,After Market,86.78,19.11%,NYSE,-0.34%
+FN,Fabrinet,17-08-26,After Market,570.22,14.78%,NYSE,-7.55%
+XP,XP Inc.,17-08-26,After Market,15.82,-18.61%,NASDAQ,+3.16%
+AS,Amer Sports Inc.,18-08-26,Before Market,32.87,-18.36%,NYSE,+5.13%
+BIDU,Baidu Inc.,18-08-26,Before Market,103.67,-24.51%,NASDAQ,-8.92%
+HD,Home Depot Inc. (The),18-08-26,Before Market,338.86,-10.27%,NYSE,-1.23%
+KLAR,Klarna Group plc,18-08-26,Before Market,20.79,8.17%,NYSE,-18.40%
+PONY,Pony AI Inc.,18-08-26,Before Market,8.14,-40.89%,NASDAQ,-9.43%
 JKHY,Jack Henry & Associates Inc.,18-08-26,After Market,153.31,-2.54%,NASDAQ,
 KEYS,Keysight Technologies Inc.,18-08-26,After Market,357.82,52.66%,NYSE,
 MRCY,Mercury Systems Inc,18-08-26,After Market,111.12,33.37%,NASDAQ,
