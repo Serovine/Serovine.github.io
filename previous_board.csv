@@ -1,43 +1,38 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-ERAS,Erasca Inc.,11-05-26,After Market,18.41,53.29%,NASDAQ,-0.44%
-INSW,International Seaways Inc.,10-08-26,Before Market,92.41,65.24%,NYSE,-0.57%
-ASTS,AST SpaceMobile Inc.,10-08-26,After Market,71.94,-29.55%,NASDAQ,+1.29%
-HIMS,Hims & Hers Health Inc.,10-08-26,After Market,31.59,63.42%,NYSE,-3.90%
-LIF,Life360 Inc.,10-08-26,After Market,63.2,14.63%,NASDAQ,-24.50%
-RKLB,Rocket Lab Corporation,10-08-26,After Market,82.83,9.22%,NASDAQ,-2.47%
-YPF,YPF Sociedad Anonima,10-08-26,After Market,49.16,28.39%,NYSE,-1.48%
-ARMK,Aramark,11-08-26,Before Market,55.95,44.98%,NYSE,+9.49%
-CAH,Cardinal Health Inc.,11-08-26,Before Market,236.4,5.20%,NYSE,+0.18%
-CDNL,Cardinal Infrastructure Group,11-08-26,Before Market,64.0,142.52%,NASDAQ,-31.19%
-ESLT,Elbit Systems Ltd.,11-08-26,Before Market,859.14,28.38%,NASDAQ,-9.46%
-LEGN,Legend Biotech Corporation,11-08-26,Before Market,20.75,20.71%,NASDAQ,+4.99%
-SE,Sea Limited,11-08-26,Before Market,113.43,4.20%,NYSE,+13.70%
-TME,Tencent Music Entertainment,11-08-26,Before Market,9.53,-39.86%,NYSE,-11.23%
-VG,Venture Global Inc.,11-08-26,Before Market,13.26,30.74%,NYSE,-6.42%
-ATRO,Astronics Corporation,11-08-26,After Market,77.75,25.35%,NASDAQ,+16.73%
-CAVA,CAVA Group Inc.,11-08-26,After Market,62.42,-13.88%,NYSE,+12.32%
-CRWV,CoreWeave Inc.,11-08-26,After Market,90.67,-6.32%,NASDAQ,+2.96%
-HRB,H&R Block Inc.,11-08-26,After Market,46.19,44.43%,NYSE,+15.45%
-LITE,Lumentum Holdings Inc.,11-08-26,After Market,890.17,54.24%,NASDAQ,+15.38%
-SMCI,Super Micro Computer Inc.,11-08-26,After Market,31.13,-7.16%,NASDAQ,+13.39%
-BETA,Beta Technologies Inc.,12-08-26,Before Market,23.51,40.61%,NYSE,-5.04%
-EAT,Brinker International Inc.,12-08-26,Before Market,225.2,31.53%,NYSE,+8.75%
-GLBE,Global-E Online Ltd.,12-08-26,Before Market,42.32,28.95%,NASDAQ,-1.27%
-LQDA,Liquidia Corporation,12-08-26,Before Market,90.22,112.78%,NASDAQ,-3.70%
-MRX,Marex Group Limited,12-08-26,Before Market,60.81,49.38%,NASDAQ,+13.07%
-MSGE,Madison Square Garden Entertain,12-08-26,Before Market,76.55,26.11%,NYSE,+5.83%
-NBIS,Nebius Group N.V.,12-08-26,Before Market,187.97,102.38%,NASDAQ,+27.65%
-PFGC,Performance Food Group Company,12-08-26,Before Market,114.9,25.15%,NYSE,-2.36%
-ANDG,Andersen Group Inc.,12-08-26,After Market,49.68,136.46%,NYSE,-7.64%
-CBRS,Cerebras Systems Inc.,12-08-26,After Market,226.73,-27.11%,NASDAQ,-12.72%
-COHR,Coherent Corp.,12-08-26,After Market,379.13,56.37%,NYSE,-4.97%
-CSCO,Cisco Systems Inc.,12-08-26,After Market,121.43,41.21%,NASDAQ,-9.34%
-ENS,EnerSys,12-08-26,After Market,191.72,9.05%,NYSE,+4.02%
-PAAS,Pan American Silver Corp.,12-08-26,After Market,51.22,-12.63%,NYSE,-9.93%
-AIT,Applied Industrial Technologies,13-08-26,Before Market,359.9,27.86%,NYSE,+0.35%
-JD,JD.com Inc.,13-08-26,Before Market,32.97,21.90%,NASDAQ,-8.34%
-LGN,Legence Corp.,13-08-26,Before Market,64.34,23.71%,NASDAQ,-4.64%
-MSGS,Madison Square Garden Sports Co,13-08-26,Before Market,389.99,39.65%,NYSE,+1.13%
-TSAT,Telesat Corporation,13-08-26,Before Market,58.92,115.51%,NASDAQ,-14.61%
-AMAT,Applied Materials Inc.,13-08-26,After Market,539.14,63.50%,NASDAQ,-4.91%
-NU,Nu Holdings Ltd.,13-08-26,After Market,13.84,-21.14%,NYSE,+9.73%
+VIPS,Vipshop Holdings Limited,21-05-26,Before Market,14.18,-16.04%,NYSE,-1.70%
+WSM,Williams-Sonoma Inc.,21-05-26,Before Market,241.58,14.89%,NYSE,-2.75%
+HTHT,H World Group Limited,17-08-26,Before Market,41.88,-20.44%,NASDAQ,+7.21%
+BHP,BHP Group Limited,17-08-26,After Market,86.78,19.11%,NYSE,+0.58%
+FN,Fabrinet,17-08-26,After Market,570.22,14.78%,NYSE,-20.53%
+XP,XP Inc.,17-08-26,After Market,15.82,-18.61%,NASDAQ,+0.41%
+AS,Amer Sports Inc.,18-08-26,Before Market,32.87,-18.36%,NYSE,+3.44%
+BIDU,Baidu Inc.,18-08-26,Before Market,103.67,-24.51%,NASDAQ,-12.94%
+HD,Home Depot Inc. (The),18-08-26,Before Market,338.86,-10.27%,NYSE,+0.81%
+KLAR,Klarna Group plc,18-08-26,Before Market,20.79,8.17%,NYSE,-21.12%
+PONY,Pony AI Inc.,18-08-26,Before Market,8.14,-40.89%,NASDAQ,-1.07%
+JKHY,Jack Henry & Associates Inc.,18-08-26,After Market,153.31,-2.54%,NASDAQ,+8.06%
+KEYS,Keysight Technologies Inc.,18-08-26,After Market,357.82,52.66%,NYSE,-6.09%
+MRCY,Mercury Systems Inc,18-08-26,After Market,111.12,33.37%,NASDAQ,+0.30%
+TOL,Toll Brothers Inc.,18-08-26,After Market,148.27,-9.17%,NYSE,+6.79%
+ZTO,ZTO Express (Cayman) Inc.,18-08-26,After Market,22.9,-7.57%,NYSE,-7.24%
+ADI,Analog Devices Inc.,19-08-26,Before Market,389.39,16.05%,NASDAQ,+0.63%
+KC,Kingsoft Cloud Holdings Limited,19-08-26,Before Market,11.71,-17.13%,NASDAQ,+11.30%
+LOW,Lowe's Companies Inc.,19-08-26,Before Market,218.47,-21.44%,NYSE,+2.37%
+TGT,Target Corporation,19-08-26,Before Market,154.48,34.83%,NYSE,+4.92%
+TJX,TJX Companies Inc. (The),19-08-26,Before Market,152.11,-2.47%,NYSE,-2.67%
+VIK,Viking Holdings Ltd,19-08-26,Before Market,97.99,27.26%,NYSE,-2.90%
+YMM,Full Truck Alliance Co. Ltd.,19-08-26,Before Market,8.81,-5.88%,NYSE,-2.10%
+ZIM,ZIM Integrated Shipping Service,19-08-26,Before Market,28.14,4.45%,NYSE,-6.74%
+BILL,BILL Holdings Inc.,19-08-26,After Market,49.78,10.33%,NYSE,-0.42%
+BULL,Webull Corporation,19-08-26,After Market,8.04,36.73%,NASDAQ,+3.36%
+NDSN,Nordson Corporation,19-08-26,After Market,308.72,4.59%,NASDAQ,+6.52%
+AAP,Advance Auto Parts Inc.,20-08-26,Before Market,56.55,0.56%,NYSE,-25.42%
+BABA,Alibaba Group Holding Limited,20-08-26,Before Market,123.81,-19.61%,NYSE,-0.25%
+DE,Deere & Company,20-08-26,Before Market,608.85,1.89%,NYSE,+8.94%
+FUTU,Futu Holdings Limited,20-08-26,Before Market,105.23,-28.21%,NASDAQ,+1.25%
+NTES,NetEase Inc.,20-08-26,Before Market,125.12,6.37%,NASDAQ,-4.73%
+WMT,Walmart Inc.,20-08-26,Before Market,115.27,-10.18%,NASDAQ,-9.05%
+OSIS,OSI Systems Inc.,20-08-26,After Market,228.27,-13.72%,NASDAQ,-8.30%
+ROST,Ross Stores Inc.,20-08-26,After Market,245.36,24.29%,NASDAQ,+4.99%
+BJ,BJ's Wholesale Club Holdings I,21-08-26,Before Market,93.41,-6.06%,NYSE,+5.21%
+KT,KT Corporation,05-11-26,After Market,19.12,-19.49%,NYSE,+1.58%
