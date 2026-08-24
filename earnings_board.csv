@@ -1,12 +1,12 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
 TCOM,Trip.com Group Limited,24-06-26,After Market,46.11,-12.88%,NASDAQ,
-PDD,PDD Holdings Inc.,24-08-26,Before Market,88.38,-16.43%,NASDAQ,
+PDD,PDD Holdings Inc.,24-08-26,Before Market,88.38,-16.43%,NASDAQ,-0.55%
 WDS,Woodside Energy Group Limited,24-08-26,After Market,24.33,30.37%,NYSE,
 GFI,Gold Fields Limited,25-08-26,Before Market,47.81,-13.65%,NYSE,
 VIPS,Vipshop Holdings Limited,25-08-26,Before Market,14.53,-10.88%,NYSE,
 BOX,Box Inc.,25-08-26,After Market,32.91,50.82%,NYSE,
 HEI,Heico Corporation,25-08-26,After Market,355.04,2.57%,NYSE,
-INTU,Intuit Inc.,25-08-26,After Market,367,2.84%,NASDAQ,
+INTU,Intuit Inc.,25-08-26,After Market,367.0,2.84%,NASDAQ,
 JOYY,JOYY Inc.,25-08-26,After Market,73.61,25.05%,NASDAQ,
 NCNO,nCino Inc.,25-08-26,After Market,20.62,40.85%,NASDAQ,
 SMTC,Semtech Corporation,25-08-26,After Market,124.09,42.93%,NASDAQ,
@@ -41,5 +41,5 @@ S,SentinelOne Inc.,27-08-26,After Market,21.19,71.30%,NYSE,
 ULTA,Ulta Beauty Inc.,27-08-26,After Market,521.46,-22.16%,NASDAQ,
 WDAY,Workday Inc.,27-08-26,After Market,200.01,54.79%,NASDAQ,
 CHA,Chagee Holdings Limited,28-08-26,Before Market,10.81,5.57%,NASDAQ,
-BWLP,BW LPG Limited,28-08-26,After Market,24.72,52.64%,NYSE,
-HAFN,Hafnia Limited,28-08-26,After Market,8.16,22.25%,NYSE,
+BWLP,BW LPG Limited,28-08-26,After Market,24.72,52.64%,NYSE,-0.89%
+HAFN,Hafnia Limited,28-08-26,After Market,8.16,22.25%,NYSE,-1.23%
