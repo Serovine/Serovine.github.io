@@ -1,5 +1,5 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-TCOM,Trip.com Group Limited,24-06-26,After Market,46.11,-12.88%,NASDAQ,-0.38%
+TCOM,Trip.com Group Limited,24-06-26,After Market,46.11,-12.88%,NASDAQ,-1.05%
 PDD,PDD Holdings Inc.,24-08-26,Before Market,88.38,-16.43%,NASDAQ,-1.49%
 WDS,Woodside Energy Group Limited,24-08-26,After Market,24.33,30.37%,NYSE,-3.99%
 GFI,Gold Fields Limited,25-08-26,Before Market,47.81,-13.65%,NYSE,+2.01%
@@ -14,23 +14,23 @@ ZM,Zoom Communications Inc.,25-08-26,After Market,107.43,24.83%,NASDAQ,-7.34%
 DY,Dycom Industries Inc.,26-08-26,Before Market,392.95,-6.52%,NYSE,-11.08%
 LI,Li Auto Inc.,26-08-26,Before Market,13.05,-29.19%,NASDAQ,+0.41%
 WSM,Williams-Sonoma Inc.,26-08-26,Before Market,237.58,18.55%,NYSE,-0.36%
-CRM,Salesforce Inc.,26-08-26,After Market,209.17,18.00%,NYSE,+13.32%
-CRWD,CrowdStrike Holdings Inc.,26-08-26,After Market,191.95,119.16%,NASDAQ,+12.68%
-HPQ,HP Inc.,26-08-26,After Market,29.71,66.54%,NYSE,-11.03%
-NTNX,Nutanix Inc.,26-08-26,After Market,67.64,80.95%,NASDAQ,+11.91%
-NVDA,NVIDIA Corporation,26-08-26,After Market,214.72,12.23%,NASDAQ,+6.36%
-OKTA,Okta Inc.,26-08-26,After Market,135.14,94.42%,NASDAQ,+18.64%
-P,Everpure Inc.,26-08-26,After Market,108.55,58.61%,NYSE,+0.00%
-SNPS,Synopsys Inc.,26-08-26,After Market,397.87,-5.45%,NASDAQ,+3.04%
-URBN,Urban Outfitters Inc.,26-08-26,After Market,74.24,12.66%,NASDAQ,-0.42%
-VEEV,Veeva Systems Inc.,26-08-26,After Market,247.9,43.99%,NYSE,+13.51%
-BBY,Best Buy Co. Inc.,27-08-26,Before Market,85.89,40.90%,NYSE,-11.07%
-BILI,Bilibili Inc.,27-08-26,Before Market,17.06,-42.81%,NASDAQ,+0.12%
-BURL,Burlington Stores Inc.,27-08-26,Before Market,326.5,4.86%,NYSE,-3.82%
-DG,Dollar General Corporation,27-08-26,Before Market,123.41,-18.49%,NYSE,+4.40%
-DLTR,Dollar Tree Inc.,27-08-26,Before Market,131.48,0.82%,NASDAQ,-4.65%
-HQY,HealthEquity Inc.,27-08-26,Before Market,105.41,38.94%,NASDAQ,-7.13%
-HRL,Hormel Foods Corporation,27-08-26,Before Market,23.88,-2.58%,NYSE,-3.27%
+CRM,Salesforce Inc.,26-08-26,After Market,209.17,18.00%,NYSE,+20.86%
+CRWD,CrowdStrike Holdings Inc.,26-08-26,After Market,191.95,119.16%,NASDAQ,+17.01%
+HPQ,HP Inc.,26-08-26,After Market,29.71,66.54%,NYSE,-5.10%
+NTNX,Nutanix Inc.,26-08-26,After Market,67.64,80.95%,NASDAQ,+8.56%
+NVDA,NVIDIA Corporation,26-08-26,After Market,214.72,12.23%,NASDAQ,+8.92%
+OKTA,Okta Inc.,26-08-26,After Market,135.14,94.42%,NASDAQ,+27.38%
+P,Everpure Inc.,26-08-26,After Market,108.55,58.61%,NYSE,-8.91%
+SNPS,Synopsys Inc.,26-08-26,After Market,397.87,-5.45%,NASDAQ,+11.22%
+URBN,Urban Outfitters Inc.,26-08-26,After Market,74.24,12.66%,NASDAQ,-4.18%
+VEEV,Veeva Systems Inc.,26-08-26,After Market,247.9,43.99%,NYSE,+16.93%
+BBY,Best Buy Co. Inc.,27-08-26,Before Market,85.89,40.90%,NYSE,-4.04%
+BILI,Bilibili Inc.,27-08-26,Before Market,17.06,-42.81%,NASDAQ,+2.94%
+BURL,Burlington Stores Inc.,27-08-26,Before Market,326.5,4.86%,NYSE,-5.72%
+DG,Dollar General Corporation,27-08-26,Before Market,123.41,-18.49%,NYSE,+4.92%
+DLTR,Dollar Tree Inc.,27-08-26,Before Market,131.48,0.82%,NASDAQ,-3.77%
+HQY,HealthEquity Inc.,27-08-26,Before Market,105.41,38.94%,NASDAQ,-11.04%
+HRL,Hormel Foods Corporation,27-08-26,Before Market,23.88,-2.58%,NYSE,-9.57%
 ADSK,Autodesk Inc.,27-08-26,After Market,253.82,16.09%,NASDAQ,
 AFRM,Affirm Holdings Inc.,27-08-26,After Market,77.03,63.44%,NASDAQ,
 GAP,Gap Inc.,27-08-26,After Market,19.8,-25.57%,NYSE,
