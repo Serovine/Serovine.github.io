@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Simple Word Building</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg1:#6d5bd0; --bg2:#a86fd8; --bg3:#f7a1c4;
+  --card:#ffffff; --ink:#3a2c5a; --soft:#8a7fb0;
+  --tile1:#fff6e5; --tile2:#ffe2b8; --gold:#ffb020;
+  --green:#3ecf8e; --red:#ff6b81; --blue:#4dabf7;
+}
+html,body{height:100%}
+body{
+  font-family:'Baloo Da 2','Fredoka',system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));
+  color:var(--ink); display:flex; justify-content:center;
+  min-height:100dvh; overflow-x:hidden; touch-action:manipulation;
+}
+#app{width:100%;max-width:460px;min-height:100dvh;display:flex;flex-direction:column;padding:14px 14px 22px}
+.screen{display:none;flex:1;flex-direction:column}
+.screen.on{display:flex}
+
+/* ---------- HOME ---------- */
+#home{justify-content:center;align-items:center;text-align:center;gap:6px}
+.logo{font-family:'Fredoka';font-size:44px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 6px 0 rgba(0,0,0,.14)}
+.logo span{display:block;font-size:22px;letter-spacing:6px;opacity:.9;margin-top:4px}
+.tag{color:#fff;opacity:.92;font-size:15px;margin:10px 0 24px;max-width:300px;line-height:1.5}
+.mode{width:100%;background:var(--card);border:none;border-radius:22px;padding:16px 18px;margin-bottom:14px;
+  text-align:left;box-shadow:0 8px 0 rgba(0,0,0,.12);cursor:pointer;transition:.15s}
+.mode:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.mode b{display:block;font-size:20px;font-weight:800}
+.mode small{color:var(--soft);font-size:13px;line-height:1.4;display:block;margin-top:2px}
+.mode .ic{float:right;font-size:30px;margin-left:10px}
+.rules{color:#fff;font-size:12.5px;opacity:.85;line-height:1.7;margin-top:8px;text-align:left;
+  background:rgba(255,255,255,.13);border-radius:16px;padding:12px 14px}
+
+/* ---------- HUD ---------- */
+.hud{display:flex;gap:8px;margin-bottom:10px}
+.stat{flex:1;background:rgba(255,255,255,.18);border-radius:16px;padding:7px 4px;text-align:center;color:#fff;backdrop-filter:blur(4px)}
+.stat b{display:block;font-size:20px;font-weight:800;line-height:1.15}
+.stat small{font-size:11px;opacity:.85}
+.hearts{letter-spacing:1px;font-size:17px}
+.bar{height:9px;background:rgba(255,255,255,.22);border-radius:99px;overflow:hidden;margin-bottom:12px}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ffe36e,#ffb020);border-radius:99px;transition:width .18s linear}
+.bar.warn i{background:linear-gradient(90deg,#ff9a6e,#ff5b6e)}
+
+/* ---------- BOARD ---------- */
+.board{background:var(--card);border-radius:26px;padding:14px;box-shadow:0 10px 26px rgba(50,20,90,.22);display:flex;flex-direction:column;flex:1}
+.wordbox{min-height:64px;border-radius:18px;background:#f4f1fb;display:flex;align-items:center;justify-content:center;
+  gap:5px;flex-wrap:wrap;padding:8px;margin-bottom:8px;border:2px dashed #ded6f5}
+.wordbox.ok{background:#e6fbf1;border-color:#9fe8c6}
+.wordbox.bad{background:#ffeef0;border-color:#ffc3cb;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.wl{width:36px;height:44px;background:linear-gradient(180deg,var(--tile1),var(--tile2));border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;text-transform:uppercase;
+  box-shadow:0 3px 0 #e2bd84;animation:pop .16s}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+.ph{color:#b9aed6;font-size:14px}
+.msg{text-align:center;font-size:13.5px;min-height:20px;margin-bottom:8px;font-weight:600;color:var(--soft)}
+.msg.good{color:#22a06b}.msg.err{color:#e0455f}
+
+.rack{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:auto 0}
+.tile{aspect-ratio:1/1;border-radius:18px;border:none;background:linear-gradient(180deg,var(--tile1),var(--tile2));
+  font-family:inherit;font-weight:800;font-size:30px;text-transform:uppercase;color:var(--ink);
+  box-shadow:0 5px 0 #e2bd84;cursor:pointer;transition:transform .1s,opacity .1s;position:relative;touch-action:none;user-select:none}
+.tile:active{transform:translateY(3px)}
+.tile.sel{opacity:.28;transform:scale(.9);box-shadow:0 2px 0 #e2bd84}
+.tile.carry{background:linear-gradient(180deg,#dff3ff,#b5e0ff);box-shadow:0 5px 0 #7fbde6}
+.tile.carry::after{content:'★';position:absolute;top:2px;right:6px;font-size:12px;color:#3d8fc4}
+.tile.hint{background:linear-gradient(180deg,#fff0a8,#ffd24d);box-shadow:0 5px 0 #d99b00;animation:glow 1s infinite alternate}
+@keyframes glow{to{filter:brightness(1.12)}}
+
+.acts{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;border:none;border-radius:18px;padding:13px 6px;font-family:inherit;font-weight:800;font-size:16px;
+  color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.16);cursor:pointer;transition:.12s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.16)}
+.btn:disabled{opacity:.45;pointer-events:none}
+.b-sub{background:linear-gradient(180deg,#4fd8a0,#22b877);flex:2}
+.b-del{background:linear-gradient(180deg,#ff8fa0,#f4667c)}
+.b-shf{background:linear-gradient(180deg,#7fb8ff,#4a8fe0)}
+
+.powers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.pw{background:rgba(255,255,255,.9);border:none;border-radius:18px;padding:10px 4px;font-family:inherit;
+  cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.14);transition:.12s;color:var(--ink)}
+.pw:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
+.pw:disabled{opacity:.42}
+.pw .e{font-size:22px;display:block;line-height:1.1}
+.pw .t{font-size:11px;font-weight:700;display:block}
+.pw .c{font-size:11px;font-weight:800;color:#e08900}
+.giveup{margin-top:12px;background:none;border:1.5px solid rgba(255,255,255,.55);color:#fff;border-radius:99px;
+  padding:9px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+
+/* ---------- GAME OVER ---------- */
+#over{justify-content:center;align-items:center;text-align:center}
+.card{background:var(--card);border-radius:28px;padding:26px 22px;width:100%;box-shadow:0 12px 30px rgba(40,10,70,.28)}
+.card h2{font-size:30px;font-weight:800;margin-bottom:2px}
+.card p{color:var(--soft);font-size:14px;margin-bottom:18px}
+.res{display:flex;gap:10px;margin-bottom:14px}
+.res div{flex:1;background:#f4f1fb;border-radius:18px;padding:12px 6px}
+.res b{display:block;font-size:26px;font-weight:800}
+.res small{font-size:11.5px;color:var(--soft)}
+.bw{background:#fff7e6;border-radius:16px;padding:10px;font-size:13.5px;color:#a06b00;font-weight:700;margin-bottom:16px}
+.b-again{background:linear-gradient(180deg,#8f7ce8,#6a54cf);width:100%}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <section id="home" class="screen on">
+    <div class="logo">Simple<br>Word Building<span>WORD GAME</span></div>
+    <p class="tag">ลากตัวอักษรให้เป็นคำศัพท์ภาษาอังกฤษ ยิ่งยาว ยิ่งได้คะแนนเยอะ!</p>
+    <button class="mode" data-mode="timed"><span class="ic">⏱️</span><b>โหมดจับเวลา</b><small>60 วินาทีต่อรอบ (ลดลงเรื่อยๆ) · มี 3 ชีวิต</small></button>
+    <button class="mode" data-mode="chill"><span class="ic">🍃</span><b>โหมดชิลๆ</b><small>ไม่จับเวลา เล่นได้เรื่อยๆ จนกดยอมแพ้</small></button>
+    <div class="rules">
+      • คำต้องยาว <b>3 ตัวอักษรขึ้นไป</b> และห้ามซ้ำคำเดิม<br>
+      • คะแนน = ความยาว × ความยาว (เช่น 5 ตัว = 25 แต้ม)<br>
+      • ★ คือตัวอักษรต่อยอดจากคำก่อนหน้า ใช้แล้วได้โบนัส +5<br>
+      • ตัวช่วยใช้คะแนนแลก — ใช้ให้คุ้มนะ!
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="screen">
+    <div class="hud">
+      <div class="stat"><b id="hScore">0</b><small>คะแนน</small></div>
+      <div class="stat"><b id="hWords">0</b><small>คำที่เรียงได้</small></div>
+      <div class="stat"><b id="hExtra" class="hearts">❤️❤️❤️</b><small id="hExtraL">ชีวิต</small></div>
+    </div>
+    <div class="bar" id="bar"><i id="barFill"></i></div>
+
+    <div class="board">
+      <div class="wordbox" id="wordbox"><span class="ph">แตะตัวอักษรด้านล่างเพื่อสร้างคำ</span></div>
+      <div class="msg" id="msg"></div>
+      <div class="rack" id="rack"></div>
+      <div class="acts">
+        <button class="btn b-del" id="bDel">⌫ ลบ</button>
+        <button class="btn b-sub" id="bSub">ส่งคำ ✓</button>
+        <button class="btn b-shf" id="bShf">🔀 สลับ</button>
+      </div>
+      <div class="powers">
+        <button class="pw" id="pReroll"><span class="e">🎲</span><span class="t">สุ่มใหม่ 8 ตัว</span><span class="c">15 แต้ม</span></button>
+        <button class="pw" id="pAdd"><span class="e">➕</span><span class="t">เพิ่ม 2 ตัว</span><span class="c">30 แต้ม</span></button>
+        <button class="pw" id="pHint"><span class="e">💡</span><span class="t">ใบ้คำ</span><span class="c">45 แต้ม</span></button>
+      </div>
+    </div>
+    <button class="giveup" id="bGive">ยอมแพ้ / จบเกม</button>
+  </section>
+
+  <!-- OVER -->
+  <section id="over" class="screen">
+    <div class="card">
+      <h2 id="ovTitle">จบเกม!</h2>
+      <p id="ovSub">เก่งมาก เล่นอีกรอบไหม?</p>
+      <div class="res">
+        <div><b id="ovScore">0</b><small>คะแนนรวม</small></div>
+        <div><b id="ovWords">0</b><small>คำที่เรียงได้</small></div>
+      </div>
+      <div class="bw" id="ovBest">—</div>
+      <button class="btn b-again" id="bAgain">เล่นอีกครั้ง 🔁</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============ DICTIONARY (embedded) ============ */
+const RAW = `
+ace act add ado aft age ago aid ail aim air ale all ami and ant any ape apt arc are ark arm art ash ask asp ate awe axe aye
+bad bag ban bar bat bay bed bee beg bet bib bid big bin bit boa bob bog boo bop bow box boy bra bud bug bum bun bus but buy bye
+cab cam can cap car cat caw cob cod cog con coo cop cot cow coy cry cub cud cue cup cur cut dab dad dam day den dew did die dig
+dim din dip doe dog don dot dry dub dud due dug duo dye ear eat ebb eel egg ego eke elf elk elm emu end eon era err eve ewe eye
+fad fan far fat fax fed fee fen few fib fig fin fir fit fix flu fly foe fog for fox fry fun fur gab gag gal gap gas gel gem get
+gig gin gob god got gum gun gut guy gym had hag ham has hat hay hem hen her hew hex hey hid him hip his hit hoe hog hop hot how
+hub hue hug hum hut ice icy ilk ill imp ink inn ion ire irk its ivy jab jag jam jar jaw jay jet jig job jog jot joy jug jut keg
+key kid kin kit lad lag lam lap law lax lay led leg let lid lie lip lit lob log lop lot low lug lye mad man map mar mat maw may
+men met mew mid mix mob mom mop mow mud mug mum nab nag nap nay net new nib nil nip nit nod nor not now nub nun nut oak oar oat
+odd ode off oft oil old one opt orb ore our out owe owl own pad pal pan par pat paw pay pea peg pen pep per pet pew pie pig pin
+pit ply pod pop pot pro pry pub pug pun pup put rag ram ran rap rat raw ray red rib rid rig rim rip rob rod roe rot row rub rue
+rug rum run rut rye sad sag sap sat saw say sea see set sew she shy sin sip sir sit six ski sky sly sob sod son sop sow soy spa
+spy sty sub sue sum sun sup tab tad tag tan tap tar tax tea ten the thy tic tie tin tip toe ton too top tot tow toy try tub tug
+two urn use van vat vet vex via vie vim vow wad wag wan war was wax way web wed wee wet who why wig win wit woe wok won woo wow
+wry yak yam yap yaw yea yes yet yew you zap zen zip zoo
+able ache achy acid acre aged aide ajar akin ally aloe also alto amid ammo anew ante anti apex arch area arid army atom atop aunt
+auto avid away awry axed axis babe baby back bade bail bait bake bald bale ball balm band bane bang bank barb bard bare bark barn
+base bash bask bath bead beak beam bean bear beat beau beef been beep beer beet bell belt bend bent best beta bevy bias bide bike
+bile bill bind bird bite blew blip blob bloc blot blow blue blur boar boat bode body boil bold bolt bomb bond bone bony book boom
+boon boot bore born boss both bout bowl brag bran brat bray bred brew brim brow buck buff bulb bulk bull bump bunk bunt buoy burn
+burp bury bush bust busy butt buzz cafe cage cake calf call calm came camp cane cape card care carp cart case cash cask cast cave
+cede cell cent chap char chat chef chew chic chin chip chop chow chum cite city clad clam clan clap claw clay clef clip clog clot
+club clue coal coat coax code coil coin coke cold colt coma comb come cone cook cool coop cope copy cord core cork corn cost cove
+cowl cozy crab crag cram crew crib crop crow crux cube cuff cull cult curb curd cure curl curt cusp cute cyst damp dare dark darn
+dart dash data date dawn daze dead deaf deal dean dear debt deck deed deem deep deer defy deft deny desk dial dice diet dime dine
+ding dire dirt disc dish disk dive dock doll dome done doom door dope dorm dose dote dove down doze drab drag dram draw drew drip
+drop drug drum dual duck duct dude duel duet duke dull duly dumb dump dune dunk dusk dust duty each earl earn ease east easy echo
+eddy edge edit else emit envy epic even ever evil exam exit expo face fact fade fail fair fake fall fame fang fare farm fast fate
+fawn faze fear feat feed feel fell felt fend fern feud file fill film find fine fire firm fish fist five flag flap flat flaw flea
+fled flee flew flex flip flit flop flow flue flux foal foam foil fold folk fond font food fool foot ford fore fork form fort foul
+four fowl foxy fray free fret frog from fuel full fume fund funk fury fuse fuss fuzz gain gait gala gale gall game gang gape garb
+gash gasp gate gave gawk gaze gear geek gene gent germ gift gild gill gilt gird girl gist give glad glee glen glib glob glow glue
+glum gnat goad goal goat gold golf gone gong good goof gore gory gown grab gram gray grew grey grid grim grin grip grit grow grub
+gulf gull gulp gunk guru gush gust hack hail hair hale half hall halo halt hand hang hard hare hark harm harp hash hate haul have
+hawk haze hazy head heal heap hear heat heed heel heft heir held helm help herb herd here hero hers hewn hide high hike hill hilt
+hind hint hire hiss hive hoax hold hole holy home hone honk hood hoof hook hoop hoot hope horn hose host hour howl huff huge hulk
+hull hump hung hunk hunt hurl hurt hush husk hymn icon idea idle idol inch info into iota iris iron isle itch item jade jail jazz
+jean jeep jeer jerk jest jibe jilt jinx jive join joke jolt jowl judo jump junk jury just jute keel keen keep kelp kept khan kick
+kiln kilt kind king kink kiss kite kiwi knee knew knit knob knot know lace lack lacy lady laid lair lake lamb lame lamp land lane
+lank lard lark lash lass last late laud lava lawn laze lazy lead leaf leak lean leap left lend lens lent less lest levy liar lice
+lick lied lien lieu life lift like lilt lily limb lime limp line link lint lion lisp list live load loaf loam loan lobe lock loft
+logo loin lone long look loom loop loot lord lore lose loss lost loud love luck lull lump lung lure lurk lush lute lynx made maid
+mail maim main make male mall malt mane many mare mark mash mask mass mast mate math maze meal mean meat meek meet meld melt memo
+mend menu mere mesa mesh mess mica mice mild mile milk mill mime mind mine mink mint mire miss mist mite moan moat mock mode mold
+mole molt monk mood moon moor moot mope more morn moss most moth move much muck muff mule mull mush musk must mute mutt myth nail
+name nape navy near neat neck need neon nest news next nice nick nine nook noon nope norm nose note noun nova nude null numb oath
+obey oboe odor ogre oily okay omen omit once only onto onyx ooze open opus oral ouch ours oust oval oven over ovum owed pace pack
+pact page paid pail pain pair pale pall palm pane pang pant papa pare park part pass past pate path pave pawn peak peal pear peat
+peck peek peel peep peer pelt pent perk perm pert pest pick pier pike pile pill pine ping pink pint pipe pith pity plan play plea
+pled plod plop plot plow ploy plug plum plus poem poet poke pole poll polo pomp pond pony pool poor pope pore pork port pose posh
+post pour pout pray prep prey prim prod prom prop prow puff pull pulp puma pump punk punt puny pupa pure purr push putt quad quay
+quid quip quit quiz race rack raft rage raid rail rain rake ramp rang rank rant rape rapt rare rash rate rave read real ream reap
+rear redo reed reef reek reel rein rely rend rent rest rice rich ride rife rift rile rind ring rink riot ripe rise risk rite road
+roam roar robe rock rode roil role roll romp roof rook room root rope rose rosy rote rout rove rude ruff ruin rule rump rung runt
+ruse rush rusk rust sack safe saga sage said sail sake sale salt same sand sane sang sank sash sate save scab scam scan scar scat
+seal seam sear seat sect seed seek seem seen seep seer self sell semi send sent serf shag sham shed shin ship shoe shop shot show
+shun shut sick side sift sigh sign silk sill silo silt sing sink sire site size skew skid skim skin skip skit slab slam slap slat
+slaw sled slew slid slim slip slit slob slog slop slot slow slug slum slur smog smug snag snap snip snob snow snub snug soak soap
+soar sock soda sofa soft soil sold sole solo some song soon soot sore sort soul soup sour sown spam span spar spat sped spin spit
+spot spry spud spun spur stab stag star stay stem step stew stir stop stow stub stud stun such suds suit sulk sung sunk sure surf
+swab swam swan swap swat sway swim swum tack tact tail take tale talk tall tame tamp tank tape tarp tart task taut teak teal team
+tear teem teen tell temp tend tent term tern test text than that thaw thee them then they thin this thud thug thus tick tide tidy
+tied tier tile till tilt time tint tiny tire toad toga toil told toll tomb tone took tool toot torn tort toss tote tour tout town
+trap tray tree trek trim trio trip trod trot true tuba tube tuck tuft tuna tune turf turn tusk twig twin type ugly undo unit unto
+upon urge used user vain vale vamp vane vase vast veal veer veil vein vend vent verb very vest veto vial vibe vice view vile vine
+visa void volt vote wade waft wage wail wait wake walk wall wand wane want ward ware warm warn warp wart wary wash wasp watt wave
+wavy waxy weak wean wear weed week weep weld well welt went wept were west what when whim whip whir whiz whom wick wide wife wild
+will wilt wily wind wine wing wink wipe wire wise wish wisp with woke wolf wood wool word wore work worm worn wrap wren writ yard
+yarn yawn yeah year yell yelp yoga yoke yolk your yuan zeal zero zest zinc zone zoom
+about above abuse actor acute adapt admit adobe adopt adore adult after again agent agile agree ahead aisle alarm album alert alien
+align alike alive alley allow alloy alone along aloud alpha altar alter amaze amber amble amend among ample amuse angel anger angle
+angry ankle annex annoy antic anvil apart apple apply apron arena argue arise armor aroma arrow arson ashen aside asset atlas atoll
+attic audio audit avail avoid await awake award aware awful bacon badge badly bagel baker balmy banjo barge basic basil basin basis
+batch bathe baton beach beard beast began begin begun being belly below bench berry berth binge birch birth bison black blade blame
+bland blank blast blaze bleak bleat bleed blend bless blimp blind blink bliss blitz block blond blood bloom blown blues bluff blunt
+blurt blush board boast bogus bonus booth boost botch bough bound bowel boxer brace braid brain brake brand brash brass brave bravo
+brawl bread break breed brick bride brief brine bring brink brisk broad broil broke brood brook broom broth brown brush brute buddy
+budge buggy build built bulge bulky bully bunch bunny burly burnt burst bushy buyer cabin cable cache cadet cameo canal candy canoe
+canon caper cargo carol carry carve caste catch cater cause cease cedar chain chair chalk champ chant chaos charm chart chase chasm
+cheap cheat check cheek cheer chess chest chick chief child chili chill chime chirp choir choke chord chore chose chuck chunk churn
+chute cider cigar cinch civic civil claim clamp clang clash clasp class clean clear cleat clerk click cliff climb cling cloak clock
+clone close cloth cloud clout clown clump coach coast cobra cocoa colon color comet comfy comic comma coral couch cough could count
+court cover covet crack craft cramp crane crank crash crate crave crawl craze crazy creak cream credo creed creek creep crepe crest
+cried crime crisp croak crock crook cross crowd crown crude cruel crumb crush crust crypt cubic curly curry curse curve cycle daily
+dairy daisy dance dandy dated dealt death debit debut decal decay decor decoy defer deity delay delta demon dense depot depth derby
+deter devil diary dicey diner dingy dirty disco ditch ditto diver dizzy dodge dogma doing donor donut doubt dough dowel dozen draft
+drain drake drama drank drape drawl drawn dread dream dress dried drift drill drink drive droll drone drool droop drove drown drunk
+dryer dryly dummy dumpy dunce dusky dusty dwarf dwell dying eager eagle early earth easel eaten eater ebony edict eerie eight eject
+elbow elder elect elite elope elude email ember empty enact ended endow enemy enjoy ensue enter entry envoy equal equip erase erect
+erode error erupt essay ethic evade event every evict evoke exact exalt excel exert exile exist expel extra fable facet faint fairy
+faith false fancy fatal fault favor feast feign felon femur fence feral ferry fetch fever fewer fiber field fiend fiery fifth fifty
+fight filet filly filmy final finch finer first fishy fixed fizzy flair flake flame flank flare flash flask fleck fleet flesh flick
+flier fling flint flirt float flock flood floor flora floss flour flout flown fluff fluid fluke flung flush flute flyer foamy focal
+focus foggy folly force forge forgo forte forth forty forum found foyer frail frame frank fraud freak fresh friar fried frill frisk
+frock frond front frost froth frown froze fruit fudge fully fungi funky funny furry fussy fuzzy gaily gamer gamma gauge gaunt gauze
+gavel gecko geese genie genre ghost ghoul giant giddy girth given giver glade gland glare glass glaze gleam glean glide glint gloat
+globe gloom glory gloss glove gnome going goofy goose gorge gouge gourd grace grade graft grain grand grant grape graph grasp grass
+grate grave gravy graze great greed green greet grief grill grime grimy grind gripe groan groin groom grope gross group grout grove
+growl grown gruel gruff grunt guard guava guess guest guide guild guile guilt guise gulch gully gumbo gusto gusty gypsy habit hairy
+halve handy happy hardy harsh haste hasty hatch haven havoc hazel heady heard heart heavy hedge hefty heist hello hence heron hilly
+hinge hippo hitch hoard hobby hoist holly honey honor horde horse hotel hound house hover human humid humor hunch hurry husky hyena
+ideal idiom idiot igloo image imply inbox incur index inept inert infer inlet inner input inter irate irony issue ivory jaunt jelly
+jerky jetty jewel jiffy joint joist joker jolly joust judge juice juicy jumbo jumpy juror kayak kebab knack knave knead kneel knelt
+knife knock knoll known koala label labor laden lager lance lanky lapel lapse large larva laser lasso latch later lathe latte laugh
+layer leach leafy leaky learn lease leash least leave ledge leech leery lefty legal lemon level lever libel light liken lilac limbo
+limit linen liner lingo lithe liver livid llama loath lobby local locus lodge lofty logic loose loser lotus louse lousy lover lower
+loyal lucid lucky lumpy lunar lunch lunge lurch lurid lying lyric macaw macho madam madly magic magma maize major maker mambo mango
+mania manor maple march marry marsh mason match maxim maybe mayor meant meaty medal media medic melon mercy merge merit merry messy
+metal meter metro midst might milky mimic mince miner minor minus mirth miser mixer modal model modem moist molar moldy money month
+moody moose moral morph mossy motel motif motor motto mound mount mourn mouse mouth movie mower mucus muddy mulch mummy mural murky
+mushy music musky musty muted nacho naive naked nanny nasal nasty naval navel needy nerve never nicer niche niece night ninth noble
+nobly noise noisy nomad noose north notch noted novel nudge nurse nutty nylon nymph oasis obese occur ocean octet offer often olive
+omega onion onset opera optic orbit order organ other otter ought ounce outdo outer ovary overt owing owner oxide ozone pagan paint
+panda panel panic pansy pants paper parka parry parse party pasta paste pasty patch patio patty pause paved payee peace peach pearl
+pecan pedal peeve penal pence penny peony perch peril perky pesky petal petty phase phone photo piano picky piece piety piggy pilot
+pinch pinky pious pique pitch pivot pixel pizza place plaid plain plane plank plant plate plaza plead pleat pluck plumb plume plump
+plunk plush poach point poise poker polar polka pooch poppy porch posse pouch pound power prank prawn preen press price pride prime
+primp print prior prism prize probe prone prong proof prose proud prove prowl proxy prune psalm pudgy puffy pulse punch pupil puppy
+puree purge purse pushy putty quack quail quake qualm quart queen queer quell query quest queue quick quiet quill quilt quirk quite
+quota quote rabbi rabid racer radar radio rainy raise rally ranch range rapid ratio raven razor reach react ready realm rebel recap
+refer regal reign relax relay relic remit renal renew repay repel reply rerun reset resin retro reuse revel revue rhino rhyme rider
+ridge rifle right rigid rinse ripen risen risky rival river roast robin robot rocky rodeo rogue roomy roost rotor rouge rough round
+rouse route rover rowdy royal rugby ruler rumor rural rusty saber sadly safer saint salad salon salsa salty salve sandy satin sauce
+saucy sauna saved savor savvy scale scalp scamp scant scarf scary scene scent scoff scold scoop scoot scope score scorn scour scout
+scowl scrap screw scrub scuba scuff sedan seedy seize sense serum serve seven sever sewer shade shady shaft shake shaky shale shall
+shame shank shape shard share shark sharp shave shawl shear sheen sheep sheer sheet shelf shell shift shine shiny shire shirk shirt
+shoal shock shone shook shoot shore short shout shove shown showy shrew shrub shrug shunt sight sigma silky silly since siren sixth
+sixty skate skier skill skimp skirt skull skunk slack slain slang slant slash slate slave sleek sleep sleet slept slice slick slide
+slime slimy sling slink slope slosh sloth slump slung slurp slush small smart smash smear smell smelt smile smirk smite smock smoke
+smoky snack snail snake snare snarl sneak sneer snide sniff snipe snore snort snout snowy snuck snuff soapy sober soggy solar solve
+sonar sonic sorry sound south space spade spank spare spark spasm spawn speak spear speck speed spell spend spent sperm spice spicy
+spied spike spill spilt spine spiny spire spite splat split spoil spoke spoof spook spool spoon spore sport spout spray spree sprig
+spurn spurt squad squat squid stack staff stage staid stain stair stake stale stalk stall stamp stand stank stare stark start stash
+state stave steak steal steam steed steel steep steer stern stick stiff still stilt sting stink stint stock stoic stoke stole stomp
+stone stony stood stool stoop store stork storm story stout stove strap straw stray strew strip strut stuck study stuff stump stung
+stunt style suave sugar suite sulky sunny super surge surly swamp swarm swath swear sweat sweep sweet swell swept swift swine swing
+swipe swirl swish swoop sword swore sworn syrup table taboo tacit tacky talon tamer tango tangy taper tapir tardy tarot taste tasty
+taunt tawny teach tease tempo tenor tense tenth tepid terse thank theft their theme there these thick thief thigh thing think third
+thorn those three threw throb throw thumb thump tiara tibia tidal tiger tight timer timid tipsy tired titan title toast today token
+tonal tonic tooth topaz topic torch torso total totem touch tough towel tower toxic toxin trace track tract trade trail train trait
+tramp trash trawl tread treat trend triad trial tribe trick tried trout truce truck truly trump trunk trust truth tulip tumor tunic
+turbo tutor twang tweak tweed tweet twice twine twirl twist ulcer ultra uncle uncut under undue unfit union unite unity untie until
+upper upset urban usage usher usual utter vague valid valor value valve vapor vault vegan venom venue verge verse vicar video vigil
+vigor villa vinyl viola viper viral virus visit visor vista vital vivid vocal vodka vogue voice vomit voter vouch vowel wacky wafer
+wager wagon waist waive waltz waste watch water waver waxen weary weave wedge weedy weigh weird whack whale wharf wheat wheel where
+which whiff while whine whirl whisk white whole whoop whose widen wider widow width wield wince winch windy wiper wired wiser witch
+witty woken woman women woody world worry worse worst worth would wound woven wrath wreck wrist write wrong wrote wrung yacht yearn
+yeast yield young yours youth yummy zebra zesty
+absorb accent accept access accuse across action active actual adjust admire adverb advice advise affair affect afford afraid agenda
+agency almond almost always amount animal annual answer anthem anyone anyway appeal appear archer arctic around arrest arrive artist
+aspect asleep assign assist assume asthma attach attack attend august author autumn avenue bakery ballet ballot bamboo banana bandit
+banker banner barber barely barrel basket batter battle beacon beagle beaker beauty became become before behalf behave behind belief
+belong beside better beware beyond bishop bitter blazer blight blonde bloody blouse bodily bonnet border boring borrow bother bottle
+bottom bought bounce bowler brainy branch brandy breach breath breeze bridge bright broken bronze browse bruise brunch brutal bubble
+bucket budget buffet bullet bundle bunker burden bureau burger burrow busily butler butter button cactus camera campus canary cancel
+cancer candle canvas canyon carbon career carpet carrot carton casino casual catchy cattle caught celery cellar cement census center
+cereal chance change chapel charge cheese cherry chorus chosen cinema circle circus citrus client climax closed closet cloudy clumsy
+cobweb coffee collar column combat comedy coming commit common convey cookie cooler copper corner cotton county couple course cousin
+cowboy cradle crayon create credit crisis critic crunch crutch cuddle cursor custom cutter damage dancer danger daring dazzle dealer
+debate debris decade decent decide defeat defend define degree delete deluxe demand denial dental depart depend desert design desire
+detail detect detour device devote diesel differ digest dilute dinner direct divide divine doctor dollar domain donate donkey doodle
+double dragon drawer dreamy driver during easily easter eating editor effect effort eighty either elapse eldest eleven emblem emerge
+empire employ enable endure energy engage engine enough ensure entire entity equity errand escape escort estate ethics evolve exceed
+except excess excite excuse exempt exhale exotic expand expect expert expire expose extend extent fabric facade facial factor fairly
+falcon fallen family famous fasten father faucet fellow female fender ferret figure filter finale finger finish fiscal flavor flight
+floral flower fluent flurry flying folder follow forbid forest forget formal format former fossil foster fourth freeze fridge friend
+fringe frozen fungus funnel future gadget galaxy gallon gallop garage garden garlic gather gender genius gentle giggle ginger glance
+glider global gloomy glossy goblin golden gospel gossip govern granny ground grouse growth guitar gutter hamlet hammer hamper handle
+happen harbor hardly hassle hatred health hearty heaven helium helmet herald hereby hermit hidden higher highly hijack hiking hinder
+hockey hollow homage honest hornet horror hostel hourly humane humble hunger hunter hurdle hyphen ignite ignore impact impair impart
+impose income indeed indoor infant inform inhale inject injure injury insect insert inside insist invade invent invert invest invite
+iodine island jacket jaguar jargon jersey jigsaw jockey jogger joyful juggle jumble jungle junior kettle kidney kindly kitten knight
+ladder lament laptop larger latest latter launch lawyer layout leader league legacy legend legion length lesson letter liable lively
+liquid listen litter little lizard locate locker lonely longer loosen lotion lounge lovely loving lumber luxury magnet magpie maiden
+makeup mammal manage manner mantle manual marble margin marine market marrow marvel mascot master matter mature meadow medium melody
+member memory mental mentor merger method middle midway mighty mingle minute mirror misery mishap mister mobile modern modest modify
+moment monkey morale mortal mosaic mostly mother motion motive muffin mumble murder muscle museum mutter mutual myself napkin narrow
+nation native nature nearby nearly nectar needle nephew neuron nibble nickel nimble nobody noodle normal notice notion novice number
+nutmeg object oblige obtain occupy octave office offset online onward opaque opener openly option orange orchid ordeal origin ornate
+orphan outfit outlaw outlet output oxygen oyster packet paddle pagoda palace pantry papaya parade pardon parent parish parlor parrot
+pastel pastor patent patrol patron peanut pebble pencil people pepper period permit person phrase picnic pigeon pillar pillow pirate
+pistol planet plague plaque plasma player please plenty plunge pocket poetry poison police policy polish ponder portal porter poster
+potato potent powder praise prayer preach prefer prefix priest prince prison profit prompt proper proton public puddle pulley punish
+puppet purple pursue puzzle python quarry quartz quench quiver rabbit racket radish raffle ragged ramble rancid random ranger rarely
+rather rattle reader really reason rebate recall recent recipe reckon record reduce reform refuge refund refuse regard regime region
+regret reject relate relief remain remark remedy remind remote remove render rental repair repeat report rescue resent reside resign
+resist resort result retail retain retire return reveal review revise reward rhythm ribbon riddle ripple ritual robust rocket rodent
+roller roster rotate rotten rubber rubble rugged rumble runner runway rustic saddle safari safety salary salmon saloon salute sample
+sandal savage scarce scared school scheme scorch scream screen script scroll search season second secret sector secure seldom select
+seller senate senior sensor serial series sermon server settle severe shadow shabby shaken shaped shared shiver shovel shower shrimp
+shrine shrunk signal silent silver simple singer single sister sketch skewer sledge sleeve slight slogan smooth snatch sneeze soccer
+social socket softly solemn soothe sorrow source speech sphere spider spinal spiral spirit splash spleen sponge spoken spouse sprain
+spread spring sprint sprout square squash squeak squeal squint stable staple starch starve static statue status steady stereo sticky
+stitch stolen stormy strain strand streak stream street stress strict stride strife strike string stripe strive stroke stroll strong
+studio stupid subdue submit subtle suburb subway sudden suffer summer summit sunset superb supper supply surely survey swivel symbol
+syntax system tackle tailor talent tandem tangle target tassel tavern tedious temper temple tenant tender tennis terror thanks thatch
+theory thesis thirst thirty thread threat thrive throat throne thrust ticket tickle timber timely tinker tinsel tissue toffee toilet
+tomato tongue topple torque toward trader trance trauma travel treaty tremor trench triple trophy tropic trough trowel tunnel turkey
+turtle twelve twenty twitch unable unfair unfold unique united unless unlike unlock unpack unrest unruly unseen unwind update uphold
+upload upward urgent useful usable utmost vacant vacuum valley vandal vanish vanity varied vector velvet vendor verbal verify versus
+vessel victim viewer violet violin virtue vision visual voyage vulgar walnut wander warmth weaken wealth weapon weasel weekly weight
+whisky wholly wicked widely wiggle willow window winner winter wisdom wither within wizard wonder wooden woolen worker worthy wrench
+yearly yellow yogurt zenith zigzag zipper
+academy account achieve address advance airport already ancient another anxious anybody applaud approve arrange article artwork
+athlete attempt attract auction average awesome balance bargain because bedroom believe beneath benefit between bicycle biology
+blanket blossom bravery brownie builder cabbage caffeine calorie capital caption capture careful carrier cartoon caution ceiling
+central century certain chamber channel chapter charity charmed cheddar chicken chimney citizen classic climate clothes cluster
+collect college combine comfort command comment company compare compete complex compose concept concern concert conduct confirm
+connect consent consist contact contain content contest context control convert cottage council counter country courage crawler
+crimson crucial crumble crystal cuisine cupcake curious current cushion custody cutting cyclist dancing decline default defense
+deliver density deposit descent deserve desktop despair despite destroy details develop diagram diamond digital dignity dilemma
+dinosaur diploma discuss disease dismiss display dispute distant diverse divided drawing dresser drizzle dungeon dynamic eastern
+eclipse economy edition educate elderly element elevate embrace emotion emperor endless engaged english enhance enlarge episode
+equally equator essence eternal evening exactly examine example exhaust exhibit expense explain explore express extreme factory
+faculty fantasy fashion feather feature federal feeling fiction fifteen filling finance finding fitness flavour flowery focused
+foreign forever formula fortune forward founder fragile freedom frequent freshly frontal furnace further gallery gateway general
+genuine gesture giraffe glacier glimpse gorilla gourmet grammar granite graphic gratify gravity greeting grocery gymnast habitat
+hallway hamster harmony harvest heading healthy hearing heavily helpful heroine highway history holiday honesty horizon hostage
+however hundred hunting husband hygiene iceberg imagine imitate impress improve impulse incline include inspect inspire install
+instant instead intense involve journal journey justice keyboard kingdom kitchen laundry lantern leaflet leather lecture leisure
+lettuce liberty library license lifting lighter limited listing lobster logical lottery loyalty luggage machine magical magnify
+mailbox mammoth mansion mariner massive maximum meaning measure medical meeting mention mermaid message midnight mineral minimum
+minutes mission mixture mobile monitor monster monthly morning musical mustard mystery natural neither network neutral nitrogen
+noodles nothing nowhere nuclear nursery nurture obscure observe obvious offense officer opening operate opinion optical organic
+outcome outdoor outline outside overall package painter palette pancake parking partner passage passion patient pattern payment
+peaceful penalty pending pension perfect perform perfume perhaps picture pigment pioneer plastic playful pleased plumber pointed
+popcorn popular portion possess posture pottery poverty powered praised precise predict premium prepare present prevent primary
+printer privacy problem proceed process produce product profile program project promise promote propose protect protein provide
+publish pumpkin purpose pushing pyramid quality quarter quicken radiant railway rainbow ranking reading realize receipt receive
+recover recycle referee reflect refresh regular related release remains remove replace request require reserve resolve respect
+respond restore retreat reunion revenge reverse revolve rewrite ripple rocking romance routine royalty running rustic sailing
+sandbox satisfy savings scanner scatter scenery science scooter scratch seasonal seaside seating section segment serious service
+serving session setting seventh shading shallow shampoo sharing shelter sheriff shimmer shipping shortly shoulder shouted shower
+silence similar sincere singing sitting skeptic skillet slender slipper smoothie snorkel society soldier solid solving somehow
+someone soprano soundly special species specify spelling spinach splendid sponsor spotted sprinkle squeeze stadium stagger stamina
+standard stapler starter station statue stellar stomach storage strange stretch student subject succeed success suggest suitable
+summary sunrise sunset sunshine support suppose supreme surface surgeon surplus survive suspect sustain swallow swimmer swinging
+symptom teacher teaching tension terrace terrain testify texture theatre therapy thicken thinker thirsty thought thunder tighten
+tonight topical tornado torture tourist towards traffic tragedy trailer trainer transit trapped travels treated tribute trolley
+trouble trumpet trusted tuition tumbler tunnel turbine turmoil twinkle typical unhappy uniform unusual upgrade upright useless
+utility vaccine vantage variety various vehicle venture verdict version veteran victory village vintage visible visitor vitamin
+volcano voltage voucher walking wanting warning warrior washing watched weather webpage wedding weekend welcome welfare western
+whisper wildlife willing windmill winning wireless wisdom without witness wonders workout worried wrapper wrinkle written younger
+absolute activity advanced adventure aircraft alongside amazing analysis announce anything apartment appetite approach argument
+assemble athletic attitude audience aviation backpack balanced ballroom bathroom birthday blueprint boundary breakfast brilliant
+building business campaign campfire capacity carefree carnival category ceremony champion chemical children chocolate classroom
+clearing clothing collapse colorful complete composer computer conclude conductor confident conflict confused congress consider
+constant consumer continue contract contrast creative creature critical crossing cupboard curtains customer database daughter
+daylight daybreak decorate decrease dedicate delicate delivery describe designer detailed diameter dictionary difficult dinosaur
+directly disagree discount discover distance distinct district doorstep download drawings dreaming duration eastward economic
+educated elephant elevator eliminate employee engineer entrance envelope equality equation estimate everyone exchange exercise
+existing expanded expected explorer exposure external facility familiar farmland favorite feedback festival flexible flooring
+football forecast fortress fountain fraction fragrance friendly frighten frontier function generate gentleman goodbye governor
+graceful graduate gradually grateful gravity greeting guardian guidance handbook handmade hardware headache heritage highland
+hospital humanity hundreds identity imagined immediate improved incident increase indicate industry infinite informal ingredient
+innocent instance interest interior internal interview inventor isolated judgment keyboard kindness knowledge landmark landscape
+language laughter learning lemonade lifetime lighting likewise limitless location magazine magnetic maintain majority marathon
+marriage material meanwhile mechanic medicine memorial mentions merchant midnight military millions minimize minister mismatch
+moderate momentum monument mountain movement multiple mushroom musician mustache mythical national negative neighbor nervous
+notebook november numerous observer occasion offering official operator opposite optimism organize original ornament outbreak
+outdoors outgoing overcome overhead painting paradise paragraph parallel parental particle passenger password patience peaceful
+peculiar perfectly personal persuade physical pilgrim pipeline platform pleasant pleasure poisoned portable position positive
+possible practice preacher precious pregnant presence preserve pressure previous princess printing priority probable producer
+profound progress property proposal protocol provider publisher purchase pyramids quantity question rainfall reaction realize
+receiver recently recovery reduction referral reformed register regular relative relaxing reliable religion reminder renewable
+reporter republic reserved resident resource response restless reunited revision romantic sandwich saturday scaffold scenario
+schedule scissors sculptor seasonal secondary security sentence sequence services shepherd shortage shoulder sideways signature
+silverware simplify sixteenth skeleton slippery softness solution somebody sometime southern souvenir specific spectrum splendid
+sporting spotless standard starfish stardust starlight stationery stopwatch straight strategy strength stubborn suitable sunlight
+sunshine superior surprise surround survival swimming symbolic sympathy teamwork teaspoon telegram tenderly terrible thousand
+threaten thriller together tomorrow tortoise training transfer transmit traveler treasure triangle tropical truthful umbrella
+universe unlikely upstairs vacation valuable variable vertical vibrant villager vineyard violence volcanic volunteer wardrobe
+warranty watchful waterway weakness weathered wednesday whatever wherever wildlife wireless withdraw wondered woodland workshop
+worldwide yesterday yourself
+`;
+const DICT = new Set(RAW.trim().split(/\s+/).filter(w=>w.length>=3));
+const SEEDS = [...DICT].filter(w=>w.length>=4 && w.length<=6);
+const HINTABLE = [...DICT].filter(w=>w.length>=4 && w.length<=6);
+
+/* ============ WORD VALIDATION ============ */
+function baseValid(w){
+  if(DICT.has(w)) return true;
+  const t=[];
+  if(w.endsWith('s')){ t.push(w.slice(0,-1)); if(w.endsWith('es')) t.push(w.slice(0,-2)); if(w.endsWith('ies')) t.push(w.slice(0,-3)+'y'); }
+  if(w.endsWith('ed')){ t.push(w.slice(0,-2),w.slice(0,-1)); if(w.endsWith('ied')) t.push(w.slice(0,-3)+'y'); if(/(.)\1ed$/.test(w)) t.push(w.slice(0,-3)); }
+  if(w.endsWith('ing')){ t.push(w.slice(0,-3),w.slice(0,-3)+'e'); if(/(.)\1ing$/.test(w)) t.push(w.slice(0,-4)); }
+  if(w.endsWith('er')||w.endsWith('or')){ t.push(w.slice(0,-2),w.slice(0,-1)); if(/(.)\1er$/.test(w)) t.push(w.slice(0,-3)); }
+  if(w.endsWith('est')){ t.push(w.slice(0,-3),w.slice(0,-2)); if(/(.)\1est$/.test(w)) t.push(w.slice(0,-4)); }
+  if(w.endsWith('ly')) t.push(w.slice(0,-2));
+  if(w.endsWith('y')) t.push(w.slice(0,-1),w.slice(0,-1)+'e');
+  return t.some(x=>x.length>=3 && DICT.has(x));
+}
+async function apiValid(w){
+  try{
+    const c = new AbortController(); setTimeout(()=>c.abort(),4000);
+    const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+w,{signal:c.signal});
+    return r.ok;
+  }catch(e){ return null; }
+}
+
+/* ============ LETTERS ============ */
+const VOW='aaaaaeeeeeeeiiiiioooooouuuy';
+const CONS='bbccddddffgghhjkllllmmmnnnnnnppqrrrrrrssssssttttttvvwwxyz';
+const isV=c=>'aeiouy'.includes(c);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rc=s=>s[Math.floor(Math.random()*s.length)];
+
+function makeLetters(carry,n){
+  let pool = SEEDS;
+  if(carry){ const f = SEEDS.filter(w=>w.includes(carry)); if(f.length) pool = f; }
+  let L = pick(pool).split('');
+  while(L.length<n){
+    const v = L.filter(isV).length;
+    L.push(v<2 ? rc(VOW) : (v>=4 ? rc(CONS) : (Math.random()<.32?rc(VOW):rc(CONS))));
+  }
+  L = L.slice(0,n);
+  if(carry && !L.includes(carry)) L[Math.floor(Math.random()*L.length)] = carry;
+  if(!L.some(isV)) L[0]=rc(VOW);
+  for(let i=L.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[L[i],L[j]]=[L[j],L[i]];}
+  return L;
+}
+
+/* ============ STATE ============ */
+const COST={reroll:15,add:30,hint:45};
+const S={mode:'timed',score:0,words:0,round:1,lives:3,carry:null,tiles:[],sel:[],
+         used:new Set(),best:{w:'',p:0},limit:60,left:60,tid:null,busy:false};
+
+const $=id=>document.getElementById(id);
+const screens={home:$('home'),game:$('game'),over:$('over')};
+function show(n){for(const k in screens)screens[k].classList.toggle('on',k===n);}
+
+/* ============ RENDER ============ */
+function renderTiles(){
+  const r=$('rack'); r.innerHTML='';
+  S.tiles.forEach(t=>{
+    const b=document.createElement('button');
+    b.className='tile'+(t.sel?' sel':'')+(t.carry?' carry':'')+(t.hint?' hint':'');
+    b.textContent=t.ch; b.dataset.id=t.id;
+    r.appendChild(b);
+  });
+}
+function renderWord(cls){
+  const box=$('wordbox');
+  box.className='wordbox'+(cls?' '+cls:'');
+  if(!S.sel.length){box.innerHTML='<span class="ph">แตะตัวอักษรด้านล่างเพื่อสร้างคำ</span>';return;}
+  box.innerHTML='';
+  S.sel.forEach(id=>{
+    const s=document.createElement('span'); s.className='wl';
+    s.textContent=S.tiles.find(t=>t.id===id).ch; box.appendChild(s);
+  });
+}
+function renderHUD(){
+  $('hScore').textContent=S.score; $('hWords').textContent=S.words;
+  if(S.mode==='timed'){ $('hExtra').textContent='❤️'.repeat(S.lives)||'—'; $('hExtraL').textContent='ชีวิต'; }
+  else { $('hExtra').textContent=S.round; $('hExtraL').textContent='รอบที่'; }
+  $('pReroll').disabled = S.score<COST.reroll;
+  $('pAdd').disabled = S.score<COST.add || S.tiles.length>=10;
+  $('pHint').disabled = S.score<COST.hint;
+}
+function say(t,cls){ const m=$('msg'); m.textContent=t; m.className='msg'+(cls?' '+cls:''); }
+
+/* ============ ROUND ============ */
+function newRound(keepCarry){
+  const carry = keepCarry ? S.carry : null;
+  if(!keepCarry) S.carry=null;
+  const L=makeLetters(carry,8);
+  let carryDone=false;
+  S.tiles=L.map((ch,i)=>{
+    const isC = carry && ch===carry && !carryDone;
+    if(isC) carryDone=true;
+    return {id:i,ch,sel:false,carry:!!isC,hint:false};
+  });
+  S.sel=[]; renderTiles(); renderWord(); renderHUD();
+  if(S.mode==='timed'){
+    S.limit=Math.max(30,60-(S.round-1)*2); S.left=S.limit; startTimer();
+    $('bar').style.display='';
+  } else { $('bar').style.display='none'; }
+}
+function startTimer(){
+  clearInterval(S.tid);
+  S.tid=setInterval(()=>{
+    S.left-=0.1;
+    const p=Math.max(0,S.left/S.limit);
+    $('barFill').style.width=(p*100)+'%';
+    $('bar').classList.toggle('warn',p<0.3);
+    if(S.left<=0){ clearInterval(S.tid); timeUp(); }
+  },100);
+}
+function timeUp(){
+  S.lives--;
+  renderHUD();
+  if(S.lives<=0){ gameOver('หมดเวลาแล้ว!'); return; }
+  say('⏰ หมดเวลา! เสีย 1 ชีวิต','err');
+  S.round++;
+  setTimeout(()=>newRound(false),700);
+}
+
+/* ============ SELECT ============ */
+function tapTile(id){
+  const t=S.tiles.find(x=>x.id===id); if(!t) return;
+  if(t.sel){ if(S.sel[S.sel.length-1]===id){ t.sel=false; S.sel.pop(); } }
+  else { t.sel=true; S.sel.push(id); }
+  renderTiles(); renderWord(); say('');
+}
+let dragging=false;
+$('rack').addEventListener('pointerdown',e=>{
+  const el=e.target.closest('.tile'); if(!el) return;
+  dragging=true; el.setPointerCapture&&el.releasePointerCapture(e.pointerId);
+  tapTile(+el.dataset.id);
+});
+$('rack').addEventListener('pointermove',e=>{
+  if(!dragging) return;
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  if(el&&el.classList.contains('tile')){
+    const id=+el.dataset.id;
+    const t=S.tiles.find(x=>x.id===id);
+    if(t&&!t.sel){ t.sel=true; S.sel.push(id); renderTiles(); renderWord(); }
+  }
+});
+window.addEventListener('pointerup',()=>dragging=false);
+window.addEventListener('pointercancel',()=>dragging=false);
+
+$('bDel').onclick=()=>{ if(!S.sel.length)return; const id=S.sel.pop(); S.tiles.find(t=>t.id===id).sel=false; renderTiles(); renderWord(); say(''); };
+$('bShf').onclick=()=>{
+  for(let i=S.tiles.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[S.tiles[i],S.tiles[j]]=[S.tiles[j],S.tiles[i]];}
+  renderTiles();
+};
+
+/* ============ SUBMIT ============ */
+$('bSub').onclick=async()=>{
+  if(S.busy) return;
+  const word=S.sel.map(id=>S.tiles.find(t=>t.id===id).ch).join('');
+  if(word.length<3){ renderWord('bad'); say('ต้องยาวอย่างน้อย 3 ตัวอักษร','err'); return; }
+  if(S.used.has(word)){ renderWord('bad'); say('คำนี้ใช้ไปแล้ว ลองคำอื่นนะ','err'); return; }
+
+  let ok=baseValid(word);
+  if(!ok){
+    S.busy=true; $('bSub').disabled=true; say('กำลังตรวจคำ...');
+    const a=await apiValid(word);
+    S.busy=false; $('bSub').disabled=false;
+    if(a===null){ renderWord('bad'); say('ตรวจคำไม่ได้ (ออฟไลน์) — ลองคำที่คุ้นเคยกว่านี้','err'); return; }
+    ok=a;
+  }
+  if(!ok){ renderWord('bad'); say('ไม่พบคำนี้ในดิกชันนารี','err'); return; }
+
+  const usedCarry=S.sel.some(id=>S.tiles.find(t=>t.id===id).carry);
+  let pts=word.length*word.length + (usedCarry?5:0);
+  let bonusTxt = usedCarry?' +5 ต่อยอด':'';
+  if(S.mode==='timed'){ const tb=Math.round(10*(S.left/S.limit)); pts+=tb; bonusTxt+=' +'+tb+' เวลา'; clearInterval(S.tid); }
+
+  S.score+=pts; S.words++; S.used.add(word);
+  if(pts>S.best.p) S.best={w:word,p:pts};
+  renderWord('ok');
+  say('✨ '+word.toUpperCase()+' +'+pts+' แต้ม'+bonusTxt,'good');
+
+  S.carry=word[Math.floor(Math.random()*word.length)];
+  S.round++;
+  renderHUD();
+  setTimeout(()=>{ newRound(true); say('★ ตัวต่อยอดรอบนี้คือ "'+S.carry.toUpperCase()+'" ใช้แล้วได้ +5'); },780);
+};
+
+/* ============ POWER-UPS ============ */
+$('pReroll').onclick=()=>{
+  if(S.score<COST.reroll) return;
+  S.score-=COST.reroll; renderHUD();
+  const carry=S.carry; newRound(!!carry);
+  say('🎲 สุ่มตัวอักษรใหม่แล้ว (-'+COST.reroll+')');
+};
+$('pAdd').onclick=()=>{
+  if(S.score<COST.add||S.tiles.length>=10) return;
+  S.score-=COST.add;
+  const cur=S.tiles.map(t=>t.ch);
+  for(let i=0;i<2;i++){
+    const v=cur.filter(isV).length;
+    const ch = v<3 ? rc(VOW) : rc(CONS);
+    cur.push(ch);
+    S.tiles.push({id:Math.max(...S.tiles.map(t=>t.id))+1,ch,sel:false,carry:false,hint:false});
+  }
+  renderTiles(); renderHUD();
+  say('➕ เพิ่มตัวอักษรอีก 2 ตัว (-'+COST.add+')');
+};
+$('pHint').onclick=()=>{
+  if(S.score<COST.hint) return;
+  const avail={};
+  S.tiles.forEach(t=>avail[t.ch]=(avail[t.ch]||0)+1);
+  const cands=HINTABLE.filter(w=>{
+    if(S.used.has(w)||w.length>S.tiles.length) return false;
+    const c={...avail};
+    for(const ch of w){ if(!c[ch]) return false; c[ch]--; }
+    return true;
+  });
+  if(!cands.length){ say('ไม่เจอคำใบ้ ขอสุ่มชุดใหม่ให้ฟรีนะ'); newRound(false); return; }
+  S.score-=COST.hint;
+  const w=cands.sort((a,b)=>b.length-a.length)[Math.floor(Math.random()*Math.min(3,cands.length))];
+  S.tiles.forEach(t=>t.hint=false);
+  const need={};
+  for(const ch of w) need[ch]=(need[ch]||0)+1;
+  S.tiles.forEach(t=>{ if(need[t.ch]>0){ t.hint=true; need[t.ch]--; } });
+  renderTiles(); renderHUD();
+  say('💡 ตัวสีทองรวมกันเป็นคำได้ ('+w.length+' ตัวอักษร) (-'+COST.hint+')');
+};
+
+/* ============ FLOW ============ */
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>start(b.dataset.mode));
+function start(mode){
+  Object.assign(S,{mode,score:0,words:0,round:1,lives:3,carry:null,sel:[],used:new Set(),best:{w:'',p:0},busy:false});
+  show('game'); renderHUD(); say(mode==='timed'?'พร้อมลุย! 60 วินาทีต่อรอบ':'เล่นสบายๆ ไม่มีเวลาจำกัด');
+  newRound(false);
+}
+function gameOver(reason){
+  clearInterval(S.tid);
+  $('ovTitle').textContent = reason||'จบเกม!';
+  $('ovSub').textContent = S.words>=10?'สุดยอดไปเลย! 🏆':(S.words>=5?'เล่นได้ดีมาก 👏':'ลองอีกครั้งได้นะ 💪');
+  $('ovScore').textContent=S.score; $('ovWords').textContent=S.words;
+  $('ovBest').textContent = S.best.w ? '🌟 คำที่ดีที่สุด: '+S.best.w.toUpperCase()+' ('+S.best.p+' แต้ม)' : 'ยังไม่มีคำที่เรียงสำเร็จ';
+  show('over');
+}
+$('bGive').onclick=()=>{ if(confirm('ต้องการจบเกมตอนนี้เลยไหม?')) gameOver('ยอมแพ้แล้ว'); };
+$('bAgain').onclick=()=>show('home');
+</script>
+</body>
+</html>
