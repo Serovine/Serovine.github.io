@@ -1,12 +1,12 @@
 Symbol,Company,Earnings Date,Time,Price,Exchange,%Today
 MDT,Medtronic plc.,01-09-26,Before Market,91.23,NYSE,+2.31%
-GME,GameStop Corporation,01-09-26,After Market,17.87,NYSE,
-CRDO,Credo Technology Group Holding ,01-09-26,After Market,232.75,NASDAQ,
-DELL,Dell Technologies Inc.,01-09-26,After Market,456.24,NYSE,
-GTLB,GitLab Inc.,01-09-26,After Market,44.87,NASDAQ,
-MDB,MongoDB Inc.,01-09-26,After Market,446.62,NASDAQ,
-PANW,Palo Alto Networks Inc.,01-09-26,After Market,371.59,NASDAQ,
-OLLI,Ollie's Bargain Outlet Holdings,02-09-26,Before Market,72.42,NASDAQ,
+GME,GameStop Corporation,01-09-26,After Market,17.87,NYSE,+0.58%
+CRDO,Credo Technology Group Holding ,01-09-26,After Market,232.75,NASDAQ,-11.70%
+DELL,Dell Technologies Inc.,01-09-26,After Market,456.24,NYSE,+10.35%
+GTLB,GitLab Inc.,01-09-26,After Market,44.87,NASDAQ,+15.13%
+MDB,MongoDB Inc.,01-09-26,After Market,446.62,NASDAQ,-10.87%
+PANW,Palo Alto Networks Inc.,01-09-26,After Market,371.59,NASDAQ,-5.15%
+OLLI,Ollie's Bargain Outlet Holdings,02-09-26,Before Market,72.42,NASDAQ,+1.65%
 AGX,Argan Inc.,02-09-26,After Market,417.74,NYSE,
 AVGO,Broadcom Inc.,02-09-26,After Market,368.79,NASDAQ,
 FIVE,Five Below Inc.,02-09-26,After Market,241.89,NASDAQ,
