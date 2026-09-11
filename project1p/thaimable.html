@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#241a12">
-<title>ดีดลูกแก้ว — สนามทรายวงกลม</title>
+<title>เกมดีดลูกแก้วแบบไทยๆ</title>
 <link href="https://fonts.googleapis.com/css2?family=Itim&family=Anuphan:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -12,20 +12,20 @@ html,body{height:100%}
 body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan',sans-serif;color:#f1ead8;overflow:hidden;user-select:none;-webkit-user-select:none}
 #app{position:relative;width:min(100vw,470px);height:100vh;height:100dvh;display:flex;flex-direction:column;background:#2b211a;box-shadow:0 0 70px rgba(0,0,0,.6);touch-action:none;overflow:hidden}
 
-/* ---- กระดานคะแนน (ชอล์กบนกระดานดำ) ---- */
-#scorebar{display:flex;align-items:stretch;justify-content:space-between;padding:8px 12px calc(6px + env(safe-area-inset-top));background:#23282e;border-bottom:2px solid rgba(241,234,216,.22)}
-.side{text-align:center;min-width:72px;opacity:.5;transition:opacity .25s}
+/* ---- กระดานคะแนน (กระชับ) ---- */
+#scorebar{display:flex;align-items:center;justify-content:space-between;padding:4px 10px calc(4px + env(safe-area-inset-top));background:#23282e;border-bottom:2px solid rgba(241,234,216,.22)}
+.side{text-align:center;min-width:62px;opacity:.5;transition:opacity .25s}
 .side.on{opacity:1}
-.side .name{font-family:'Itim';font-size:13px;color:#cfc8b6}
+.side .name{font-family:'Itim';font-size:10.5px;line-height:1.2;color:#cfc8b6}
 .side.on .name{color:#f1ead8}
-.side .score{font-family:'Itim';font-size:27px;line-height:1;color:#f1ead8}
+.side .score{font-family:'Itim';font-size:20px;line-height:1.1;color:#f1ead8}
 .side.on .score{color:#ffd98a}
 .side .score.bump{animation:bump .4s}
 @keyframes bump{40%{transform:scale(1.45)}}
-.side canvas{display:block;margin:2px auto 0}
-#mid{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px}
-#winLabel{font-size:10.5px;color:#b7ae9a;letter-spacing:.5px}
-#turnPill{font-family:'Itim';font-size:14px;background:rgba(241,234,216,.1);border:1.5px solid rgba(241,234,216,.35);border-radius:12px 15px 11px 16px;padding:2px 10px;display:inline-block}
+.side canvas{display:block;margin:1px auto 0}
+#mid{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 4px}
+#winLabel{font-size:9px;color:#b7ae9a;letter-spacing:.5px}
+#turnPill{font-family:'Itim';font-size:12px;background:rgba(241,234,216,.1);border:1.5px solid rgba(241,234,216,.35);border-radius:10px 13px 9px 14px;padding:1px 8px;display:inline-block}
 
 /* ---- สนาม ---- */
 #stage{flex:1;position:relative;overflow:hidden}
@@ -36,7 +36,7 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 @keyframes pop{0%{opacity:0;transform:translateY(-10px) rotate(-1deg) scale(.88)}10%{opacity:1;transform:rotate(-1deg)}82%{opacity:1}100%{opacity:0;transform:translateY(-8px) rotate(-1deg)}}
 #muteBtn{position:absolute;top:8px;right:8px;z-index:25;background:rgba(35,40,46,.55);border:1.5px solid rgba(241,234,216,.4);border-radius:10px 12px 9px 13px;color:#f1ead8;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.85}
 
-/* ---- แผงเกจ (กระดานดำล่าง) ---- */
+/* ---- แผงเกจ ---- */
 #panel{background:#23282e;border-top:2px solid rgba(241,234,216,.22);padding:8px 16px calc(10px + env(safe-area-inset-bottom))}
 #hint{font-family:'Itim';font-size:14.5px;text-align:center;color:#e7e0cd;min-height:22px;margin-bottom:6px}
 #gRow{display:flex;align-items:flex-end;gap:14px;transition:opacity .25s}
@@ -44,7 +44,6 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 .gcol{display:flex;flex-direction:column;gap:4px}
 .gcol.grow{flex:1;width:100%}
 .gLabel{font-family:'Itim';font-size:12.5px;color:#cfc8b6}
-/* --- หลอดวัดแรงแบบ VU: เล็กซ้าย → ใหญ่ติดไฟขวา --- */
 #powTrack{display:flex;align-items:flex-end;gap:3px;width:100%;height:52px}
 .seg{flex:1;position:relative;border:1.6px solid rgba(241,234,216,.6);border-radius:3px 5px 4px 6px;background:rgba(0,0,0,.28);overflow:hidden;transition:border-color .12s}
 .seg .fill{position:absolute;left:1px;right:1px;bottom:1px;height:0%;background:rgba(232,210,122,.55);border-radius:2px}
@@ -55,7 +54,6 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 .seg.hot.on .fill{background:#ffb27a;box-shadow:0 0 8px rgba(255,150,70,.95)}
 .ends{display:flex;justify-content:space-between;font-family:'Itim';font-size:11px;color:#cfc8b6;margin-top:2px}
 .ends .hotTxt{color:#ffab6b}
-/* --- เกจแม่นยำ --- */
 .trackH{width:100%;height:30px;border:2px solid rgba(241,234,216,.75);border-radius:10px 12px 9px 13px;position:relative;background:rgba(0,0,0,.22)}
 .accC{position:absolute;left:50%;top:0;bottom:0;width:11%;transform:translateX(-50%);background:rgba(185,216,168,.20);border-left:2px solid rgba(185,216,168,.75);border-right:2px solid rgba(185,216,168,.75)}
 #accMark{position:absolute;top:-5px;bottom:-5px;width:3.5px;background:#ffd98a;left:50%;border-radius:2px}
@@ -64,6 +62,7 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 /* ---- ปุ่ม/เมนู ---- */
 .btn{font-family:'Itim';font-size:16px;color:#f1ead8;background:transparent;border:2px solid rgba(241,234,216,.8);border-radius:12px 15px 11px 16px;padding:8px 20px;cursor:pointer}
 .btn.sel,.btn:active{background:#f1ead8;color:#262b31}
+.btn.small{padding:1px 14px;font-size:19px;line-height:1.4}
 .hidden{display:none!important}
 .overlay{position:absolute;inset:0;background:rgba(22,15,10,.8);display:flex;align-items:center;justify-content:center;z-index:40;padding:18px}
 .card{background:#262b31;border:2px solid rgba(241,234,216,.6);border-radius:14px 19px 12px 21px;padding:20px 22px;max-width:340px;width:100%;text-align:center;transform:rotate(-.6deg);max-height:96%;overflow:auto}
@@ -73,6 +72,8 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 #menuMarble{display:block;margin:0 auto}
 .diffLabel{font-family:'Itim';font-size:14px;margin:8px 0 6px}
 .diffRow{display:flex;gap:8px;justify-content:center}
+.countRow{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:2px}
+#mCount{font-family:'Itim';font-size:27px;width:42px;text-align:center;color:#ffd98a}
 #startBtn{font-size:21px;padding:10px 36px;margin:14px 0 10px}
 .rules{text-align:left;font-size:12px;color:#b7ae9a;line-height:1.65;border-top:1.5px dashed rgba(241,234,216,.25);padding-top:9px}
 .rules b{color:#e7e0cd;font-weight:600}
@@ -85,9 +86,9 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
 <body>
 <div id="app">
   <header id="scorebar">
-    <div class="side" id="sideP"><div class="name">คุณ</div><div class="score" id="sP">0</div><canvas id="pkP" width="160" height="30" style="width:80px;height:15px"></canvas></div>
+    <div class="side" id="sideP"><div class="name">คุณ</div><div class="score" id="sP">0</div><canvas id="pkP" width="124" height="24" style="width:62px;height:12px"></canvas></div>
     <div id="mid"><div id="winLabel">ชนะที่ 10 แต้ม</div><div id="turnPill">—</div></div>
-    <div class="side" id="sideC"><div class="name">CPU</div><div class="score" id="sC">0</div><canvas id="pkC" width="160" height="30" style="width:80px;height:15px"></canvas></div>
+    <div class="side" id="sideC"><div class="name">CPU</div><div class="score" id="sC">0</div><canvas id="pkC" width="124" height="24" style="width:62px;height:12px"></canvas></div>
   </header>
 
   <div id="stage">
@@ -121,20 +122,26 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
       <h1>ดีดลูกแก้ว</h1>
       <svg class="squig" width="150" height="10" viewBox="0 0 150 10"><path d="M3 6 C 30 1, 55 9, 80 5 S 130 2, 147 6" stroke="#e8d27a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
       <canvas id="menuMarble" width="280" height="280" style="width:140px;height:140px"></canvas>
-      <p class="tag">สนามทรายวงกลม เส้นชอล์กขาว ลูกแก้วใสแกนสี<br>ดีดจากตรงไหนของวง ระยะถึงหลุมเท่ากัน<br>ใครได้ครบ 10 แต้มก่อน ชนะ</p>
+      <p class="tag">คุณดีดจากโซนด้านล่าง · CPU ดีดจากด้านบน<br>ใครได้ครบ 10 แต้มก่อน ชนะ</p>
       <div class="diffLabel">เลือกความเก๋าของ CPU</div>
       <div class="diffRow">
         <button class="btn diff" data-d="easy">ง่าย</button>
         <button class="btn diff sel" data-d="normal">ปานกลาง</button>
         <button class="btn diff" data-d="hard">เก๋า</button>
       </div>
+      <div class="diffLabel">จำนวนลูกแก้วเริ่มเกม</div>
+      <div class="countRow">
+        <button class="btn small" id="mMinus">−</button>
+        <div id="mCount">5</div>
+        <button class="btn small" id="mPlus">+</button>
+      </div>
       <button id="startBtn" class="btn">เริ่มเล่น</button>
       <div class="rules">
-        <b>ดีดที่ 1:</b> แตะเส้นชอล์กวงกลมเพื่อวางลูก แล้วดีดเข้าสนาม ให้มีลูกลงหลุม = +1 แต้ม/ลูก และได้ดีดโบนัสต่อทันที<br>
-        <b>ไม่มีลูกลงหลุม</b> = ลูกคาสนาม จบตาทันที<br>
+        <b>ดีดที่ 1:</b> แตะวางลูกในโซนดีดด้านล่าง แล้วดีดเข้าวงชอล์ก ให้มีลูกลงหลุม = +1 แต้ม/ลูก และได้ดีดโบนัสต่อทันที<br>
+        <b>ไม่มีลูกลงหลุม</b> = ลูกคาสนาม จบตาทันที (ดีดไม่เข้าวงเลย = ลูกหาย)<br>
         <b>โบนัส:</b> ดีดให้โดนลูกในสนาม = +1 แต้ม เก็บลูกที่โดนกับลูกที่ใช้ดีดเข้ากระเป๋า<br>
         <b>ตอนโบนัสมีลูกลงหลุม</b> = โยนกลับสนามแบบสุ่ม ไม่ได้แต้ม<br>
-        <b>เรื่องหลุม:</b> ลูกช้าจมง่าย ลูกแรงต้องเข้าปากหลุมตรง ๆ แรงเกินลูกจะพุ่งข้ามหลุมไปเลย<br>
+        <b>เรื่องหลุม:</b> ลูกช้าจมง่าย ลูกแรงต้องเข้าปากหลุมตรง ๆ แรงเกินลูกพุ่งข้ามหลุมไป<br>
         <b>หลุดออกนอกเส้นชอล์ก</b> = ลูกหายเปล่า ไม่ได้อะไรเลย
       </div>
     </div>
@@ -198,6 +205,7 @@ const S={ctx:null,master:null,rollGain:null,muted:false,lastClick:0,
  click(v){ const now=performance.now(); if(now-this.lastClick<35)return; this.lastClick=now;
   this.env(2300+Math.random()*1200,'triangle',0.05,0.28*v); this.env(5200,'sine',0.03,0.1*v); this.noise(0.03,0.12*v,3200); },
  flick(p){ this.noise(0.07,0.5,900,'lowpass'); this.env(175,'sine',0.1,0.25+0.4*p,60); },
+ swish(){ this.noise(0.1,0.12,1500,'bandpass'); },
  thud(){ this.noise(0.07,0.5,300,'lowpass'); this.env(120,'sine',0.09,0.4,55); },
  drop(){ this.env(620,'sine',0.3,0.5,120); this.noise(0.09,0.35,260,'lowpass'); setTimeout(()=>this.env(92,'sine',0.12,0.5,48),140); },
  eject(){ this.env(180,'sine',0.16,0.4,640); },
@@ -212,19 +220,20 @@ const S={ctx:null,master:null,rollGain:null,muted:false,lastClick:0,
  setMute(m){ this.muted=m; if(this.master)this.master.gain.value=m?0:0.9; }
 };
 
-/* ============ ค่าคงที่ของโลก — สนามวงกลม ============ */
-const LW=420, LH=420, CX=LW/2, CY=LH/2;
-const R=168;                       // รัศมีเส้นชอล์ก (ดีดจากตรงไหนระยะถึงหลุม = เท่ากัน)
+/* ============ ค่าคงที่ของโลก — โซนผู้เล่นล่าง, CPU ดีดจากบน ============ */
+const LW=420, LH=500, CX=LW/2, CY=230;
+const R=164;
 const HOLE={x:CX,y:CY};
-const MR=10.5, HR=21;              // หลุมใหญ่กว่าลูกแก้วราวเท่าตัว
+const ZONE={x0:CX-126,x1:CX+126,y0:CY+R+26,y1:CY+R+78};
+const CPUL={y0:CY-R-48,y1:CY-R-16,half:150};
+const MR=10.5, HR=21;
 const H=1/240;
-const K=2.6, MU=60;                // ความหนืดของทราย
-const VMIN=170, VMAX=1250;         // เบาสุดไถ ~47 หน่วย, แรงสุดไถ ~445 หน่วย
-const MAXDEV=0.26;                 // เบี่ยงสุด ±15° — หยุดเกจเกินครึ่งหลอด = พลาดแน่นอน
-const SINK_V=560;                  // ความเร็วมากกว่านี้ = พุ่งข้ามปากหลุม
-const PULL_V=430;                  // ขอบหลุมดูดเฉพาะลูกที่กลิ้งช้ากว่านี้
-const PULL=200;                    // แรงดูดขอบหลุม (เดิม 1150 — คือตัวการทำให้ยิงตรงเสมอ)
-const CAPZone=HR*0.8;              // ต้องเข้าใกล้ใจกลางหลุมถึงจะจม
+const K=2.6, MU=60;
+const VMIN=170, VMAX=1250;
+const MAXDEV=0.26;
+const SINK_V=560, PULL_V=430, PULL=200, CAPZone=HR*0.8;
+/* จังหวะของนิ้ว (วินาที) — ปรับจังหวะดีดได้ที่นี่ */
+const FINGER={wind:0.14, strike:0.06, follow:0.17, slideFrom:150};
 const speedOf=p=>VMIN*Math.pow(VMAX/VMIN,p);
 const rollDist=v=>v/K-(MU/(K*K))*Math.log(1+K*v/MU);
 function powerForDist(d){
@@ -234,7 +243,7 @@ function powerForDist(d){
  return (lo+hi)/2;
 }
 
-/* ============ ชุดสีลูกแก้วแบบ cat's-eye ============ */
+/* ============ ชุดสีลูกแก้ว ============ */
 const PALS=[
  {c1:'#e2a23b',c2:'#fbe9c8',tint:'rgba(214,158,74,.30)',rim:'rgba(150,96,30,.45)'},
  {c1:'#2f9e6e',c2:'#d9f2e4',tint:'rgba(88,178,138,.28)',rim:'rgba(30,110,76,.45)'},
@@ -246,18 +255,18 @@ const PALS=[
 let palBag=shuffle(PALS.slice());
 const nextPal=()=>{ if(!palBag.length)palBag=shuffle(PALS.slice()); return palBag.pop(); };
 
-/* ============ ความยากของ CPU (จูนให้พลาดบ้างตามฟิสิกส์ใหม่) ============ */
+/* ============ ความยากของ CPU ============ */
 const DIFF={
- easy:  {ang:0.15, pow:0.16, pick:0.50},   // เบี่ยง 1σ ~25 หน่วย → จมราวครึ่ง
- normal:{ang:0.095,pow:0.11, pick:0.75},   // → จมราว 7 ใน 10
- hard:  {ang:0.055,pow:0.06, pick:0.92},   // → จมราว 9 ใน 10
+ easy:  {ang:0.15, pow:0.16, pick:0.50},
+ normal:{ang:0.095,pow:0.11, pick:0.75},
+ hard:  {ang:0.055,pow:0.06, pick:0.92},
 };
 
 /* ============ สถานะเกม ============ */
 let uid=0;
-const G={phase:'MENU',actor:'P',diff:'normal',bodies:[],shooter:null,score:{P:0,C:0},pocket:{P:[],C:[]},
+const G={phase:'MENU',actor:'P',diff:'normal',startMarbles:5,bodies:[],shooter:null,score:{P:0,C:0},pocket:{P:[],C:[]},
  turn:{shot:1},launch:null,aim:null,aimAng:0,pendingPal:null,pv:0,av:0,gt:0,gt2:0,accFreq:1.5,powFreq:0.85,
- fx:[],token:0,ignoreUntil:0,simT:0,simAcc:0};
+ fx:[],token:0,ignoreUntil:0,simT:0,simAcc:0,finger:null};
 let EV=null, dashT=0, fadeT=0, menuA=0;
 
 /* ============ ผืน canvas ============ */
@@ -276,16 +285,16 @@ function resize(){
 }
 window.addEventListener('resize',resize);
 
-/* ============ วาดพื้นสนามวงกลม (เรนเดอร์ครั้งเดียวลง cache) ============ */
+/* ============ วาดฉากหลัง ============ */
 function buildBg(){
  bg.width=cv.width; bg.height=cv.height; const c=bg.getContext('2d');
  c.setTransform(1,0,0,1,0,0);
  c.fillStyle='#8a6a46'; c.fillRect(0,0,bg.width,bg.height);
  worldTransform(c);
- for(let i=0;i<420;i++){ c.fillStyle=Math.random()<0.5?'rgba(60,40,20,.10)':'rgba(230,200,150,.08)';
-   c.fillRect(rand(-600,LW+600),rand(-600,LH+600),rand(1,2.4),rand(1,2.4)); }
- for(let i=0;i<40;i++){ c.fillStyle='rgba(70,50,28,.22)'; c.beginPath();
-   c.ellipse(rand(-560,LW+560),rand(-560,LH+560),rand(1.5,3.4),rand(1,2.4),rand(0,3),0,7); c.fill(); }
+ for(let i=0;i<560;i++){ c.fillStyle=Math.random()<0.5?'rgba(60,40,20,.10)':'rgba(230,200,150,.08)';
+   c.fillRect(rand(-80,LW+80),rand(-80,LH+80),rand(1,2.4),rand(1,2.4)); }
+ for(let i=0;i<54;i++){ c.fillStyle='rgba(70,50,28,.22)'; c.beginPath();
+   c.ellipse(rand(-70,LW+70),rand(-70,LH+70),rand(1.5,3.4),rand(1,2.4),rand(0,3),0,7); c.fill(); }
  c.beginPath(); c.arc(CX,CY,R+24,0,TAU); c.fillStyle='#dcb47e'; c.fill();
  c.save(); c.beginPath(); c.arc(CX,CY,R+18,0,TAU); c.clip();
  for(let i=0;i<3000;i++){ c.fillStyle=Math.random()<0.55?'rgba(110,72,34,.10)':'rgba(250,225,180,.10)';
@@ -303,7 +312,7 @@ function buildBg(){
  const rg=c.createRadialGradient(CX,CY,R-14,CX,CY,R+8);
  rg.addColorStop(0,'rgba(90,58,26,0)'); rg.addColorStop(1,'rgba(90,58,26,.15)');
  c.beginPath(); c.arc(CX,CY,R+8,0,TAU); c.fillStyle=rg; c.fill();
- drawHole(c); drawChalk(c);
+ drawHole(c); drawChalk(c); drawZoneBg(c);
 }
 function drawHole(c){
  c.beginPath(); c.arc(HOLE.x,HOLE.y,HR+5,0,TAU); c.fillStyle='rgba(118,84,48,.6)'; c.fill();
@@ -332,6 +341,45 @@ function drawChalk(c){
  for(let i=0;i<210;i++){ const a=rand(0,TAU);
   c.fillStyle=`rgba(246,243,230,${rand(0.06,0.3)})`;
   c.beginPath(); c.arc(CX+Math.cos(a)*(R+rand(-7,7)),CY+Math.sin(a)*(R+rand(-7,7)),rand(0.4,1.1),0,TAU); c.fill(); }
+}
+function chalkSeg(c,x0,y0,x1,y1){
+ const len=Math.hypot(x1-x0,y1-y0),n=Math.ceil(len/13);
+ const ux=(x1-x0)/len,uy=(y1-y0)/len,px=-uy,py=ux;
+ c.beginPath();
+ for(let i=0;i<=n;i++){ const t=i/n,j=rand(-1.5,1.5);
+  const x=x0+ux*(t*len)+px*j, y=y0+uy*(t*len)+py*j;
+  i?c.lineTo(x,y):c.moveTo(x,y); }
+ c.stroke();
+}
+function drawZoneBg(c){
+ const p=10;
+ c.save();
+ c.beginPath();
+ c.moveTo(ZONE.x0-p+9,ZONE.y0-p);
+ c.arcTo(ZONE.x1+p,ZONE.y0-p,ZONE.x1+p,ZONE.y1+p,9);
+ c.arcTo(ZONE.x1+p,ZONE.y1+p,ZONE.x0-p,ZONE.y1+p,9);
+ c.arcTo(ZONE.x0-p,ZONE.y1+p,ZONE.x0-p,ZONE.y0-p,9);
+ c.arcTo(ZONE.x0-p,ZONE.y0-p,ZONE.x1+p,ZONE.y0-p,9);
+ c.closePath();
+ c.fillStyle='#cf9f68'; c.fill();
+ for(let i=0;i<430;i++){ c.fillStyle=Math.random()<0.5?'rgba(105,70,35,.12)':'rgba(240,215,170,.12)';
+  c.fillRect(rand(ZONE.x0-p,ZONE.x1+p),rand(ZONE.y0-p,ZONE.y1+p),1.1,1.1); }
+ c.restore();
+ for(const pass of [{w:4.2,a:0.9},{w:2,a:0.4}]){
+  c.strokeStyle=`rgba(246,243,230,${pass.a})`; c.lineWidth=pass.w; c.lineCap='round';
+  chalkSeg(c,ZONE.x0,ZONE.y0,ZONE.x1,ZONE.y0);
+  chalkSeg(c,ZONE.x1,ZONE.y0,ZONE.x1,ZONE.y1);
+  chalkSeg(c,ZONE.x1,ZONE.y1,ZONE.x0,ZONE.y1);
+  chalkSeg(c,ZONE.x0,ZONE.y1,ZONE.x0,ZONE.y0);
+ }
+ for(let i=0;i<90;i++){ const e=randi(4); let x,y;
+  if(e===0){x=rand(ZONE.x0,ZONE.x1);y=ZONE.y0;} else if(e===1){x=rand(ZONE.x0,ZONE.x1);y=ZONE.y1;}
+  else if(e===2){x=ZONE.x0;y=rand(ZONE.y0,ZONE.y1);} else {x=ZONE.x1;y=rand(ZONE.y0,ZONE.y1);}
+  c.fillStyle=`rgba(246,243,230,${rand(0.06,0.3)})`;
+  c.beginPath(); c.arc(x+rand(-6,6),y+rand(-6,6),rand(0.4,1),0,TAU); c.fill(); }
+ c.fillStyle='rgba(246,243,230,.75)'; c.font='12px Itim';
+ c.textAlign='center'; c.textBaseline='middle';
+ c.fillText('โ ซ น ดี ด',(ZONE.x0+ZONE.x1)/2,(ZONE.y0+ZONE.y1)/2);
 }
 
 /* ============ วาดลูกแก้วใส ============ */
@@ -366,7 +414,75 @@ function drawShadowOn(c,x,y,r,a=1){
  c.fillStyle=g; c.beginPath(); c.ellipse(x+2.5,y+3.5,r*1.15,r*0.9,0,0,TAU); c.fill(); c.restore();
 }
 
-/* ============ ฟิสิกส์ (เกมจริง + จำลองในหัว CPU ใช้ชุดเดียวกัน) ============ */
+/* ============ มือดีดลูกแก้ว (กำมือชี้นิ้ว วาดล้วนด้วยเส้น) ============ */
+function drawHand(c,f){
+ const t=f.t; let tipX=0, alpha=1, sx=1, sl=0;
+ if(f.phase==='wind'){                                   // ง้าง: มือเลื่อนเข้ามาแล้วดึงถอยหลังนิดหน่อย
+  const t1=FINGER.wind*0.79;
+  if(t<t1){ const k=easeOutCubic(t/t1); tipX=lerp(-FINGER.slideFrom,-MR-6,k); alpha=clamp(0.25+t/t1*1.5,0,1); }
+  else{ const k=(t-t1)/(FINGER.wind-t1); tipX=lerp(-MR-6,-MR-13,k); }
+ }else if(f.phase==='strike'){                           // ดีด: เร่งเข้าหาลูก (ปลายนิ้วแตะ = ปล่อยแรง)
+  const k=Math.min(1,t/FINGER.strike), e=k*k;
+  tipX=lerp(-MR-13,-MR,e); sl=e;
+ }else{                                                  // ตามแรง: นิ้วทวีความยาวตามแรงแล้วจางหาย
+  const k=Math.min(1,t/FINGER.follow);
+  tipX=lerp(-MR, MR*0.35+f.p*20, easeOutCubic(k));
+  sx=1+0.14*f.p*k; sl=1-k;
+  alpha=k<0.5?1:1-(k-0.5)*2;
+ }
+ c.save();
+ c.translate(f.x,f.y); c.rotate(f.ang);
+ c.globalAlpha=alpha;
+ if(sl>0.03){                                            // เส้น speed-line ที่ข้อมือ
+  c.strokeStyle=`rgba(246,243,230,${0.55*sl})`; c.lineWidth=2; c.lineCap='round';
+  c.beginPath(); c.arc(-74,2,12,-0.55,0.55); c.stroke();
+  c.beginPath(); c.arc(-85,2,17,-0.4,0.4); c.stroke();
+ }
+ c.translate(tipX,0);
+ const OUT='rgba(76,50,26,.9)';
+ c.lineJoin='round'; c.lineCap='round'; c.lineWidth=2; c.strokeStyle=OUT;
+ c.save(); c.scale(sx,1);                                // นิ้วชี้ (ยืดตามแรงตอน follow)
+ c.fillStyle='#f1c193';
+ c.beginPath();
+ c.moveTo(-28,-6.5);
+ c.bezierCurveTo(-12,-7.2,-4,-5.5,-0.5,-3);
+ c.quadraticCurveTo(3.2,0,0.5,2.6);
+ c.bezierCurveTo(-3,6.2,-12,7.2,-28,6.5);
+ c.closePath(); c.fill(); c.stroke();
+ c.fillStyle='#f9e7d0';
+ c.beginPath(); c.ellipse(0.3,-0.3,2.5,2,-0.18,0,TAU); c.fill();   // เล็บ
+ c.restore();
+ c.fillStyle='#a45a41';                                  // แขนเสื้อเกล้า
+ c.beginPath();
+ c.moveTo(-52,-12); c.lineTo(-64,-10.5);
+ c.quadraticCurveTo(-68.5,1,-64,12.5);
+ c.lineTo(-52,14);
+ c.quadraticCurveTo(-56.5,1,-52,-12);
+ c.closePath(); c.fill(); c.stroke();
+ c.fillStyle='#f1c193';                                  // กำมือ
+ c.beginPath();
+ c.moveTo(-22,-10);
+ c.bezierCurveTo(-32,-15.5,-48,-14.5,-55,-7);
+ c.bezierCurveTo(-62,0,-61,11,-53,15);
+ c.bezierCurveTo(-44,19,-29,18,-23,11);
+ c.bezierCurveTo(-20,6,-20,-4,-22,-10);
+ c.closePath(); c.fill(); c.stroke();
+ c.fillStyle='rgba(196,134,84,.32)';                     // เงาใต้กำมือ
+ c.beginPath(); c.ellipse(-38,10,15,5.5,0.12,0,TAU); c.fill();
+ c.fillStyle='#f1c193';                                  // นิ้วที่งอ
+ for(const [bx,by] of [[-21,-4.5],[-19.5,2],[-21,8.5]]){
+  c.beginPath(); c.arc(bx,by,4.4,0,TAU); c.fill(); c.stroke();
+ }
+ c.fillStyle='#f6cba0';                                  // หัวแม่มือพาดบน
+ c.beginPath();
+ c.moveTo(-45,-8.5);
+ c.bezierCurveTo(-41,-15.5,-29,-15.5,-23,-9);
+ c.bezierCurveTo(-27,-3.5,-38,-3,-45,-8.5);
+ c.closePath(); c.fill(); c.stroke();
+ c.restore();
+}
+
+/* ============ ฟิสิกส์ (เกมจริง + จำลอง CPU ชุดเดียวกัน) ============ */
 function startSink(b,ev,real){
  b.sinking=true;b.sinkT=0;b.sx=b.x;b.sy=b.y;b.act=false;b.vx=b.vy=0;
  if(ev)ev.sunk.push(b); if(real){S.drop();vib(25);}
@@ -381,17 +497,17 @@ function physStep(bs,h,ev,real){
   const hx=HOLE.x-b.x,hy=HOLE.y-b.y,hd=Math.hypot(hx,hy)||0.001;
   const spN=Math.hypot(b.vx,b.vy);
   if(hd<HR+b.r){
-   if(hd<CAPZone&&spN<SINK_V){ startSink(b,ev,real); continue; }        // เข้าปากหลุมช้าพอ → จม
-   if(spN>1.2&&spN<40&&hd<CAPZone){ startSink(b,ev,real); continue; }   // กลิ้งเกือบหยุดคาปากหลุม → ทรุดจม
-   if(spN>=1.2&&spN<PULL_V){                                            // ขอบหลุมดูดเบา ๆ เฉพาะลูกที่ยังกลิ้ง
+   if(hd<CAPZone&&spN<SINK_V){ startSink(b,ev,real); continue; }
+   if(spN>1.2&&spN<40&&hd<CAPZone){ startSink(b,ev,real); continue; }
+   if(spN>=1.2&&spN<PULL_V){
     const pull=PULL*(1-hd/(HR+b.r));
     b.vx+=hx/hd*pull*h; b.vy+=hy/hd*pull*h;
-   }else if(spN>=SINK_V&&hd<HR*0.85&&!(b.skimCd>0)){                    // แรงเกิน → พุ่งข้ามปากหลุม เด้งเล็กน้อย
+   }else if(spN>=SINK_V&&hd<HR*0.85&&!(b.skimCd>0)){
     b.skimCd=0.5; b.hopZ=0.1; b.hopV=46; b.vx*=0.94; b.vy*=0.94;
    }
   }
   const sp=Math.hypot(b.vx,b.vy);
-  if(sp>0){ const ns=Math.max(0,sp-(K*sp+MU)*h); const f=ns/sp; b.vx*=f; b.vy*=f; }  // ทรายหนืด
+  if(sp>0){ const ns=Math.max(0,sp-(K*sp+MU)*h); const f=ns/sp; b.vx*=f; b.vy*=f; }
   b.x+=b.vx*h; b.y+=b.vy*h;
   if(real&&sp>60)b.coreA+=sp*h*0.004;
   const dc=Math.hypot(b.x-CX,b.y-CY);
@@ -437,7 +553,7 @@ function simulate(lp,ang,p,fields){
  bs.push(sh);
  const ev={sunk:[],oob:[],first:null};
  let t=0; const h=1/120;
- while(t<3){ physStep(bs,h,ev,false); t+=h;
+ while(t<3.2){ physStep(bs,h,ev,false); t+=h;
   let any=false; for(const b of bs)if(b.act&&(b.vx!==0||b.vy!==0)){any=true;break;}
   if(!any)break; }
  const rest=bs.filter(b=>!b.sinking&&!b.out).map(b=>({id:b.id,x:b.x,y:b.y,field:!b.isShooter}));
@@ -455,31 +571,27 @@ function rankShot(r,shot){
  }
  return v;
 }
-function ringAnchors(){
- const pts=[]; for(let i=0;i<12;i++){ const a=i/12*TAU+0.26;
-  pts.push({x:CX+Math.cos(a)*R,y:CY+Math.sin(a)*R,a}); }
+function cpuAnchors(){
+ const pts=[],n=6;
+ for(const y of [CPUL.y1,CPUL.y0])
+  for(let i=0;i<n;i++)pts.push({x:lerp(CX-CPUL.half+16,CX+CPUL.half-16,i/(n-1)),y});
  return pts;
 }
-function ringLaunch(th){
- for(let k=0;k<11;k++){
-  const a=th+(k===0?0:(k%2?1:-1)*Math.ceil(k/2)*0.13);
-  const x=CX+Math.cos(a)*(R+2), y=CY+Math.sin(a)*(R+2);
-  if(G.bodies.every(b=>b.gone||b.sinking||b.out||Math.hypot(b.x-x,b.y-y)>MR*2+3)) return {x,y};
- }
- return {x:CX+Math.cos(th)*(R+2), y:CY+Math.sin(th)*(R+2)};
+function cpuLaunchAt(wx,wy){
+ return {x:clamp(wx,CX-CPUL.half+MR+1,CX+CPUL.half-MR-1), y:clamp(wy,CPUL.y0,CPUL.y1)};
 }
 function cpuPlan(){
  const D=DIFF[G.diff], shot=G.turn.shot;
  const fields=G.bodies.filter(b=>!b.isShooter&&!b.out&&!b.sinking&&!b.gone);
  const targets=fields.slice().sort((a,b)=>dist(a,HOLE)-dist(b,HOLE)).slice(0,4);
  const cands=[];
- for(const an of ringAnchors()){
-  const lp=ringLaunch(an.a);
+ for(const a of cpuAnchors()){
+  const lp=cpuLaunchAt(a.x,a.y);
   const tlist=shot===1?[HOLE,...targets]:targets;
   for(const t of tlist){
    const ang=Math.atan2(t.y-lp.y,t.x-lp.x);
    const base=powerForDist(dist(lp,t));
-   for(const dp of [-0.06,0.06,0.16,0.3]){        // แผนแรงหลากหลาย: พอดี / แช่ / เกินหลุม / ทะลุ
+   for(const dp of [-0.06,0.06,0.16,0.3]){
     const p=clamp(base+dp,0.08,1);
     cands.push({lp,ang,p,val:rankShot(simulate(lp,ang,p,fields),shot)});
    }
@@ -490,9 +602,9 @@ function cpuPlan(){
   cands.sort((a,b)=>b.val-a.val);
   pick=(Math.random()<D.pick)?cands[0]:cands[randi(Math.min(cands.length,shot===1?7:5))];
  }else{
-  const a=rand(0,TAU); const lp=ringLaunch(a);
-  const tx=CX+Math.cos(a+2)*rand(30,R*0.6), ty=CY+Math.sin(a+2)*rand(30,R*0.6);
-  pick={lp,ang:Math.atan2(ty-lp.y,tx-lp.x),p:0.4};
+  const lp=cpuLaunchAt(rand(CX-100,CX+100),CPUL.y1);
+  const tx=CX+rand(-60,60), ty=CY+rand(-60,60);
+  pick={lp,ang:Math.atan2(ty-lp.y,tx-lp.x),p:0.55};
  }
  const err=gauss()*D.ang, perr=gauss()*D.pow;
  return {launch:pick.lp,ang:pick.ang,p:clamp(pick.p+perr,0.08,1),err,aVal:clamp(err/MAXDEV,-1,1)};
@@ -514,8 +626,8 @@ function spawnField(n){
  return out;
 }
 function initGame(){
- G.token++; G.score={P:0,C:0}; G.pocket={P:[],C:[]}; G.fx=[];
- G.bodies=spawnField(5); G.shooter=null; EV=null;
+ G.token++; G.score={P:0,C:0}; G.pocket={P:[],C:[]}; G.fx=[]; G.finger=null;
+ G.bodies=spawnField(G.startMarbles); G.shooter=null; EV=null;
  updateScoreUI(); drawPockets();
  $('#over').classList.add('hidden'); $('#menu').classList.add('hidden');
  G.actor='P'; G.turn={shot:1};
@@ -524,12 +636,12 @@ function initGame(){
 }
 function startPlacement(){
  G.token++; G.shooter=null; G.bodies.forEach(b=>b.isShooter=false);
- G.launch=null; G.aim=null; G.pendingPal=nextPal(); G.phase='PLACE';
+ G.launch=null; G.aim=null; G.pendingPal=nextPal(); G.finger=null; G.phase='PLACE';
  gaugesDim(true); hideReaim(); setHint(hintFor()); updateTurnUI();
 }
 function endTurn(){
  G.phase='WAIT'; G.turn.shot=1; G.actor=G.actor==='P'?'C':'P';
- G.shooter=null; G.bodies.forEach(b=>b.isShooter=false);
+ G.shooter=null; G.bodies.forEach(b=>b.isShooter=false); G.finger=null;
  gaugesDim(true); hideReaim(); updateTurnUI(); setHint('…');
  const tok=G.token;
  setTimeout(()=>{ if(G.token!==tok||G.phase==='OVER'||G.phase==='MENU')return;
@@ -556,7 +668,7 @@ function resolveShot(){
  const ev=EV, shot=G.turn.shot, sh=G.shooter;
  if(sh&&!sh.gone&&!sh.sinking&&!sh.out&&!sh.entered){
   sh.out=true; sh.act=false; sh.outT=0; sh.dvx=sh.vx*0.2; sh.dvy=sh.vy*0.2;
-  toast('ดีดไม่เข้าสนาม! ลูกหาย','bad');
+  toast('ดีดไม่เข้าวง! ลูกหาย','bad');
  }
  const sunkN=ev.sunk.length;
  if(shot===1){
@@ -594,7 +706,7 @@ function resolveShot(){
 }
 function pocketMarble(b){
  b.gone=true; b.act=false;
- G.fx.push({type:'pocket',x0:b.x,y0:b.y,tx:G.actor==='P'?70:LW-70,ty:-6,r:b.r,pal:b.pal,t:0,dur:0.55,delay:0,
+ G.fx.push({type:'pocket',x0:b.x,y0:b.y,tx:G.actor==='P'?66:LW-66,ty:-6,r:b.r,pal:b.pal,t:0,dur:0.55,delay:0,
   onDone:()=>{G.pocket[G.actor].push(b.pal);drawPockets();S.tick();}});
 }
 function findEjectSpot(taken){
@@ -615,19 +727,26 @@ function ejectFromHole(b,s){
  setTimeout(()=>{try{S.eject();}catch(e){}},200);
 }
 
-/* ---- การยิง ---- */
+/* ---- การยิง: วางลูก → นิ้วดีด → แตะลูกจึงออกแรง ---- */
 function launchShot(ang,p){
  G.bodies.forEach(b=>b.isShooter=false);
- const sp=speedOf(p);
- const b={id:++uid,x:G.launch.x,y:G.launch.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,r:MR,
+ const b={id:++uid,x:G.launch.x,y:G.launch.y,vx:0,vy:0,r:MR,      // ลูกจริงวางนิ่งรอนิ้ว
   pal:G.pendingPal||nextPal(),coreA:rand(0,TAU),isShooter:true,entered:false,act:true,sinking:false,gone:false,out:false,
-  hopZ:2,hopV:26+p*40};
+  hopZ:0,hopV:0};
  G.shooter=b; G.bodies.push(b);
  EV={sunk:[],oob:[],first:null};
- G.fx.push({type:'puff',x:G.launch.x,y:G.launch.y,t:0,dur:0.35,delay:0,big:0});
- S.flick(p); vib(15);
+ G.finger={t:0,phase:'wind',ang,p,body:b,x:G.launch.x,y:G.launch.y};
+ G.phase='FINGER';
+ setHint('ดีด!'); hideReaim(); gaugesDim(true);
+}
+function releaseShot(f){                                  // เฟรมนิ้วแตะลูก — ออกแรง ณ จุดนี้
+ const b=f.body, sp=speedOf(f.p);
+ b.vx=Math.cos(f.ang)*sp; b.vy=Math.sin(f.ang)*sp;
+ b.hopZ=2; b.hopV=26+f.p*40;
+ G.fx.push({type:'puff',x:f.x,y:f.y,t:0,dur:0.35,delay:0,big:0});
+ S.flick(f.p); vib(15);
  G.phase='SIM'; G.simT=0; G.simAcc=0;
- setHint('ลูกกำลังเคลื่อนที่…'); hideReaim(); gaugesDim(true);
+ setHint('ลูกกำลังเคลื่อนที่…');
 }
 function tapLock(){
  const now=performance.now(); if(now<G.ignoreUntil)return; G.ignoreUntil=now+150;
@@ -637,7 +756,7 @@ function tapLock(){
   setHint(hintFor()); hideReaim();
  }else if(G.phase==='ACC'){
   G.av=triPM(G.gt2); setAcc(G.av); S.tick(); vib(12);
-  const ang=G.aimAng+G.av*MAXDEV;               // ตำแหน่งเข็ม = มุมเบี่ยงจริง ไม่มีดีดให้กลับตรง
+  const ang=G.aimAng+G.av*MAXDEV;
   G.phase='LOCK';
   setTimeout(()=>launchShot(ang,G.pv),150);
  }
@@ -645,14 +764,23 @@ function tapLock(){
 
 /* ---- อินพุตผู้เล่น ---- */
 function handlePlace(w){
- const d=Math.hypot(w.x-CX,w.y-CY);
- if(Math.abs(d-R)>36){ toast('แตะที่เส้นชอล์กวงกลม เพื่อวางจุดดีด','info'); return; }
- G.launch=ringLaunch(Math.atan2(w.y-CY,w.x-CX));
+ const m=16;
+ if(w.x<ZONE.x0-m||w.x>ZONE.x1+m||w.y<ZONE.y0-m||w.y>ZONE.y1+m){
+  toast('แตะใน "โซนดีด" ด้านล่างเพื่อวางลูก','info'); return;
+ }
+ let x=clamp(w.x,ZONE.x0+MR+2,ZONE.x1-MR-2), y=clamp(w.y,ZONE.y0+MR+2,ZONE.y1-MR-2);
+ const others=G.bodies.filter(b=>!b.gone&&!b.sinking&&!b.out);
+ for(let k=0;k<9;k++){
+  const dx=(k===0)?0:(k%2?1:-1)*Math.ceil(k/2)*13;
+  const px=x+dx;
+  if(px>ZONE.x0+MR+1&&px<ZONE.x1-MR-1&&others.every(b=>Math.hypot(b.x-px,b.y-y)>MR*2+3)){x=px;break;}
+ }
+ G.launch={x,y};
  S.chalk(); vib(8);
  G.phase='AIM'; setHint(hintFor()); showReaim();
 }
 function handleAim(w){
- if(Math.hypot(w.x-CX,w.y-CY)>R-2){ toast('แตะภายในวงเพื่อเลือกทิศทาง','info'); return; }
+ if(Math.hypot(w.x-CX,w.y-CY)>R-2){ toast('แตะภายในวงชอล์กเพื่อเลือกทิศทาง','info'); return; }
  if(Math.hypot(w.x-G.launch.x,w.y-G.launch.y)<26){ toast('แตะไกลจากลูกหน่อย เพื่อระบุทิศทาง','info'); return; }
  G.aim=w; G.aimAng=Math.atan2(w.y-G.launch.y,w.x-G.launch.x);
  G.phase='POWER'; G.gt=0; setPow(0);
@@ -676,8 +804,8 @@ async function cpuTurn(){
  G.phase='C_MARK'; setHint('CPU กำลังมองสนาม…'); gaugesDim(true); updateTurnUI();
  await sleep(300+Math.random()*260); if(tok!==G.token)return;
  const plan=cpuPlan();
- G.launch=plan.launch; G.aim=null; S.chalk(); setHint('CPU เลือกจุดดีดแล้ว'); G.phase='C_AIM';
- await sleep(260); if(tok!==G.token)return;
+ G.launch=plan.launch; G.aim=null; S.chalk(); setHint('CPU วางลูกด้านบนแล้ว'); G.phase='C_AIM';
+ await sleep(280); if(tok!==G.token)return;
  G.aim={x:plan.launch.x+Math.cos(plan.ang)*120,y:plan.launch.y+Math.sin(plan.ang)*120};
  S.chalk(); setHint('CPU เล็งเป้าหมาย'); G.phase='C_POW';
  await sleep(280); if(tok!==G.token)return;
@@ -700,8 +828,8 @@ function setHint(t){ $('#hint').textContent=t; }
 function hintFor(){
  const obj=G.turn.shot===1?'เป้า: ทำลูกลงหลุม':'เป้า: ให้โดนลูกในสนาม';
  switch(G.phase){
-  case 'PLACE':return `1 แตะเส้นชอล์กวงกลมเพื่อวางลูก — ${obj}`;
-  case 'AIM':return `2 แตะในวงเพื่อเลือกทิศทาง — ${obj}`;
+  case 'PLACE':return `1 แตะวางลูกในโซนดีดด้านล่าง — ${obj}`;
+  case 'AIM':return `2 แตะในวงชอล์กเพื่อเลือกทิศทาง — ${obj}`;
   case 'POWER':return '3 แตะล็อก "แรง" (ยิ่งแรง เกจแม่นยำยิ่งวิ่งเร็ว)';
   case 'ACC':return '4 แตะล็อก "แม่นยำ" ให้ตรงเส้นกลาง!';
  }
@@ -716,7 +844,7 @@ function toast(msg,cls='info'){
  box.appendChild(d);
 }
 function updateTurnUI(){
- $('#turnPill').textContent=`${G.actor==='P'?'ตาคุณ':'ตา CPU'} · ${G.turn.shot===1?'ดีดที่ 1':'โบนัส ดีดที่ 2'}`;
+ $('#turnPill').textContent=`${G.actor==='P'?'ตาคุณ':'ตา CPU'} · ${G.turn.shot===1?'ดีดที่ 1':'โบนัส'}`;
  $('#sideP').classList.toggle('on',G.actor==='P');
  $('#sideC').classList.toggle('on',G.actor==='C');
 }
@@ -729,13 +857,12 @@ function updateScoreUI(bump){
 function drawPockets(){
  for(const side of ['P','C']){
   const c=$('#pk'+side).getContext('2d');
-  c.setTransform(2,0,0,2,0,0); c.clearRect(0,0,80,15);
+  c.setTransform(2,0,0,2,0,0); c.clearRect(0,0,62,12);
   const arr=G.pocket[side], show=Math.min(arr.length,5);
-  for(let i=0;i<show;i++)drawMarbleOn(c,7+i*13.5,7.5,5.2,arr[i],i*1.3);
-  if(arr.length>5){ c.fillStyle='#f1ead8'; c.font='9px Anuphan'; c.fillText('+'+(arr.length-5),7+5*13.5-2,10.5); }
+  for(let i=0;i<show;i++)drawMarbleOn(c,5+i*11.6,6,4.2,arr[i],i*1.3);
+  if(arr.length>5){ c.fillStyle='#f1ead8'; c.font='8px Anuphan'; c.fillText('+'+(arr.length-5),52,9); }
  }
 }
-/* ---- หลอดวัดแรงแบบ VU ---- */
 const POWN=12, powSegs=[];
 function buildPow(){
  const tr=$('#powTrack');
@@ -755,7 +882,7 @@ function setPow(v){
  });
 }
 function setAcc(v){ const m=$('#accMark'); m.style.left=((v+1)/2*100)+'%';
- m.style.background=Math.abs(v)>0.5?'#f0a08a':'#ffd98a'; }   // หยุดเบี้ยวมาก = เข็มเปลี่ยนเป็นสีแดงเตือน
+ m.style.background=Math.abs(v)>0.5?'#f0a08a':'#ffd98a'; }
 function gaugesDim(d){ $('#gRow').classList.toggle('dim',d); }
 function showReaim(){ $('#reaim').classList.remove('hidden'); }
 function hideReaim(){ $('#reaim').classList.add('hidden'); }
@@ -766,10 +893,20 @@ document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('.diff').forEach(x=>x.classList.remove('sel'));
  b.classList.add('sel'); G.diff=b.dataset.d;
 }));
+ $('#mMinus').addEventListener('click',()=>{
+ S.ensure(); S.ui();
+ G.startMarbles=clamp(G.startMarbles-1,3,8);
+ $('#mCount').textContent=G.startMarbles;
+});
+ $('#mPlus').addEventListener('click',()=>{
+ S.ensure(); S.ui();
+ G.startMarbles=clamp(G.startMarbles+1,3,8);
+ $('#mCount').textContent=G.startMarbles;
+});
  $('#startBtn').addEventListener('click',()=>{ S.ensure(); S.ui(); initGame(); });
  $('#againBtn').addEventListener('click',()=>{ S.ui(); initGame(); });
  $('#menuBtn').addEventListener('click',()=>{
- S.ui(); G.token++; G.phase='MENU';
+ S.ui(); G.token++; G.phase='MENU'; G.finger=null;
  $('#over').classList.add('hidden'); $('#menu').classList.remove('hidden');
 });
  $('#muteBtn').addEventListener('click',()=>{
@@ -818,6 +955,12 @@ function drawFx(c){
 function update(dt){
  menuA+=dt*0.7; dashT+=dt;
  fadeT+=dt; if(fadeT>0.4){fadeT=0;fadeTrail();}
+ if(G.finger){                                   // ไทม์ไลน์นิ้ว: ง้าง → ดีด (แตะ = ปล่อยแรง) → ตามแรง
+  const f=G.finger; f.t+=dt;
+  if(f.phase==='wind'&&f.t>=FINGER.wind){ f.phase='strike'; f.t=0; S.swish(); }
+  else if(f.phase==='strike'&&f.t>=FINGER.strike){ releaseShot(f); f.phase='follow'; f.t=0; }
+  else if(f.phase==='follow'&&f.t>=FINGER.follow){ G.finger=null; }
+ }
  for(const b of G.bodies){
   if(b.sinking&&!b.gone){b.sinkT+=dt/0.38;if(b.sinkT>=1)b.gone=true;}
   if(b.outT!=null&&!b.gone){b.outT+=dt/0.4;b.x+=(b.dvx||0)*dt;b.y+=(b.dvy||0)*dt;if(b.outT>=1)b.gone=true;}
@@ -836,7 +979,7 @@ function update(dt){
   if(G.simT>4.5)G.bodies.forEach(b=>{if(b.act){b.vx=b.vy=0;}});
   let mx=0,anyV=false;
   for(const b of G.bodies){ if(!b.act)continue; const s=Math.hypot(b.vx,b.vy);
-   if(s>0.35)anyV=true; if(s>mx)mx=s; }          // เกณฑ์ "นิ่ง" เข้มขึ้น จับลูกที่ไหลนิ่วริมหลุมด้วย
+   if(s>0.35)anyV=true; if(s>mx)mx=s; }
   S.setRoll(clamp(mx/1000,0,1)*0.5);
   if(!anyV&&!G.bodies.some(b=>b.hopZ>0)){
    G.phase='SETTLE'; S.setRoll(0);
@@ -848,12 +991,13 @@ function update(dt){
  if(G.phase==='ACC'){G.gt2+=dt*G.accFreq;G.av=triPM(G.gt2);setAcc(G.av);}
 }
 function drawAim(c){
- const placePh=G.phase==='PLACE', aimPh=['AIM','POWER','ACC','C_AIM','C_POW','C_ACC'].includes(G.phase);
+ const placePh=G.phase==='PLACE', aimPh=['AIM','POWER','ACC','LOCK','C_AIM','C_POW','C_ACC'].includes(G.phase);
  if(!(placePh||aimPh))return;
  if(placePh&&G.actor==='P'&&!G.launch){
   c.save(); c.strokeStyle=`rgba(246,243,230,${0.22+0.13*Math.sin(dashT*3)})`;
   c.lineWidth=1.8; c.setLineDash([10,9]); c.lineDashOffset=-dashT*26;
-  c.beginPath(); c.arc(CX,CY,R+6,0,TAU); c.stroke(); c.restore();
+  c.strokeRect(ZONE.x0-5,ZONE.y0-5,ZONE.x1-ZONE.x0+10,ZONE.y1-ZONE.y0+10);
+  c.restore();
   return;
  }
  if(!G.launch)return;
@@ -888,10 +1032,11 @@ function render(){
  ctx.drawImage(trailCv,0,0);
  worldTransform(ctx);
  drawAim(ctx);
+ if(G.finger)drawHand(ctx,G.finger);              // มืออยู่ใต้ลูกที่พุ่งออกไป แต่ทับพื้นสนาม
  const list=G.bodies.filter(b=>!b.gone).sort((a,b)=>a.y-b.y);
  for(const b of list)if(!b.sinking){
   const hz=b.hopZ||0, al=b.outT!=null?1-b.outT:1;
-  drawShadowOn(ctx,b.x,b.y,b.r*(1-hz*0.012),al);          // เงาค้างอยู่พื้นเสมอ
+  drawShadowOn(ctx,b.x,b.y,b.r*(1-hz*0.012),al);
  }
  for(const b of list){
   if(b.sinking){
