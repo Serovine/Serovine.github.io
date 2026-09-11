@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ดีดลูกแก้ว - โต๊ะนักเรียน</title>
+  <style>
+    :root {
+      --ink: #29352e;
+      --player: #3f9ee9;
+      --cpu: #ea625d;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: system-ui, "Noto Sans Thai", sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.55), transparent 42%),
+        repeating-linear-gradient(
+          0deg,
+          #d7ddd2 0,
+          #d7ddd2 2px,
+          #cbd3c6 2px,
+          #cbd3c6 5px
+        );
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    .app {
+      width: min(100%, 760px);
+      height: 100dvh;
+      margin: auto;
+      padding: max(10px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .topbar {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .score.cpu {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 900;
+      border: 3px solid rgba(255,255,255,.72);
+      border-radius: 50%;
+      box-shadow: 0 3px 0 rgba(0,0,0,.18);
+    }
+
+    .badge.player { background: var(--player); }
+    .badge.cpu { background: var(--cpu); }
+
+    .score strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .score span {
+      display: block;
+      color: #617069;
+      font-size: 12px;
+    }
+
+    .turn-box {
+      min-width: 112px;
+      padding: 7px 10px;
+      text-align: center;
+      border: 1px solid rgba(52,72,61,.15);
+      border-radius: 13px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 2px 5px rgba(38,53,43,.08);
+    }
+
+    .turn-box small {
+      display: block;
+      color: #6c7a71;
+      font-size: 10px;
+    }
+
+    #turnText {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .game-area {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .table-shell {
+      position: relative;
+      width: min(100%, 650px);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border: 8px solid #392419;
+      border-radius: 18px;
+      background: #4a2d1e;
+      box-shadow:
+        0 12px 28px rgba(42,29,19,.35),
+        inset 0 0 0 3px rgba(255,255,255,.08);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      background: #875a3d;
+    }
+
+    .message {
+      position: absolute;
+      z-index: 2;
+      bottom: 10px;
+      left: 50%;
+      width: min(91%, 500px);
+      padding: 8px 12px;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,.24);
+      border-radius: 99px;
+      background: rgba(30,42,34,.84);
+      box-shadow: 0 3px 10px rgba(0,0,0,.16);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .button {
+      min-height: 42px;
+      padding: 8px 15px;
+      color: white;
+      font-weight: 800;
+      border: 0;
+      border-radius: 12px;
+      background: #526c5f;
+      box-shadow: 0 3px 0 #32463b;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      color: #405149;
+      background: #f3f4ec;
+      box-shadow: 0 3px 0 #b9c1b6;
+    }
+
+    .button:active,
+    .start-button:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.3);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(27,37,30,.52);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal {
+      width: min(100%, 410px);
+      padding: 23px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 22px;
+      background: linear-gradient(135deg, #f6f7ef, #e4e9db);
+      box-shadow: 0 18px 48px rgba(0,0,0,.27);
+    }
+
+    .modal h1,
+    .modal h2 {
+      margin: 0 0 8px;
+      color: #354a3e;
+    }
+
+    .modal h1 { font-size: 27px; }
+    .modal h2 { font-size: 23px; }
+
+    .modal p {
+      margin: 0 0 15px;
+      color: #5c6b62;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .rules {
+      margin: 14px 0 18px;
+      padding: 12px;
+      color: #4e5f55;
+      font-size: 13px;
+      line-height: 1.65;
+      text-align: left;
+      border-radius: 12px;
+      background: rgba(119,150,128,.14);
+    }
+
+    .difficulty-label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    select {
+      width: 100%;
+      margin-bottom: 17px;
+      padding: 11px;
+      color: #394d41;
+      border: 1px solid #b9c5ba;
+      border-radius: 11px;
+      background: white;
+    }
+
+    .start-button {
+      width: 100%;
+      min-height: 48px;
+      color: white;
+      font-size: 16px;
+      font-weight: 900;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #59806d, #3d5f50);
+      box-shadow: 0 4px 0 #2e473c;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-height: 690px) {
+      .topbar { min-height: 54px; }
+      .badge { width: 33px; height: 33px; font-size: 14px; }
+      .table-shell { width: min(100%, 540px); }
+      .score strong { font-size: 12px; }
+      .message { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="topbar">
+      <div class="score">
+        <div class="badge player">P</div>
+        <div>
+          <strong>ผู้เล่น</strong>
+          <span>ลูกคงเหลือ: <b id="playerCount">7</b></span>
+        </div>
+      </div>
+
+      <div class="turn-box">
+        <small>สถานะเกม</small>
+        <span id="turnText">เตรียมเกม</span>
+      </div>
+
+      <div class="score cpu">
+        <div>
+          <strong>CPU</strong>
+          <span>ลูกคงเหลือ: <b id="cpuCount">7</b></span>
+        </div>
+        <div class="badge cpu">C</div>
+      </div>
+    </section>
+
+    <section class="game-area">
+      <div class="table-shell">
+        <canvas id="gameCanvas"></canvas>
+        <div id="message" class="message">เลือกความยาก แล้วเริ่มเล่นได้เลย</div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <button id="soundButton" class="button secondary">🔊 เสียง: เปิด</button>
+      <button id="restartButton" class="button">เริ่มใหม่</button>
+    </section>
+  </main>
+
+  <div id="startModal" class="modal-backdrop">
+    <div class="modal">
+      <h1>🔵 ดีดลูกแก้ว</h1>
+      <p>ลูกแก้วเด้งชิ่งสมจริง แรงส่งต่อกันทั้งโต๊ะ และหยุดไวเมื่อหมดแรง</p>
+
+      <div class="rules">
+        <b>ลูกแรก:</b> แตะจุดว่างบนโต๊ะตรงไหนก็ได้ เพื่อวางลูกที่ 7 แล้วลากนิ้วถอยหลังเพื่อยิง<br>
+        <b>เทิร์นถัดไป:</b> แตะลูกแก้วสีน้ำเงินของคุณ แล้วลากนิ้วไปด้านหลัง ลูกจะพุ่งสวนทาง<br>
+        <b>เป้าหมาย:</b> ดีดลูกฝ่ายตรงข้ามให้ตกออกจากช่องว่างทั้ง 8 จุด ใครลูกหมดก่อนแพ้
+      </div>
+
+      <label class="difficulty-label" for="difficulty">ระดับ CPU</label>
+      <select id="difficulty">
+        <option value="easy">ง่าย — สุ่มมุมเป็นหลัก</option>
+        <option value="medium" selected>ปานกลาง — พยายามชนลูกผู้เล่น</option>
+        <option value="hard">ยาก — เล็งแม่นและแรงขึ้น</option>
+      </select>
+
+      <button id="startButton" class="start-button">เริ่มเกม</button>
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2 id="resultTitle">จบเกม</h2>
+      <p id="resultText"></p>
+      <button id="playAgainButton" class="start-button">เล่นอีกครั้ง</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const playerCountEl = document.getElementById("playerCount");
+      const cpuCountEl = document.getElementById("cpuCount");
+      const turnTextEl = document.getElementById("turnText");
+      const messageEl = document.getElementById("message");
+      const startModal = document.getElementById("startModal");
+      const resultModal = document.getElementById("resultModal");
+      const resultTitle = document.getElementById("resultTitle");
+      const resultText = document.getElementById("resultText");
+      const difficultySelect = document.getElementById("difficulty");
+      const soundButton = document.getElementById("soundButton");
+
+      let W = 600;
+      let H = 600;
+      let scale = 1;
+      let balls = [];
+      let turn = "player";
+      let gameStarted = false;
+      let gameOver = false;
+      let initialShot = { player: true, cpu: true };
+      let dragging = null;
+      let pointer = { x: 0, y: 0 };
+      let lastTime = 0;
+      let difficulty = "medium";
+      let cpuTimer = null;
+      let soundEnabled = true;
+      let audioContext = null;
+
+      const BALL_R = 14;
+
+      const MAX_POWER = 30;
+      const MIN_POWER = 7;
+
+      /*
+        ฟิสิกส์ใหม่: แรงเสียดทาน 2 ช่วง
+        - ช่วงเร็ว ลดแรงน้อยมาก ทำให้ลูกวิ่งไกล ชิ่งไปมาได้เยอะ
+        - ช่วงช้า ลดแรงหนัก ทำให้หยุดทันที ไม่ต้องรอลูกคลาน
+      */
+      const FRICTION_FAST = 0.9915;
+      const FRICTION_SLOW = 0.885;
+      const SLOW_THRESHOLD = 2.1;
+      const STOP_SPEED = 0.3;
+
+      // ค่าคืนพลังงานสูง เพื่อให้เด้งชิ่งแบบลูกแก้วจริง
+      const WALL_BOUNCE = 0.94;
+      const BALL_RESTITUTION = 0.985;
+      const CHAOS = 0.055;
+
+      const RAIL_THICKNESS = 19;
+      const CORNER_GAP = 39;
+      const MIDDLE_GAP = 43;
+
+      function r() {
+        return BALL_R * scale;
+      }
+
+      function railSize() {
+        return RAIL_THICKNESS * scale;
+      }
+
+      function setMessage(text) {
+        messageEl.textContent = text;
+      }
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        W = rect.width;
+        H = rect.height;
+        scale = Math.min(W, H) / 600;
+
+        draw();
+      }
+
+      function getGapCenters() {
+        return [
+          { id: "top-left", x: 0, y: 0, nx: .707, ny: .707 },
+          { id: "top-middle", x: W / 2, y: 0, nx: 0, ny: 1 },
+          { id: "top-right", x: W, y: 0, nx: -.707, ny: .707 },
+          { id: "right-middle", x: W, y: H / 2, nx: -1, ny: 0 },
+          { id: "bottom-right", x: W, y: H, nx: -.707, ny: -.707 },
+          { id: "bottom-middle", x: W / 2, y: H, nx: 0, ny: -1 },
+          { id: "bottom-left", x: 0, y: H, nx: .707, ny: -.707 },
+          { id: "left-middle", x: 0, y: H / 2, nx: 1, ny: 0 }
+        ];
+      }
+
+      function getRails() {
+        const t = railSize();
+        const corner = CORNER_GAP * scale;
+        const middle = MIDDLE_GAP * scale;
+
+        return [
+          { x: corner, y: 0, w: W / 2 - middle - corner, h: t },
+          { x: W / 2 + middle, y: 0, w: W / 2 - middle - corner, h: t },
+          { x: corner, y: H - t, w: W / 2 - middle - corner, h: t },
+          { x: W / 2 + middle, y: H - t, w: W / 2 - middle - corner, h: t },
+          { x: 0, y: corner, w: t, h: H / 2 - middle - corner },
+          { x: 0, y: H / 2 + middle, w: t, h: H / 2 - middle - corner },
+          { x: W - t, y: corner, w: t, h: H / 2 - middle - corner },
+          { x: W - t, y: H / 2 + middle, w: t, h: H / 2 - middle - corner }
+        ];
+      }
+
+      function createBall(x, y, owner, vx = 0, vy = 0) {
+        balls.push({
+          x,
+          y,
+          vx,
+          vy,
+          owner,
+          radius: r(),
+          rotation: Math.random() * Math.PI * 2,
+          spin: 0,
+          trail: [],
+          removed: false
+        });
+      }
+
+      function setupInitialBalls() {
+        balls = [];
+
+        const radius = r();
+        const spacing = radius * 2.23;
+        const centerX = W / 2;
+
+        function makeTriangle(owner, centerY, direction) {
+          for (let row = 0; row < 3; row++) {
+            const y = centerY + direction * row * spacing * .86;
+
+            for (let col = 0; col <= row; col++) {
+              const x = centerX + (col - row / 2) * spacing;
+              createBall(x, y, owner);
+            }
+          }
+        }
+
+        makeTriangle("cpu", H * .22, 1);
+        makeTriangle("player", H * .78, -1);
+      }
+
+      function updateScore() {
+        const playerLeft =
+          balls.filter(ball => ball.owner === "player").length +
+          (initialShot.player ? 1 : 0);
+
+        const cpuLeft =
+          balls.filter(ball => ball.owner === "cpu").length +
+          (initialShot.cpu ? 1 : 0);
+
+        playerCountEl.textContent = playerLeft;
+        cpuCountEl.textContent = cpuLeft;
+      }
+
+      function updateTurnUI() {
+        if (gameOver) return;
+
+        if (turn === "player") {
+          turnTextEl.textContent = "ตาคุณ";
+
+          if (initialShot.player) {
+            setMessage("ลูกแรก: แตะจุดว่างบนโต๊ะตรงไหนก็ได้ แล้วลากนิ้วถอยหลังเพื่อยิง");
+          } else {
+            setMessage("ตาคุณ: ดึงนิ้วไปด้านหลังจากลูกแก้วสีน้ำเงิน แล้วปล่อยเพื่อยิง");
+          }
+        } else {
+          turnTextEl.textContent = "CPU กำลังคิด";
+          setMessage(initialShot.cpu
+            ? "CPU กำลังวางลูกแก้วลูกแรก..."
+            : "CPU กำลังเลือกมุมยิง...");
+        }
+      }
+
+      function startGame() {
+        clearTimeout(cpuTimer);
+
+        difficulty = difficultySelect.value;
+        gameStarted = true;
+        gameOver = false;
+        turn = "player";
+        initialShot = { player: true, cpu: true };
+        dragging = null;
+
+        setupInitialBalls();
+        updateScore();
+        updateTurnUI();
+
+        startModal.classList.add("hidden");
+        resultModal.classList.add("hidden");
+
+        playSound("start");
+      }
+
+      function restartToMenu() {
+        clearTimeout(cpuTimer);
+
+        gameStarted = false;
+        gameOver = false;
+        balls = [];
+        dragging = null;
+        initialShot = { player: true, cpu: true };
+
+        turnTextEl.textContent = "เตรียมเกม";
+        setMessage("เลือกความยาก แล้วเริ่มเล่นได้เลย");
+
+        startModal.classList.remove("hidden");
+        resultModal.classList.add("hidden");
+
+        updateScore();
+        draw();
+      }
+
+      function allStopped() {
+        return balls.every(ball => Math.hypot(ball.vx, ball.vy) < STOP_SPEED);
+      }
+
+      /*
+        ตรวจสอบว่าตำแหน่งที่ผู้เล่นเลือกวางลูกแรก ว่างพอหรือไม่
+        ต้องไม่ทับลูกอื่น ไม่ทับไม้กั้น และอยู่ในโต๊ะ
+      */
+      function isValidPlacement(x, y) {
+        const radius = r();
+        const pad = radius * .6;
+
+        if (
+          x < radius + pad ||
+          x > W - radius - pad ||
+          y < radius + pad ||
+          y > H - radius - pad
+        ) {
+          return false;
+        }
+
+        for (const ball of balls) {
+          if (Math.hypot(ball.x - x, ball.y - y) < ball.radius + radius + 3 * scale) {
+            return false;
+          }
+        }
+
+        for (const rail of getRails()) {
+          const nearestX = Math.max(rail.x, Math.min(x, rail.x + rail.w));
+          const nearestY = Math.max(rail.y, Math.min(y, rail.y + rail.h));
+
+          if (Math.hypot(x - nearestX, y - nearestY) < radius + 4 * scale) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function collideBallWithRail(ball, rail) {
+        const nearestX = Math.max(rail.x, Math.min(ball.x, rail.x + rail.w));
+        const nearestY = Math.max(rail.y, Math.min(ball.y, rail.y + rail.h));
+
+        const dx = ball.x - nearestX;
+        const dy = ball.y - nearestY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance >= ball.radius) return;
+
+        let nx;
+        let ny;
+        let penetration;
+
+        if (distance === 0) {
+          const left = ball.x - rail.x;
+          const right = rail.x + rail.w - ball.x;
+          const top = ball.y - rail.y;
+          const bottom = rail.y + rail.h - ball.y;
+          const side = Math.min(left, right, top, bottom);
+
+          if (side === left) {
+            nx = -1; ny = 0; penetration = ball.radius + left;
+          } else if (side === right) {
+            nx = 1; ny = 0; penetration = ball.radius + right;
+          } else if (side === top) {
+            nx = 0; ny = -1; penetration = ball.radius + top;
+          } else {
+            nx = 0; ny = 1; penetration = ball.radius + bottom;
+          }
+        } else {
+          nx = dx / distance;
+          ny = dy / distance;
+          penetration = ball.radius - distance;
+        }
+
+        ball.x += nx * penetration * 1.02;
+        ball.y += ny * penetration * 1.02;
+
+        const approachSpeed = ball.vx * nx + ball.vy * ny;
+
+        if (approachSpeed < 0) {
+          // สะท้อนแบบเต็มแรง
+          ball.vx -= (1 + WALL_BOUNCE) * approachSpeed * nx;
+          ball.vy -= (1 + WALL_BOUNCE) * approachSpeed * ny;
+
+          // เพิ่มความมั่วเล็กน้อย ให้ชิ่งไม่ซ้ำเดิม
+          const speed = Math.hypot(ball.vx, ball.vy);
+          const angle = Math.atan2(ball.vy, ball.vx) +
+            (Math.random() - .5) * CHAOS * 1.5;
+
+          ball.vx = Math.cos(angle) * speed;
+          ball.vy = Math.sin(angle) * speed;
+
+          ball.spin += approachSpeed * .05;
+
+          if (Math.abs(approachSpeed) > 1) {
+            playSound("wall", Math.min(Math.abs(approachSpeed) / 15, 1));
+          }
+        }
+      }
+
+      function applyRailCollisions(ball) {
+        const margin = ball.radius * 1.3;
+
+        if (
+          ball.x < -margin ||
+          ball.x > W + margin ||
+          ball.y < -margin ||
+          ball.y > H + margin
+        ) {
+          ball.removed = true;
+          playSound("out");
+          return;
+        }
+
+        for (const rail of getRails()) {
+          collideBallWithRail(ball, rail);
+        }
+      }
+
+      function collideBalls(a, b) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distance = Math.hypot(dx, dy);
+        const minDistance = a.radius + b.radius;
+
+        if (!distance || distance >= minDistance) return;
+
+        const nx = dx / distance;
+        const ny = dy / distance;
+        const overlap = minDistance - distance;
+
+        // แยกลูกออกจากกันแบบเผื่อระยะ ป้องกันการติดกัน
+        a.x -= nx * overlap * .52;
+        a.y -= ny * overlap * .52;
+        b.x += nx * overlap * .52;
+        b.y += ny * overlap * .52;
+
+        const relativeSpeed = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+
+        if (relativeSpeed <= 0) return;
+
+        /*
+          มวลเท่ากัน + restitution ใกล้ 1
+          ทำให้พลังงานถ่ายทอดเกือบทั้งหมด
+          ลูกที่ถูกชนจะพุ่งต่อแรง แทนที่จะหยุดกึก
+        */
+        const impulse = relativeSpeed * (1 + BALL_RESTITUTION) / 2;
+
+        a.vx -= impulse * nx;
+        a.vy -= impulse * ny;
+        b.vx += impulse * nx;
+        b.vy += impulse * ny;
+
+        // เบี่ยงทิศทางเล็กน้อย ให้ชิ่งกระจายแบบไม่คาดเดา
+        const tangentX = -ny;
+        const tangentY = nx;
+        const chaos = (Math.random() - .5) * CHAOS * relativeSpeed;
+
+        a.vx += tangentX * chaos;
+        a.vy += tangentY * chaos;
+        b.vx -= tangentX * chaos;
+        b.vy -= tangentY * chaos;
+
+        a.spin -= impulse * .04;
+        b.spin += impulse * .04;
+
+        if (relativeSpeed > 1.2) {
+          playSound("hit", Math.min(relativeSpeed / 16, 1));
+        }
+      }
+
+      function updatePhysics(dt) {
+        if (!gameStarted || gameOver) return;
+
+        const factor = Math.min(dt / 16.67, 2);
+
+        // แบ่ง substep เพื่อความแม่นยำตอนลูกวิ่งเร็วมาก
+        const maxSpeed = balls.reduce(
+          (max, ball) => Math.max(max, Math.hypot(ball.vx, ball.vy)),
+          0
+        );
+
+        const steps = Math.min(Math.max(1, Math.ceil(maxSpeed / (r() * .7))), 6);
+        const stepFactor = factor / steps;
+
+        for (let step = 0; step < steps; step++) {
+          for (const ball of balls) {
+            if (ball.removed) continue;
+
+            ball.x += ball.vx * stepFactor;
+            ball.y += ball.vy * stepFactor;
+
+            const speed = Math.hypot(ball.vx, ball.vy);
+
+            // เลือกค่าแรงเสียดทานตามช่วงความเร็ว
+            const friction = speed > SLOW_THRESHOLD
+              ? FRICTION_FAST
+              : FRICTION_SLOW;
+
+            const decay = Math.pow(friction, stepFactor);
+
+            ball.vx *= decay;
+            ball.vy *= decay;
+
+            ball.spin *= Math.pow(.955, stepFactor);
+            ball.rotation += (
+              ball.spin + Math.hypot(ball.vx, ball.vy) * .05
+            ) * stepFactor;
+
+            if (Math.hypot(ball.vx, ball.vy) < STOP_SPEED) {
+              ball.vx = 0;
+              ball.vy = 0;
+            }
+
+            if (Math.abs(ball.spin) < .004) {
+              ball.spin = 0;
+            }
+
+            applyRailCollisions(ball);
+          }
+
+          for (let i = 0; i < balls.length; i++) {
+            for (let j = i + 1; j < balls.length; j++) {
+              if (balls[i].removed || balls[j].removed) continue;
+              collideBalls(balls[i], balls[j]);
+            }
+          }
+        }
+
+        for (const ball of balls) {
+          ball.trail.unshift({ x: ball.x, y: ball.y, alpha: .26 });
+          if (ball.trail.length > 4) ball.trail.pop();
+        }
+
+        const removedBalls = balls.filter(ball => ball.removed);
+
+        if (removedBalls.length) {
+          balls = balls.filter(ball => !ball.removed);
+          updateScore();
+          checkGameEnd();
+        }
+      }
+
+      function checkGameEnd() {
+        const playerHasBall =
+          balls.some(ball => ball.owner === "player") || initialShot.player;
+
+        const cpuHasBall =
+          balls.some(ball => ball.owner === "cpu") || initialShot.cpu;
+
+        if (playerHasBall && cpuHasBall) return;
+
+        gameOver = true;
+        clearTimeout(cpuTimer);
+
+        if (!playerHasBall && !cpuHasBall) {
+          resultTitle.textContent = "เสมอ!";
+          resultText.textContent = "ลูกแก้วของทั้งสองฝ่ายออกจากโต๊ะพร้อมกัน";
+          turnTextEl.textContent = "เสมอ";
+          setMessage("เกมจบลงด้วยผลเสมอ");
+          playSound("draw");
+        } else if (!playerHasBall) {
+          resultTitle.textContent = "CPU ชนะ";
+          resultText.textContent = "ลูกแก้วของคุณหมดก่อน ลองใหม่อีกครั้งนะ";
+          turnTextEl.textContent = "CPU ชนะ";
+          setMessage("ลูกแก้วของคุณหมดแล้ว");
+          playSound("lose");
+        } else {
+          resultTitle.textContent = "คุณชนะ!";
+          resultText.textContent = "คุณทำให้ลูกแก้ว CPU ออกจากโต๊ะได้หมดแล้ว";
+          turnTextEl.textContent = "คุณชนะ";
+          setMessage("ชนะแล้ว!");
+          playSound("win");
+        }
+
+        setTimeout(() => {
+          resultModal.classList.remove("hidden");
+        }, 450);
+      }
+
+      function flickBack(ball, pullX, pullY, power) {
+        const dx = pullX - ball.x;
+        const dy = pullY - ball.y;
+        const length = Math.hypot(dx, dy);
+
+        if (!length) return;
+
+        const cappedPower = Math.min(power, MAX_POWER * scale);
+
+        ball.vx = -(dx / length) * cappedPower;
+        ball.vy = -(dy / length) * cappedPower;
+        ball.spin = (Math.random() - .5) * cappedPower * .22;
+
+        playSound("shoot", cappedPower / (MAX_POWER * scale));
+      }
+
+      function fireDirect(ball, dx, dy, power) {
+        const length = Math.hypot(dx, dy);
+        if (!length) return;
+
+        ball.vx = (dx / length) * power;
+        ball.vy = (dy / length) * power;
+        ball.spin = (Math.random() - .5) * power * .18;
+
+        playSound("shoot", power / (MAX_POWER * scale));
+      }
+
+      function waitThenCpuTurn() {
+        const wait = () => {
+          if (gameOver) return;
+
+          if (!allStopped()) {
+            cpuTimer = setTimeout(wait, 80);
+            return;
+          }
+
+          turn = "cpu";
+          updateTurnUI();
+          cpuTimer = setTimeout(cpuTakeTurn, 470);
+        };
+
+        wait();
+      }
+
+      function waitThenPlayerTurn() {
+        const wait = () => {
+          if (gameOver) return;
+
+          if (!allStopped()) {
+            cpuTimer = setTimeout(wait, 80);
+            return;
+          }
+
+          checkGameEnd();
+          if (gameOver) return;
+
+          turn = "player";
+          updateTurnUI();
+        };
+
+        wait();
+      }
+
+      function cpuTakeTurn() {
+        if (gameOver) return;
+
+        if (initialShot.cpu) {
+          cpuInitialShot();
+        } else {
+          cpuNormalShot();
+        }
+
+        waitThenPlayerTurn();
+      }
+
+      /* CPU วางลูกแรกอิสระบนโต๊ะเช่นเดียวกับผู้เล่น */
+      function cpuInitialShot() {
+        const target = balls.find(ball => ball.owner === "player") || {
+          x: W / 2,
+          y: H * .72
+        };
+
+        let spot = null;
+
+        for (let attempt = 0; attempt < 220; attempt++) {
+          const x = W * .16 + Math.random() * W * .68;
+          const y = H * .1 + Math.random() * H * .32;
+
+          if (isValidPlacement(x, y)) {
+            spot = { x, y };
+            break;
+          }
+        }
+
+        if (!spot) {
+          for (let attempt = 0; attempt < 300; attempt++) {
+            const x = r() * 2 + Math.random() * (W - r() * 4);
+            const y = r() * 2 + Math.random() * (H - r() * 4);
+
+            if (isValidPlacement(x, y)) {
+              spot = { x, y };
+              break;
+            }
+          }
+        }
+
+        if (!spot) {
+          initialShot.cpu = false;
+          updateScore();
+          return;
+        }
+
+        createBall(spot.x, spot.y, "cpu");
+        const ball = balls[balls.length - 1];
+
+        const dx = target.x - spot.x;
+        const dy = target.y - spot.y;
+        const distance = Math.hypot(dx, dy) || 1;
+
+        const jitter = difficulty === "easy" ? 1 :
+          difficulty === "medium" ? .3 : .09;
+
+        const angle = Math.atan2(dy, dx) + (Math.random() - .5) * jitter;
+
+        const basePower = difficulty === "easy" ? 14 :
+          difficulty === "medium" ? 18 : 22;
+
+        fireDirect(
+          ball,
+          Math.cos(angle),
+          Math.sin(angle),
+          Math.min((basePower + distance * .018) * scale, MAX_POWER * scale)
+        );
+
+        initialShot.cpu = false;
+        updateScore();
+      }
+
+      function cpuNormalShot() {
+        const cpuBalls = balls.filter(ball => ball.owner === "cpu");
+        const playerBalls = balls.filter(ball => ball.owner === "player");
+
+        if (!cpuBalls.length || !playerBalls.length) return;
+
+        let shooter;
+        let target;
+
+        if (difficulty === "easy") {
+          shooter = cpuBalls[Math.floor(Math.random() * cpuBalls.length)];
+          target = { x: Math.random() * W, y: Math.random() * H };
+        } else {
+          let best = null;
+
+          for (const cpuBall of cpuBalls) {
+            for (const playerBall of playerBalls) {
+              const distance = Math.hypot(
+                playerBall.x - cpuBall.x,
+                playerBall.y - cpuBall.y
+              );
+
+              if (!best || distance < best.distance) {
+                best = { shooter: cpuBall, target: playerBall, distance };
+              }
+            }
+          }
+
+          shooter = best.shooter;
+          target = best.target;
+        }
+
+        const dx = target.x - shooter.x;
+        const dy = target.y - shooter.y;
+
+        const error = difficulty === "easy" ? .85 :
+          difficulty === "medium" ? .26 : .065;
+
+        const angle = Math.atan2(dy, dx) + (Math.random() - .5) * error;
+        const distance = Math.hypot(dx, dy);
+
+        const base = difficulty === "easy" ? 13 :
+          difficulty === "medium" ? 17 : 22;
+
+        fireDirect(
+          shooter,
+          Math.cos(angle),
+          Math.sin(angle),
+          Math.min((base + distance * .017) * scale, MAX_POWER * scale)
+        );
+      }
+
+      function getCanvasPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+
+        return {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        };
+      }
+
+      function findPlayerBallAt(x, y) {
+        return balls.find(ball =>
+          ball.owner === "player" &&
+          Math.hypot(ball.x - x, ball.y - y) <= ball.radius * 1.8
+        );
+      }
+
+      canvas.addEventListener("pointerdown", event => {
+        if (!gameStarted || gameOver || turn !== "player" || !allStopped()) return;
+
+        initAudio();
+
+        const point = getCanvasPoint(event);
+        pointer = point;
+
+        // ลูกแรก: วางได้อิสระทุกตำแหน่งที่ว่างบนโต๊ะ
+        if (initialShot.player) {
+          if (!isValidPlacement(point.x, point.y)) {
+            setMessage("ตำแหน่งนี้วางไม่ได้ ลองเลือกจุดว่างที่ไม่ติดลูกอื่นหรือไม้กั้น");
+            return;
+          }
+
+          dragging = {
+            type: "place",
+            start: { x: point.x, y: point.y }
+          };
+
+          canvas.setPointerCapture(event.pointerId);
+          return;
+        }
+
+        const ball = findPlayerBallAt(point.x, point.y);
+
+        if (!ball) {
+          setMessage("เลือกเฉพาะลูกแก้วสีน้ำเงินของคุณ");
+          return;
+        }
+
+        dragging = {
+          type: "ball",
+          ball,
+          start: { x: ball.x, y: ball.y }
+        };
+
+        canvas.setPointerCapture(event.pointerId);
+      });
+
+      canvas.addEventListener("pointermove", event => {
+        if (!dragging) return;
+        pointer = getCanvasPoint(event);
+      });
+
+      canvas.addEventListener("pointerup", event => {
+        if (!dragging || !gameStarted || gameOver || turn !== "player") return;
+
+        const point = getCanvasPoint(event);
+        const drag = dragging;
+        dragging = null;
+
+        const dx = point.x - drag.start.x;
+        const dy = point.y - drag.start.y;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance < 7 * scale) {
+          setMessage("ลากนิ้วไปด้านหลังเล็กน้อยก่อนปล่อย");
+          return;
+        }
+
+        const power = Math.min(
+          MIN_POWER * scale + distance * .15,
+          MAX_POWER * scale
+        );
+
+        if (drag.type === "place") {
+          createBall(drag.start.x, drag.start.y, "player");
+          const ball = balls[balls.length - 1];
+
+          initialShot.player = false;
+          flickBack(ball, point.x, point.y, power);
+          updateScore();
+        } else {
+          flickBack(drag.ball, point.x, point.y, power);
+        }
+
+        waitThenCpuTurn();
+      });
+
+      canvas.addEventListener("pointercancel", () => {
+        dragging = null;
+      });
+
+      function drawWoodTexture() {
+        const wood = ctx.createLinearGradient(0, 0, W, H);
+        wood.addColorStop(0, "#a67751");
+        wood.addColorStop(.48, "#87583a");
+        wood.addColorStop(1, "#68412c");
+
+        ctx.fillStyle = wood;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.save();
+        ctx.globalAlpha = .17;
+
+        for (let y = 12 * scale; y < H; y += 17 * scale) {
+          ctx.strokeStyle = y % (34 * scale) < 17 * scale ? "#482819" : "#d6a36f";
+          ctx.lineWidth = 1.2 * scale;
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+
+          for (let x = 0; x < W + 25 * scale; x += 28 * scale) {
+            ctx.lineTo(x, y + Math.sin((x + y * .7) * .035) * 3.2 * scale);
+          }
+
+          ctx.stroke();
+        }
+
+        ctx.restore();
+
+        const vignette = ctx.createRadialGradient(
+          W / 2, H / 2, W * .16,
+          W / 2, H / 2, W * .72
+        );
+
+        vignette.addColorStop(0, "rgba(255,214,160,.05)");
+        vignette.addColorStop(1, "rgba(35,18,10,.3)");
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      function drawChalkAndDeskMarks() {
+        ctx.save();
+        ctx.globalAlpha = .3;
+        ctx.strokeStyle = "#f4edcf";
+        ctx.lineWidth = 1.5 * scale;
+        ctx.setLineDash([5 * scale, 4 * scale]);
+
+        ctx.beginPath();
+        ctx.arc(W * .26, H * .47, 32 * scale, .25, Math.PI * 1.8);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(W * .74, H * .55, 21 * scale, Math.PI * 1.08, Math.PI * 2.65);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(W * .12, H * .66);
+        ctx.lineTo(W * .23, H * .61);
+        ctx.lineTo(W * .21, H * .65);
+        ctx.moveTo(W * .23, H * .61);
+        ctx.lineTo(W * .18, H * .59);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f6f0d9";
+        ctx.globalAlpha = .28;
+        ctx.font = `${15 * scale}px cursive`;
+        ctx.rotate(-.11);
+        ctx.fillText("2 + 3 = ?", W * .09, H * .22);
+        ctx.fillText("ยิงให้โดน!", W * .57, H * .19);
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = .19;
+        ctx.strokeStyle = "#2f2018";
+        ctx.lineWidth = 1.2 * scale;
+
+        for (let i = 0; i < 7; i++) {
+          const x = W * .06 + i * 7 * scale;
+          const y = H * .84 + Math.sin(i) * 2 * scale;
+
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + 20 * scale, y - 5 * scale);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(W * .76, H * .82);
+        ctx.lineTo(W * .88, H * .86);
+        ctx.moveTo(W * .88, H * .82);
+        ctx.lineTo(W * .76, H * .86);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawRails() {
+        for (const rail of getRails()) {
+          const gradient = ctx.createLinearGradient(
+            rail.x, rail.y,
+            rail.x + rail.w, rail.y + rail.h
+          );
+
+          gradient.addColorStop(0, "#311b12");
+          gradient.addColorStop(.42, "#72472f");
+          gradient.addColorStop(.7, "#9b6745");
+          gradient.addColorStop(1, "#321d13");
+
+          ctx.save();
+          ctx.shadowColor = "rgba(18,8,4,.55)";
+          ctx.shadowBlur = 7 * scale;
+          ctx.shadowOffsetY = 3 * scale;
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.roundRect(rail.x, rail.y, rail.w, rail.h, 7 * scale);
+          ctx.fill();
+          ctx.restore();
+
+          ctx.strokeStyle = "rgba(250,205,153,.28)";
+          ctx.lineWidth = 1 * scale;
+          ctx.stroke();
+        }
+      }
+
+      function drawGapMarkers() {
+        for (const gap of getGapCenters()) {
+          ctx.save();
+          ctx.globalAlpha = .22;
+          ctx.fillStyle = "#f5d889";
+          ctx.beginPath();
+          ctx.arc(
+            gap.x + gap.nx * 10 * scale,
+            gap.y + gap.ny * 10 * scale,
+            3.5 * scale,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      /* พรีวิวจุดวางลูกแรก */
+      function drawPlacementPreview() {
+        if (!gameStarted || gameOver) return;
+        if (turn !== "player" || !initialShot.player) return;
+        if (dragging && dragging.type !== "place") return;
+
+        const spot = dragging ? dragging.start : null;
+        if (!spot) return;
+
+        ctx.save();
+        ctx.globalAlpha = .55;
+        ctx.setLineDash([4 * scale, 4 * scale]);
+        ctx.strokeStyle = "#ffe9a8";
+        ctx.lineWidth = 2 * scale;
+        ctx.beginPath();
+        ctx.arc(spot.x, spot.y, r() * 1.35, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawBall(ball) {
+        for (let i = ball.trail.length - 1; i >= 0; i--) {
+          const trail = ball.trail[i];
+
+          ctx.save();
+          ctx.globalAlpha = trail.alpha * (1 - i / ball.trail.length);
+          ctx.fillStyle = ball.owner === "player" ? "#9ad7ff" : "#ffaaa4";
+          ctx.beginPath();
+          ctx.arc(
+            trail.x,
+            trail.y,
+            ball.radius * (.38 + (ball.trail.length - i) * .05),
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+          ctx.restore();
+        }
+
+        const colors = ball.owner === "player"
+          ? { light: "#b9e5ff", mid: "#3c9ee8", dark: "#15548e", swirl: "rgba(225,248,255,.72)" }
+          : { light: "#ffc1b9", mid: "#e96160", dark: "#932d38", swirl: "rgba(255,236,222,.7)" };
+
+        ctx.save();
+        ctx.fillStyle = "rgba(33,16,8,.31)";
+        ctx.filter = `blur(${3 * scale}px)`;
+        ctx.beginPath();
+        ctx.ellipse(
+          ball.x + ball.radius * .2,
+          ball.y + ball.radius * .64,
+          ball.radius * .82,
+          ball.radius * .28,
+          0, 0, Math.PI * 2
+        );
+        ctx.fill();
+        ctx.restore();
+
+        const glass = ctx.createRadialGradient(
+          ball.x - ball.radius * .32,
+          ball.y - ball.radius * .38,
+          ball.radius * .08,
+          ball.x,
+          ball.y,
+          ball.radius
+        );
+
+        glass.addColorStop(0, "rgba(255,255,255,.98)");
+        glass.addColorStop(.14, colors.light);
+        glass.addColorStop(.36, "rgba(255,255,255,.32)");
+        glass.addColorStop(.72, colors.mid);
+        glass.addColorStop(1, colors.dark);
+
+        ctx.save();
+        ctx.globalAlpha = .85;
+        ctx.fillStyle = glass;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius * .88, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.translate(ball.x, ball.y);
+        ctx.rotate(ball.rotation);
+
+        ctx.strokeStyle = colors.swirl;
+        ctx.globalAlpha = .48;
+        ctx.lineWidth = 1.5 * scale;
+
+        ctx.beginPath();
+        ctx.arc(0, 0, ball.radius * .44, -.5, Math.PI * 1.18);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(
+          ball.radius * .12,
+          -ball.radius * .08,
+          ball.radius * .6,
+          Math.PI * .72,
+          Math.PI * 1.64
+        );
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255,255,255,.24)";
+        ctx.beginPath();
+        ctx.arc(ball.radius * .22, ball.radius * .18, ball.radius * .18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = "rgba(255,255,255,.74)";
+        ctx.beginPath();
+        ctx.ellipse(
+          ball.x - ball.radius * .3,
+          ball.y - ball.radius * .37,
+          ball.radius * .24,
+          ball.radius * .13,
+          -.55, 0, Math.PI * 2
+        );
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255,255,255,.52)";
+        ctx.lineWidth = 1.1 * scale;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius * .91, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawAim() {
+        if (!dragging) return;
+
+        const from = dragging.type === "ball"
+          ? { x: dragging.ball.x, y: dragging.ball.y }
+          : dragging.start;
+
+        const dragX = pointer.x - from.x;
+        const dragY = pointer.y - from.y;
+        const dragLength = Math.hypot(dragX, dragY);
+
+        if (dragLength < 2) return;
+
+        const maxPull = 105 * scale;
+        const maxForward = 170 * scale;
+
+        const pullRatio = Math.min(maxPull / dragLength, 1);
+        const forwardRatio = Math.min(maxForward / dragLength, 1);
+
+        const pullX = from.x + dragX * pullRatio;
+        const pullY = from.y + dragY * pullRatio;
+        const forwardX = from.x - dragX * forwardRatio;
+        const forwardY = from.y - dragY * forwardRatio;
+
+        ctx.save();
+
+        ctx.setLineDash([5 * scale, 5 * scale]);
+        ctx.lineWidth = 2 * scale;
+        ctx.strokeStyle = "rgba(38,22,14,.62)";
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(pullX, pullY);
+        ctx.stroke();
+
+        ctx.setLineDash([8 * scale, 6 * scale]);
+        ctx.lineDashOffset = -Date.now() / 28;
+        ctx.lineWidth = 3 * scale;
+        ctx.strokeStyle = "rgba(255,251,226,.96)";
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(forwardX, forwardY);
+        ctx.stroke();
+
+        const angle = Math.atan2(forwardY - from.y, forwardX - from.x);
+
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255,251,226,.96)";
+        ctx.beginPath();
+        ctx.moveTo(forwardX, forwardY);
+        ctx.lineTo(
+          forwardX - Math.cos(angle - .5) * 11 * scale,
+          forwardY - Math.sin(angle - .5) * 11 * scale
+        );
+        ctx.lineTo(
+          forwardX - Math.cos(angle + .5) * 11 * scale,
+          forwardY - Math.sin(angle + .5) * 11 * scale
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      function draw() {
+        drawTable();
+        drawPlacementPreview();
+
+        for (const ball of balls) {
+          drawBall(ball);
+        }
+
+        drawAim();
+      }
+
+      function drawTable() {
+        ctx.clearRect(0, 0, W, H);
+        drawWoodTexture();
+        drawChalkAndDeskMarks();
+        drawRails();
+        drawGapMarkers();
+      }
+
+      function loop(time) {
+        const dt = Math.min(time - lastTime || 16.67, 35);
+        lastTime = time;
+
+        updatePhysics(dt);
+        draw();
+
+        requestAnimationFrame(loop);
+      }
+
+      function initAudio() {
+        if (!soundEnabled || audioContext) return;
+
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+
+        audioContext = new AudioContextClass();
+      }
+
+      function playSound(type, intensity = 1) {
+        if (!soundEnabled) return;
+
+        initAudio();
+        if (!audioContext) return;
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
+          return;
+        }
+
+        const presets = {
+          shoot: { start: 145, end: 76, time: .12, volume: .085, wave: "sine" },
+          hit: { start: 600, end: 265, time: .07, volume: .06, wave: "triangle" },
+          wall: { start: 320, end: 155, time: .06, volume: .04, wave: "square" },
+          out: { start: 270, end: 75, time: .24, volume: .065, wave: "sine" },
+          start: { start: 350, end: 610, time: .17, volume: .06, wave: "triangle" },
+          win: { start: 520, end: 820, time: .34, volume: .07, wave: "sine" },
+          lose: { start: 230, end: 95, time: .36, volume: .06, wave: "sine" },
+          draw: { start: 340, end: 340, time: .22, volume: .05, wave: "triangle" }
+        };
+
+        const preset = presets[type];
+        if (!preset) return;
+
+        const now = audioContext.currentTime;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = preset.wave;
+        oscillator.frequency.setValueAtTime(preset.start, now);
+        oscillator.frequency.exponentialRampToValueAtTime(
+          Math.max(preset.end, 25),
+          now + preset.time
+        );
+
+        gain.gain.setValueAtTime(preset.volume * intensity, now);
+        gain.gain.exponentialRampToValueAtTime(.001, now + preset.time);
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start(now);
+        oscillator.stop(now + preset.time);
+      }
+
+      document.getElementById("startButton").addEventListener("click", () => {
+        initAudio();
+        startGame();
+      });
+
+      document.getElementById("restartButton").addEventListener("click", restartToMenu);
+
+      document.getElementById("playAgainButton").addEventListener("click", () => {
+        resultModal.classList.add("hidden");
+        startGame();
+      });
+
+      soundButton.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+
+        soundButton.textContent = soundEnabled
+          ? "🔊 เสียง: เปิด"
+          : "🔇 เสียง: ปิด";
+
+        if (soundEnabled) {
+          initAudio();
+          playSound("hit");
+        }
+      });
+
+      window.addEventListener("resize", resizeCanvas);
+
+      resizeCanvas();
+      updateScore();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

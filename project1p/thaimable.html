@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#241a12">
+<title>ดีดลูกแก้ว — สนามทรายวงกลม</title>
+<link href="https://fonts.googleapis.com/css2?family=Itim&family=Anuphan:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan',sans-serif;color:#f1ead8;overflow:hidden;user-select:none;-webkit-user-select:none}
+#app{position:relative;width:min(100vw,470px);height:100vh;height:100dvh;display:flex;flex-direction:column;background:#2b211a;box-shadow:0 0 70px rgba(0,0,0,.6);touch-action:none;overflow:hidden}
+
+/* ---- กระดานคะแนน (ชอล์กบนกระดานดำ) ---- */
+#scorebar{display:flex;align-items:stretch;justify-content:space-between;padding:8px 12px calc(6px + env(safe-area-inset-top));background:#23282e;border-bottom:2px solid rgba(241,234,216,.22)}
+.side{text-align:center;min-width:72px;opacity:.5;transition:opacity .25s}
+.side.on{opacity:1}
+.side .name{font-family:'Itim';font-size:13px;color:#cfc8b6}
+.side.on .name{color:#f1ead8}
+.side .score{font-family:'Itim';font-size:27px;line-height:1;color:#f1ead8}
+.side.on .score{color:#ffd98a}
+.side .score.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.45)}}
+.side canvas{display:block;margin:2px auto 0}
+#mid{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px}
+#winLabel{font-size:10.5px;color:#b7ae9a;letter-spacing:.5px}
+#turnPill{font-family:'Itim';font-size:14px;background:rgba(241,234,216,.1);border:1.5px solid rgba(241,234,216,.35);border-radius:12px 15px 11px 16px;padding:2px 10px;display:inline-block}
+
+/* ---- สนาม ---- */
+#stage{flex:1;position:relative;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+#toasts{position:absolute;top:12px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;z-index:20}
+.toast{font-family:'Itim';font-size:16.5px;padding:5px 15px;background:rgba(35,40,46,.9);border:1.5px solid rgba(241,234,216,.5);border-radius:12px 15px 11px 16px;transform:rotate(-1deg);animation:pop 2s forwards;max-width:88%;text-align:center}
+.toast.good{color:#cdeab6}.toast.bad{color:#f0b3a9}.toast.info{color:#f1ead8}
+@keyframes pop{0%{opacity:0;transform:translateY(-10px) rotate(-1deg) scale(.88)}10%{opacity:1;transform:rotate(-1deg)}82%{opacity:1}100%{opacity:0;transform:translateY(-8px) rotate(-1deg)}}
+#muteBtn{position:absolute;top:8px;right:8px;z-index:25;background:rgba(35,40,46,.55);border:1.5px solid rgba(241,234,216,.4);border-radius:10px 12px 9px 13px;color:#f1ead8;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.85}
+
+/* ---- แผงเกจ (กระดานดำล่าง) ---- */
+#panel{background:#23282e;border-top:2px solid rgba(241,234,216,.22);padding:8px 16px calc(10px + env(safe-area-inset-bottom))}
+#hint{font-family:'Itim';font-size:14.5px;text-align:center;color:#e7e0cd;min-height:22px;margin-bottom:6px}
+#gRow{display:flex;align-items:flex-end;gap:14px;transition:opacity .25s}
+#gRow.dim{opacity:.25;pointer-events:none}
+.gcol{display:flex;flex-direction:column;gap:4px}
+.gcol.grow{flex:1;width:100%}
+.gLabel{font-family:'Itim';font-size:12.5px;color:#cfc8b6}
+/* --- หลอดวัดแรงแบบ VU: เล็กซ้าย → ใหญ่ติดไฟขวา --- */
+#powTrack{display:flex;align-items:flex-end;gap:3px;width:100%;height:52px}
+.seg{flex:1;position:relative;border:1.6px solid rgba(241,234,216,.6);border-radius:3px 5px 4px 6px;background:rgba(0,0,0,.28);overflow:hidden;transition:border-color .12s}
+.seg .fill{position:absolute;left:1px;right:1px;bottom:1px;height:0%;background:rgba(232,210,122,.55);border-radius:2px}
+.seg.on .fill{background:rgba(255,217,138,.95)}
+.seg.hot{border-color:rgba(255,170,110,.75)}
+.seg.hot .fill{background:rgba(255,150,80,.6)}
+.seg.hot.on{border-color:#ffab6b;box-shadow:0 0 9px rgba(255,140,60,.55)}
+.seg.hot.on .fill{background:#ffb27a;box-shadow:0 0 8px rgba(255,150,70,.95)}
+.ends{display:flex;justify-content:space-between;font-family:'Itim';font-size:11px;color:#cfc8b6;margin-top:2px}
+.ends .hotTxt{color:#ffab6b}
+/* --- เกจแม่นยำ --- */
+.trackH{width:100%;height:30px;border:2px solid rgba(241,234,216,.75);border-radius:10px 12px 9px 13px;position:relative;background:rgba(0,0,0,.22)}
+.accC{position:absolute;left:50%;top:0;bottom:0;width:11%;transform:translateX(-50%);background:rgba(185,216,168,.20);border-left:2px solid rgba(185,216,168,.75);border-right:2px solid rgba(185,216,168,.75)}
+#accMark{position:absolute;top:-5px;bottom:-5px;width:3.5px;background:#ffd98a;left:50%;border-radius:2px}
+#reaim{font-family:'Itim';font-size:13px;color:#f1ead8;background:transparent;border:2px solid rgba(241,234,216,.7);border-radius:10px 13px 9px 14px;padding:7px 12px;cursor:pointer;align-self:center}
+
+/* ---- ปุ่ม/เมนู ---- */
+.btn{font-family:'Itim';font-size:16px;color:#f1ead8;background:transparent;border:2px solid rgba(241,234,216,.8);border-radius:12px 15px 11px 16px;padding:8px 20px;cursor:pointer}
+.btn.sel,.btn:active{background:#f1ead8;color:#262b31}
+.hidden{display:none!important}
+.overlay{position:absolute;inset:0;background:rgba(22,15,10,.8);display:flex;align-items:center;justify-content:center;z-index:40;padding:18px}
+.card{background:#262b31;border:2px solid rgba(241,234,216,.6);border-radius:14px 19px 12px 21px;padding:20px 22px;max-width:340px;width:100%;text-align:center;transform:rotate(-.6deg);max-height:96%;overflow:auto}
+.card h1{font-family:'Itim';font-weight:400;font-size:34px;line-height:1.15}
+.squig{display:block;margin:2px auto 6px}
+.card .tag{font-size:13px;color:#c9c1ad;margin:2px 0 8px}
+#menuMarble{display:block;margin:0 auto}
+.diffLabel{font-family:'Itim';font-size:14px;margin:8px 0 6px}
+.diffRow{display:flex;gap:8px;justify-content:center}
+#startBtn{font-size:21px;padding:10px 36px;margin:14px 0 10px}
+.rules{text-align:left;font-size:12px;color:#b7ae9a;line-height:1.65;border-top:1.5px dashed rgba(241,234,216,.25);padding-top:9px}
+.rules b{color:#e7e0cd;font-weight:600}
+#overTitle{font-family:'Itim';font-weight:400;font-size:36px}
+#overScore{font-family:'Itim';font-size:26px;color:#ffd98a;margin:6px 0 2px}
+#overPk{font-size:13px;color:#c9c1ad;margin-bottom:14px}
+.overBtns{display:flex;gap:10px;justify-content:center}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="scorebar">
+    <div class="side" id="sideP"><div class="name">คุณ</div><div class="score" id="sP">0</div><canvas id="pkP" width="160" height="30" style="width:80px;height:15px"></canvas></div>
+    <div id="mid"><div id="winLabel">ชนะที่ 10 แต้ม</div><div id="turnPill">—</div></div>
+    <div class="side" id="sideC"><div class="name">CPU</div><div class="score" id="sC">0</div><canvas id="pkC" width="160" height="30" style="width:80px;height:15px"></canvas></div>
+  </header>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div id="toasts"></div>
+    <button id="muteBtn" aria-label="เปิด/ปิดเสียง">
+      <svg viewBox="0 0 24 24" width="19" height="19"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path id="spkOn" d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path id="spkOff" d="M17 9.5l5 5M22 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg>
+    </button>
+  </div>
+
+  <footer id="panel">
+    <div id="hint">เริ่มเกมเพื่อเล่น</div>
+    <div id="gRow" class="dim">
+      <div class="gcol grow">
+        <div class="gLabel">แรงดีด</div>
+        <div id="powTrack"></div>
+        <div class="ends"><span>เบา</span><span class="hotTxt">แรงสุด!</span></div>
+      </div>
+      <div class="gcol grow">
+        <div class="gLabel">แม่นยำ — หยุดให้ตรงกลาง</div>
+        <div class="trackH"><div class="accC"></div><div id="accMark"></div></div>
+        <div class="ends"><span>เบี้ยว</span><span>ตรง</span><span>เบี้ยว</span></div>
+      </div>
+      <button id="reaim" class="hidden">เล็งใหม่</button>
+    </div>
+  </footer>
+
+  <!-- เมนูหลัก -->
+  <div id="menu" class="overlay">
+    <div class="card">
+      <h1>ดีดลูกแก้ว</h1>
+      <svg class="squig" width="150" height="10" viewBox="0 0 150 10"><path d="M3 6 C 30 1, 55 9, 80 5 S 130 2, 147 6" stroke="#e8d27a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+      <canvas id="menuMarble" width="280" height="280" style="width:140px;height:140px"></canvas>
+      <p class="tag">สนามทรายวงกลม เส้นชอล์กขาว ลูกแก้วใสแกนสี<br>ดีดจากตรงไหนของวง ระยะถึงหลุมเท่ากัน<br>ใครได้ครบ 10 แต้มก่อน ชนะ</p>
+      <div class="diffLabel">เลือกความเก๋าของ CPU</div>
+      <div class="diffRow">
+        <button class="btn diff" data-d="easy">ง่าย</button>
+        <button class="btn diff sel" data-d="normal">ปานกลาง</button>
+        <button class="btn diff" data-d="hard">เก๋า</button>
+      </div>
+      <button id="startBtn" class="btn">เริ่มเล่น</button>
+      <div class="rules">
+        <b>ดีดที่ 1:</b> แตะเส้นชอล์กวงกลมเพื่อวางลูก แล้วดีดเข้าสนาม ให้มีลูกลงหลุม = +1 แต้ม/ลูก และได้ดีดโบนัสต่อทันที<br>
+        <b>ไม่มีลูกลงหลุม</b> = ลูกคาสนาม จบตาทันที<br>
+        <b>โบนัส:</b> ดีดให้โดนลูกในสนาม = +1 แต้ม เก็บลูกที่โดนกับลูกที่ใช้ดีดเข้ากระเป๋า<br>
+        <b>ตอนโบนัสมีลูกลงหลุม</b> = โยนกลับสนามแบบสุ่ม ไม่ได้แต้ม<br>
+        <b>เรื่องหลุม:</b> ลูกช้าจมง่าย ลูกแรงต้องเข้าปากหลุมตรง ๆ แรงเกินลูกจะพุ่งข้ามหลุมไปเลย<br>
+        <b>หลุดออกนอกเส้นชอล์ก</b> = ลูกหายเปล่า ไม่ได้อะไรเลย
+      </div>
+    </div>
+  </div>
+
+  <!-- จบเกม -->
+  <div id="over" class="overlay hidden">
+    <div class="card">
+      <div id="overTitle">คุณชนะ!</div>
+      <div id="overScore">10 — 7</div>
+      <div id="overPk"></div>
+      <div class="overBtns">
+        <button id="againBtn" class="btn">เล่นอีกครั้ง</button>
+        <button id="menuBtn" class="btn">กลับเมนู</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ============ ตัวช่วยทั่วไป ============ */
+const $=s=>document.querySelector(s);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const rand=(a,b)=>a+Math.random()*(b-a);
+const randi=n=>Math.floor(Math.random()*n);
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const easeOutCubic=t=>1-Math.pow(1-t,3);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=randi(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const tween=(dur,fn)=>new Promise(res=>{const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/dur);fn(k);k<1?requestAnimationFrame(f):res();})(t0);});
+const tri01=x=>{const s=x-Math.floor(x);return s<0.5?s*2:2-s*2;};
+const triPM=x=>tri01(x)*2-1;
+const TAU=Math.PI*2;
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function vib(ms){if(navigator.vibrate)try{navigator.vibrate(ms);}catch(e){}}
+
+/* ============ ระบบเสียง (Web Audio สังเคราะห์ทั้งหมด) ============ */
+const S={ctx:null,master:null,rollGain:null,muted:false,lastClick:0,
+ ensure(){ if(this.ctx){if(this.ctx.state==='suspended')this.ctx.resume();return;}
+  const A=window.AudioContext||window.webkitAudioContext; if(!A)return;
+  this.ctx=new A(); this.master=this.ctx.createGain(); this.master.gain.value=this.muted?0:0.9; this.master.connect(this.ctx.destination);
+  const len=this.ctx.sampleRate; const buf=this.ctx.createBuffer(1,len,this.ctx.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  const src=this.ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+  const bp=this.ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=430; bp.Q.value=0.8;
+  const g=this.ctx.createGain(); g.gain.value=0;
+  src.connect(bp); bp.connect(g); g.connect(this.master); src.start(); this.rollGain=g; },
+ setRoll(v){ if(!this.ctx)return; this.rollGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.09); },
+ env(f,type,dur,vol,slide){ if(!this.ctx)return; const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+  o.type=type; o.frequency.setValueAtTime(f,t); if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);
+  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  o.connect(g); g.connect(this.master); o.start(t); o.stop(t+dur+0.03); },
+ noise(dur,vol,freq,type='bandpass'){ if(!this.ctx)return; const t=this.ctx.currentTime,len=Math.ceil(this.ctx.sampleRate*dur);
+  const b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0); for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  const src=this.ctx.createBufferSource(); src.buffer=b;
+  const f=this.ctx.createBiquadFilter(); f.type=type; f.frequency.value=freq;
+  const g=this.ctx.createGain(); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  src.connect(f); f.connect(g); g.connect(this.master); src.start(t); },
+ click(v){ const now=performance.now(); if(now-this.lastClick<35)return; this.lastClick=now;
+  this.env(2300+Math.random()*1200,'triangle',0.05,0.28*v); this.env(5200,'sine',0.03,0.1*v); this.noise(0.03,0.12*v,3200); },
+ flick(p){ this.noise(0.07,0.5,900,'lowpass'); this.env(175,'sine',0.1,0.25+0.4*p,60); },
+ thud(){ this.noise(0.07,0.5,300,'lowpass'); this.env(120,'sine',0.09,0.4,55); },
+ drop(){ this.env(620,'sine',0.3,0.5,120); this.noise(0.09,0.35,260,'lowpass'); setTimeout(()=>this.env(92,'sine',0.12,0.5,48),140); },
+ eject(){ this.env(180,'sine',0.16,0.4,640); },
+ chalk(){ this.noise(0.045,0.22,1900); },
+ tick(){ this.env(1250,'square',0.025,0.12); },
+ score(){ this.env(660,'triangle',0.16,0.35); setTimeout(()=>this.env(880,'triangle',0.22,0.35),110); },
+ bust(){ this.env(320,'sawtooth',0.28,0.2,170); },
+ oob(){ this.noise(0.12,0.25,700,'lowpass'); },
+ win(){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>this.env(f,'triangle',0.26,0.4),i*130)); },
+ lose(){ [440,349,262].forEach((f,i)=>setTimeout(()=>this.env(f,'triangle',0.3,0.32),i*170)); },
+ ui(){ this.env(880,'triangle',0.04,0.15); },
+ setMute(m){ this.muted=m; if(this.master)this.master.gain.value=m?0:0.9; }
+};
+
+/* ============ ค่าคงที่ของโลก — สนามวงกลม ============ */
+const LW=420, LH=420, CX=LW/2, CY=LH/2;
+const R=168;                       // รัศมีเส้นชอล์ก (ดีดจากตรงไหนระยะถึงหลุม = เท่ากัน)
+const HOLE={x:CX,y:CY};
+const MR=10.5, HR=21;              // หลุมใหญ่กว่าลูกแก้วราวเท่าตัว
+const H=1/240;
+const K=2.6, MU=60;                // ความหนืดของทราย
+const VMIN=170, VMAX=1250;         // เบาสุดไถ ~47 หน่วย, แรงสุดไถ ~445 หน่วย
+const MAXDEV=0.26;                 // เบี่ยงสุด ±15° — หยุดเกจเกินครึ่งหลอด = พลาดแน่นอน
+const SINK_V=560;                  // ความเร็วมากกว่านี้ = พุ่งข้ามปากหลุม
+const PULL_V=430;                  // ขอบหลุมดูดเฉพาะลูกที่กลิ้งช้ากว่านี้
+const PULL=200;                    // แรงดูดขอบหลุม (เดิม 1150 — คือตัวการทำให้ยิงตรงเสมอ)
+const CAPZone=HR*0.8;              // ต้องเข้าใกล้ใจกลางหลุมถึงจะจม
+const speedOf=p=>VMIN*Math.pow(VMAX/VMIN,p);
+const rollDist=v=>v/K-(MU/(K*K))*Math.log(1+K*v/MU);
+function powerForDist(d){
+ if(rollDist(speedOf(0.02))>=d)return 0.04;
+ let lo=0.02,hi=1;
+ for(let i=0;i<22;i++){const m=(lo+hi)/2; if(rollDist(speedOf(m))<d)lo=m; else hi=m;}
+ return (lo+hi)/2;
+}
+
+/* ============ ชุดสีลูกแก้วแบบ cat's-eye ============ */
+const PALS=[
+ {c1:'#e2a23b',c2:'#fbe9c8',tint:'rgba(214,158,74,.30)',rim:'rgba(150,96,30,.45)'},
+ {c1:'#2f9e6e',c2:'#d9f2e4',tint:'rgba(88,178,138,.28)',rim:'rgba(30,110,76,.45)'},
+ {c1:'#3f66ad',c2:'#dbe5fb',tint:'rgba(110,140,205,.28)',rim:'rgba(40,70,140,.45)'},
+ {c1:'#c8483f',c2:'#fbdcd4',tint:'rgba(205,105,92,.28)',rim:'rgba(140,50,42,.45)'},
+ {c1:'#8a4a9e',c2:'#ecd9f2',tint:'rgba(160,105,180,.26)',rim:'rgba(105,55,125,.45)'},
+ {c1:'#d96f2b',c2:'#fbe3cd',tint:'rgba(215,130,70,.28)',rim:'rgba(150,75,25,.45)'},
+];
+let palBag=shuffle(PALS.slice());
+const nextPal=()=>{ if(!palBag.length)palBag=shuffle(PALS.slice()); return palBag.pop(); };
+
+/* ============ ความยากของ CPU (จูนให้พลาดบ้างตามฟิสิกส์ใหม่) ============ */
+const DIFF={
+ easy:  {ang:0.15, pow:0.16, pick:0.50},   // เบี่ยง 1σ ~25 หน่วย → จมราวครึ่ง
+ normal:{ang:0.095,pow:0.11, pick:0.75},   // → จมราว 7 ใน 10
+ hard:  {ang:0.055,pow:0.06, pick:0.92},   // → จมราว 9 ใน 10
+};
+
+/* ============ สถานะเกม ============ */
+let uid=0;
+const G={phase:'MENU',actor:'P',diff:'normal',bodies:[],shooter:null,score:{P:0,C:0},pocket:{P:[],C:[]},
+ turn:{shot:1},launch:null,aim:null,aimAng:0,pendingPal:null,pv:0,av:0,gt:0,gt2:0,accFreq:1.5,powFreq:0.85,
+ fx:[],token:0,ignoreUntil:0,simT:0,simAcc:0};
+let EV=null, dashT=0, fadeT=0, menuA=0;
+
+/* ============ ผืน canvas ============ */
+const stage=$('#stage'), cv=$('#cv'), ctx=cv.getContext('2d');
+const bg=document.createElement('canvas');
+const trailCv=document.createElement('canvas'); const trailCtx=trailCv.getContext('2d');
+let dpr=1,scale=1,ox=0,oy=0;
+function worldTransform(c){ c.setTransform(scale,0,0,scale,ox,oy); }
+function toWorld(cx,cy){ const r=cv.getBoundingClientRect(); return {x:((cx-r.left)*(cv.width/r.width)-ox)/scale, y:((cy-r.top)*(cv.height/r.height)-oy)/scale}; }
+function resize(){
+ const r=stage.getBoundingClientRect(); dpr=Math.min(2,window.devicePixelRatio||1);
+ cv.width=Math.max(2,Math.round(r.width*dpr)); cv.height=Math.max(2,Math.round(r.height*dpr));
+ scale=Math.min(cv.width/LW,cv.height/LH); ox=(cv.width-LW*scale)/2; oy=(cv.height-LH*scale)/2;
+ buildBg();
+ trailCv.width=cv.width; trailCv.height=cv.height; worldTransform(trailCtx);
+}
+window.addEventListener('resize',resize);
+
+/* ============ วาดพื้นสนามวงกลม (เรนเดอร์ครั้งเดียวลง cache) ============ */
+function buildBg(){
+ bg.width=cv.width; bg.height=cv.height; const c=bg.getContext('2d');
+ c.setTransform(1,0,0,1,0,0);
+ c.fillStyle='#8a6a46'; c.fillRect(0,0,bg.width,bg.height);
+ worldTransform(c);
+ for(let i=0;i<420;i++){ c.fillStyle=Math.random()<0.5?'rgba(60,40,20,.10)':'rgba(230,200,150,.08)';
+   c.fillRect(rand(-600,LW+600),rand(-600,LH+600),rand(1,2.4),rand(1,2.4)); }
+ for(let i=0;i<40;i++){ c.fillStyle='rgba(70,50,28,.22)'; c.beginPath();
+   c.ellipse(rand(-560,LW+560),rand(-560,LH+560),rand(1.5,3.4),rand(1,2.4),rand(0,3),0,7); c.fill(); }
+ c.beginPath(); c.arc(CX,CY,R+24,0,TAU); c.fillStyle='#dcb47e'; c.fill();
+ c.save(); c.beginPath(); c.arc(CX,CY,R+18,0,TAU); c.clip();
+ for(let i=0;i<3000;i++){ c.fillStyle=Math.random()<0.55?'rgba(110,72,34,.10)':'rgba(250,225,180,.10)';
+   c.fillRect(rand(CX-R-18,CX+R+18),rand(CY-R-18,CY+R+18),1.1,1.1); }
+ for(let i=0;i<24;i++){ const a=rand(0,TAU),rr=Math.sqrt(Math.random())*(R-16);
+  const x0=CX+Math.cos(a)*rr,y0=CY+Math.sin(a)*rr;
+  c.strokeStyle=Math.random()<0.75?'rgba(105,68,32,.06)':'rgba(255,245,225,.05)';
+  c.lineWidth=rand(4,9); c.lineCap='round'; c.beginPath(); c.moveTo(x0,y0);
+  c.bezierCurveTo(x0+rand(-60,60),y0+rand(-50,50),x0+rand(-90,90),y0+rand(-60,60),x0+rand(-110,110),y0+rand(-70,70));
+  c.stroke(); }
+ let vg=c.createRadialGradient(CX-R*0.35,CY-R*0.4,R*0.2,CX,CY,R*1.18);
+ vg.addColorStop(0,'rgba(255,240,210,.08)'); vg.addColorStop(1,'rgba(50,28,10,.20)');
+ c.fillStyle=vg; c.fillRect(CX-R-30,CY-R-30,(R+30)*2,(R+30)*2);
+ c.restore();
+ const rg=c.createRadialGradient(CX,CY,R-14,CX,CY,R+8);
+ rg.addColorStop(0,'rgba(90,58,26,0)'); rg.addColorStop(1,'rgba(90,58,26,.15)');
+ c.beginPath(); c.arc(CX,CY,R+8,0,TAU); c.fillStyle=rg; c.fill();
+ drawHole(c); drawChalk(c);
+}
+function drawHole(c){
+ c.beginPath(); c.arc(HOLE.x,HOLE.y,HR+5,0,TAU); c.fillStyle='rgba(118,84,48,.6)'; c.fill();
+ const g=c.createRadialGradient(HOLE.x,HOLE.y-HR*0.25,HR*0.15,HOLE.x,HOLE.y,HR);
+ g.addColorStop(0,'#120b06'); g.addColorStop(0.7,'#231408'); g.addColorStop(1,'#3d2814');
+ c.beginPath(); c.arc(HOLE.x,HOLE.y,HR+1.5,0,TAU); c.fillStyle=g; c.fill();
+ c.beginPath(); c.arc(HOLE.x,HOLE.y,HR-1,Math.PI*0.3,Math.PI*0.7); c.strokeStyle='rgba(200,150,90,.4)'; c.lineWidth=2; c.stroke();
+ c.beginPath(); c.arc(HOLE.x,HOLE.y,HR-1,Math.PI*1.2,Math.PI*1.8); c.strokeStyle='rgba(0,0,0,.55)'; c.lineWidth=2.5; c.stroke();
+ for(let i=0;i<9;i++){ const a=rand(0,TAU); c.fillStyle='rgba(80,55,28,.5)';
+  c.beginPath(); c.arc(HOLE.x+Math.cos(a)*(HR+rand(3,7)),HOLE.y+Math.sin(a)*(HR+rand(3,7)),rand(0.8,1.6),0,TAU); c.fill(); }
+}
+function drawChalk(c){
+ c.lineCap='round'; c.lineJoin='round';
+ for(const pass of [{w:4.6,a:0.92},{w:2.2,a:0.4}]){
+  c.strokeStyle=`rgba(246,243,230,${pass.a})`; c.lineWidth=pass.w;
+  c.beginPath();
+  const n=110;
+  for(let i=0;i<=n;i++){
+   const a=i/n*TAU;
+   const wob=Math.sin(a*7+1.3)*0.9+rand(-0.9,0.9);
+   const x=CX+Math.cos(a)*(R+wob), y=CY+Math.sin(a)*(R+wob);
+   i?c.lineTo(x,y):c.moveTo(x,y);
+  }
+  c.stroke();
+ }
+ for(let i=0;i<210;i++){ const a=rand(0,TAU);
+  c.fillStyle=`rgba(246,243,230,${rand(0.06,0.3)})`;
+  c.beginPath(); c.arc(CX+Math.cos(a)*(R+rand(-7,7)),CY+Math.sin(a)*(R+rand(-7,7)),rand(0.4,1.1),0,TAU); c.fill(); }
+}
+
+/* ============ วาดลูกแก้วใส ============ */
+function ribbon(c,Rr,col,ph){
+ const o=Math.sin(ph)*Rr*0.25;
+ c.beginPath(); c.moveTo(-Rr,Rr*0.15+o);
+ c.bezierCurveTo(-Rr*0.4,-Rr*0.7+o, Rr*0.4,Rr*0.7+o, Rr,-Rr*0.15+o);
+ c.bezierCurveTo(Rr*0.4,Rr*0.35+o, -Rr*0.4,-Rr*0.35+o, -Rr,Rr*0.45+o);
+ c.closePath(); c.fillStyle=col; c.fill();
+}
+function drawMarbleOn(c,x,y,r,pal,ang,alpha=1){
+ if(r<0.5)return;
+ c.save(); c.globalAlpha*=alpha; c.translate(x,y);
+ const g=c.createRadialGradient(-r*0.35,-r*0.4,r*0.12,0,0,r);
+ g.addColorStop(0,'rgba(255,255,255,0.55)'); g.addColorStop(0.38,'rgba(255,255,255,0.10)');
+ g.addColorStop(0.78,pal.tint); g.addColorStop(1,pal.rim);
+ c.beginPath(); c.arc(0,0,r,0,TAU); c.fillStyle=g; c.fill();
+ c.save(); c.beginPath(); c.arc(0,0,r*0.62,0,TAU); c.clip(); c.rotate(ang);
+ c.globalAlpha*=0.88;
+ ribbon(c,r*0.62,pal.c1,0); ribbon(c,r*0.62,pal.c2,2.2); ribbon(c,r*0.62,'#f6f1e6',4.1);
+ c.restore();
+ c.beginPath(); c.arc(0,0,r-0.4,0,TAU); c.strokeStyle='rgba(70,45,22,0.35)'; c.lineWidth=0.8; c.stroke();
+ c.beginPath(); c.ellipse(-r*0.36,-r*0.42,r*0.20,r*0.12,-0.6,0,TAU); c.fillStyle='rgba(255,255,255,0.92)'; c.fill();
+ c.beginPath(); c.arc(r*0.34,r*0.4,r*0.09,0,TAU); c.fillStyle='rgba(255,255,255,0.2)'; c.fill();
+ c.restore();
+}
+function drawShadowOn(c,x,y,r,a=1){
+ if(r<0.5)return;
+ c.save(); c.globalAlpha=0.3*a;
+ const g=c.createRadialGradient(x+2.5,y+3.5,r*0.2,x+2.5,y+3.5,r*1.15);
+ g.addColorStop(0,'rgba(70,42,18,.55)'); g.addColorStop(1,'rgba(70,42,18,0)');
+ c.fillStyle=g; c.beginPath(); c.ellipse(x+2.5,y+3.5,r*1.15,r*0.9,0,0,TAU); c.fill(); c.restore();
+}
+
+/* ============ ฟิสิกส์ (เกมจริง + จำลองในหัว CPU ใช้ชุดเดียวกัน) ============ */
+function startSink(b,ev,real){
+ b.sinking=true;b.sinkT=0;b.sx=b.x;b.sy=b.y;b.act=false;b.vx=b.vy=0;
+ if(ev)ev.sunk.push(b); if(real){S.drop();vib(25);}
+}
+function physStep(bs,h,ev,real){
+ for(const b of bs){
+  if(!b.act)continue;
+  if(!isFinite(b.x)||!isFinite(b.y)||!isFinite(b.vx)||!isFinite(b.vy)){
+   b.x=CX; b.y=CY-R*0.55; b.vx=b.vy=0;
+  }
+  if(b.skimCd>0)b.skimCd-=h;
+  const hx=HOLE.x-b.x,hy=HOLE.y-b.y,hd=Math.hypot(hx,hy)||0.001;
+  const spN=Math.hypot(b.vx,b.vy);
+  if(hd<HR+b.r){
+   if(hd<CAPZone&&spN<SINK_V){ startSink(b,ev,real); continue; }        // เข้าปากหลุมช้าพอ → จม
+   if(spN>1.2&&spN<40&&hd<CAPZone){ startSink(b,ev,real); continue; }   // กลิ้งเกือบหยุดคาปากหลุม → ทรุดจม
+   if(spN>=1.2&&spN<PULL_V){                                            // ขอบหลุมดูดเบา ๆ เฉพาะลูกที่ยังกลิ้ง
+    const pull=PULL*(1-hd/(HR+b.r));
+    b.vx+=hx/hd*pull*h; b.vy+=hy/hd*pull*h;
+   }else if(spN>=SINK_V&&hd<HR*0.85&&!(b.skimCd>0)){                    // แรงเกิน → พุ่งข้ามปากหลุม เด้งเล็กน้อย
+    b.skimCd=0.5; b.hopZ=0.1; b.hopV=46; b.vx*=0.94; b.vy*=0.94;
+   }
+  }
+  const sp=Math.hypot(b.vx,b.vy);
+  if(sp>0){ const ns=Math.max(0,sp-(K*sp+MU)*h); const f=ns/sp; b.vx*=f; b.vy*=f; }  // ทรายหนืด
+  b.x+=b.vx*h; b.y+=b.vy*h;
+  if(real&&sp>60)b.coreA+=sp*h*0.004;
+  const dc=Math.hypot(b.x-CX,b.y-CY);
+  if(!b.entered){ if(dc<R-2.1)b.entered=true; }
+  else if(!b.out&&dc>R+15){
+   b.out=true;b.act=false;b.outT=0;b.dvx=b.vx*0.25;b.dvy=b.vy*0.25;
+   if(ev)ev.oob.push(b); if(real)S.oob(); continue;
+  }
+  if(real&&sp>90){ b.trA=(b.trA||0)+sp*h; while(b.trA>7){b.trA-=7;trailStamp(b);} }
+ }
+ for(let i=0;i<bs.length;i++){ const a=bs[i]; if(!a.act)continue;
+  for(let j=i+1;j<bs.length;j++){ const q=bs[j]; if(!q.act)continue;
+   const dx=q.x-a.x,dy=q.y-a.y,rr=a.r+q.r,d2=dx*dx+dy*dy;
+   if(d2>=rr*rr||d2===0)continue;
+   const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,ov=(rr-d)/2;
+   a.x-=nx*ov;a.y-=ny*ov;q.x+=nx*ov;q.y+=ny*ov;
+   const vn=(q.vx-a.vx)*nx+(q.vy-a.vy)*ny;
+   if(vn<0){
+    const jm=-(1.86)*vn/2;
+    a.vx-=jm*nx;a.vy-=jm*ny;q.vx+=jm*nx;q.vy+=jm*ny;
+    if(ev&&!ev.first)ev.first=a.isShooter?q:a;
+    if(real&&-vn>55)S.click(clamp(-vn/650,0.15,1));
+   }
+  }
+ }
+}
+function trailStamp(b){
+ trailCtx.fillStyle='rgba(112,76,38,0.05)';
+ trailCtx.beginPath(); trailCtx.arc(b.x,b.y,b.r*0.55,0,TAU); trailCtx.fill();
+}
+function fadeTrail(){
+ trailCtx.save(); trailCtx.setTransform(1,0,0,1,0,0);
+ trailCtx.globalCompositeOperation='destination-out';
+ trailCtx.fillStyle='rgba(0,0,0,0.028)'; trailCtx.fillRect(0,0,trailCv.width,trailCv.height);
+ trailCtx.restore(); worldTransform(trailCtx);
+}
+
+/* ============ การจำลองในหัว CPU ============ */
+function simulate(lp,ang,p,fields){
+ const bs=fields.map(b=>({id:b.id,x:b.x,y:b.y,vx:0,vy:0,r:MR,entered:true,act:true,isShooter:false,sinking:false,out:false}));
+ const sp=speedOf(p);
+ const sh={id:-1,x:lp.x,y:lp.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,r:MR,entered:false,act:true,isShooter:true,sinking:false,out:false};
+ bs.push(sh);
+ const ev={sunk:[],oob:[],first:null};
+ let t=0; const h=1/120;
+ while(t<3){ physStep(bs,h,ev,false); t+=h;
+  let any=false; for(const b of bs)if(b.act&&(b.vx!==0||b.vy!==0)){any=true;break;}
+  if(!any)break; }
+ const rest=bs.filter(b=>!b.sinking&&!b.out).map(b=>({id:b.id,x:b.x,y:b.y,field:!b.isShooter}));
+ return {sunk:ev.sunk.length,first:ev.first,oob:ev.oob.length,rest};
+}
+function rankShot(r,shot){
+ let v=Math.random()*0.6;
+ if(shot===1){ v+=r.sunk*100;
+  for(const q of r.rest)if(q.field)v+=Math.max(0,70-Math.hypot(q.x-HOLE.x,q.y-HOLE.y))*0.22;
+  v-=r.oob*7;
+ }else{
+  if(r.sunk>0)v-=200+r.sunk;
+  else if(r.first)v+=100+(r.rest.some(q=>q.id===r.first.id)?30:0);
+  v-=r.oob*9;
+ }
+ return v;
+}
+function ringAnchors(){
+ const pts=[]; for(let i=0;i<12;i++){ const a=i/12*TAU+0.26;
+  pts.push({x:CX+Math.cos(a)*R,y:CY+Math.sin(a)*R,a}); }
+ return pts;
+}
+function ringLaunch(th){
+ for(let k=0;k<11;k++){
+  const a=th+(k===0?0:(k%2?1:-1)*Math.ceil(k/2)*0.13);
+  const x=CX+Math.cos(a)*(R+2), y=CY+Math.sin(a)*(R+2);
+  if(G.bodies.every(b=>b.gone||b.sinking||b.out||Math.hypot(b.x-x,b.y-y)>MR*2+3)) return {x,y};
+ }
+ return {x:CX+Math.cos(th)*(R+2), y:CY+Math.sin(th)*(R+2)};
+}
+function cpuPlan(){
+ const D=DIFF[G.diff], shot=G.turn.shot;
+ const fields=G.bodies.filter(b=>!b.isShooter&&!b.out&&!b.sinking&&!b.gone);
+ const targets=fields.slice().sort((a,b)=>dist(a,HOLE)-dist(b,HOLE)).slice(0,4);
+ const cands=[];
+ for(const an of ringAnchors()){
+  const lp=ringLaunch(an.a);
+  const tlist=shot===1?[HOLE,...targets]:targets;
+  for(const t of tlist){
+   const ang=Math.atan2(t.y-lp.y,t.x-lp.x);
+   const base=powerForDist(dist(lp,t));
+   for(const dp of [-0.06,0.06,0.16,0.3]){        // แผนแรงหลากหลาย: พอดี / แช่ / เกินหลุม / ทะลุ
+    const p=clamp(base+dp,0.08,1);
+    cands.push({lp,ang,p,val:rankShot(simulate(lp,ang,p,fields),shot)});
+   }
+  }
+ }
+ let pick;
+ if(cands.length){
+  cands.sort((a,b)=>b.val-a.val);
+  pick=(Math.random()<D.pick)?cands[0]:cands[randi(Math.min(cands.length,shot===1?7:5))];
+ }else{
+  const a=rand(0,TAU); const lp=ringLaunch(a);
+  const tx=CX+Math.cos(a+2)*rand(30,R*0.6), ty=CY+Math.sin(a+2)*rand(30,R*0.6);
+  pick={lp,ang:Math.atan2(ty-lp.y,tx-lp.x),p:0.4};
+ }
+ const err=gauss()*D.ang, perr=gauss()*D.pow;
+ return {launch:pick.lp,ang:pick.ang,p:clamp(pick.p+perr,0.08,1),err,aVal:clamp(err/MAXDEV,-1,1)};
+}
+
+/* ============ โครงเกม ============ */
+function mkBody(x,y,pal){return {id:++uid,x,y,vx:0,vy:0,r:MR,pal,coreA:rand(0,TAU),entered:true,act:true,sinking:false,gone:false,out:false};}
+function spawnField(n){
+ const out=[],pals=shuffle(PALS.slice());
+ for(let i=0;i<n;i++){ let px=CX,py=CY-R*0.5;
+  for(let t=0;t<150;t++){
+   const a=rand(0,TAU), rr=Math.sqrt(Math.random())*(R-24);
+   const c={x:CX+Math.cos(a)*rr,y:CY+Math.sin(a)*rr};
+   if(Math.hypot(c.x-CX,c.y-CY)>R-24)continue;
+   if(dist(c,HOLE)>HR+MR+28&&out.every(q=>dist(c,q)>MR*2+9)){px=c.x;py=c.y;break;}
+  }
+  out.push(mkBody(px,py,pals[i%pals.length]));
+ }
+ return out;
+}
+function initGame(){
+ G.token++; G.score={P:0,C:0}; G.pocket={P:[],C:[]}; G.fx=[];
+ G.bodies=spawnField(5); G.shooter=null; EV=null;
+ updateScoreUI(); drawPockets();
+ $('#over').classList.add('hidden'); $('#menu').classList.add('hidden');
+ G.actor='P'; G.turn={shot:1};
+ toast('เริ่มเกม — ตาคุณดีดก่อน','info');
+ startPlacement();
+}
+function startPlacement(){
+ G.token++; G.shooter=null; G.bodies.forEach(b=>b.isShooter=false);
+ G.launch=null; G.aim=null; G.pendingPal=nextPal(); G.phase='PLACE';
+ gaugesDim(true); hideReaim(); setHint(hintFor()); updateTurnUI();
+}
+function endTurn(){
+ G.phase='WAIT'; G.turn.shot=1; G.actor=G.actor==='P'?'C':'P';
+ G.shooter=null; G.bodies.forEach(b=>b.isShooter=false);
+ gaugesDim(true); hideReaim(); updateTurnUI(); setHint('…');
+ const tok=G.token;
+ setTimeout(()=>{ if(G.token!==tok||G.phase==='OVER'||G.phase==='MENU')return;
+  if(G.actor==='C')cpuTurn(); else {toast('ตาคุณ','info'); startPlacement();} },650);
+}
+function checkWin(){
+ if(G.score[G.actor]<10)return false;
+ G.phase='OVER'; gaugesDim(true); hideReaim(); updateTurnUI(); setHint('จบเกม');
+ if(G.actor==='P')S.win(); else S.lose(); vib([50,60,50]);
+ const tok=G.token;
+ setTimeout(()=>{ if(G.token!==tok)return;
+  $('#overTitle').textContent=G.actor==='P'?'คุณชนะ!':'CPU ชนะ!';
+  $('#overScore').textContent=`คุณ ${G.score.P} — ${G.score.C} CPU`;
+  $('#overPk').textContent=`ลูกในกระเป๋า · คุณ ${G.pocket.P.length} ลูก, CPU ${G.pocket.C.length} ลูก`;
+  $('#over').classList.remove('hidden');
+ },900);
+ return true;
+}
+function addScore(n){ G.score[G.actor]+=n; updateScoreUI(true); }
+
+/* ---- ผลของการยิง 1 ครั้ง ---- */
+function resolveShot(){
+ if(G.phase!=='SETTLE')return;
+ const ev=EV, shot=G.turn.shot, sh=G.shooter;
+ if(sh&&!sh.gone&&!sh.sinking&&!sh.out&&!sh.entered){
+  sh.out=true; sh.act=false; sh.outT=0; sh.dvx=sh.vx*0.2; sh.dvy=sh.vy*0.2;
+  toast('ดีดไม่เข้าสนาม! ลูกหาย','bad');
+ }
+ const sunkN=ev.sunk.length;
+ if(shot===1){
+  if(sunkN>0){
+   addScore(sunkN); S.score(); vib(30);
+   toast(`ลงหลุม ${sunkN} ลูก! +${sunkN} แต้ม`,'good');
+   if(checkWin())return;
+   G.turn.shot=2; updateTurnUI();
+   setTimeout(()=>toast('โบนัส! ดีดอีกครั้งให้โดนลูกในสนาม','info'),420);
+   if(G.actor==='P')startPlacement(); else cpuTurn();
+  }else{
+   if(ev.oob.length)toast('หลุดออกนอกเส้น — ไม่ได้แต้ม','bad');
+   else toast('ไม่ลงหลุม ลูกคาสนาม — จบตา','bad');
+   endTurn();
+  }
+ }else{
+  if(sunkN>0){
+   const spots=[]; ev.sunk.forEach(b=>{const s=findEjectSpot(spots);spots.push(s);ejectFromHole(b,s);});
+   S.bust(); vib(40);
+   toast('ลงหลุมตอนโบนัส! โยนกลับสนาม ไม่ได้แต้ม','bad');
+   endTurn();
+  }else if(ev.first){
+   addScore(1); S.score(); vib(30);
+   let got=0; const t=ev.first;
+   if(!t.out&&!t.sinking&&!t.gone){pocketMarble(t);got++;}
+   if(sh&&!sh.out&&!sh.sinking&&!sh.gone){pocketMarble(sh);got++;}
+   toast(got>0?`โดนลูกแก้ว! เก็บได้ ${got} ลูก +1 แต้ม`:'โดน! +1 แต้ม (แต่ลูกหลุดนอกเส้นหมด)','good');
+   if(checkWin())return;
+   endTurn();
+  }else{
+   toast('ไม่โดนเลย ลูกคาสนาม — จบตา','bad');
+   endTurn();
+  }
+ }
+}
+function pocketMarble(b){
+ b.gone=true; b.act=false;
+ G.fx.push({type:'pocket',x0:b.x,y0:b.y,tx:G.actor==='P'?70:LW-70,ty:-6,r:b.r,pal:b.pal,t:0,dur:0.55,delay:0,
+  onDone:()=>{G.pocket[G.actor].push(b.pal);drawPockets();S.tick();}});
+}
+function findEjectSpot(taken){
+ for(let t=0;t<90;t++){
+  const a=rand(0,TAU), rr=Math.sqrt(Math.random())*(R-24);
+  const p={x:CX+Math.cos(a)*rr,y:CY+Math.sin(a)*rr};
+  if(Math.hypot(p.x-CX,p.y-CY)>R-24)continue;
+  if(dist(p,HOLE)<HR+MR+16)continue;
+  if(G.bodies.some(b=>!b.gone&&!b.sinking&&!b.out&&dist(p,b)<MR*2+4))continue;
+  if(taken&&taken.some(q=>dist(p,q)<MR*2+4))continue;
+  return p;
+ }
+ return {x:CX+R*0.5,y:CY};
+}
+function ejectFromHole(b,s){
+ G.fx.push({type:'eject',x0:HOLE.x,y0:HOLE.y,x1:s.x,y1:s.y,r:MR,pal:b.pal,t:0,dur:0.5,delay:0.18,
+  onDone:()=>{const nb=mkBody(s.x,s.y,b.pal);G.bodies.push(nb);}});
+ setTimeout(()=>{try{S.eject();}catch(e){}},200);
+}
+
+/* ---- การยิง ---- */
+function launchShot(ang,p){
+ G.bodies.forEach(b=>b.isShooter=false);
+ const sp=speedOf(p);
+ const b={id:++uid,x:G.launch.x,y:G.launch.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,r:MR,
+  pal:G.pendingPal||nextPal(),coreA:rand(0,TAU),isShooter:true,entered:false,act:true,sinking:false,gone:false,out:false,
+  hopZ:2,hopV:26+p*40};
+ G.shooter=b; G.bodies.push(b);
+ EV={sunk:[],oob:[],first:null};
+ G.fx.push({type:'puff',x:G.launch.x,y:G.launch.y,t:0,dur:0.35,delay:0,big:0});
+ S.flick(p); vib(15);
+ G.phase='SIM'; G.simT=0; G.simAcc=0;
+ setHint('ลูกกำลังเคลื่อนที่…'); hideReaim(); gaugesDim(true);
+}
+function tapLock(){
+ const now=performance.now(); if(now<G.ignoreUntil)return; G.ignoreUntil=now+150;
+ if(G.phase==='POWER'){
+  G.pv=tri01(G.gt); setPow(G.pv); S.tick(); vib(12);
+  G.phase='ACC'; G.gt2=Math.random(); G.accFreq=0.8+G.pv*2.0; setAcc(triPM(G.gt2));
+  setHint(hintFor()); hideReaim();
+ }else if(G.phase==='ACC'){
+  G.av=triPM(G.gt2); setAcc(G.av); S.tick(); vib(12);
+  const ang=G.aimAng+G.av*MAXDEV;               // ตำแหน่งเข็ม = มุมเบี่ยงจริง ไม่มีดีดให้กลับตรง
+  G.phase='LOCK';
+  setTimeout(()=>launchShot(ang,G.pv),150);
+ }
+}
+
+/* ---- อินพุตผู้เล่น ---- */
+function handlePlace(w){
+ const d=Math.hypot(w.x-CX,w.y-CY);
+ if(Math.abs(d-R)>36){ toast('แตะที่เส้นชอล์กวงกลม เพื่อวางจุดดีด','info'); return; }
+ G.launch=ringLaunch(Math.atan2(w.y-CY,w.x-CX));
+ S.chalk(); vib(8);
+ G.phase='AIM'; setHint(hintFor()); showReaim();
+}
+function handleAim(w){
+ if(Math.hypot(w.x-CX,w.y-CY)>R-2){ toast('แตะภายในวงเพื่อเลือกทิศทาง','info'); return; }
+ if(Math.hypot(w.x-G.launch.x,w.y-G.launch.y)<26){ toast('แตะไกลจากลูกหน่อย เพื่อระบุทิศทาง','info'); return; }
+ G.aim=w; G.aimAng=Math.atan2(w.y-G.launch.y,w.x-G.launch.x);
+ G.phase='POWER'; G.gt=0; setPow(0);
+ S.chalk(); vib(8); setHint(hintFor()); gaugesDim(false); showReaim();
+}
+const app=$('#app');
+app.addEventListener('pointerdown',e=>{
+ S.ensure();
+ if(e.target.closest('button')||e.target.closest('.overlay'))return;
+ if(G.actor!=='P')return;
+ const w=toWorld(e.clientX,e.clientY);
+ if(G.phase==='PLACE')handlePlace(w);
+ else if(G.phase==='AIM')handleAim(w);
+ else if(G.phase==='POWER'||G.phase==='ACC')tapLock();
+});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---- เทิร์น CPU ---- */
+async function cpuTurn(){
+ const tok=++G.token;
+ G.phase='C_MARK'; setHint('CPU กำลังมองสนาม…'); gaugesDim(true); updateTurnUI();
+ await sleep(300+Math.random()*260); if(tok!==G.token)return;
+ const plan=cpuPlan();
+ G.launch=plan.launch; G.aim=null; S.chalk(); setHint('CPU เลือกจุดดีดแล้ว'); G.phase='C_AIM';
+ await sleep(260); if(tok!==G.token)return;
+ G.aim={x:plan.launch.x+Math.cos(plan.ang)*120,y:plan.launch.y+Math.sin(plan.ang)*120};
+ S.chalk(); setHint('CPU เล็งเป้าหมาย'); G.phase='C_POW';
+ await sleep(280); if(tok!==G.token)return;
+ setHint('CPU ล็อกแรง'); setPow(0);
+ await tween(380,k=>setPow(easeOutCubic(k)*plan.p)); if(tok!==G.token)return;
+ S.tick();
+ setHint('CPU ล็อกความแม่น'); G.phase='C_ACC'; gaugesDim(false);
+ await tween(440,k=>{
+  let v=triPM(k*2.4);
+  if(k>0.82)v=lerp(v,plan.aVal,(k-0.82)/0.18);
+  setAcc(v);
+ }); if(tok!==G.token)return;
+ S.tick(); vib(10); setPow(plan.p); setAcc(plan.aVal);
+ await sleep(130); if(tok!==G.token)return;
+ launchShot(plan.ang+plan.err,plan.p);
+}
+
+/* ============ UI ============ */
+function setHint(t){ $('#hint').textContent=t; }
+function hintFor(){
+ const obj=G.turn.shot===1?'เป้า: ทำลูกลงหลุม':'เป้า: ให้โดนลูกในสนาม';
+ switch(G.phase){
+  case 'PLACE':return `1 แตะเส้นชอล์กวงกลมเพื่อวางลูก — ${obj}`;
+  case 'AIM':return `2 แตะในวงเพื่อเลือกทิศทาง — ${obj}`;
+  case 'POWER':return '3 แตะล็อก "แรง" (ยิ่งแรง เกจแม่นยำยิ่งวิ่งเร็ว)';
+  case 'ACC':return '4 แตะล็อก "แม่นยำ" ให้ตรงเส้นกลาง!';
+ }
+ return $('#hint').textContent;
+}
+function toast(msg,cls='info'){
+ const box=$('#toasts');
+ while(box.children.length>=3)box.removeChild(box.firstChild);
+ const d=document.createElement('div');
+ d.className='toast '+cls; d.textContent=msg;
+ d.addEventListener('animationend',()=>d.remove());
+ box.appendChild(d);
+}
+function updateTurnUI(){
+ $('#turnPill').textContent=`${G.actor==='P'?'ตาคุณ':'ตา CPU'} · ${G.turn.shot===1?'ดีดที่ 1':'โบนัส ดีดที่ 2'}`;
+ $('#sideP').classList.toggle('on',G.actor==='P');
+ $('#sideC').classList.toggle('on',G.actor==='C');
+}
+function updateScoreUI(bump){
+ for(const s of ['P','C']){
+  const el=$('#s'+s); el.textContent=G.score[s];
+  if(bump&&s===G.actor){ el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+ }
+}
+function drawPockets(){
+ for(const side of ['P','C']){
+  const c=$('#pk'+side).getContext('2d');
+  c.setTransform(2,0,0,2,0,0); c.clearRect(0,0,80,15);
+  const arr=G.pocket[side], show=Math.min(arr.length,5);
+  for(let i=0;i<show;i++)drawMarbleOn(c,7+i*13.5,7.5,5.2,arr[i],i*1.3);
+  if(arr.length>5){ c.fillStyle='#f1ead8'; c.font='9px Anuphan'; c.fillText('+'+(arr.length-5),7+5*13.5-2,10.5); }
+ }
+}
+/* ---- หลอดวัดแรงแบบ VU ---- */
+const POWN=12, powSegs=[];
+function buildPow(){
+ const tr=$('#powTrack');
+ for(let i=0;i<POWN;i++){
+  const s=document.createElement('div');
+  s.className='seg'+(i>=POWN-4?' hot':'');
+  s.style.height=(34+66*i/(POWN-1))+'%';
+  const f=document.createElement('div'); f.className='fill'; s.appendChild(f);
+  tr.appendChild(s); powSegs.push({s,f});
+ }
+}
+function setPow(v){
+ powSegs.forEach((o,i)=>{
+  const fr=clamp(v*POWN-i,0,1);
+  o.f.style.height=(fr*100)+'%';
+  o.s.classList.toggle('on',fr>0.12);
+ });
+}
+function setAcc(v){ const m=$('#accMark'); m.style.left=((v+1)/2*100)+'%';
+ m.style.background=Math.abs(v)>0.5?'#f0a08a':'#ffd98a'; }   // หยุดเบี้ยวมาก = เข็มเปลี่ยนเป็นสีแดงเตือน
+function gaugesDim(d){ $('#gRow').classList.toggle('dim',d); }
+function showReaim(){ $('#reaim').classList.remove('hidden'); }
+function hideReaim(){ $('#reaim').classList.add('hidden'); }
+
+ $('#reaim').addEventListener('click',()=>{ S.chalk(); startPlacement(); });
+document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{
+ S.ensure(); S.ui();
+ document.querySelectorAll('.diff').forEach(x=>x.classList.remove('sel'));
+ b.classList.add('sel'); G.diff=b.dataset.d;
+}));
+ $('#startBtn').addEventListener('click',()=>{ S.ensure(); S.ui(); initGame(); });
+ $('#againBtn').addEventListener('click',()=>{ S.ui(); initGame(); });
+ $('#menuBtn').addEventListener('click',()=>{
+ S.ui(); G.token++; G.phase='MENU';
+ $('#over').classList.add('hidden'); $('#menu').classList.remove('hidden');
+});
+ $('#muteBtn').addEventListener('click',()=>{
+ S.ensure(); S.setMute(!S.muted);
+ $('#spkOn').style.display=S.muted?'none':'';
+ $('#spkOff').style.display=S.muted?'':'none';
+ if(!S.muted)S.ui();
+});
+
+/* ============ เอฟเฟกต์ ============ */
+function updateFx(dt){
+ for(let i=G.fx.length-1;i>=0;i--){
+  const f=G.fx[i];
+  if(f.delay>0){f.delay-=dt;continue;}
+  f.t+=dt;
+  if(f.t>=f.dur){G.fx.splice(i,1);f.onDone&&f.onDone();}
+ }
+}
+function drawFx(c){
+ for(const f of G.fx){
+  if(f.delay>0)continue;
+  const t=clamp(f.t/f.dur,0,1);
+  if(f.type==='eject'){
+   const x=lerp(f.x0,f.x1,t),yg=lerp(f.y0,f.y1,t),y=yg-Math.sin(Math.PI*t)*26;
+   const sc=1+0.3*Math.sin(Math.PI*t);
+   drawShadowOn(c,x,yg,f.r*sc*(1-t*0.3),0.8);
+   drawMarbleOn(c,x,y,f.r*sc,f.pal,t*6,0.95);
+  }else if(f.type==='pocket'){
+   const e=easeOutCubic(t);
+   drawMarbleOn(c,lerp(f.x0,f.tx,e),lerp(f.y0,f.ty,e),f.r*(1-0.55*e),f.pal,f.x0*0.1+t*3,1-0.4*e);
+  }else if(f.type==='puff'){
+   const e=easeOutCubic(t), n=f.big?8:6;
+   for(let i=0;i<n;i++){
+    const a=i/n*TAU+f.x*0.7, r0=2+e*(f.big?13:8);
+    const px=f.x+Math.cos(a)*r0, py=f.y+Math.sin(a)*r0*0.8-e*(f.big?7:4);
+    c.globalAlpha=(1-t)*0.55;
+    c.fillStyle=i%2?'rgba(230,200,150,.9)':'rgba(120,85,45,.8)';
+    c.beginPath(); c.arc(px,py,1.6+2.2*(1-t),0,TAU); c.fill();
+   }
+   c.globalAlpha=1;
+  }
+ }
+}
+
+/* ============ วงจรอัปเดต + เรนเดอร์ ============ */
+function update(dt){
+ menuA+=dt*0.7; dashT+=dt;
+ fadeT+=dt; if(fadeT>0.4){fadeT=0;fadeTrail();}
+ for(const b of G.bodies){
+  if(b.sinking&&!b.gone){b.sinkT+=dt/0.38;if(b.sinkT>=1)b.gone=true;}
+  if(b.outT!=null&&!b.gone){b.outT+=dt/0.4;b.x+=(b.dvx||0)*dt;b.y+=(b.dvy||0)*dt;if(b.outT>=1)b.gone=true;}
+  if(b.hopZ>0||b.hopV>0){
+   b.hopV-=340*dt; b.hopZ+=b.hopV*dt;
+   if(b.hopZ<=0){ b.hopZ=0; b.hopV=0;
+    G.fx.push({type:'puff',x:b.x,y:b.y,t:0,dur:0.42,delay:0,big:1});
+    S.thud(); vib(8);
+   }
+  }
+ }
+ updateFx(dt);
+ if(G.phase==='SIM'){
+  G.simAcc+=dt; let n=0;
+  while(G.simAcc>=H&&n<30){ physStep(G.bodies,H,EV,true); G.simAcc-=H; G.simT+=H; n++; }
+  if(G.simT>4.5)G.bodies.forEach(b=>{if(b.act){b.vx=b.vy=0;}});
+  let mx=0,anyV=false;
+  for(const b of G.bodies){ if(!b.act)continue; const s=Math.hypot(b.vx,b.vy);
+   if(s>0.35)anyV=true; if(s>mx)mx=s; }          // เกณฑ์ "นิ่ง" เข้มขึ้น จับลูกที่ไหลนิ่วริมหลุมด้วย
+  S.setRoll(clamp(mx/1000,0,1)*0.5);
+  if(!anyV&&!G.bodies.some(b=>b.hopZ>0)){
+   G.phase='SETTLE'; S.setRoll(0);
+   const tok=G.token;
+   setTimeout(()=>{if(G.token===tok&&G.phase==='SETTLE')resolveShot();},330);
+  }
+ }else S.setRoll(0);
+ if(G.phase==='POWER'){G.gt+=dt*G.powFreq;G.pv=tri01(G.gt);setPow(G.pv);}
+ if(G.phase==='ACC'){G.gt2+=dt*G.accFreq;G.av=triPM(G.gt2);setAcc(G.av);}
+}
+function drawAim(c){
+ const placePh=G.phase==='PLACE', aimPh=['AIM','POWER','ACC','C_AIM','C_POW','C_ACC'].includes(G.phase);
+ if(!(placePh||aimPh))return;
+ if(placePh&&G.actor==='P'&&!G.launch){
+  c.save(); c.strokeStyle=`rgba(246,243,230,${0.22+0.13*Math.sin(dashT*3)})`;
+  c.lineWidth=1.8; c.setLineDash([10,9]); c.lineDashOffset=-dashT*26;
+  c.beginPath(); c.arc(CX,CY,R+6,0,TAU); c.stroke(); c.restore();
+  return;
+ }
+ if(!G.launch)return;
+ const L=G.launch;
+ c.save(); c.strokeStyle='rgba(246,243,230,0.95)'; c.lineWidth=2;
+ c.beginPath(); c.arc(L.x,L.y,7,0,TAU); c.stroke();
+ for(let i=0;i<4;i++){ const a=i*Math.PI/2+Math.PI/4;
+  c.beginPath(); c.moveTo(L.x+Math.cos(a)*9,L.y+Math.sin(a)*9); c.lineTo(L.x+Math.cos(a)*13,L.y+Math.sin(a)*13); c.stroke(); }
+ c.restore();
+ drawMarbleOn(c,L.x,L.y,MR,G.pendingPal||PALS[0],dashT*0.4,0.55);
+ if(aimPh&&G.aim){
+  const A=G.aim,ang=Math.atan2(A.y-L.y,A.x-L.x);
+  c.save(); c.strokeStyle='rgba(255,255,255,0.85)'; c.lineWidth=2;
+  c.setLineDash([8,7]); c.lineDashOffset=-dashT*22;
+  c.beginPath(); c.moveTo(L.x,L.y); c.lineTo(A.x,A.y); c.stroke(); c.setLineDash([]);
+  c.beginPath(); c.moveTo(A.x,A.y);
+  c.lineTo(A.x-Math.cos(ang-0.45)*10,A.y-Math.sin(ang-0.45)*10);
+  c.moveTo(A.x,A.y);
+  c.lineTo(A.x-Math.cos(ang+0.45)*10,A.y-Math.sin(ang+0.45)*10); c.stroke();
+  c.globalAlpha=0.28;
+  for(const s of [-1,1]){
+   c.beginPath(); c.moveTo(L.x,L.y);
+   c.lineTo(L.x+Math.cos(ang+s*MAXDEV)*52,L.y+Math.sin(ang+s*MAXDEV)*52); c.stroke();
+  }
+  c.globalAlpha=1; c.beginPath(); c.arc(A.x,A.y,5,0,TAU); c.stroke();
+  c.restore();
+ }
+}
+function render(){
+ ctx.setTransform(1,0,0,1,0,0);
+ ctx.drawImage(bg,0,0);
+ ctx.drawImage(trailCv,0,0);
+ worldTransform(ctx);
+ drawAim(ctx);
+ const list=G.bodies.filter(b=>!b.gone).sort((a,b)=>a.y-b.y);
+ for(const b of list)if(!b.sinking){
+  const hz=b.hopZ||0, al=b.outT!=null?1-b.outT:1;
+  drawShadowOn(ctx,b.x,b.y,b.r*(1-hz*0.012),al);          // เงาค้างอยู่พื้นเสมอ
+ }
+ for(const b of list){
+  if(b.sinking){
+   const t=b.sinkT*b.sinkT;
+   const x=lerp(b.sx,HOLE.x,t),y=lerp(b.sy,HOLE.y,t),r=b.r*(1-0.75*t);
+   ctx.save(); ctx.globalAlpha=1-t*0.92;
+   drawMarbleOn(ctx,x,y,r,b.pal,b.coreA);
+   ctx.globalAlpha=t*0.5; ctx.fillStyle='#120b06';
+   ctx.beginPath(); ctx.arc(x,y,r,0,TAU); ctx.fill(); ctx.restore();
+  }else{
+   const hz=b.hopZ||0, sc=1+hz*0.015, al=b.outT!=null?1-b.outT:1;
+   drawMarbleOn(ctx,b.x,b.y-hz*1.5,b.r*sc,b.pal,b.coreA,al);
+  }
+ }
+ drawFx(ctx);
+}
+const mctx=$('#menuMarble').getContext('2d');
+function renderMenuMarble(){
+ mctx.setTransform(2,0,0,2,0,0); mctx.clearRect(0,0,140,140);
+ drawShadowOn(mctx,70,74,42,1);
+ drawMarbleOn(mctx,70,70,44,PALS[0],menuA);
+}
+let last=performance.now();
+function loop(ts){
+ const dt=Math.min(0.05,(ts-last)/1000); last=ts;
+ try{ update(dt); }catch(e){ console.error(e); }
+ render();
+ if(!$('#menu').classList.contains('hidden'))renderMenuMarble();
+ requestAnimationFrame(loop);
+}
+
+/* ============ เริ่มระบบ ============ */
+resize();
+buildPow();
+G.bodies=spawnField(5);
+drawPockets();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
