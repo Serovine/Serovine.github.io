@@ -88,7 +88,7 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
   <header id="scorebar">
     <div class="side" id="sideP"><div class="name">คุณ</div><div class="score" id="sP">0</div><canvas id="pkP" width="124" height="24" style="width:62px;height:12px"></canvas></div>
     <div id="mid"><div id="winLabel">ชนะที่ 10 แต้ม</div><div id="turnPill">—</div></div>
-    <div class="side" id="sideC"><div class="name">CPU</div><div class="score" id="sC">0</div><canvas id="pkC" width="124" height="24" style="width:62px;height:12px"></canvas></div>
+    <div class="side" id="sideC"><div class="name">คู่แข่ง</div><div class="score" id="sC">0</div><canvas id="pkC" width="124" height="24" style="width:62px;height:12px"></canvas></div>
   </header>
 
   <div id="stage">
@@ -108,7 +108,7 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
         <div class="ends"><span>เบา</span><span class="hotTxt">แรงสุด!</span></div>
       </div>
       <div class="gcol grow">
-        <div class="gLabel">แม่นยำ — หยุดให้ตรงกลาง</div>
+        <div class="gLabel">ความแม่นยำ</div>
         <div class="trackH"><div class="accC"></div><div id="accMark"></div></div>
         <div class="ends"><span>เบี้ยว</span><span>ตรง</span><span>เบี้ยว</span></div>
       </div>
@@ -122,8 +122,8 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
       <h1>ดีดลูกแก้ว</h1>
       <svg class="squig" width="150" height="10" viewBox="0 0 150 10"><path d="M3 6 C 30 1, 55 9, 80 5 S 130 2, 147 6" stroke="#e8d27a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
       <canvas id="menuMarble" width="280" height="280" style="width:140px;height:140px"></canvas>
-      <p class="tag">คุณดีดจากโซนด้านล่าง · CPU ดีดจากด้านบน<br>ใครได้ครบ 10 แต้มก่อน ชนะ</p>
-      <div class="diffLabel">เลือกความเก๋าของ CPU</div>
+      <p class="tag">ใครได้ครบ 10 แต้มก่อน ชนะ</p>
+      <div class="diffLabel">เลือกความเก๋าของ BOT</div>
       <div class="diffRow">
         <button class="btn diff" data-d="easy">ง่าย</button>
         <button class="btn diff sel" data-d="normal">ปานกลาง</button>
@@ -137,12 +137,11 @@ body{background:#1d150e;display:flex;justify-content:center;font-family:'Anuphan
       </div>
       <button id="startBtn" class="btn">เริ่มเล่น</button>
       <div class="rules">
-        <b>ดีดที่ 1:</b> แตะวางลูกในโซนดีดด้านล่าง แล้วดีดเข้าวงชอล์ก ให้มีลูกลงหลุม = +1 แต้ม/ลูก และได้ดีดโบนัสต่อทันที<br>
-        <b>ไม่มีลูกลงหลุม</b> = ลูกคาสนาม จบตาทันที (ดีดไม่เข้าวงเลย = ลูกหาย)<br>
+        <b>ดีดที่ 1:</b> แตะวางลูกในโซนดีดด้านล่าง แล้วดีดเข้าวงชอล์ก ให้มีลูกลงหลุม = +1 แต้ม/ลูก และได้โบนัสต่อทันที<br>
+        <b>ไม่มีลูกลงหลุม</b> = จบตาทันที<br>
         <b>โบนัส:</b> ดีดให้โดนลูกในสนาม = +1 แต้ม เก็บลูกที่โดนกับลูกที่ใช้ดีดเข้ากระเป๋า<br>
         <b>ตอนโบนัสมีลูกลงหลุม</b> = โยนกลับสนามแบบสุ่ม ไม่ได้แต้ม<br>
-        <b>เรื่องหลุม:</b> ลูกช้าจมง่าย ลูกแรงต้องเข้าปากหลุมตรง ๆ แรงเกินลูกพุ่งข้ามหลุมไป<br>
-        <b>หลุดออกนอกเส้นชอล์ก</b> = ลูกหายเปล่า ไม่ได้อะไรเลย
+        <b>หลุดออกนอกเส้นชอล์ก</b> = ลูกหาย
       </div>
     </div>
   </div>
@@ -631,7 +630,7 @@ function initGame(){
  updateScoreUI(); drawPockets();
  $('#over').classList.add('hidden'); $('#menu').classList.add('hidden');
  G.actor='P'; G.turn={shot:1};
- toast('เริ่มเกม — ตาคุณดีดก่อน','info');
+ toast('เริ่มเกม','info');
  startPlacement();
 }
 function startPlacement(){
@@ -681,7 +680,7 @@ function resolveShot(){
    if(G.actor==='P')startPlacement(); else cpuTurn();
   }else{
    if(ev.oob.length)toast('หลุดออกนอกเส้น — ไม่ได้แต้ม','bad');
-   else toast('ไม่ลงหลุม ลูกคาสนาม — จบตา','bad');
+   else toast('ไม่ลงหลุม ลูกคาสนาม','bad');
    endTurn();
   }
  }else{
@@ -801,18 +800,18 @@ document.addEventListener('contextmenu',e=>e.preventDefault());
 /* ---- เทิร์น CPU ---- */
 async function cpuTurn(){
  const tok=++G.token;
- G.phase='C_MARK'; setHint('CPU กำลังมองสนาม…'); gaugesDim(true); updateTurnUI();
+ G.phase='C_MARK'; setHint('คู่แข่ง กำลังมองสนาม…'); gaugesDim(true); updateTurnUI();
  await sleep(300+Math.random()*260); if(tok!==G.token)return;
  const plan=cpuPlan();
  G.launch=plan.launch; G.aim=null; S.chalk(); setHint('CPU วางลูกด้านบนแล้ว'); G.phase='C_AIM';
  await sleep(280); if(tok!==G.token)return;
  G.aim={x:plan.launch.x+Math.cos(plan.ang)*120,y:plan.launch.y+Math.sin(plan.ang)*120};
- S.chalk(); setHint('CPU เล็งเป้าหมาย'); G.phase='C_POW';
+ S.chalk(); setHint('คู่แข่ง เล็งเป้าหมาย'); G.phase='C_POW';
  await sleep(280); if(tok!==G.token)return;
  setHint('CPU ล็อกแรง'); setPow(0);
  await tween(380,k=>setPow(easeOutCubic(k)*plan.p)); if(tok!==G.token)return;
  S.tick();
- setHint('CPU ล็อกความแม่น'); G.phase='C_ACC'; gaugesDim(false);
+ setHint('คู่แข่ง ล็อกความแม่น'); G.phase='C_ACC'; gaugesDim(false);
  await tween(440,k=>{
   let v=triPM(k*2.4);
   if(k>0.82)v=lerp(v,plan.aVal,(k-0.82)/0.18);
@@ -844,7 +843,7 @@ function toast(msg,cls='info'){
  box.appendChild(d);
 }
 function updateTurnUI(){
- $('#turnPill').textContent=`${G.actor==='P'?'ตาคุณ':'ตา CPU'} · ${G.turn.shot===1?'ดีดที่ 1':'โบนัส'}`;
+ $('#turnPill').textContent=`${G.actor==='P'?'ตาคุณ':'ตาคู่แข่ง'} · ${G.turn.shot===1?'ดีดที่ 1':'โบนัส'}`;
  $('#sideP').classList.toggle('on',G.actor==='P');
  $('#sideC').classList.toggle('on',G.actor==='C');
 }
