@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>ดีดลูกแก้ว - โต๊ะนักเรียน</title>
+  <title>ดีดลูกแก้วบนโต๊ะ</title>
   <style>
     :root {
       --ink: #29352e;
@@ -406,9 +406,9 @@
       const BALL_RESTITUTION = 0.985;
       const CHAOS = 0.055;
 
-      const RAIL_THICKNESS = 19;
-      const CORNER_GAP = 39;
-      const MIDDLE_GAP = 43;
+      const RAIL_THICKNESS = 15;
+      const CORNER_GAP = Math.round(BALL_R * 3.6);  // = 50
+      const MIDDLE_GAP = Math.round(BALL_R * 3.0);  // = 42
 
       function r() {
         return BALL_R * scale;
@@ -1243,30 +1243,105 @@
       }
 
       function drawRails() {
+        const r = 2 * scale;
+
         for (const rail of getRails()) {
-          const gradient = ctx.createLinearGradient(
-            rail.x, rail.y,
-            rail.x + rail.w, rail.y + rail.h
-          );
+          const horizontal = rail.w > rail.h;
 
-          gradient.addColorStop(0, "#311b12");
-          gradient.addColorStop(.42, "#72472f");
-          gradient.addColorStop(.7, "#9b6745");
-          gradient.addColorStop(1, "#321d13");
-
+          // ── 1) เนื้อไม้ + เงาใต้ไม้ ──
           ctx.save();
-          ctx.shadowColor = "rgba(18,8,4,.55)";
-          ctx.shadowBlur = 7 * scale;
-          ctx.shadowOffsetY = 3 * scale;
-          ctx.fillStyle = gradient;
+          ctx.shadowColor   = 'rgba(0,0,0,0.40)';
+          ctx.shadowBlur    = 7 * scale;
+          ctx.shadowOffsetY = 2 * scale;
+
+          // ไล่สี "ตามแนวหนา" เพื่อให้ดูเป็นแท่งนูน
+          const g = horizontal
+            ? ctx.createLinearGradient(0, rail.y, 0, rail.y + rail.h)
+            : ctx.createLinearGradient(rail.x, 0, rail.x + rail.w, 0);
+          g.addColorStop(0.00, '#b07c46');
+          g.addColorStop(0.30, '#8d5c2c');
+          g.addColorStop(0.72, '#6b4220');
+          g.addColorStop(1.00, '#472a12');
+
+          ctx.fillStyle = g;
           ctx.beginPath();
-          ctx.roundRect(rail.x, rail.y, rail.w, rail.h, 7 * scale);
+          ctx.roundRect(rail.x, rail.y, rail.w, rail.h, r);
           ctx.fill();
           ctx.restore();
 
-          ctx.strokeStyle = "rgba(250,205,153,.28)";
-          ctx.lineWidth = 1 * scale;
+          // ── 2) เสี้ยนไม้ วิ่งตามแนวยาว ──
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(rail.x, rail.y, rail.w, rail.h, r);
+          ctx.clip();
+
+          ctx.strokeStyle = '#331d0b';
+          ctx.lineWidth   = Math.max(1, 0.9 * scale);
+          const lines = 4;
+          for (let i = 1; i <= lines; i++) {
+            const p = i / (lines + 1);
+            const wob = (2.2 + (i % 2) * 1.4) * scale;
+            ctx.globalAlpha = 0.10 + (i % 2) * 0.07;
+            ctx.beginPath();
+            if (horizontal) {
+              const y = rail.y + rail.h * p;
+              ctx.moveTo(rail.x, y);
+              ctx.bezierCurveTo(
+                rail.x + rail.w * 0.33, y - wob,
+                rail.x + rail.w * 0.66, y + wob,
+                rail.x + rail.w,        y
+              );
+            } else {
+              const x = rail.x + rail.w * p;
+              ctx.moveTo(x, rail.y);
+              ctx.bezierCurveTo(
+                x - wob, rail.y + rail.h * 0.33,
+                x + wob, rail.y + rail.h * 0.66,
+                x,       rail.y + rail.h
+              );
+            }
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // ── 3) ไฮไลต์ขอบบน (แสงตกกระทบ) ──
+          ctx.save();
+          ctx.globalAlpha = 0.30;
+          ctx.strokeStyle = '#e8c08a';
+          ctx.lineWidth   = Math.max(1, 1.2 * scale);
+          ctx.beginPath();
+          if (horizontal) {
+            ctx.moveTo(rail.x + r, rail.y + 1);
+            ctx.lineTo(rail.x + rail.w - r, rail.y + 1);
+          } else {
+            ctx.moveTo(rail.x + 1, rail.y + r);
+            ctx.lineTo(rail.x + 1, rail.y + rail.h - r);
+          }
           ctx.stroke();
+          ctx.restore();
+
+          // ── 4) เส้นขอบเข้ม ทำให้ตัดกับพื้นโต๊ะ ──
+          ctx.save();
+          ctx.globalAlpha = 0.55;
+          ctx.strokeStyle = '#2b1708';
+          ctx.lineWidth   = Math.max(1, 1 * scale);
+          ctx.beginPath();
+          ctx.roundRect(rail.x, rail.y, rail.w, rail.h, r);
+          ctx.stroke();
+          ctx.restore();
+
+          // ── 5) หัวไม้ (end grain) ที่ปลายทั้งสองข้าง ──
+          ctx.save();
+          ctx.fillStyle = 'rgba(58,33,14,0.45)';
+          const cap = 2.5 * scale;
+          if (horizontal) {
+            ctx.fillRect(rail.x, rail.y, cap, rail.h);
+            ctx.fillRect(rail.x + rail.w - cap, rail.y, cap, rail.h);
+          } else {
+            ctx.fillRect(rail.x, rail.y, rail.w, cap);
+            ctx.fillRect(rail.x, rail.y + rail.h - cap, rail.w, cap);
+          }
+          ctx.restore();
         }
       }
 
