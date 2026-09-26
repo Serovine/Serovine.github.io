@@ -1,1 +1,16 @@
-Symbol,Company,Earnings Date,Time,Price,6M %Change,PE,Bet,%Today,Result
+Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
+JEF,Jefferies Financial Group Inc.,28-09-26,After Market,47.68,20.17%,NYSE,
+MTN,Vail Resorts Inc.,28-09-26,After Market,136.11,6.23%,NYSE,
+CCL,Carnival Corporation Ltd.,29-09-26,Before Market,22.25,-10.98%,NYSE,
+KMX,CarMax Inc,29-09-26,Before Market,57.21,34.04%,NYSE,
+UEC,Uranium Energy Corp.,29-09-26,Before Market,9.41,-27.89%,NYSEAMERICAN,
+AIR,AAR Corp.,29-09-26,After Market,116.11,4.77%,NYSE,
+CAG,ConAgra Brands Inc.,30-09-26,Before Market,14.32,-2.31%,NYSE,
+CALM,Cal-Maine Foods Inc.,30-09-26,Before Market,67.43,-13.92%,NASDAQ,
+FDS,FactSet Research Systems Inc.,30-09-26,Before Market,273.08,40.34%,NYSE,
+JBL,Jabil Inc.,30-09-26,Before Market,316.74,19.96%,NYSE,
+MU,Micron Technology Inc.,30-09-26,After Market,1082.28,204.65%,NASDAQ,
+ACN,Accenture plc,01-10-26,Before Market,176.11,-8.49%,NYSE,
+AYI,Acuity Inc.,01-10-26,Before Market,319.42,18.31%,NYSE,
+MKC,McCormick & Company Incorporat,01-10-26,Before Market,47.94,-5.38%,NYSE,
+NKE,Nike Inc.,01-10-26,After Market,35.75,-29.99%,NYSE,
