@@ -140,10 +140,17 @@
     "file": "article/atmosphere.html"
   },
   {
+    "id": "rosetta",
+    "title": "Rosetta Stone และภาษาที่สูญหายกว่า 1400 ปี",
+    "date": "04-10-2026",
+    "tags": ["history", "myth", "Language"],
+    "file": "article/rosetta.html"
+  },
+  {
     "id": "idol2d",
     "title": "วิวัฒนาการของวงการ 2D IDOL หญิง",
     "date": "07-10-2026",
     "tags": ["Business", "IDOL", "Otaku", "Culture"],
-    "file": "article/2Didoltimeline.md"
+    "file": "article/2didol.html"
   }
 ]
