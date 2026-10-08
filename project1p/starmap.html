@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>ท้องฟ้าจำลอง · Thai Sky Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --glass:rgba(9,15,32,.58);
+  --stroke:rgba(150,190,255,.16);
+  --stroke2:rgba(150,190,255,.28);
+  --txt:#dde7ff;
+  --dim:#8fa4cc;
+  --dim2:#6b7fa6;
+  --acc:#7fc4ff;
+  --acc2:#a9d8ff;
+  --gold:#ffd79a;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#000205;
+  font-family:'Noto Sans Thai','Inter',system-ui,sans-serif;color:var(--txt);}
+canvas{display:block;touch-action:none}
+#stage{position:fixed;inset:0}
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,.35) 80%, rgba(0,0,0,.62) 100%);}
+#ui{position:fixed;inset:0;z-index:5;pointer-events:none;transition:opacity .45s ease}
+#ui.hidden{opacity:0;pointer-events:none!important}
+#ui>*{pointer-events:auto}
+
+.glass{background:var(--glass);backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid var(--stroke);border-radius:var(--r);
+  box-shadow:0 8px 34px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);}
+
+#topbar{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;display:flex;gap:4px;padding:6px;align-items:center}
+#topbar button{width:38px;height:38px;border:0;background:transparent;color:var(--dim);
+  border-radius:11px;cursor:pointer;font-size:16px;display:grid;place-items:center;transition:.2s;font-family:inherit}
+#topbar button:hover{background:rgba(127,196,255,.12);color:var(--acc2)}
+#topbar button.on{background:rgba(127,196,255,.18);color:#fff}
+#topbar .sep{width:1px;height:22px;background:var(--stroke);margin:0 3px}
+#brand{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;padding:9px 15px;
+  font-size:12.5px;letter-spacing:.3px;color:var(--dim);font-weight:500}
+#brand b{color:var(--acc2);font-weight:600}
+#brand span{opacity:.45;font-family:Inter,sans-serif;font-size:11px}
+
+#panel{position:absolute;top:max(64px,calc(env(safe-area-inset-top) + 64px));left:14px;width:326px;
+  max-height:calc(100vh - 170px);display:flex;flex-direction:column;overflow:hidden;
+  transform:translateX(-118%);opacity:0;transition:transform .42s cubic-bezier(.22,.9,.3,1),opacity .3s}
+#panel.open{transform:none;opacity:1}
+#panel header{padding:13px 13px 9px;border-bottom:1px solid var(--stroke)}
+#q{width:100%;padding:10px 13px;border-radius:11px;border:1px solid var(--stroke);
+  background:rgba(255,255,255,.04);color:var(--txt);font-family:inherit;font-size:13.5px;outline:none}
+#q:focus{border-color:var(--stroke2);background:rgba(127,196,255,.07)}
+#q::placeholder{color:var(--dim2)}
+.chips{display:flex;gap:6px;padding:10px 13px;flex-wrap:wrap;border-bottom:1px solid var(--stroke)}
+.chip{padding:5px 12px;border-radius:999px;border:1px solid var(--stroke);background:transparent;
+  color:var(--dim);font-size:11.5px;cursor:pointer;font-family:inherit;transition:.2s}
+.chip:hover{border-color:var(--stroke2);color:var(--acc2)}
+.chip.on{background:rgba(127,196,255,.16);border-color:rgba(127,196,255,.4);color:#fff}
+.chip.gold.on{background:rgba(255,215,154,.16);border-color:rgba(255,215,154,.42);color:#ffeccb}
+#conList{overflow-y:auto;overscroll-behavior:contain;padding:6px 6px 12px;flex:1}
+#conList::-webkit-scrollbar{width:7px}
+#conList::-webkit-scrollbar-thumb{background:rgba(127,196,255,.2);border-radius:99px}
+.row{padding:9px 11px;border-radius:11px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.18s}
+.row:hover{background:rgba(127,196,255,.09)}
+.row.sel{background:rgba(127,196,255,.16)}
+.row.ast:hover{background:rgba(255,215,154,.10)}
+.row.ast.sel{background:rgba(255,215,154,.16)}
+.row .nm{flex:1;min-width:0}
+.row .th{font-size:14px;font-weight:500;line-height:1.35}
+.row.ast .th{color:#ffe7c4}
+.row .en{font-size:10.5px;color:var(--dim2);font-family:Inter,sans-serif;letter-spacing:.2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .mo{font-size:10px;color:var(--acc);background:rgba(127,196,255,.11);
+  padding:3px 7px;border-radius:7px;white-space:nowrap;border:1px solid rgba(127,196,255,.16)}
+.row.ast .mo{color:var(--gold);background:rgba(255,215,154,.10);border-color:rgba(255,215,154,.16)}
+.row .mo.off{color:var(--dim2);background:rgba(255,255,255,.03);border-color:transparent}
+.sub{padding:2px 6px 10px 14px;display:none}
+.sub.open{display:block}
+.srow{padding:6px 10px;border-radius:9px;cursor:pointer;display:flex;gap:9px;align-items:baseline;transition:.15s}
+.srow:hover{background:rgba(127,196,255,.09)}
+.srow .by{font-family:Inter,serif;color:var(--acc);width:34px;font-size:12.5px;flex:none}
+.srow .sn{font-size:12.5px;color:var(--txt);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow .mg{font-size:10.5px;color:var(--dim2);font-family:Inter,sans-serif}
+.head{padding:11px 13px 5px;font-size:10.5px;letter-spacing:1.4px;color:var(--dim2);text-transform:uppercase;font-family:Inter,sans-serif}
+.empty{padding:26px 14px;text-align:center;color:var(--dim2);font-size:12.5px}
+
+#monthbar{position:absolute;left:50%;transform:translateX(-50%);
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 12px));
+  display:flex;gap:2px;padding:6px;align-items:center;max-width:calc(100vw - 28px);overflow-x:auto;
+  scrollbar-width:none}
+#monthbar::-webkit-scrollbar{display:none}
+#monthbar button{border:0;background:transparent;color:var(--dim);padding:8px 11px;border-radius:10px;
+  font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
+#monthbar button:hover{background:rgba(127,196,255,.11);color:var(--acc2)}
+#monthbar button.on{background:rgba(127,196,255,.2);color:#fff;
+  box-shadow:0 0 18px rgba(127,196,255,.25) inset}
+#monthbar .free{color:var(--dim2);border-left:1px solid var(--stroke);margin-left:4px;padding-left:12px}
+
+#settings{position:absolute;top:max(64px,calc(env(safe-area-inset-top) + 64px));left:14px;width:290px;padding:14px;
+  display:none;max-height:calc(100vh - 170px);overflow-y:auto}
+#settings.open{display:block}
+#settings::-webkit-scrollbar{width:7px}
+#settings::-webkit-scrollbar-thumb{background:rgba(127,196,255,.2);border-radius:99px}
+.st{margin-bottom:13px}
+.st label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:7px}
+.st label b{color:var(--acc2);font-weight:500;font-family:Inter,sans-serif}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;border-radius:9px;
+  background:rgba(255,255,255,.13);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--acc);cursor:pointer;box-shadow:0 0 12px rgba(127,196,255,.7)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--acc)}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12.5px;color:var(--dim)}
+.sw{width:38px;height:21px;border-radius:99px;background:rgba(255,255,255,.1);position:relative;
+  cursor:pointer;transition:.25s;flex:none;border:1px solid var(--stroke)}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--dim2);transition:.25s}
+.sw.on{background:rgba(127,196,255,.3);border-color:rgba(127,196,255,.45)}
+.sw.on::after{left:19px;background:#fff;box-shadow:0 0 10px rgba(127,196,255,.9)}
+.divider{height:1px;background:var(--stroke);margin:12px 0 10px}
+
+#card{position:absolute;right:14px;bottom:max(16px,calc(env(safe-area-inset-bottom) + 12px));
+  width:300px;padding:17px 18px;transform:translateY(22px);opacity:0;pointer-events:none;transition:.36s cubic-bezier(.2,.9,.3,1)}
+#card.open{transform:none;opacity:1;pointer-events:auto}
+#card .kind{font-size:10px;letter-spacing:1.6px;color:var(--acc);text-transform:uppercase;font-family:Inter,sans-serif}
+#card.g .kind{color:var(--gold)}
+#card h2{margin:7px 0 2px;font-size:22px;font-weight:600;line-height:1.25}
+#card .lat{font-family:Inter,sans-serif;font-size:13px;color:var(--dim);margin-bottom:13px;letter-spacing:.3px}
+#card dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:12.5px}
+#card dt{color:var(--dim2)}
+#card dd{margin:0;text-align:right;font-family:Inter,sans-serif;color:var(--txt)}
+#card dd.th{font-family:'Noto Sans Thai',sans-serif}
+#card .acts{display:flex;gap:8px}
+#card a.btn{flex:1;text-align:center;padding:9px;border-radius:11px;text-decoration:none;
+  font-size:12.5px;border:1px solid rgba(127,196,255,.3);background:rgba(127,196,255,.12);
+  color:var(--acc2);cursor:pointer;font-family:inherit;transition:.2s}
+#card a.btn:hover{background:rgba(127,196,255,.22);color:#fff}
+#card .x{position:absolute;top:11px;right:11px;width:26px;height:26px;border:0;background:transparent;
+  color:var(--dim2);cursor:pointer;border-radius:8px;font-size:15px}
+#card .x:hover{background:rgba(255,255,255,.07);color:#fff}
+#card .desc{font-size:12px;color:var(--dim);line-height:1.6;margin:-4px 0 13px}
+
+#dirLayer,#lblLayer{position:fixed;inset:0;pointer-events:none;z-index:3}
+.dir{position:absolute;transform:translate(-50%,-50%);font-family:Inter,sans-serif;font-size:13px;
+  letter-spacing:3px;color:rgba(160,195,245,.5);text-shadow:0 0 14px rgba(0,0,0,.9)}
+.dir.minor{font-size:10px;color:rgba(160,195,245,.26);letter-spacing:2px}
+.clbl{position:absolute;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;
+  text-shadow:0 0 16px rgba(0,0,0,.95);transition:opacity .5s}
+.clbl .a{font-size:14px;color:rgba(200,225,255,.9);letter-spacing:.5px}
+.clbl .b{font-size:9.5px;color:rgba(140,180,235,.6);letter-spacing:2.4px;font-family:Inter,sans-serif;text-transform:uppercase}
+.clbl.gold .a{color:rgba(255,226,182,.92)}
+.clbl.gold .b{color:rgba(228,190,140,.6)}
+.slbl{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;text-align:center;
+  text-shadow:0 0 12px rgba(0,0,0,.95);pointer-events:none}
+.slbl .a{font-size:11px;color:rgba(198,220,255,.62);letter-spacing:.3px}
+.slbl .b{font-size:8.5px;color:rgba(140,175,225,.42);letter-spacing:1.6px;font-family:Inter,sans-serif}
+#reticle{position:absolute;width:46px;height:46px;transform:translate(-50%,-50%);pointer-events:none;
+  opacity:0;transition:opacity .3s}
+#reticle div{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(127,196,255,.55)}
+#reticle div:nth-child(2){inset:7px;border-color:rgba(127,196,255,.2);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.22);opacity:.12}}
+#tip{position:fixed;z-index:4;pointer-events:none;padding:5px 10px;border-radius:9px;font-size:12px;
+  background:rgba(6,11,24,.86);border:1px solid var(--stroke);opacity:0;transition:opacity .18s;
+  transform:translate(12px,-50%);backdrop-filter:blur(8px);white-space:nowrap}
+#toast{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:6;padding:9px 18px;border-radius:99px;
+  font-size:12.5px;color:var(--dim);background:rgba(6,11,24,.7);border:1px solid var(--stroke);
+  backdrop-filter:blur(12px);opacity:0;transition:opacity .6s;pointer-events:none}
+#loader{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:#000205;
+  transition:opacity .8s;font-size:13px;color:var(--dim);letter-spacing:2px}
+
+@media (max-width:860px){
+  #brand{display:none}
+  #panel{left:0;right:0;top:auto;bottom:0;width:100%;max-height:70vh;border-radius:22px 22px 0 0;
+    transform:translateY(100%);border-bottom:0}
+  #panel.open{transform:none}
+  #panel header::before{content:'';display:block;width:40px;height:4px;border-radius:9px;
+    background:rgba(255,255,255,.18);margin:-4px auto 11px}
+  #monthbar{bottom:max(12px,calc(env(safe-area-inset-bottom) + 8px));border-radius:14px}
+  #monthbar button{padding:8px 9px;font-size:12px}
+  #card{left:10px;right:10px;width:auto;top:auto;
+    bottom:max(74px,calc(env(safe-area-inset-bottom) + 68px));border-radius:20px}
+  #settings{left:10px;right:10px;width:auto;max-height:64vh}
+  #topbar{top:max(10px,env(safe-area-inset-top));left:10px}
+  #tip{display:none}
+}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="vignette"></div>
+<div id="dirLayer"></div>
+<div id="lblLayer"><div id="reticle"><div></div><div></div></div></div>
+<div id="tip"></div>
+<div id="toast"></div>
+
+<div id="ui">
+  <div id="topbar" class="glass">
+    <button id="btnList" title="รายชื่อกลุ่มดาว (L)">☰</button>
+    <button id="btnSettings" title="ตั้งค่า">⚙</button>
+    <div class="sep"></div>
+    <button id="btnPlay" title="หยุด/เล่นการหมุน (Space)">⏸</button>
+    <button id="btnFull" title="เต็มจอ (F)">⛶</button>
+    <button id="btnHide" title="ซ่อนหน้าจอควบคุม (H)">👁</button>
+  </div>
+  <div id="brand" class="glass"><b>ท้องฟ้าจำลอง</b> <span>THAI SKY ATLAS</span></div>
+
+  <aside id="panel" class="glass">
+    <header><input id="q" placeholder="ค้นหากลุ่มดาว หรือชื่อดาว…" autocomplete="off"></header>
+    <div class="chips" id="chips"></div>
+    <div id="conList"></div>
+  </aside>
+
+  <div id="settings" class="glass">
+    <div class="st"><label>ความเร็วการหมุนท้องฟ้า <b id="vSpeed">40×</b></label><input type="range" id="rSpeed" min="0" max="300" value="40"></div>
+    <div class="st"><label>ความเข้มทางช้างเผือก <b id="vMw">0.70</b></label><input type="range" id="rMw" min="0" max="150" value="70"></div>
+    <div class="st"><label>แสงเรืองรอบดาว <b id="vBloom">0.95</b></label><input type="range" id="rBloom" min="0" max="180" value="95"></div>
+    <div class="st"><label>ความสว่างดาว <b id="vBright">1.00</b></label><input type="range" id="rBright" min="40" max="190" value="100"></div>
+    <div class="st"><label>ขนาดดาว <b id="vSize">1.00</b></label><input type="range" id="rSize" min="55" max="175" value="100"></div>
+    <div class="st"><label>ความหนาแน่นดาวพื้นหลัง <b id="vHaze">1.00</b></label><input type="range" id="rHaze" min="0" max="180" value="100"></div>
+    <div class="divider"></div>
+    <div class="tg"><span>ทางช้างเผือก</span><div class="sw on" id="swMw"></div></div>
+    <div class="tg"><span>ป้ายชื่อดาวสว่าง</span><div class="sw" id="swLbl"></div></div>
+    <div class="tg"><span>เส้นกลุ่มดาวสมมติ (สีทอง)</span><div class="sw on" id="swAst"></div></div>
+    <div class="tg"><span>หรี่ดาวใต้ขอบฟ้า</span><div class="sw on" id="swHz"></div></div>
+    <div class="tg"><span>ป้ายทิศ N / E / S / W</span><div class="sw on" id="swDir"></div></div>
+    <div class="tg"><span>แสดงเส้นกลุ่มดาวทั้งหมด</span><div class="sw" id="swAll"></div></div>
+    <div class="tg"><span>โหมดโชว์ (ไฮไลต์สลับกัน)</span><div class="sw on" id="swShow"></div></div>
+  </div>
+
+  <div id="monthbar" class="glass"></div>
+
+  <div id="card" class="glass">
+    <button class="x" id="cardX">✕</button>
+    <div class="kind" id="cKind"></div>
+    <h2 id="cName"></h2>
+    <div class="lat" id="cLat"></div>
+    <div class="desc" id="cDesc"></div>
+    <dl id="cMeta"></dl>
+    <div class="acts"><a class="btn" id="cWiki" target="_blank" rel="noopener">เปิดวิกิพีเดีย ↗</a></div>
+  </div>
+</div>
+
+<div id="loader">กำลังจุดดวงดาว…</div>
+
+<script type="importmap">
+{"imports":{
+ "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+ "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+/* ============================================================
+   1. ข้อมูลดาวจริง  con|bayer|ชื่อสากล|RA(ชม.)|Dec(องศา)|โชติมาตร|สเปกตรัม|ชื่อไทย
+   ============================================================ */
+const RAW = `
+Ori|α|Betelgeuse|5.9195|7.4071|0.50|M|บีเทลจุส
+Ori|β|Rigel|5.2423|-8.2016|0.13|B|ไรเจล
+Ori|γ|Bellatrix|5.4188|6.3497|1.64|B|เบลลาทริกซ์
+Ori|δ|Mintaka|5.5334|-0.2991|2.23|O|มินทากา
+Ori|ε|Alnilam|5.6036|-1.2019|1.69|B|อัลนิลัม
+Ori|ζ|Alnitak|5.6793|-1.9426|1.77|O|อัลนิตัก
+Ori|κ|Saiph|5.7959|-9.6696|2.06|B|ไซฟ์
+Ori|λ|Meissa|5.5855|9.9342|3.39|O|ไมซา
+Ori|η|Algjebbah|5.4076|-2.3971|3.36|B|
+Ori|ι|Hatysa|5.5935|-5.9099|2.77|O|ฮาทีซา
+Ori|π1||4.7825|10.1508|4.65|A|
+Ori|π2||4.8390|8.9002|4.35|A|
+Ori|π3|Tabit|4.8307|6.9611|3.19|F|ทาบิต
+Ori|π4||4.8551|5.6050|3.69|B|
+Ori|π5||4.9049|2.4408|3.72|B|
+Ori|π6||4.9754|1.7143|4.47|K|
+Ori|σ||5.6486|-2.6000|3.77|O|
+Ori|τ||5.2940|-6.8440|3.59|B|
+UMa|α|Dubhe|11.0621|61.7510|1.79|K|ดูเบ
+UMa|β|Merak|11.0307|56.3824|2.37|A|เมรัค
+UMa|γ|Phecda|11.8972|53.6948|2.44|A|เฟคดา
+UMa|δ|Megrez|12.2571|57.0326|3.31|A|เมเกรซ
+UMa|ε|Alioth|12.9005|55.9598|1.77|A|อาลิออท
+UMa|ζ|Mizar|13.3988|54.9254|2.27|A|ไมซาร์
+UMa|η|Alkaid|13.7923|49.3133|1.86|B|อัลเคด
+UMa|ο|Muscida|8.5043|60.7182|3.36|G|มัสซิดา
+UMa|υ||9.8497|59.0387|3.80|F|
+UMa|θ||9.5479|51.6773|3.17|F|
+UMa|ι|Talitha|8.9863|48.0417|3.14|A|ทาลิทา
+UMa|κ|Alkaphrah|9.0761|47.1564|3.60|A|
+UMa|λ|Tania Borealis|10.2853|42.9145|3.45|A|ทาเนียเหนือ
+UMa|μ|Tania Australis|10.3722|41.4996|3.05|M|ทาเนียใต้
+UMa|ν|Alula Borealis|11.3080|33.0943|3.49|K|
+UMa|ξ|Alula Australis|11.3031|31.5292|3.79|G|
+UMa|ψ||11.1611|44.4986|3.01|K|
+UMa|χ|Taiyangshou|11.7649|47.7794|3.71|K|
+UMi|α|Polaris|2.5302|89.2641|1.97|F|โพลาริส (ดาวเหนือ)
+UMi|β|Kochab|14.8451|74.1555|2.07|K|โคชับ
+UMi|γ|Pherkad|15.3455|71.8340|3.00|A|เฟอร์คัด
+UMi|δ|Yildun|17.5369|86.5864|4.36|A|
+UMi|ε||16.7661|82.0374|4.21|G|
+UMi|ζ||15.7343|77.7945|4.29|A|
+UMi|η||16.2915|75.7551|4.95|F|
+Cas|α|Schedar|0.6751|56.5373|2.24|K|เชดาร์
+Cas|β|Caph|0.1530|59.1498|2.28|F|คาฟ
+Cas|γ|Navi|0.9451|60.7167|2.47|B|นาวี
+Cas|δ|Ruchbah|1.4303|60.2353|2.68|A|รุคบาห์
+Cas|ε|Segin|1.9067|63.6701|3.38|B|เซจิน
+Cyg|α|Deneb|20.6905|45.2803|1.25|A|เดเนบ
+Cyg|β|Albireo|19.5120|27.9597|3.08|K|อัลบิเรโอ
+Cyg|γ|Sadr|20.3705|40.2567|2.23|F|ซาดร์
+Cyg|δ||19.7495|45.1308|2.87|B|
+Cyg|ε|Aljanah|20.7702|33.9703|2.48|K|อัลจานาห์
+Cyg|ζ||21.2150|30.2265|3.20|G|
+Cyg|ι||19.4958|51.7294|3.79|A|
+Cyg|κ||19.2871|53.3685|3.77|G|
+Lyr|α|Vega|18.6156|38.7837|0.03|A|เวกา
+Lyr|β|Sheliak|18.8340|33.3627|3.45|B|เชลียัค
+Lyr|γ|Sulafat|18.9824|32.6896|3.24|B|ซูลาฟัต
+Lyr|δ2||18.9137|36.8988|4.30|M|
+Lyr|ζ1||18.7461|37.6051|4.36|A|
+Lyr|ε1||18.7376|39.6701|4.67|A|
+Aql|α|Altair|19.8464|8.8683|0.77|A|อัลแตร์
+Aql|β|Alshain|19.9219|6.4068|3.71|G|อัลเชน
+Aql|γ|Tarazed|19.7709|10.6133|2.72|K|ทาราเซด
+Aql|δ||19.4247|3.1148|3.36|F|
+Aql|ζ|Okab|19.0904|13.8636|2.99|A|
+Aql|θ||20.1882|-0.8215|3.23|B|
+Aql|λ|Al Thalimain|19.1040|-4.8825|3.43|B|
+Aql|η||19.8735|1.0056|3.90|F|
+Sco|α|Antares|16.4901|-26.4320|1.06|M|แอนทาเรส (ปาริชาต)
+Sco|β1|Acrab|16.0906|-19.8054|2.62|B|อัครับ
+Sco|δ|Dschubba|15.9870|-22.6217|2.29|B|ดชุบบา
+Sco|π||15.9853|-26.1140|2.89|B|
+Sco|σ|Alniyat|16.3536|-25.5928|2.89|B|
+Sco|τ|Paikauhale|16.5989|-28.2160|2.82|B|
+Sco|ε|Larawag|16.8361|-34.2933|2.29|K|
+Sco|μ1|Xamidimura|16.8640|-38.0475|3.00|B|
+Sco|ζ2||16.9088|-42.3611|3.62|K|
+Sco|η||17.2026|-43.2392|3.32|F|
+Sco|θ|Sargas|17.6222|-42.9978|1.86|F|ซาร์กัส
+Sco|ι1||17.7934|-40.1270|3.03|F|
+Sco|κ|Girtab|17.7081|-39.0299|2.41|B|
+Sco|λ|Shaula|17.5602|-37.1038|1.62|B|ชาอูลา
+Sco|υ|Lesath|17.5121|-37.2958|2.69|B|เลซัท
+Sco|ρ||15.9563|-29.2141|3.87|B|
+Sgr|ε|Kaus Australis|18.4029|-34.3846|1.85|B|เคาส์ออสตราลิส
+Sgr|δ|Kaus Media|18.3499|-29.8281|2.70|K|
+Sgr|λ|Kaus Borealis|18.4661|-25.4217|2.81|K|
+Sgr|σ|Nunki|18.9211|-26.2967|2.05|B|นุนกิ
+Sgr|ζ|Ascella|19.0436|-29.8801|2.60|A|
+Sgr|τ||19.1152|-27.6705|3.32|K|
+Sgr|φ||18.7460|-26.9908|3.17|B|
+Sgr|γ2|Alnasl|18.0966|-30.4241|2.99|K|
+Sgr|η||18.2935|-36.7615|3.11|M|
+Sgr|π|Albaldah|19.1621|-21.0235|2.89|F|
+Sgr|ξ2||18.9581|-21.1067|3.51|K|
+Sgr|ο||19.0447|-21.7418|3.77|K|
+Sgr|μ||18.2278|-21.0588|3.86|B|
+Leo|α|Regulus|10.1395|11.9672|1.36|B|เรกูลัส
+Leo|β|Denebola|11.8177|14.5720|2.14|A|เดเนโบลา
+Leo|γ1|Algieba|10.3329|19.8415|2.08|K|อัลจีบา
+Leo|δ|Zosma|11.2351|20.5237|2.56|A|โซสมา
+Leo|ε|Algenubi|9.7640|23.7743|2.98|G|
+Leo|ζ|Adhafera|10.2783|23.4173|3.44|F|
+Leo|η||10.1222|16.7628|3.48|A|
+Leo|θ|Chertan|11.2372|15.4296|3.34|A|
+Leo|μ|Rasalas|9.8791|26.0069|3.88|K|
+Leo|λ|Alterf|9.5289|22.9679|4.31|K|
+Tau|α|Aldebaran|4.5987|16.5093|0.85|K|อัลเดบารัน (โรหิณี)
+Tau|β|Elnath|5.4382|28.6075|1.65|B|เอลนาธ
+Tau|ζ|Tianguan|5.6274|21.1425|3.00|B|
+Tau|θ2|Chamukuy|4.4776|15.8709|3.40|A|
+Tau|γ|Prima Hyadum|4.3299|15.6276|3.65|K|
+Tau|δ1|Secunda Hyadum|4.3819|17.5425|3.76|K|
+Tau|ε|Ain|4.4777|19.1804|3.53|K|
+Tau|λ||4.0113|12.4903|3.41|B|
+Tau|ξ||3.4530|9.7327|3.73|B|
+Tau|ν||4.0577|5.9893|3.91|A|
+Tau|ο||3.4131|9.0288|3.60|G|
+Tau|η|Alcyone|3.7914|24.1053|2.87|B|อัลไซโอเน
+Tau|27|Atlas|3.8193|24.0534|3.63|B|แอตลาส
+Tau|17|Electra|3.7448|24.1133|3.70|B|อิเล็กตรา
+Tau|20|Maia|3.7679|24.3675|3.87|B|ไมอา
+Tau|23|Merope|3.7729|23.9482|4.14|B|เมโรเป
+Gem|α|Castor|7.5766|31.8883|1.58|A|แคสเตอร์
+Gem|β|Pollux|7.7553|28.0262|1.14|K|พอลลักซ์
+Gem|γ|Alhena|6.6285|16.3993|1.93|A|อัลเฮนา
+Gem|μ|Tejat|6.3828|22.5136|2.87|M|
+Gem|ε|Mebsuta|6.7323|25.1311|2.98|G|
+Gem|η|Propus|6.2488|22.5068|3.28|M|
+Gem|ξ|Alzirr|6.7548|12.8961|3.35|F|
+Gem|δ|Wasat|7.3352|21.9823|3.53|F|
+Gem|ζ|Mekbuda|7.0684|20.5703|3.79|F|
+Gem|λ||7.4311|16.5404|3.58|A|
+Gem|ι||7.4288|27.7981|3.78|G|
+Gem|τ||7.1862|30.2453|4.41|K|
+Gem|κ||7.7395|24.3981|3.57|G|
+Gem|θ||6.2013|33.9613|3.60|A|
+CMa|α|Sirius|6.7525|-16.7161|-1.46|A|ซิริอุส (ดาวโจร)
+CMa|β|Mirzam|6.3783|-17.9559|1.98|B|เมอร์แซม
+CMa|δ|Wezen|7.1399|-26.3932|1.83|F|เวเซน
+CMa|ε|Adhara|6.9770|-28.9721|1.50|B|แอดารา
+CMa|η|Aludra|7.4015|-29.3031|2.45|B|อลูดรา
+CMa|ζ|Furud|6.3383|-30.0634|3.02|B|
+CMa|σ||7.0279|-27.9348|3.47|M|
+CMa|ο2||7.0495|-23.8333|3.02|B|
+CMa|γ|Muliphein|7.0640|-15.6333|4.11|B|
+CMa|ι||6.9351|-17.0540|4.37|B|
+CMa|θ||6.8320|-12.0386|4.07|K|
+CMi|α|Procyon|7.6550|5.2250|0.34|F|โพรไซออน
+CMi|β|Gomeisa|7.4527|8.2893|2.89|B|
+Boo|α|Arcturus|14.2610|19.1824|-0.05|K|อาร์คทูรัส
+Boo|β|Nekkar|15.0320|40.3906|3.49|G|
+Boo|γ|Seginus|14.5342|38.3082|3.03|A|
+Boo|δ||15.2580|33.3149|3.47|G|
+Boo|ε|Izar|14.7498|27.0742|2.37|K|อิซาร์
+Boo|ζ||14.6822|13.7284|3.78|A|
+Boo|η|Muphrid|13.9114|18.3977|2.68|G|
+Boo|ρ||14.5271|30.3715|3.58|K|
+Vir|α|Spica|13.4199|-11.1613|0.97|B|สไปกา (จิตรา)
+Vir|β|Zavijava|11.8447|1.7647|3.60|F|
+Vir|γ|Porrima|12.6943|-1.4494|2.74|F|
+Vir|δ|Auva|12.9266|3.3975|3.38|M|
+Vir|ε|Vindemiatrix|13.0362|10.9592|2.83|G|
+Vir|ζ|Heze|13.5786|-0.5959|3.38|A|
+Vir|η|Zaniah|12.3325|-0.6668|3.89|A|
+Vir|ι|Syrma|14.2677|-6.0006|4.08|F|
+Vir|μ|Rijl al Awwa|14.7198|-5.6579|3.87|F|
+Lib|α2|Zubenelgenubi|14.8479|-16.0418|2.75|A|
+Lib|β|Zubeneschamali|15.2831|-9.3829|2.61|B|
+Lib|γ|Zubenelhakrabi|15.5960|-14.7894|3.91|K|
+Lib|σ|Brachium|15.0680|-25.2819|3.29|M|
+Ari|α|Hamal|2.1195|23.4624|2.00|K|ฮามัล
+Ari|β|Sheratan|1.9105|20.8080|2.64|A|เชราตัน
+Ari|γ|Mesarthim|1.8925|19.2939|3.86|B|
+Ari|41|Bharani|2.8331|27.2607|3.61|B|
+Cnc|β|Tarf|8.2751|9.1856|3.53|K|
+Cnc|δ|Asellus Australis|8.7449|18.1543|3.94|K|
+Cnc|γ|Asellus Borealis|8.7213|21.4685|4.66|A|
+Cnc|α|Acubens|8.9746|11.8577|4.26|A|
+Cnc|ι||8.7789|28.7614|4.02|G|
+Cap|α2|Algedi|20.3002|-12.5083|3.57|G|
+Cap|β|Dabih|20.3501|-14.7814|3.05|K|
+Cap|δ|Deneb Algedi|21.7840|-16.1273|2.85|A|
+Cap|γ|Nashira|21.6680|-16.6623|3.68|F|
+Cap|ζ||21.4453|-22.4113|3.74|G|
+Cap|ω||20.8631|-26.9192|4.11|M|
+Cap|ψ||20.7686|-25.2706|4.13|F|
+Cap|θ||21.0983|-17.2328|4.07|A|
+Aqr|α|Sadalmelik|22.0964|-0.3199|2.95|G|
+Aqr|β|Sadalsuud|21.5260|-5.5712|2.90|G|
+Aqr|γ|Sadachbia|22.3606|-1.3873|3.84|A|
+Aqr|δ|Skat|22.9109|-15.8208|3.27|A|
+Aqr|ε|Albali|20.7947|-9.4958|3.77|A|
+Aqr|ζ1||22.4808|-0.0201|3.65|F|
+Aqr|η||22.5822|-0.1178|4.04|B|
+Aqr|λ||22.8768|-7.5796|3.74|M|
+Aqr|θ|Ancha|22.2825|-7.7833|4.16|G|
+Psc|α|Alrescha|2.0339|2.7639|3.82|A|
+Psc|η|Alpherg|1.5249|15.3459|3.62|G|
+Psc|γ||23.2861|3.2821|3.69|G|
+Psc|ω||23.9942|6.8636|4.01|F|
+Psc|ι||23.6659|5.6265|4.13|F|
+Psc|λ||23.7000|1.7806|4.49|A|
+Psc|ε||1.0578|7.8899|4.27|K|
+Psc|δ||0.8118|7.5850|4.43|K|
+Psc|ο|Torcular|1.7742|9.1580|4.26|K|
+Per|α|Mirfak|3.4054|49.8612|1.79|F|เมอร์ฟัก
+Per|β|Algol|3.1361|40.9556|2.12|B|อัลกอล (ดาวปีศาจ)
+Per|γ||3.0801|53.5064|2.93|G|
+Per|δ||3.7154|47.7877|3.01|B|
+Per|ε||3.9645|40.0102|2.89|B|
+Per|ζ|Atik|3.9019|31.8836|2.85|B|
+Per|η|Miram|2.8451|55.8955|3.77|K|
+Per|ο||3.7353|32.2884|3.83|B|
+Per|ρ|Gorgonea Tertia|3.0806|38.8404|3.39|M|
+Aur|α|Capella|5.2782|45.9980|0.08|G|คาเพลลา
+Aur|β|Menkalinan|5.9922|44.9474|1.90|A|เมนคาลินัน
+Aur|θ|Mahasim|5.9953|37.2126|2.62|A|
+Aur|ι|Hassaleh|4.9497|33.1661|2.69|K|
+Aur|ε|Almaaz|5.0328|43.8233|2.99|F|
+Aur|η|Haedus|5.1086|41.2346|3.17|B|
+Aur|ζ|Saclateni|5.0405|41.0764|3.75|K|
+And|α|Alpheratz|0.1398|29.0904|2.06|B|อัลเฟรัตซ์
+And|β|Mirach|1.1622|35.6206|2.06|M|มิรัค
+And|γ1|Almach|2.0650|42.3297|2.10|K|อัลมัค
+And|δ||0.6555|30.8609|3.27|K|
+And|μ||0.9565|38.4995|3.86|A|
+And|ν||0.8309|41.0790|4.53|B|
+And|π||0.6218|33.7193|4.34|B|
+Peg|α|Markab|23.0793|15.2053|2.48|B|มาร์คับ
+Peg|β|Scheat|23.0629|28.0828|2.42|M|ชีท
+Peg|γ|Algenib|0.2206|15.1836|2.83|B|อัลเจนิบ
+Peg|ε|Enif|21.7364|9.8750|2.39|K|เอนิฟ
+Peg|ζ|Homam|22.6910|10.8314|3.40|B|
+Peg|η|Matar|22.7168|30.2211|2.94|G|
+Peg|θ|Biham|22.1699|6.1978|3.53|A|
+Peg|μ|Sadalbari|22.8300|24.6017|3.48|G|
+Cep|α|Alderamin|21.3096|62.5856|2.45|A|อัลเดรามิน
+Cep|β|Alfirk|21.4776|70.5607|3.23|B|
+Cep|γ|Errai|23.6559|77.6323|3.21|K|
+Cep|δ||22.4809|58.4151|4.07|F|
+Cep|ζ||22.1810|58.2012|3.35|K|
+Cep|ε||22.2500|57.0435|4.18|F|
+Cep|η||20.7547|61.8388|3.43|K|
+Cep|ι||22.8286|66.2005|3.51|K|
+Dra|γ|Eltanin|17.9434|51.4889|2.23|K|เอลทานิน
+Dra|β|Rastaban|17.5072|52.3014|2.79|G|
+Dra|η|Athebyne|16.3999|61.5141|2.73|G|
+Dra|ζ|Aldhibah|17.1465|65.7147|3.17|B|
+Dra|δ|Altais|19.2093|67.6615|3.07|G|
+Dra|ι|Edasich|15.4155|58.9661|3.29|K|
+Dra|α|Thuban|14.0731|64.3758|3.65|A|ทูบัน
+Dra|χ||18.3480|72.7338|3.57|F|
+Dra|ξ|Grumium|17.8924|56.8726|3.75|K|
+Dra|ε|Tyl|19.8003|70.2679|3.83|G|
+Dra|λ|Giausar|11.5312|69.3312|3.84|M|
+Dra|κ||12.5583|69.7882|3.87|B|
+Dra|θ||16.0357|58.5648|4.01|F|
+Dra|ν1|Kuma|17.5423|55.1840|4.88|A|
+CrB|α|Alphecca|15.5781|26.7147|2.22|A|อัลเฟคกา
+CrB|β|Nusakan|15.4638|29.1058|3.66|F|
+CrB|γ||15.7113|26.2956|3.81|A|
+CrB|δ||15.8258|26.0680|4.59|G|
+CrB|ε||15.9600|26.8776|4.14|K|
+CrB|θ||15.5493|31.3594|4.14|B|
+Cet|β|Deneb Kaitos|0.7265|-17.9866|2.04|K|เดเนบไคทอส
+Cet|α|Menkar|3.0380|4.0897|2.53|M|เมนคาร์
+Cet|η|Deneb Algenubi|1.1402|-10.1820|3.45|K|
+Cet|γ|Kaffaljidhma|2.7217|3.2358|3.47|A|
+Cet|τ||1.7345|-15.9376|3.49|G|
+Cet|ι||0.3235|-8.8237|3.56|K|
+Cet|θ||1.4001|-8.1836|3.60|K|
+Cet|ζ|Baten Kaitos|1.8574|-10.3350|3.73|K|
+Cet|μ||2.7490|10.1142|4.27|F|
+Cet|δ||2.6567|0.3285|4.07|B|
+Cet|ο|Mira|2.3224|-2.9776|3.04|M|มิรา (ดาวมหัศจรรย์)
+Eri|α|Achernar|1.6286|-57.2367|0.46|B|เอเคอร์นาร์
+Eri|β|Cursa|5.1305|-5.0864|2.79|A|
+Eri|θ1|Acamar|2.9710|-40.3047|2.88|A|
+Eri|γ|Zaurak|3.9698|-13.5086|2.95|M|
+Eri|δ|Rana|3.7215|-9.7653|3.54|K|
+Eri|ε||3.5483|-9.4581|3.73|K|
+Eri|η|Azha|2.9394|-8.8981|3.89|K|
+Eri|τ4||3.3283|-21.7579|3.69|M|
+Eri|υ2||4.5931|-30.5623|3.82|G|
+Cru|α1|Acrux|12.4433|-63.0991|0.77|B|อะครักซ์
+Cru|β|Mimosa|12.7953|-59.6888|1.25|B|ไมโมซา
+Cru|γ|Gacrux|12.5194|-57.1132|1.63|M|กาครักซ์
+Cru|δ|Imai|12.2525|-58.7489|2.79|B|
+Cru|ε|Ginan|12.3565|-60.4012|3.59|K|
+Cen|α1|Rigil Kentaurus|14.6601|-60.8340|-0.01|G|ริจิลเคนทอรัส
+Cen|β|Hadar|14.0637|-60.3730|0.61|B|ฮาดาร์
+Cen|θ|Menkent|14.1115|-36.3700|2.06|K|
+Cen|γ|Muhlifain|12.6919|-48.9597|2.20|A|
+Cen|ε||13.6647|-53.4664|2.30|B|
+Cen|η||14.5936|-42.1578|2.31|B|
+Cen|ζ||13.9256|-47.2882|2.55|B|
+Cen|δ||12.1392|-50.7225|2.58|B|
+Cen|ι||13.3388|-36.7123|2.75|A|
+Cen|ν||13.8259|-41.6876|3.41|B|
+Cen|μ||13.8274|-42.4739|3.04|B|
+Car|α|Canopus|6.3992|-52.6957|-0.72|F|คาโนปัส (อกาสตยะ)
+Car|β|Miaplacidus|9.2200|-69.7172|1.67|A|ไมอาพลาซิดัส
+Car|ε|Avior|8.3752|-59.5095|1.86|K|เอเวียร์
+Car|ι|Aspidiske|9.2850|-59.2753|2.21|A|
+Car|θ||10.7159|-64.3945|2.76|B|
+Car|υ||9.7850|-65.0720|2.92|A|
+Car|ω||10.2293|-70.0380|3.29|B|
+Car|p||10.5350|-61.6853|3.32|B|
+Hya|α|Alphard|9.4597|-8.6586|1.98|K|อัลฟาร์ด
+Hya|γ||13.3154|-23.1716|3.00|G|
+Hya|ζ||8.9231|5.9456|3.11|G|
+Hya|ν||10.8296|-16.1936|3.11|K|
+Hya|π||14.1062|-26.6822|3.25|K|
+Hya|ε||8.7794|6.4190|3.38|G|
+Hya|ξ||11.5531|-31.8577|3.54|G|
+Hya|λ||10.1771|-12.3540|3.61|K|
+Hya|μ||10.4359|-16.8360|3.81|K|
+Hya|θ||9.2394|2.3144|3.88|B|
+Hya|ι||9.6634|-1.1428|3.90|K|
+Hya|δ||8.6294|5.7036|4.14|A|
+Hya|η||8.7204|3.3992|4.30|B|
+Hya|σ||8.6449|3.3411|4.44|K|
+Crv|γ|Gienah|12.2634|-17.5419|2.59|B|
+Crv|β|Kraz|12.5734|-23.3968|2.65|G|
+Crv|δ|Algorab|12.4979|-16.5151|2.94|B|
+Crv|ε|Minkar|12.1683|-22.6198|3.02|K|
+Crv|α|Alchiba|12.1408|-24.7288|4.02|F|
+Oph|α|Rasalhague|17.5822|12.5600|2.08|A|ราสอัลฮาเก
+Oph|η|Sabik|17.1729|-15.7250|2.43|A|ซาบิก
+Oph|ζ|Han|16.6191|-10.5671|2.56|O|
+Oph|δ|Yed Prior|16.2393|-3.6942|2.73|M|
+Oph|β|Cebalrai|17.7243|4.5673|2.76|K|
+Oph|κ||16.9612|9.3750|3.20|K|
+Oph|ε|Yed Posterior|16.3042|-4.6924|3.23|G|
+Oph|θ||17.3677|-25.0003|3.27|B|
+Oph|ν||17.9844|-9.7735|3.32|K|
+Oph|γ||17.7979|2.7072|3.75|A|
+Oph|λ|Marfik|16.5152|1.9838|3.82|A|
+Her|β|Kornephoros|16.5036|21.4896|2.77|G|
+Her|ζ|Rutilicus|16.6881|31.6020|2.81|G|
+Her|α1|Rasalgethi|17.2443|14.3903|3.08|M|ราสอัลเกธี
+Her|δ|Sarin|17.2504|24.8392|3.12|A|
+Her|π||17.2506|36.8092|3.16|K|
+Her|μ||17.7745|27.7204|3.42|G|
+Her|η||16.7147|38.9224|3.48|G|
+Her|ξ||17.9603|29.2478|3.70|K|
+Her|γ||16.3719|19.1531|3.74|F|
+Her|ι||17.6603|46.0064|3.80|B|
+Her|ο||18.1240|28.7625|3.83|B|
+Her|ε||17.0047|30.9263|3.92|A|
+Her|θ||17.9391|37.2506|3.86|K|
+Her|τ||16.3323|46.3134|3.89|B|
+PsA|α|Fomalhaut|22.9608|-29.6222|1.16|A|โฟมัลฮอต
+PsA|ε||22.6772|-27.0438|4.17|B|
+PsA|δ||22.9358|-32.5398|4.20|G|
+PsA|β||22.5265|-32.3461|4.29|A|
+PsA|ι||21.7452|-33.0257|4.34|B|
+PsA|μ||22.1385|-32.9885|4.50|A|
+PsA|γ||22.8781|-32.8758|4.46|A|
+Gru|α|Alnair|22.1372|-46.9610|1.74|B|อัลแนร์
+Gru|β|Tiaki|22.7113|-46.8846|2.12|M|
+Gru|γ|Aldhanab|21.8987|-37.3648|3.00|B|
+Gru|δ1||22.4877|-43.4958|3.97|G|
+Gru|ε||22.8081|-51.3167|3.49|A|
+Gru|ζ||23.1710|-52.7539|4.11|G|
+Gru|ι||23.1481|-45.2469|3.88|K|
+Del|β|Rotanev|20.6259|14.5953|3.63|F|
+Del|α|Sualocin|20.6605|15.9121|3.77|B|
+Del|ε|Aldulfin|20.5588|11.3033|4.03|B|
+Del|γ2||20.7794|16.1244|4.27|K|
+Del|δ||20.7302|15.0748|4.43|A|
+Sge|γ||19.9791|19.4922|3.47|M|
+Sge|δ||19.7898|18.5340|3.82|M|
+Sge|α|Sham|19.6684|18.0140|4.37|G|
+Sge|β||19.6811|17.4761|4.37|G|
+Lep|α|Arneb|5.5455|-17.8223|2.58|F|อาร์เนบ
+Lep|β|Nihal|5.4707|-20.7594|2.84|G|
+Lep|ε||5.0910|-22.3714|3.19|K|
+Lep|μ||5.2130|-16.2054|3.31|B|
+Lep|ζ||5.7912|-14.8217|3.55|A|
+Lep|γ||5.7444|-22.4481|3.60|F|
+Lep|η||5.9403|-14.1679|3.71|F|
+Lep|δ||5.8555|-20.8794|3.81|G|
+CVn|α2|Cor Caroli|12.9338|38.3187|2.89|A|คอร์คาโรไล
+CVn|β|Chara|12.5622|41.3576|4.24|G|
+Vel|γ2|Regor|8.1587|-47.3366|1.75|O|
+Vel|δ|Alsephina|8.7450|-54.7086|1.93|A|
+Vel|λ|Suhail|9.1330|-43.4326|2.21|K|ซูเฮล
+Vel|κ|Markeb|9.3689|-55.0107|2.47|B|
+Vel|μ||10.7784|-49.4202|2.69|G|
+Vel|ψ||9.5127|-40.4667|3.60|F|
+Ser|α|Unukalhai|15.7378|6.4258|2.63|K|
+Ser|μ||15.8268|-3.4302|3.53|A|
+Ser|η||18.3552|-2.8964|3.26|K|
+Ser|ξ||17.6259|-15.3987|3.54|F|
+Ser|β||15.7695|15.4218|3.65|A|
+Ser|ε||15.8465|4.4776|3.71|A|
+Ser|δ||15.5800|10.5390|3.80|A|
+Ser|γ||15.9400|15.6618|3.85|F|
+Ser|θ1||18.9391|4.2035|4.62|A|
+Ser|ν||17.3510|-12.8468|4.32|A|
+TrA|α|Atria|16.8111|-69.0277|1.91|K|อาเทรีย
+TrA|β||15.9192|-63.4306|2.83|F|
+TrA|γ||15.3151|-68.6796|2.87|A|
+Lup|α||14.6989|-47.3881|2.30|B|
+Lup|β||14.9758|-43.1339|2.68|B|
+Lup|γ||15.5850|-41.1668|2.78|B|
+Lup|δ||15.3565|-40.6475|3.22|B|
+Lup|ε||15.3789|-44.6896|3.37|B|
+Lup|ζ||15.2178|-52.0991|3.41|G|
+Lup|η||16.0061|-38.3967|3.41|B|
+Lup|φ1||15.3616|-36.2614|3.56|K|
+Lup|χ||15.8497|-33.6272|3.95|B|
+Lup|π||15.0906|-47.0511|3.89|B|
+Ara|α||17.5312|-49.8761|2.84|B|
+Ara|β||17.4219|-55.5299|2.85|K|
+Ara|γ||17.4210|-56.3777|3.31|B|
+Ara|δ||17.5188|-60.6837|3.60|B|
+Ara|ζ||16.9770|-55.9902|3.13|K|
+Ara|ε1||16.9860|-53.1605|4.06|K|
+Ara|θ||18.1103|-50.0913|3.65|B|
+Ara|η||16.8299|-59.0413|3.76|K|
+Pup|ζ|Naos|8.0597|-40.0031|2.25|O|เนออส
+Pup|π||7.2841|-37.0975|2.71|K|
+Pup|ρ||8.1076|-24.3044|2.81|F|
+Pup|ξ||7.8199|-24.8595|3.34|G|
+Pup|ν||6.6374|-43.1959|3.17|B|
+Pup|σ||7.4544|-43.3011|3.25|K|
+Pup|τ||6.8322|-50.6144|2.94|K|
+Tri|α|Mothallah|1.8846|29.5792|3.41|F|
+Tri|β||2.1591|34.9873|3.00|A|
+Tri|γ||2.2886|33.8473|4.01|A|
+Phe|α|Ankaa|0.4381|-42.3061|2.38|K|อันคา
+Phe|β||1.1010|-46.7187|3.31|G|
+Phe|γ||1.4722|-43.3182|3.41|K|
+Phe|δ||1.5211|-49.0729|3.93|K|
+Phe|ε||0.1571|-45.7473|3.88|K|
+Phe|ζ||1.1394|-55.2456|3.92|B|
+Phe|κ||0.4372|-43.6798|3.94|A|
+Pav|α|Peacock|20.4275|-56.7351|1.94|B|พีค็อก
+Pav|β||20.7500|-66.2032|3.42|A|
+Pav|δ||20.1450|-66.1820|3.56|G|
+Pav|ε||20.0092|-72.9107|3.95|A|
+Pav|ζ||18.7180|-71.4279|4.01|K|
+Pav|η||17.7623|-64.7238|3.62|K|
+Pav|γ||21.4394|-65.3661|4.22|F|
+Pav|λ||18.8687|-62.1875|4.22|B|
+`;
+
+const CONS = {
+Ori:{th:'นายพราน',en:'Orion, the Hunter',gen:'Orionis',w:'Orion_(constellation)',d:'กลุ่มดาวที่โดดเด่นที่สุดบนท้องฟ้า มีเข็มขัดสามดวงเรียงตรงเป็นเอกลักษณ์ คนไทยเรียกว่าดาวเต่าหรือดาวไถ',l:'α-γ α-λ λ-γ α-ζ γ-δ δ-ε ε-ζ ζ-κ δ-η η-β ε-ι γ-π4 π4-π3 π3-π2 π2-π1 π4-π5 π5-π6'},
+UMa:{th:'หมีใหญ่',en:'Ursa Major, the Great Bear',gen:'Ursae Majoris',w:'Ursa_Major',d:'บรรจุ “กระบวยใหญ่” เจ็ดดวง ใช้ชี้หาดาวเหนือได้จากขอบกระบวย',l:'η-ζ ζ-ε ε-δ δ-γ γ-β β-α α-δ α-ο ο-υ υ-θ θ-ι ι-κ γ-ψ ψ-μ μ-λ γ-ν ν-ξ'},
+UMi:{th:'หมีเล็ก',en:'Ursa Minor, the Little Bear',gen:'Ursae Minoris',w:'Ursa_Minor',d:'ปลายหางคือดาวเหนือ (Polaris) เข็มทิศธรรมชาติของซีกฟ้าเหนือ',l:'α-δ δ-ε ε-ζ ζ-β β-γ γ-η η-ζ'},
+Cas:{th:'ค้างคาว',en:'Cassiopeia, the Queen',gen:'Cassiopeiae',w:'Cassiopeia_(constellation)',d:'รูปตัว W หรือ M ชัดเจน อยู่ตรงข้ามดาวเหนือกับกระบวยใหญ่',l:'β-α α-γ γ-δ δ-ε'},
+Cyg:{th:'หงส์',en:'Cygnus, the Swan',gen:'Cygni',w:'Cygnus_(constellation)',d:'หรือ “กางเขนเหนือ” บินอยู่กลางทางช้างเผือก มีดาวเดเนบเป็นหาง',l:'α-γ γ-β γ-δ γ-ε δ-ι ι-κ ε-ζ'},
+Lyr:{th:'พิณ',en:'Lyra, the Lyre',gen:'Lyrae',w:'Lyra',d:'เล็กแต่เด่น เพราะมีดาวเวกา หนึ่งในสามยอดสามเหลี่ยมฤดูร้อน',l:'α-ε1 α-ζ1 ζ1-δ2 δ2-γ γ-β β-ζ1'},
+Aql:{th:'นกอินทรี',en:'Aquila, the Eagle',gen:'Aquilae',w:'Aquila_(constellation)',d:'ดาวอัลแตร์คือหัวใจของนกอินทรี และเป็นยอดที่สามของสามเหลี่ยมฤดูร้อน',l:'γ-α α-β ζ-γ δ-ζ δ-η η-θ δ-λ'},
+Sco:{th:'แมงป่อง',en:'Scorpius, the Scorpion',gen:'Scorpii',w:'Scorpius',d:'รูปร่างเหมือนแมงป่องจริงที่สุดในบรรดากลุ่มดาว มีแอนทาเรสสีแดงเป็นหัวใจ',l:'β1-δ δ-π π-ρ δ-σ σ-α α-τ τ-ε ε-μ1 μ1-ζ2 ζ2-η η-θ θ-ι1 ι1-κ κ-υ υ-λ'},
+Sgr:{th:'คนยิงธนู',en:'Sagittarius, the Archer',gen:'Sagittarii',w:'Sagittarius_(constellation)',d:'รูป “กาน้ำชา” ชี้ไปยังใจกลางดาราจักรทางช้างเผือกพอดี',l:'γ2-δ δ-ε ε-ζ ζ-τ τ-σ σ-φ φ-δ φ-λ λ-δ ε-η σ-π π-ο ο-ξ2'},
+Leo:{th:'สิงโต',en:'Leo, the Lion',gen:'Leonis',w:'Leo_(constellation)',d:'หัวสิงโตเป็นรูปเคียวกลับด้าน ปลายเคียวคือดาวเรกูลัส',l:'α-η η-γ1 γ1-ζ ζ-μ μ-ε ε-λ γ1-δ δ-β β-θ θ-α θ-δ'},
+Tau:{th:'วัว',en:'Taurus, the Bull',gen:'Tauri',w:'Taurus_(constellation)',d:'หน้าวัวรูปตัว V คือกระจุกดาวไฮยาดีส มีดาวลูกไก่อยู่บนไหล่',l:'β-ζ ζ-α α-θ2 θ2-γ γ-δ1 δ1-ε ε-β γ-λ λ-ξ ξ-ο λ-ν'},
+Gem:{th:'คนคู่',en:'Gemini, the Twins',gen:'Geminorum',w:'Gemini_(constellation)',d:'ฝาแฝดแคสเตอร์และพอลลักซ์ยืนเคียงกัน หัวคือดาวสว่างสองดวงคู่',l:'α-τ τ-ε ε-μ μ-η α-θ β-ι ι-τ β-κ β-δ δ-ζ ζ-γ δ-λ λ-ξ γ-ξ'},
+CMa:{th:'สุนัขใหญ่',en:'Canis Major, the Great Dog',gen:'Canis Majoris',w:'Canis_Major',d:'มีซิริอุส ดาวฤกษ์ที่สว่างที่สุดบนท้องฟ้ายามค่ำคืน',l:'β-α α-ο2 ο2-δ δ-η δ-ε ε-ζ α-θ α-ι ι-γ'},
+CMi:{th:'สุนัขเล็ก',en:'Canis Minor, the Lesser Dog',gen:'Canis Minoris',w:'Canis_Minor',d:'เล็กมากเพียงสองดวง แต่โพรไซออนเป็นยอดหนึ่งของสามเหลี่ยมฤดูหนาว',l:'α-β'},
+Boo:{th:'คนเลี้ยงสัตว์',en:'Boötes, the Herdsman',gen:'Boötis',w:'Boötes',d:'รูปว่าวหรือไอศกรีมโคน ปลายล่างคืออาร์คทูรัสสีส้มอมทอง',l:'α-ε ε-δ δ-β β-γ γ-ρ ρ-α α-η α-ζ'},
+Vir:{th:'หญิงสาว',en:'Virgo, the Maiden',gen:'Virginis',w:'Virgo_(constellation)',d:'กลุ่มดาวใหญ่อันดับสอง มีสไปกาเป็นรวงข้าวในมือหญิงสาว',l:'β-η η-γ γ-δ δ-ε γ-α α-ι ι-μ γ-ζ ζ-ι'},
+Lib:{th:'คันชั่ง',en:'Libra, the Scales',gen:'Librae',w:'Libra_(constellation)',d:'เดิมเคยเป็นก้ามของแมงป่อง ชื่อดาวยังแปลว่า “ก้ามเหนือ–ก้ามใต้”',l:'α2-β β-γ γ-α2 α2-σ'},
+Ari:{th:'แกะ',en:'Aries, the Ram',gen:'Arietis',w:'Aries_(constellation)',d:'เล็กและเรียบง่าย เคยเป็นจุดวสันตวิษุวัตเมื่อสองพันปีก่อน',l:'γ-β β-α α-41'},
+Cnc:{th:'ปู',en:'Cancer, the Crab',gen:'Cancri',w:'Cancer_(constellation)',d:'จางที่สุดในจักรราศี แต่ซ่อนกระจุกดาวรังผึ้งไว้กลางลำตัว',l:'β-δ δ-γ γ-ι δ-α'},
+Cap:{th:'แพะทะเล',en:'Capricornus, the Sea-Goat',gen:'Capricorni',w:'Capricornus',d:'รูปสามเหลี่ยมคว่ำคล้ายรอยยิ้ม จางแต่จำง่าย',l:'α2-β β-ψ ψ-ω ω-ζ ζ-δ δ-γ γ-θ θ-α2'},
+Aqr:{th:'คนแบกหม้อน้ำ',en:'Aquarius, the Water Bearer',gen:'Aquarii',w:'Aquarius',d:'สายน้ำไหลจากหม้อลงสู่ปากปลาใต้ ที่ดาวโฟมัลฮอต',l:'ε-β β-α α-γ γ-ζ1 ζ1-η α-θ θ-λ λ-δ'},
+Psc:{th:'ปลาคู่',en:'Pisces, the Fishes',gen:'Piscium',w:'Pisces_(constellation)',d:'ปลาสองตัวผูกหางเข้าด้วยกันที่ดาวอัลเรชา',l:'α-ο ο-η α-ε ε-δ δ-ω ω-ι ι-λ λ-γ γ-ι'},
+Per:{th:'เพอร์ซิอุส',en:'Perseus, the Hero',gen:'Persei',w:'Perseus_(constellation)',d:'วีรบุรุษถือหัวเมดูซา ดวงตาคืออัลกอล ดาวแปรแสงที่สว่างหรี่ทุก 2.87 วัน',l:'η-γ γ-α α-δ δ-ε ε-ζ α-β β-ρ β-ε'},
+Aur:{th:'สารถี',en:'Auriga, the Charioteer',gen:'Aurigae',w:'Auriga_(constellation)',d:'ห้าเหลี่ยมสว่างกลางทางช้างเผือกฤดูหนาว มีคาเพลลาเป็นดาวเด่น',l:'α-β β-θ θ-Tau.β Tau.β-ι ι-α α-ε ε-η η-ι'},
+And:{th:'แอนดรอเมดา',en:'Andromeda, the Chained Lady',gen:'Andromedae',w:'Andromeda_(constellation)',d:'โซ่สองเส้นทอดจากจัตุรัสม้าบิน ใกล้ดาวมิรัคคือดาราจักรแอนดรอเมดา',l:'α-δ δ-β β-γ1 β-μ μ-ν δ-π'},
+Peg:{th:'ม้าบิน',en:'Pegasus, the Winged Horse',gen:'Pegasi',w:'Pegasus_(constellation)',d:'“จัตุรัสใหญ่” สี่ดวงเป็นหมุดหมายของท้องฟ้าฤดูใบไม้ร่วง',l:'And.α-β β-α α-γ γ-And.α α-ζ ζ-θ θ-ε β-μ μ-η'},
+Cep:{th:'ซีฟิอุส',en:'Cepheus, the King',gen:'Cephei',w:'Cepheus_(constellation)',d:'รูปบ้านหลังคาแหลม มีดาวแปรแสงต้นแบบ δ Cephei ที่ใช้วัดระยะเอกภพ',l:'α-β β-γ γ-ι ι-α α-η α-ζ ζ-ε ζ-δ ι-δ'},
+Dra:{th:'มังกร',en:'Draco, the Dragon',gen:'Draconis',w:'Draco_(constellation)',d:'พันรอบขั้วฟ้าเหนือ หัวมังกรเป็นสี่เหลี่ยมเล็กใกล้ดาวเวกา',l:'λ-κ κ-α α-ι ι-θ θ-η η-ζ ζ-χ χ-δ δ-ε δ-ξ ξ-γ γ-β β-ν1 ν1-ξ'},
+CrB:{th:'มงกุฎเหนือ',en:'Corona Borealis, the Northern Crown',gen:'Coronae Borealis',w:'Corona_Borealis',d:'ครึ่งวงกลมเล็ก ๆ งดงาม มีอัญมณีกลางมงกุฎคืออัลเฟคกา',l:'θ-β β-α α-γ γ-δ δ-ε'},
+Cet:{th:'วาฬ',en:'Cetus, the Sea Monster',gen:'Ceti',w:'Cetus',d:'สัตว์ทะเลขนาดใหญ่ มีมิรา ดาวแปรแสงระยะยาวดวงแรกที่มนุษย์ค้นพบ',l:'β-ι ι-η η-θ θ-τ τ-β θ-ζ ζ-ο ο-δ δ-γ γ-α α-μ μ-γ'},
+Eri:{th:'แม่น้ำ',en:'Eridanus, the River',gen:'Eridani',w:'Eridanus_(constellation)',d:'สายน้ำยาวคดเคี้ยวจากเท้าของนายพรานลงไปสุดที่ดาวเอเคอร์นาร์',l:'β-δ δ-γ γ-τ4 τ4-υ2 υ2-θ1 θ1-α δ-ε ε-η'},
+Cru:{th:'กางเขนใต้',en:'Crux, the Southern Cross',gen:'Crucis',w:'Crux',d:'เล็กที่สุดใน 88 กลุ่มดาว แต่ใช้ชี้ขั้วฟ้าใต้ได้ เห็นเฉียดขอบฟ้าใต้ของไทย',l:'α1-γ β-δ'},
+Cen:{th:'คนครึ่งม้า',en:'Centaurus, the Centaur',gen:'Centauri',w:'Centaurus',d:'มีอัลฟาเซนทอรี ระบบดาวที่ใกล้ดวงอาทิตย์ที่สุด ห่างเพียง 4.4 ปีแสง',l:'α1-β β-ε ε-ζ ζ-γ γ-δ ζ-μ μ-ν ν-η η-θ θ-ι ι-γ α1-η'},
+Car:{th:'กระดูกงูเรือ',en:'Carina, the Keel',gen:'Carinae',w:'Carina_(constellation)',d:'ส่วนท้องเรืออาร์โก มีคาโนปัส ดาวสว่างอันดับสองของท้องฟ้า',l:'α-ε ε-ι ι-υ υ-β β-ω ω-θ θ-p p-υ'},
+Hya:{th:'งูไฮดรา',en:'Hydra, the Water Snake',gen:'Hydrae',w:'Hydra_(constellation)',d:'กลุ่มดาวที่ใหญ่ที่สุด ทอดยาวกว่า 100 องศาข้ามท้องฟ้า',l:'σ-δ δ-ε ε-ζ ζ-θ θ-ι ι-α α-λ λ-μ μ-ν ν-ξ ξ-γ γ-π σ-η η-δ'},
+Crv:{th:'กา',en:'Corvus, the Crow',gen:'Corvi',w:'Corvus_(constellation)',d:'สี่เหลี่ยมเล็กสว่างคล้ายใบเรือ เกาะอยู่บนหลังงูไฮดรา',l:'α-ε ε-γ γ-δ δ-β β-ε'},
+Oph:{th:'คนแบกงู',en:'Ophiuchus, the Serpent Bearer',gen:'Ophiuchi',w:'Ophiuchus',d:'กลุ่มดาวที่ 13 บนเส้นสุริยวิถี แม้ไม่ถูกนับเป็นราศี',l:'α-β β-γ γ-ν ν-η η-ζ ζ-ε ε-δ δ-λ λ-κ κ-α η-θ'},
+Her:{th:'เฮอร์คิวลีส',en:'Hercules, the Strongman',gen:'Herculis',w:'Hercules_(constellation)',d:'ลำตัวเป็นรูป “หินฐาน” สี่เหลี่ยม ใกล้ ๆ มีกระจุกดาวทรงกลม M13',l:'α1-β β-γ β-ζ ζ-η η-π π-ε ε-ζ α1-δ δ-μ μ-ξ ξ-ο η-τ π-θ θ-ι'},
+PsA:{th:'ปลาใต้',en:'Piscis Austrinus, the Southern Fish',gen:'Piscis Austrini',w:'Piscis_Austrinus',d:'ปากปลารับสายน้ำจากคนแบกหม้อน้ำ คือดาวโฟมัลฮอต',l:'α-ε ε-μ μ-ι ι-β β-γ γ-δ δ-α'},
+Gru:{th:'นกกระเรียน',en:'Grus, the Crane',gen:'Gruis',w:'Grus_(constellation)',d:'นกใต้ฟ้าใต้ บินอยู่ใต้ดาวโฟมัลฮอตลงไป',l:'γ-δ1 δ1-α α-β β-ι β-ε ε-ζ'},
+Del:{th:'โลมา',en:'Delphinus, the Dolphin',gen:'Delphini',w:'Delphinus',d:'เล็กแต่น่ารักมาก รูปว่าวกับหาง กระโดดอยู่ข้างนกอินทรี',l:'ε-β β-α α-γ2 γ2-δ δ-β'},
+Sge:{th:'ลูกศร',en:'Sagitta, the Arrow',gen:'Sagittae',w:'Sagitta',d:'กลุ่มดาวเล็กอันดับสาม เป็นลูกศรพุ่งผ่านทางช้างเผือก',l:'α-δ β-δ δ-γ'},
+Lep:{th:'กระต่าย',en:'Lepus, the Hare',gen:'Leporis',w:'Lepus_(constellation)',d:'หมอบอยู่ใต้เท้าของนายพราน หนีสุนัขล่าเนื้อสองตัว',l:'μ-ε ε-β β-α α-ζ ζ-η β-γ γ-δ δ-α α-μ'},
+CVn:{th:'สุนัขล่าเนื้อ',en:'Canes Venatici, the Hunting Dogs',gen:'Canum Venaticorum',w:'Canes_Venatici',d:'สุนัขสองตัวของคนเลี้ยงสัตว์ มีดาราจักรกังหัน M51 ซ่อนอยู่',l:'α2-β'},
+Vel:{th:'ใบเรือ',en:'Vela, the Sails',gen:'Velorum',w:'Vela_(constellation)',d:'ใบเรืออาร์โก ร่วมกับคารินาประกอบเป็น “กางเขนปลอม”',l:'γ2-λ λ-ψ ψ-μ μ-κ κ-δ δ-γ2'},
+Ser:{th:'งู',en:'Serpens, the Serpent',gen:'Serpentis',w:'Serpens',d:'กลุ่มดาวเดียวที่ถูกแยกเป็นสองท่อน โดยมีคนแบกงูคั่นกลาง',l:'γ-β β-δ δ-α α-ε ε-μ ν-ξ ξ-η η-θ1'},
+TrA:{th:'สามเหลี่ยมใต้',en:'Triangulum Australe',gen:'Trianguli Australis',w:'Triangulum_Australe',d:'สามเหลี่ยมสว่างชัดของซีกฟ้าใต้ เห็นได้เฉียดขอบฟ้าจากไทย',l:'α-β β-γ γ-α'},
+Lup:{th:'หมาป่า',en:'Lupus, the Wolf',gen:'Lupi',w:'Lupus_(constellation)',d:'อยู่ระหว่างคนครึ่งม้ากับแมงป่อง เต็มไปด้วยดาวยักษ์สีน้ำเงิน',l:'ζ-α α-π α-β β-ε ε-γ γ-δ δ-φ1 γ-η η-χ'},
+Ara:{th:'แท่นบูชา',en:'Ara, the Altar',gen:'Arae',w:'Ara_(constellation)',d:'แท่นบูชาของเทพเจ้า วางอยู่ใต้หางแมงป่อง',l:'θ-α α-β β-γ γ-δ δ-η η-ζ ζ-ε1 ε1-β'},
+Pup:{th:'ท้ายเรือ',en:'Puppis, the Stern',gen:'Puppis',w:'Puppis',d:'ท้ายเรืออาร์โก มีเนออส ดาวยักษ์ใหญ่สีน้ำเงินชนิด O ที่หายาก',l:'τ-σ σ-ζ ζ-π π-ν ζ-ρ ρ-ξ ξ-ζ'},
+Tri:{th:'สามเหลี่ยม',en:'Triangulum',gen:'Trianguli',w:'Triangulum',d:'สามเหลี่ยมแคบเล็ก ๆ ใกล้แอนดรอเมดา มีดาราจักร M33 อยู่ข้างใน',l:'α-β β-γ γ-α'},
+Phe:{th:'นกฟีนิกซ์',en:'Phoenix',gen:'Phoenicis',w:'Phoenix_(constellation)',d:'นกอมตะแห่งซีกฟ้าใต้ เห็นต่ำ ๆ ทางทิศใต้ช่วงปลายปี',l:'ε-α α-β β-γ γ-δ δ-ζ ζ-β'},
+Pav:{th:'นกยูง',en:'Pavo, the Peacock',gen:'Pavonis',w:'Pavo_(constellation)',d:'นกยูงแห่งฟ้าใต้ มีดาวพีค็อกเป็นดวงเด่นดวงเดียว',l:'α-β β-δ δ-λ λ-η δ-ε ε-ζ α-γ'}
+};
+
+/* --- กลุ่มดาวสมมติ (Asterism) --- */
+const ASTER = [
+{ab:'SumTri',th:'สามเหลี่ยมฤดูร้อน',en:'Summer Triangle',w:'Summer_Triangle',
+ d:'สามเหลี่ยมยักษ์ที่เด่นที่สุดของฟ้าฤดูร้อน ประกอบจากดาวสว่างในสามกลุ่มดาว ทางช้างเผือกไหลผ่านกลางรูปพอดี',
+ l:'Lyr.α-Cyg.α Cyg.α-Aql.α Aql.α-Lyr.α'},
+{ab:'WinTri',th:'สามเหลี่ยมฤดูหนาว',en:'Winter Triangle',w:'Winter_Triangle',
+ d:'สามเหลี่ยมด้านเท่าเกือบสมบูรณ์ จากดาวสว่างสามดวงที่ครองฟ้าฤดูหนาว',
+ l:'CMa.α-CMi.α CMi.α-Ori.α Ori.α-CMa.α'},
+{ab:'WinHex',th:'หกเหลี่ยมฤดูหนาว',en:'Winter Hexagon',w:'Winter_Hexagon',
+ d:'วงแหวนดาวสว่างหกดวงที่ล้อมนายพรานไว้ตรงกลาง เป็นภาพที่ยิ่งใหญ่ที่สุดของท้องฟ้าฤดูหนาว',
+ l:'CMa.α-CMi.α CMi.α-Gem.β Gem.β-Aur.α Aur.α-Tau.α Tau.α-Ori.β Ori.β-CMa.α'},
+{ab:'BigDip',th:'กระบวยใหญ่',en:'Big Dipper / The Plough',w:'Big_Dipper',
+ d:'เจ็ดดวงในกลุ่มดาวหมีใหญ่ ลากขอบกระบวยต่อออกไปห้าเท่าจะพบดาวเหนือ',
+ l:'UMa.η-UMa.ζ UMa.ζ-UMa.ε UMa.ε-UMa.δ UMa.δ-UMa.γ UMa.γ-UMa.β UMa.β-UMa.α UMa.α-UMa.δ'},
+{ab:'GrSq',th:'จัตุรัสม้าบิน',en:'Great Square of Pegasus',w:'Pegasus_(constellation)',
+ d:'สี่เหลี่ยมใหญ่เกือบจัตุรัส เป็นหมุดหมายหลักของฟ้าฤดูใบไม้ร่วง มุมหนึ่งยืมมาจากแอนดรอเมดา',
+ l:'Peg.α-Peg.β Peg.β-And.α And.α-Peg.γ Peg.γ-Peg.α'},
+{ab:'Teapot',th:'กาน้ำชา',en:'The Teapot',w:'Sagittarius_(constellation)',
+ d:'แปดดวงในคนยิงธนู เป็นรูปกาน้ำชาชัดเจน ปากกาชี้ไปยังใจกลางดาราจักร',
+ l:'Sgr.γ2-Sgr.δ Sgr.δ-Sgr.ε Sgr.ε-Sgr.ζ Sgr.ζ-Sgr.τ Sgr.τ-Sgr.σ Sgr.σ-Sgr.φ Sgr.φ-Sgr.δ Sgr.φ-Sgr.λ Sgr.λ-Sgr.δ'},
+{ab:'NorCr',th:'กางเขนเหนือ',en:'Northern Cross',w:'Cygnus_(constellation)',
+ d:'ลำตัวและปีกของหงส์ประกอบเป็นไม้กางเขนขนาดใหญ่กลางทางช้างเผือก',
+ l:'Cyg.α-Cyg.γ Cyg.γ-Cyg.β Cyg.γ-Cyg.δ Cyg.γ-Cyg.ε'},
+{ab:'KeyS',th:'หินฐาน',en:'The Keystone',w:'Hercules_(constellation)',
+ d:'สี่เหลี่ยมคางหมูกลางลำตัวเฮอร์คิวลีส ขอบด้านหนึ่งใช้ชี้หากระจุกดาว M13',
+ l:'Her.ζ-Her.ε Her.ε-Her.π Her.π-Her.η Her.η-Her.ζ'},
+{ab:'FalCr',th:'กางเขนปลอม',en:'False Cross',w:'False_Cross',
+ d:'ใหญ่และจางกว่ากางเขนใต้ แต่รูปคล้ายกันมากจนนักเดินเรือเคยสับสนบ่อยครั้ง',
+ l:'Vel.δ-Car.ι Vel.κ-Car.ε'},
+{ab:'Sickle',th:'เคียวสิงโต',en:'The Sickle',w:'Leo_(constellation)',
+ d:'หัวและแผงคอสิงโตเป็นรูปเคียวกลับด้าน หรือเครื่องหมายคำถามกลับหัว ปลายด้ามคือเรกูลัส',
+ l:'Leo.α-Leo.η Leo.η-Leo.γ1 Leo.γ1-Leo.ζ Leo.ζ-Leo.μ Leo.μ-Leo.ε Leo.ε-Leo.λ'}
+];
+
+const DSO = [
+ {n:'Orion Nebula',th:'เนบิวลานายพราน',id:'M42',ra:5.588,dec:-5.391,mag:4.0,sz:70,c:[1.0,.55,.62],t:'เนบิวลาเปล่งแสง',w:'Orion_Nebula',con:'Ori'},
+ {n:'Pleiades',th:'กระจุกดาวลูกไก่',id:'M45',ra:3.790,dec:24.117,mag:1.6,sz:62,c:[.62,.75,1.0],t:'กระจุกดาวเปิด',w:'Pleiades',con:'Tau'},
+ {n:'Andromeda Galaxy',th:'ดาราจักรแอนดรอเมดา',id:'M31',ra:0.7123,dec:41.269,mag:3.4,sz:58,c:[.85,.84,.72],t:'ดาราจักรชนิดก้นหอย',w:'Andromeda_Galaxy',con:'And'},
+ {n:'Beehive Cluster',th:'กระจุกดาวรังผึ้ง',id:'M44',ra:8.667,dec:19.667,mag:3.7,sz:50,c:[.8,.86,1.0],t:'กระจุกดาวเปิด',w:'Beehive_Cluster',con:'Cnc'},
+ {n:'Lagoon Nebula',th:'เนบิวลาทะเลสาบ',id:'M8',ra:18.0606,dec:-24.3867,mag:6.0,sz:52,c:[1.0,.5,.55],t:'เนบิวลาเปล่งแสง',w:'Lagoon_Nebula',con:'Sgr'},
+ {n:'Hercules Cluster',th:'กระจุกดาวทรงกลมเฮอร์คิวลีส',id:'M13',ra:16.6949,dec:36.4613,mag:5.8,sz:40,c:[1.0,.92,.78],t:'กระจุกดาวทรงกลม',w:'Messier_13',con:'Her'},
+ {n:'Ptolemy Cluster',th:'กระจุกดาวปโตเลมี',id:'M7',ra:17.8967,dec:-34.7933,mag:3.3,sz:52,c:[.85,.9,1.0],t:'กระจุกดาวเปิด',w:'Messier_7',con:'Sco'},
+ {n:'Double Cluster',th:'กระจุกดาวคู่',id:'NGC 869/884',ra:2.3283,dec:57.1367,mag:4.3,sz:48,c:[.78,.86,1.0],t:'กระจุกดาวเปิดคู่',w:'Double_Cluster',con:'Per'}
+];
+
+/* ============================================================
+   2. เตรียมข้อมูล
+   ============================================================ */
+const LAT = 18.5735, LON = 98.4822;
+const D2R = Math.PI/180, H2R = Math.PI/12;
+const GREEK = {'α':'Alpha','β':'Beta','γ':'Gamma','δ':'Delta','ε':'Epsilon','ζ':'Zeta','η':'Eta','θ':'Theta','ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi','ρ':'Rho','σ':'Sigma','τ':'Tau','υ':'Upsilon','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Omega'};
+const SPEC = {O:[0.60,0.70,1.00],B:[0.70,0.80,1.00],A:[0.84,0.89,1.00],F:[0.99,0.98,1.00],G:[1.00,0.95,0.86],K:[1.00,0.82,0.62],M:[1.00,0.68,0.47]};
+const MTH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const MTHFULL = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+function sphere(ra,dec,r){const c=Math.cos(dec*D2R);return new THREE.Vector3(c*Math.cos(ra*H2R)*r,c*Math.sin(ra*H2R)*r,Math.sin(dec*D2R)*r);}
+
+const STARS=[], BY={}, BYCON={};
+RAW.trim().split('\n').forEach(line=>{
+  const p=line.split('|'); if(p.length<7) return;
+  const s={con:p[0],bayer:p[1],name:p[2]||'',ra:+p[3],dec:+p[4],mag:+p[5],spec:p[6],th:(p[7]||'').trim()};
+  s.key=s.con+'.'+s.bayer;
+  s.dir=sphere(s.ra,s.dec,1);
+  STARS.push(s); BY[s.key]=s;
+  (BYCON[s.con]=BYCON[s.con]||[]).push(s);
+});
+for(const k in BYCON) BYCON[k].sort((a,b)=>a.mag-b.mag);
+
+function wikiStar(s){
+  if(s.name) return s.name.replace(/ /g,'_');
+  const g=GREEK[s.bayer.replace(/[0-9]/g,'')];
+  const gen=(CONS[s.con]?CONS[s.con].gen:'').replace(/ /g,'_');
+  return (g?g:s.bayer)+'_'+gen;
+}
+
+function gmst(d){let jd=d.getTime()/86400000+2440587.5,t=jd-2451545.0,g=(18.697374558+24.06570982441908*t)%24;return g<0?g+24:g;}
+function lstAt(d){let v=(gmst(d)+LON/15)%24;return v<0?v+24:v;}
+const RA_CULM=[];
+for(let m=0;m<12;m++) RA_CULM.push(lstAt(new Date(Date.UTC(2025,m,15,14,0,0))));
+function hdiff(a,b){let d=Math.abs(a-b)%24;return d>12?24-d:d;}
+
+function visInfo(ctr){
+  let ra=Math.atan2(ctr.y,ctr.x)/H2R; if(ra<0)ra+=24;
+  const dec=Math.asin(THREE.MathUtils.clamp(ctr.z,-1,1))/D2R;
+  const maxAlt=90-Math.abs(LAT-dec);
+  const months=[]; for(let m=0;m<12;m++) if(hdiff(ra,RA_CULM[m])<3.1 && maxAlt>12) months.push(m);
+  return {ra,dec,maxAlt,months};
+}
+function monthText(c){
+  if(!c.months.length) return c.maxAlt>12?'เห็นได้บางช่วง':'เห็นยากจากไทย';
+  const m=c.months;let a=m[0],b=m[m.length-1];
+  if(m.length>1&&m[0]===0&&m[m.length-1]===11){let i=0;while(i<m.length-1&&m[i+1]===m[i]+1)i++;a=m[i+1];b=m[i];}
+  return MTH[a]+'–'+MTH[b];
+}
+
+const CLIST=[];
+for(const ab in CONS){
+  const c=CONS[ab], st=BYCON[ab]||[]; if(!st.length) continue;
+  const ctr=new THREE.Vector3();
+  st.forEach(s=>ctr.add(s.dir)); ctr.normalize();
+  let rad=0; st.forEach(s=>rad=Math.max(rad,ctr.angleTo(s.dir)));
+  const v=visInfo(ctr);
+  const bright=st.reduce((a,s)=>a+Math.pow(2.512,-s.mag),0);
+  CLIST.push(Object.assign({ab,ctr,rad,bright,stars:st,isAst:false},v,c));
+}
+CLIST.sort((a,b)=>a.th.localeCompare(b.th,'th'));
+const CMAP={}; CLIST.forEach(c=>CMAP[c.ab]=c);
+
+const FEAT=[];
+for(let m=0;m<12;m++){
+  FEAT.push(CLIST.filter(c=>c.months.includes(m)&&c.maxAlt>22)
+    .sort((a,b)=>b.bright-a.bright).slice(0,7).map(c=>c.ab));
+}
+
+/* --- แปลง asterism --- */
+const ALIST=[];
+ASTER.forEach(a=>{
+  const segs=[],set=new Set();
+  a.l.split(/\s+/).forEach(seg=>{
+    const [x,y]=seg.split('-');
+    const A=BY[x],B=BY[y]; if(!A||!B)return;
+    segs.push([A,B]); set.add(A); set.add(B);
+  });
+  if(!segs.length) return;
+  const stars=[...set].sort((p,q)=>p.mag-q.mag);
+  const ctr=new THREE.Vector3(); stars.forEach(s=>ctr.add(s.dir)); ctr.normalize();
+  let rad=0; stars.forEach(s=>rad=Math.max(rad,ctr.angleTo(s.dir)));
+  ALIST.push(Object.assign({ctr,rad,segs,stars,isAst:true},visInfo(ctr),a));
+});
+
+/* ============================================================
+   3. ฉาก 3 มิติ
+   ============================================================ */
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x000205,1);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+stage.appendChild(renderer.domElement);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,1,4000);
+camera.rotation.order='YXZ';
+
+const skyRoot=new THREE.Object3D(); skyRoot.matrixAutoUpdate=false;
+const cf=Math.cos(LAT*D2R), sf=Math.sin(LAT*D2R);
+skyRoot.matrix.set(0,1,0,0,  cf,0,sf,0,  sf,0,-cf,0,  0,0,0,1);
+scene.add(skyRoot);
+const skyRot=new THREE.Object3D(); skyRoot.add(skyRot);
+
+const bg=new THREE.Mesh(new THREE.SphereGeometry(1900,32,20),new THREE.ShaderMaterial({
+  side:THREE.BackSide,depthWrite:false,
+  vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vP;
+   void main(){ vec3 d=normalize(vP); float t=d.y*.5+.5;
+    vec3 c=mix(vec3(.020,.038,.092), vec3(.0,.004,.018), smoothstep(.36,1.,t));
+    c=mix(c, vec3(.013,.026,.062), smoothstep(.5,.0,t)*.55);
+    gl_FragColor=vec4(c,1.);}`
+}));
+bg.renderOrder=-20; scene.add(bg);
+
+/* --- ทางช้างเผือก (ปรับใหม่: จางลง คอนทราสต์สูงขึ้น) --- */
+const mwMat=new THREE.ShaderMaterial({
+  side:THREE.BackSide,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uO:{value:0.70}},
+  vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vP;uniform float uO;
+   float hash(vec3 p){p=fract(p*0.3183099+vec3(.1,.2,.3));p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+   float noise(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+     return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+   float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*noise(p);p*=2.03;a*=.5;}return s;}
+   void main(){
+    vec3 d=normalize(vP);
+    vec3 GP=vec3(-0.867666,-0.198076,0.455984);
+    vec3 GC=vec3(-0.054876,-0.873437,-0.483835);
+    float b=dot(d,GP), lc=dot(d,GC);
+    float band=exp(-pow(abs(b)/0.135,1.9));
+    float cb=0.32+1.05*smoothstep(-0.30,1.0,lc);
+    float n=fbm(d*6.5), n2=fbm(d*16.0+3.1);
+    float rift=smoothstep(0.30,0.74,fbm(d*9.0+11.0));
+    float inten=band*cb*(0.32+0.92*n)*(0.45+0.70*n2);
+    inten*=mix(1.0,0.18,rift*band);
+    inten=pow(clamp(inten,0.,1.),1.55);
+    vec3 col=mix(vec3(.24,.30,.50),vec3(.74,.70,.63),smoothstep(.1,1.1,cb*.7));
+    gl_FragColor=vec4(col, inten*0.34*uO);}`
+});
+const mw=new THREE.Mesh(new THREE.SphereGeometry(1500,64,40),mwMat);
+mw.renderOrder=-10; skyRot.add(mw);
+
+const GAL_T=[[-0.054876,0.494109,-0.867666],[-0.873437,-0.444830,-0.198076],[-0.483835,0.746982,0.455984]];
+function galToEq(l,b){
+  const g=[Math.cos(b)*Math.cos(l),Math.cos(b)*Math.sin(l),Math.sin(b)];
+  return new THREE.Vector3(
+    GAL_T[0][0]*g[0]+GAL_T[0][1]*g[1]+GAL_T[0][2]*g[2],
+    GAL_T[1][0]*g[0]+GAL_T[1][1]*g[1]+GAL_T[1][2]*g[2],
+    GAL_T[2][0]*g[0]+GAL_T[2][1]*g[1]+GAL_T[2][2]*g[2]);
+}
+const starVS=`
+attribute float aSize; attribute vec3 aColor; attribute float aPhase;
+attribute float aTwk; attribute float aSpike;
+uniform float uTime,uScale,uSizeMul,uHorizon,uBright;
+varying vec3 vC; varying float vS; varying float vA;
+void main(){
+  vec4 wp=modelMatrix*vec4(position,1.);
+  vec4 mv=viewMatrix*wp;
+  float alt=normalize(wp.xyz).y;
+  float hz=mix(1.0, smoothstep(-0.34,0.03,alt)*0.94+0.06, uHorizon);
+  float low=clamp(1.0-(alt+0.08)*1.7,0.0,1.0);
+  float tw=1.0+aTwk*(0.42+0.58*low)*(sin(uTime*2.1+aPhase)*0.6+sin(uTime*3.73+aPhase*1.7)*0.4);
+  tw=max(tw,0.28);
+  gl_Position=projectionMatrix*mv;
+  gl_PointSize=aSize*uSizeMul*tw*uScale/max(-mv.z,1.0);
+  vC=aColor; vS=aSpike; vA=hz*uBright*clamp(tw,0.3,1.7);
+}`;
+const starFS=`
+varying vec3 vC; varying float vS; varying float vA;
+void main(){
+  vec2 p=gl_PointCoord-0.5; float d=length(p)*2.0;
+  if(d>1.0) discard;
+  float core=pow(max(0.,1.-d),6.0);
+  float halo=pow(max(0.,1.-d),1.6)*0.30;
+  float sp=0.0;
+  if(vS>0.01){
+    sp=(exp(-abs(p.x)*44.0)*exp(-abs(p.y)*5.0)+exp(-abs(p.y)*44.0)*exp(-abs(p.x)*5.0))*vS*0.55;
+    sp*=smoothstep(1.0,0.15,d);
+  }
+  float a=(core+halo+sp)*vA;
+  gl_FragColor=vec4(vC,clamp(a,0.,1.));
+}`;
+function buildPoints(list,radius){
+  const n=list.length,g=new THREE.BufferGeometry();
+  const pos=new Float32Array(n*3),col=new Float32Array(n*3),sz=new Float32Array(n),
+        ph=new Float32Array(n),tw=new Float32Array(n),sp=new Float32Array(n);
+  list.forEach((s,i)=>{
+    pos[i*3]=s.dir.x*radius; pos[i*3+1]=s.dir.y*radius; pos[i*3+2]=s.dir.z*radius;
+    const c=SPEC[s.spec]||SPEC.A;
+    col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];
+    sz[i]=s.size; ph[i]=Math.random()*100; tw[i]=s.twk; sp[i]=s.spike;
+  });
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('aColor',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+  g.setAttribute('aPhase',new THREE.BufferAttribute(ph,1));
+  g.setAttribute('aTwk',new THREE.BufferAttribute(tw,1));
+  g.setAttribute('aSpike',new THREE.BufferAttribute(sp,1));
+  const m=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uScale:{value:800},uSizeMul:{value:1},
+    uHorizon:{value:1},uBright:{value:1}},vertexShader:starVS,fragmentShader:starFS,
+    transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});
+  const p=new THREE.Points(g,m); p.frustumCulled=false; return p;
+}
+STARS.forEach(s=>{ s.size=Math.max(1.7,2.3+(4.9-s.mag)*1.55); s.twk=0.22+Math.random()*0.16;
+  s.spike=THREE.MathUtils.clamp((2.3-s.mag)/3.0,0,1); });
+const mainPts=buildPoints(STARS,600); skyRot.add(mainPts);
+const mainMat=mainPts.material;
+
+const hazeLayers=[];
+[[2200,760,0.62],[2600,940,0.46],[3000,1180,0.33]].forEach(([cnt,rad,br])=>{
+  const arr=[];
+  for(let i=0;i<cnt;i++){
+    let v;
+    if(Math.random()<0.62){
+      const l=Math.random()*Math.PI*2;
+      const b=(Math.random()+Math.random()+Math.random()-1.5)*0.30;
+      v=galToEq(l,b);
+    }else{
+      const u=Math.random()*2-1,t=Math.random()*Math.PI*2,r=Math.sqrt(1-u*u);
+      v=new THREE.Vector3(r*Math.cos(t),r*Math.sin(t),u);
+    }
+    const k=Math.random();
+    arr.push({dir:v,spec:['B','A','F','G','K','M'][Math.floor(Math.random()*6)],
+      size:0.95+k*k*2.2, twk:0.30+Math.random()*0.25, spike:0});
+  }
+  const p=buildPoints(arr,rad); p.material.uniforms.uBright.value=br;
+  p.userData.base=br; skyRot.add(p); hazeLayers.push(p);
+});
+
+/* --- เส้นกลุ่มดาว --- */
+const lineGroup=new THREE.Object3D(); skyRot.add(lineGroup);
+CLIST.forEach(c=>{
+  const pts=[];
+  (c.l||'').split(/\s+/).forEach(seg=>{
+    if(!seg.includes('-'))return;
+    const [a,b]=seg.split('-');
+    const ka=a.includes('.')?a:c.ab+'.'+a, kb=b.includes('.')?b:c.ab+'.'+b;
+    const A=BY[ka],B=BY[kb]; if(!A||!B)return;
+    pts.push(A.dir.clone().multiplyScalar(600),B.dir.clone().multiplyScalar(600));
+  });
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const m=new THREE.LineBasicMaterial({color:0x8ecaff,transparent:true,opacity:0,
+    depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});
+  const ls=new THREE.LineSegments(g,m); ls.frustumCulled=false;
+  ls.renderOrder=5; lineGroup.add(ls);
+  c.mesh=ls; c.target=0; c.cur=0;
+});
+
+/* --- เส้น asterism สีทอง --- */
+const astGroup=new THREE.Object3D(); skyRot.add(astGroup);
+ALIST.forEach(a=>{
+  const pts=[];
+  a.segs.forEach(([A,B])=>pts.push(A.dir.clone().multiplyScalar(596),B.dir.clone().multiplyScalar(596)));
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const m=new THREE.LineBasicMaterial({color:0xffd190,transparent:true,opacity:0,
+    depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});
+  const ls=new THREE.LineSegments(g,m); ls.frustumCulled=false;
+  ls.renderOrder=6; astGroup.add(ls);
+  a.mesh=ls; a.target=0; a.cur=0;
+});
+
+function glowTex(){
+  const s=128,cv=document.createElement('canvas');cv.width=cv.height=s;
+  const x=cv.getContext('2d'),g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+  g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.18,'rgba(255,255,255,.55)');
+  g.addColorStop(.45,'rgba(255,255,255,.14)');g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g;x.fillRect(0,0,s,s);
+  return new THREE.CanvasTexture(cv);
+}
+const gtex=glowTex();
+DSO.forEach(o=>{
+  o.dir=sphere(o.ra,o.dec,1);
+  const m=new THREE.SpriteMaterial({map:gtex,color:new THREE.Color(o.c[0],o.c[1],o.c[2]),
+    transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,opacity:0.5});
+  const sp=new THREE.Sprite(m); sp.position.copy(o.dir).multiplyScalar(600);
+  sp.scale.setScalar(o.sz); sp.renderOrder=3; skyRot.add(sp); o.mesh=sp;
+});
+
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.95,0.60,0.35);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+/* ============================================================
+   4. การควบคุมกล้อง
+   ============================================================ */
+const S={
+  yaw:Math.PI,pitch:0.55,fov:58,vy:0,vp:0,drag:false,px:0,py:0,moved:0,
+  lst:0,speed:40,playing:true,
+  month:null,showcase:true,showIdx:0,showT:0,
+  sel:null,hover:null,follow:null,uiHidden:false,
+  lagX:0,lagY:0,allLines:false,showAst:true,showLbl:false
+};
+S.lst=lstAt(new Date())*15*D2R;
+
+function aimAt(v){
+  const t=v.clone().normalize();
+  return {pitch:Math.asin(THREE.MathUtils.clamp(t.y,-1,1)),yaw:Math.atan2(-t.x,-t.z)};
+}
+const el=renderer.domElement;
+const isTouch=matchMedia('(pointer:coarse)').matches;
+let ptrs=new Map(),pinch0=0,fov0=0;
+el.addEventListener('pointerdown',e=>{
+  el.setPointerCapture(e.pointerId);
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1){S.drag=true;S.px=e.clientX;S.py=e.clientY;S.moved=0;S.vy=S.vp=0;S.follow=null;}
+  if(ptrs.size===2){const a=[...ptrs.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);fov0=S.fov;}
+});
+el.addEventListener('pointermove',e=>{
+  if(ptrs.has(e.pointerId)) ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===2){
+    const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    if(pinch0>0) S.fov=THREE.MathUtils.clamp(fov0*pinch0/d,12,96);
+    return;
+  }
+  if(S.drag){
+    const k=S.fov*D2R/innerHeight*1.25;
+    const dx=e.clientX-S.px,dy=e.clientY-S.py;
+    S.moved+=Math.abs(dx)+Math.abs(dy);
+    S.yaw+=dx*k; S.pitch=THREE.MathUtils.clamp(S.pitch+dy*k,-1.53,1.53);
+    S.vy=dx*k; S.vp=dy*k;
+    S.px=e.clientX;S.py=e.clientY;
+  } else if(!isTouch){ updateHover(e.clientX,e.clientY); }
+});
+function endPtr(e){
+  ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinch0=0;
+  if(ptrs.size===0){
+    if(S.drag&&S.moved<7) handleTap(e.clientX,e.clientY);
+    S.drag=false;
+  }
+}
+el.addEventListener('pointerup',endPtr);
+el.addEventListener('pointercancel',endPtr);
+el.addEventListener('wheel',e=>{e.preventDefault();S.fov=THREE.MathUtils.clamp(S.fov*(1+Math.sign(e.deltaY)*0.09),12,96);},{passive:false});
+
+const ray=new THREE.Raycaster(),nd=new THREE.Vector2();
+function localDirFrom(x,y){
+  nd.x=(x/innerWidth)*2-1; nd.y=-(y/innerHeight)*2+1;
+  ray.setFromCamera(nd,camera);
+  const w=ray.ray.direction.clone().normalize();
+  const inv=new THREE.Matrix4().copy(skyRot.matrixWorld).invert();
+  return w.applyMatrix4(new THREE.Matrix4().extractRotation(inv)).normalize();
+}
+function nearestStar(ld,maxDeg){
+  let best=null,bd=Math.cos(maxDeg*D2R);
+  for(const s of STARS){const d=s.dir.dot(ld); if(d>bd){bd=d;best=s;}}
+  for(const o of DSO){const d=o.dir.dot(ld); if(d>bd){bd=d;best=o;}}
+  return best;
+}
+function conAt(ld){
+  let best=null,bs=1e9;
+  for(const c of CLIST){
+    const a=Math.acos(THREE.MathUtils.clamp(c.ctr.dot(ld),-1,1));
+    const lim=c.rad*0.92+5*D2R;
+    if(a<lim){const sc=a/lim; if(sc<bs){bs=sc;best=c;}}
+  }
+  return best;
+}
+const tip=document.getElementById('tip');
+function updateHover(x,y){
+  const ld=localDirFrom(x,y);
+  const st=nearestStar(ld,(S.fov/innerHeight)*22);
+  if(st&&!S.sel){
+    tip.style.opacity=1; tip.style.left=x+'px'; tip.style.top=y+'px';
+    tip.textContent=st.th?st.th+(st.name?' · '+st.name:''):(st.name||st.n||st.bayer);
+  } else tip.style.opacity=0;
+  S.hover=conAt(ld);
+}
+function handleTap(x,y){
+  const ld=localDirFrom(x,y);
+  const st=nearestStar(ld,(S.fov/innerHeight)*26);
+  if(st){ selectStar(st); return; }
+  const c=conAt(ld);
+  if(c){ selectCon(c,false); return; }
+  if(S.sel) clearSel();
+  else if(isTouch) toggleUI();
+}
+
+/* ============================================================
+   5. UI
+   ============================================================ */
+const $=id=>document.getElementById(id);
+const panel=$('panel'),card=$('card'),settings=$('settings');
+const conList=$('conList'),chips=$('chips'),monthbar=$('monthbar');
+
+let filter='all',query='';
+const FILTERS=[['all','ทั้งหมด'],['aster','กลุ่มดาวสมมติ'],['now','เดือนที่เลือก'],['zodiac','จักรราศี'],['north','ซีกฟ้าเหนือ'],['south','ซีกฟ้าใต้']];
+const ZOD=['Ari','Tau','Gem','Cnc','Leo','Vir','Lib','Sco','Sgr','Cap','Aqr','Psc'];
+FILTERS.forEach(([k,l])=>{
+  const b=document.createElement('button');
+  b.className='chip'+(k==='all'?' on':'')+(k==='aster'?' gold':'');
+  b.textContent=l;b.dataset.k=k;
+  b.onclick=()=>{filter=k;[...chips.children].forEach(c=>c.classList.toggle('on',c.dataset.k===k));renderList();};
+  chips.appendChild(b);
+});
+$('q').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();renderList();});
+
+function makeRow(c,isAst){
+  const wrap=document.createElement('div');
+  const r=document.createElement('div');
+  r.className='row'+(isAst?' ast':'')+(S.sel&&S.sel.con===c?' sel':'');
+  const ok=S.month===null||c.months.includes(S.month);
+  r.innerHTML=`<div class="nm"><div class="th">${c.th}</div><div class="en">${c.en}</div></div>
+    <div class="mo${ok?'':' off'}">${monthText(c)}</div>`;
+  const sub=document.createElement('div');sub.className='sub';
+  c.stars.slice(0,14).forEach(s=>{
+    const sr=document.createElement('div');sr.className='srow';
+    sr.innerHTML=`<span class="by">${isAst?s.con:s.bayer}</span><span class="sn">${s.th||s.name||s.bayer}</span><span class="mg">${s.mag.toFixed(2)}</span>`;
+    sr.onclick=ev=>{ev.stopPropagation();selectStar(s);};
+    sub.appendChild(sr);
+  });
+  r.onclick=()=>{
+    const open=sub.classList.contains('open');
+    conList.querySelectorAll('.sub.open').forEach(x=>x.classList.remove('open'));
+    conList.querySelectorAll('.row.sel').forEach(x=>x.classList.remove('sel'));
+    if(!open){sub.classList.add('open');r.classList.add('sel');}
+    isAst?selectAst(c):selectCon(c,true);
+  };
+  wrap.appendChild(r);wrap.appendChild(sub);
+  return wrap;
+}
+function renderList(){
+  conList.innerHTML='';
+  if(filter==='aster'&&!query){
+    const h=document.createElement('div');h.className='head';h.textContent='กลุ่มดาวสมมติ · Asterisms';conList.appendChild(h);
+    ALIST.forEach(a=>conList.appendChild(makeRow(a,true)));
+    return;
+  }
+  let list=CLIST.slice();
+  if(filter==='zodiac') list=list.filter(c=>ZOD.includes(c.ab));
+  if(filter==='north') list=list.filter(c=>c.dec>=0);
+  if(filter==='south') list=list.filter(c=>c.dec<0);
+  if(filter==='now'&&S.month!==null) list=list.filter(c=>c.months.includes(S.month));
+
+  let starHits=[],astHits=[];
+  if(query){
+    const q=query;
+    list=list.filter(c=>c.th.includes(q)||c.en.toLowerCase().includes(q)||c.ab.toLowerCase().includes(q)||(c.gen||'').toLowerCase().includes(q));
+    astHits=ALIST.filter(a=>a.th.includes(q)||a.en.toLowerCase().includes(q));
+    starHits=STARS.filter(s=>(s.name&&s.name.toLowerCase().includes(q))||(s.th&&s.th.includes(q))).slice(0,12);
+    DSO.forEach(o=>{if(o.n.toLowerCase().includes(q)||o.th.includes(q)||o.id.toLowerCase().includes(q))starHits.push(o);});
+  }
+  if(starHits.length){
+    const h=document.createElement('div');h.className='head';h.textContent='ดาว / วัตถุ';conList.appendChild(h);
+    starHits.forEach(s=>{
+      const r=document.createElement('div');r.className='srow';
+      r.innerHTML=`<span class="by">${s.bayer||s.id||'•'}</span><span class="sn">${s.th||s.n||s.name}</span><span class="mg">${s.name||s.n||''}</span>`;
+      r.onclick=()=>selectStar(s); conList.appendChild(r);
+    });
+  }
+  if(astHits.length){
+    const h=document.createElement('div');h.className='head';h.textContent='กลุ่มดาวสมมติ';conList.appendChild(h);
+    astHits.forEach(a=>conList.appendChild(makeRow(a,true)));
+  }
+  if(!list.length&&!starHits.length&&!astHits.length){
+    conList.innerHTML='<div class="empty">ไม่พบสิ่งที่ค้นหา</div>'; return;
+  }
+  if(query&&list.length){const h=document.createElement('div');h.className='head';h.textContent='กลุ่มดาว';conList.appendChild(h);}
+  list.forEach(c=>conList.appendChild(makeRow(c,false)));
+}
+renderList();
+
+MTH.forEach((m,i)=>{
+  const b=document.createElement('button');b.textContent=m;
+  b.onclick=()=>setMonth(S.month===i?null:i); monthbar.appendChild(b);
+});
+const freeBtn=document.createElement('button');freeBtn.textContent='อิสระ';freeBtn.className='free';
+freeBtn.onclick=()=>setMonth(null);monthbar.appendChild(freeBtn);
+function paintMonth(){[...monthbar.children].forEach((b,i)=>b.classList.toggle('on',i===S.month));}
+function setMonth(m){
+  S.month=m; paintMonth(); S.showIdx=0; S.showT=0;
+  if(m!==null){
+    tweenLST(lstAt(new Date(Date.UTC(2025,m,15,14,0,0)))*15*D2R);
+    toast('ท้องฟ้าเดือน'+MTHFULL[m]+' · เวลา 21:00 น.');
+  } else toast('โหมดอิสระ — ท้องฟ้าหมุนต่อเนื่อง');
+  renderList();
+}
+let lstTween=null;
+function tweenLST(t){
+  let cur=S.lst%(Math.PI*2); let d=t-cur;
+  while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2;
+  lstTween={from:S.lst,to:S.lst+d,t:0,dur:2.2};
+}
+
+function clearSel(){S.sel=null;card.classList.remove('open');card.classList.remove('g');
+  $('reticle').style.opacity=0;
+  CLIST.forEach(c=>c.target=0);ALIST.forEach(a=>a.target=0);
+  conList.querySelectorAll('.row.sel').forEach(x=>x.classList.remove('sel'));}
+$('cardX').onclick=clearSel;
+const addMeta=(k,v,th)=>$('cMeta').insertAdjacentHTML('beforeend',`<dt>${k}</dt><dd class="${th?'th':''}">${v}</dd>`);
+
+function selectStar(s){
+  const isD=!!s.id;
+  S.sel={star:s,con:CMAP[s.con],dir:s.dir};
+  CLIST.forEach(c=>c.target=0); ALIST.forEach(a=>a.target=0);
+  if(S.sel.con) S.sel.con.target=1;
+  card.classList.remove('g');
+  $('cKind').textContent=isD?'วัตถุห้วงอวกาศลึก':'ดาวฤกษ์';
+  $('cName').textContent=isD?s.th:(s.th||s.name||(s.bayer+' '+(CMAP[s.con]?CMAP[s.con].th:'')));
+  $('cLat').textContent=isD?(s.n+' · '+s.id):(s.name?s.name+'  ·  '+s.bayer+' '+(CMAP[s.con]?CMAP[s.con].gen:''):(s.bayer+' '+(CMAP[s.con]?CMAP[s.con].gen:'')));
+  $('cDesc').textContent='';
+  $('cMeta').innerHTML='';
+  addMeta('โชติมาตรปรากฏ',s.mag.toFixed(2));
+  if(!isD) addMeta('ชนิดสเปกตรัม',s.spec+' — '+({O:'น้ำเงินร้อนจัด',B:'ขาวน้ำเงิน',A:'ขาว',F:'ขาวอมเหลือง',G:'เหลือง',K:'ส้ม',M:'แดงเย็น'})[s.spec],true);
+  else addMeta('ประเภท',s.t,true);
+  addMeta('ไรต์แอสเซนชัน',fmtRA(s.ra));
+  addMeta('เดคลิเนชัน',fmtDec(s.dec));
+  const c=CMAP[s.con]; if(c) addMeta('กลุ่มดาว',c.th+' ('+c.ab+')',true);
+  $('cWiki').href='https://en.wikipedia.org/wiki/'+(isD?s.w:wikiStar(s));
+  card.classList.add('open'); focusOn(s.dir, isD?26:22);
+}
+function selectCon(c,fromList){
+  S.sel={con:c,dir:c.ctr};
+  CLIST.forEach(x=>x.target=0); ALIST.forEach(a=>a.target=0); c.target=1;
+  card.classList.remove('g');
+  $('cKind').textContent='กลุ่มดาว';
+  $('cName').textContent=c.th;
+  $('cLat').textContent=c.en+'  ·  '+c.ab;
+  $('cDesc').textContent=c.d||'';
+  $('cMeta').innerHTML='';
+  addMeta('มองเห็นดีที่สุด',monthText(c),true);
+  addMeta('มุมเงยสูงสุด',c.maxAlt.toFixed(0)+'°');
+  addMeta('จำนวนดาวในแผนที่',c.stars.length+' ดวง',true);
+  addMeta('ดาวสว่างสุด',(c.stars[0].th||c.stars[0].name||c.stars[0].bayer),true);
+  $('cWiki').href='https://en.wikipedia.org/wiki/'+c.w;
+  card.classList.add('open');
+  focusOn(c.ctr, THREE.MathUtils.clamp(c.rad/D2R*2.6,26,78));
+  if(!fromList) conList.querySelectorAll('.row.sel').forEach(x=>x.classList.remove('sel'));
+}
+function selectAst(a){
+  S.sel={con:a,dir:a.ctr,ast:true};
+  CLIST.forEach(x=>x.target=0); ALIST.forEach(x=>x.target=0); a.target=1;
+  card.classList.add('g');
+  $('cKind').textContent='กลุ่มดาวสมมติ · Asterism';
+  $('cName').textContent=a.th;
+  $('cLat').textContent=a.en;
+  $('cDesc').textContent=a.d||'';
+  $('cMeta').innerHTML='';
+  addMeta('มองเห็นดีที่สุด',monthText(a),true);
+  addMeta('ดาวประกอบ',a.stars.length+' ดวง',true);
+  addMeta('ดาวสว่างสุด',(a.stars[0].th||a.stars[0].name),true);
+  addMeta('ขนาดเชิงมุม','≈ '+(a.rad*2/D2R).toFixed(0)+'°');
+  $('cWiki').href='https://en.wikipedia.org/wiki/'+a.w;
+  card.classList.add('open');
+  focusOn(a.ctr, THREE.MathUtils.clamp(a.rad/D2R*2.5,30,86));
+}
+function fmtRA(h){const H=Math.floor(h),m=Math.floor((h-H)*60),s=Math.round((((h-H)*60)-m)*60);return `${H}ʰ ${String(m).padStart(2,'0')}ᵐ ${String(s).padStart(2,'0')}ˢ`;}
+function fmtDec(d){const sg=d<0?'−':'+';d=Math.abs(d);const D=Math.floor(d),m=Math.round((d-D)*60);return `${sg}${D}° ${String(m).padStart(2,'0')}′`;}
+
+let followTween=null;
+function focusOn(localDir,fov){
+  const wv=localDir.clone().applyMatrix4(new THREE.Matrix4().extractRotation(skyRot.matrixWorld));
+  const a=aimAt(wv);
+  let dy=a.yaw-S.yaw; while(dy>Math.PI)dy-=Math.PI*2; while(dy<-Math.PI)dy+=Math.PI*2;
+  followTween={y0:S.yaw,y1:S.yaw+dy,p0:S.pitch,p1:a.pitch,f0:S.fov,f1:fov,t:0,dur:1.25};
+  S.follow=localDir.clone();
+  if(innerWidth<860) panel.classList.remove('open');
+}
+
+$('btnList').onclick=()=>{panel.classList.toggle('open');settings.classList.remove('open');
+  $('btnList').classList.toggle('on',panel.classList.contains('open'));$('btnSettings').classList.remove('on');};
+$('btnSettings').onclick=()=>{settings.classList.toggle('open');panel.classList.remove('open');
+  $('btnSettings').classList.toggle('on',settings.classList.contains('open'));$('btnList').classList.remove('on');};
+$('btnPlay').onclick=()=>{S.playing=!S.playing;$('btnPlay').textContent=S.playing?'⏸':'▶';};
+$('btnFull').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();};
+$('btnHide').onclick=toggleUI;
+function toggleUI(){S.uiHidden=!S.uiHidden;$('ui').classList.toggle('hidden',S.uiHidden);
+  if(S.uiHidden)toast('แตะที่ว่างหรือกด H เพื่อแสดงเมนูอีกครั้ง');}
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  const k=e.key.toLowerCase();
+  if(k==='h')toggleUI();
+  if(k==='l')$('btnList').click();
+  if(k==='f')$('btnFull').click();
+  if(k===' '){e.preventDefault();$('btnPlay').click();}
+  if(k==='escape')clearSel();
+});
+el.addEventListener('dblclick',()=>{if(S.uiHidden)toggleUI();});
+
+function bind(id,vid,fn,fmt){const r=$(id);r.addEventListener('input',()=>{const v=+r.value;$(vid).textContent=fmt(v);fn(v);});}
+bind('rSpeed','vSpeed',v=>S.speed=v,v=>v===0?'หยุด':v+'×');
+bind('rMw','vMw',v=>mwMat.uniforms.uO.value=v/100,v=>(v/100).toFixed(2));
+bind('rBloom','vBloom',v=>bloom.strength=v/100,v=>(v/100).toFixed(2));
+bind('rBright','vBright',v=>mainMat.uniforms.uBright.value=v/100,v=>(v/100).toFixed(2));
+bind('rSize','vSize',v=>{mainMat.uniforms.uSizeMul.value=v/100;hazeLayers.forEach(p=>p.material.uniforms.uSizeMul.value=v/100);},v=>(v/100).toFixed(2));
+bind('rHaze','vHaze',v=>hazeLayers.forEach(p=>p.material.uniforms.uBright.value=p.userData.base*v/100),v=>(v/100).toFixed(2));
+function sw(id,init,fn){const e=$(id);let on=init;e.classList.toggle('on',on);e.onclick=()=>{on=!on;e.classList.toggle('on',on);fn(on);};}
+sw('swMw',true,v=>mw.visible=v);
+sw('swLbl',false,v=>{S.showLbl=v;if(!v)starLbls.forEach(l=>l.el.style.display='none');});
+sw('swAst',true,v=>{S.showAst=v;astGroup.visible=v;});
+sw('swHz',true,v=>{mainMat.uniforms.uHorizon.value=v?1:0;hazeLayers.forEach(p=>p.material.uniforms.uHorizon.value=v?1:0);});
+sw('swDir',true,v=>dirLayer.style.display=v?'':'none');
+sw('swAll',false,v=>S.allLines=v);
+sw('swShow',true,v=>{S.showcase=v;S.showT=0;});
+
+let toastT;
+function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>e.style.opacity=0,2600);}
+
+/* --- ป้าย --- */
+const dirLayer=$('dirLayer'),lblLayer=$('lblLayer'),reticle=$('reticle');
+const DIRS=[['N',0,1],['NE',45,0],['E',90,1],['SE',135,0],['S',180,1],['SW',225,0],['W',270,1],['NW',315,0]];
+const dirEls=DIRS.map(([t,az,maj])=>{
+  const d=document.createElement('div');d.className='dir'+(maj?'':' minor');d.textContent=t;
+  dirLayer.appendChild(d);
+  const a=az*D2R;
+  return {el:d,v:new THREE.Vector3(Math.sin(a),0,-Math.cos(a))};
+});
+const conLbls=new Map();
+function conLabel(c,gold){
+  if(conLbls.has(c.ab))return conLbls.get(c.ab);
+  const d=document.createElement('div');d.className='clbl'+(gold?' gold':'');
+  d.innerHTML=`<div class="a">${c.th}</div><div class="b">${gold?c.en:c.ab}</div>`;
+  lblLayer.appendChild(d);conLbls.set(c.ab,d);return d;
+}
+// ป้ายชื่อดาวสว่าง
+const BRIGHT=STARS.filter(s=>s.mag<=1.5&&(s.th||s.name)).sort((a,b)=>a.mag-b.mag).slice(0,20);
+const starLbls=BRIGHT.map(s=>{
+  const d=document.createElement('div');d.className='slbl';d.style.display='none';
+  d.innerHTML=`<div class="a">${(s.th||s.name).split(' (')[0]}</div><div class="b">${s.name||''}</div>`;
+  lblLayer.appendChild(d);
+  return {el:d,s};
+});
+
+const projV=new THREE.Vector3();
+function project(v3){
+  projV.copy(v3).project(camera);
+  return {x:(projV.x*0.5+0.5)*innerWidth,y:(-projV.y*0.5+0.5)*innerHeight,vis:projV.z<1};
+}
+
+/* ============================================================
+   6. ลูป
+   ============================================================ */
+const clock=new THREE.Clock();
+let t0=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05); t0+=dt;
+
+  if(lstTween){
+    lstTween.t+=dt; const k=Math.min(1,lstTween.t/lstTween.dur);
+    const e=k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    S.lst=lstTween.from+(lstTween.to-lstTween.from)*e;
+    if(k>=1)lstTween=null;
+  } else if(S.playing){
+    S.lst+=dt*(2*Math.PI/86164)*S.speed;
+  }
+  skyRot.rotation.z=-S.lst;
+  skyRot.updateMatrixWorld(true);
+
+  if(!S.drag&&!followTween){
+    S.yaw+=S.vy; S.pitch=THREE.MathUtils.clamp(S.pitch+S.vp,-1.53,1.53);
+    S.vy*=0.92; S.vp*=0.92;
+    if(Math.abs(S.vy)<1e-5)S.vy=0; if(Math.abs(S.vp)<1e-5)S.vp=0;
+  }
+  if(followTween){
+    followTween.t+=dt;const k=Math.min(1,followTween.t/followTween.dur);
+    const e=1-Math.pow(1-k,3);
+    S.yaw=followTween.y0+(followTween.y1-followTween.y0)*e;
+    S.pitch=followTween.p0+(followTween.p1-followTween.p0)*e;
+    S.fov=followTween.f0+(followTween.f1-followTween.f0)*e;
+    if(k>=1)followTween=null;
+  } else if(S.follow&&!S.drag){
+    const wv=S.follow.clone().applyMatrix4(new THREE.Matrix4().extractRotation(skyRot.matrixWorld));
+    const a=aimAt(wv);
+    let dy=a.yaw-S.yaw; while(dy>Math.PI)dy-=Math.PI*2; while(dy<-Math.PI)dy+=Math.PI*2;
+    S.yaw+=dy*0.06; S.pitch+=(a.pitch-S.pitch)*0.06;
+  }
+
+  camera.fov=S.fov; camera.updateProjectionMatrix();
+  camera.rotation.set(S.pitch,S.yaw,0,'YXZ');
+
+  S.lagX+=(-S.vy*380-S.lagX)*0.06; S.lagY+=(S.vp*380-S.lagY)*0.06;
+  const dx=9.5*Math.sin(t0*0.071)+THREE.MathUtils.clamp(S.lagX,-14,14);
+  const dy=6.5*Math.cos(t0*0.053)+THREE.MathUtils.clamp(S.lagY,-10,10);
+  const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
+  const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
+  camera.position.copy(right.multiplyScalar(dx)).add(up.multiplyScalar(dy));
+
+  if(S.showcase&&!S.sel){
+    S.showT+=dt;
+    const feat=S.month!==null?FEAT[S.month]:FEAT[new Date().getMonth()];
+    if(feat.length){
+      if(S.showT>8){S.showT=0;S.showIdx=(S.showIdx+1)%feat.length;}
+      const active=feat[S.showIdx];
+      CLIST.forEach(c=>c.target=(c.ab===active)?0.85:(S.allLines?0.16:0));
+    }
+  } else if(!S.sel){
+    CLIST.forEach(c=>c.target=S.allLines?0.16:0);
+  }
+  if(!S.sel) ALIST.forEach(a=>a.target=0);
+  if(S.hover&&!S.sel&&!isTouch) S.hover.target=Math.max(S.hover.target,0.72);
+  if(S.sel&&S.sel.con) S.sel.con.target=1;
+
+  const upd=(c,gold,mul)=>{
+    c.cur+=(c.target-c.cur)*Math.min(1,dt*5);
+    c.mesh.material.opacity=c.cur*mul;
+    c.mesh.visible=c.cur>0.01;
+    const lb=conLbls.get(c.ab);
+    if(c.cur>0.12){
+      const e2=conLabel(c,gold);
+      const p=project(c.ctr.clone().multiplyScalar(600).applyMatrix4(skyRot.matrixWorld));
+      if(p.vis){e2.style.display='';e2.style.left=p.x+'px';e2.style.top=p.y+'px';e2.style.opacity=Math.min(1,(c.cur-0.12)*1.6);}
+      else e2.style.display='none';
+    } else if(lb) lb.style.display='none';
+  };
+  CLIST.forEach(c=>upd(c,false,0.75));
+  ALIST.forEach(a=>upd(a,true,0.62));
+
+  dirEls.forEach(d=>{
+    const p=project(d.v.clone().multiplyScalar(900));
+    if(p.vis){d.el.style.display='';d.el.style.left=p.x+'px';d.el.style.top=p.y+'px';}
+    else d.el.style.display='none';
+  });
+
+  if(S.showLbl){
+    starLbls.forEach(l=>{
+      const p=project(l.s.dir.clone().multiplyScalar(600).applyMatrix4(skyRot.matrixWorld));
+      if(p.vis){l.el.style.display='';l.el.style.left=p.x+'px';l.el.style.top=(p.y+18)+'px';}
+      else l.el.style.display='none';
+    });
+  }
+
+  if(S.sel&&S.sel.star){
+    const p=project(S.sel.star.dir.clone().multiplyScalar(600).applyMatrix4(skyRot.matrixWorld));
+    if(p.vis){reticle.style.opacity=1;reticle.style.left=p.x+'px';reticle.style.top=p.y+'px';}
+    else reticle.style.opacity=0;
+  }
+
+  const sc=renderer.domElement.height/(2*Math.tan(S.fov*D2R/2));
+  mainMat.uniforms.uTime.value=t0; mainMat.uniforms.uScale.value=sc;
+  hazeLayers.forEach(p=>{p.material.uniforms.uTime.value=t0;p.material.uniforms.uScale.value=sc;});
+  DSO.forEach(o=>{o.mesh.material.opacity=0.40+0.12*Math.sin(t0*0.55+o.ra);});
+
+  composer.render();
+}
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);
+  bloom.resolution.set(innerWidth,innerHeight);
+});
+
+paintMonth();
+animate();
+setTimeout(()=>{const l=$('loader');l.style.opacity=0;setTimeout(()=>l.remove(),900);},450);
+setTimeout(()=>toast(isTouch?'ลากเพื่อมองรอบทิศ · แตะดาวเพื่อดูข้อมูล':'ลากเมาส์เพื่อมอง · เลื่อนล้อเพื่อซูม · คลิกดาวเพื่อดูข้อมูล'),1100);
+</script>
+</body>
+</html>
