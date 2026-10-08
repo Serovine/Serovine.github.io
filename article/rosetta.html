@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ศิลาโรเซตตา: ภาษาที่ตายไปกว่า 1,400 ปี</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a2f4e;
+            --secondary: #c9a227;
+            --accent: #e8dcc3;
+            --bg: #faf8f4;
+            --card-bg: #ffffff;
+            --text: #2c2c2c;
+            --text-light: #666;
+            --border: #e0d9c9;
+            --highlight: #8b6914;
+            --gradient-hero: linear-gradient(135deg, #1a2f4e 0%, #2a4364 50%, #1a2f4e 100%);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), #e6c84c, var(--secondary));
+            width: 0%;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(201,162,39,0.5);
+            transition: width 0.1s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26,47,78,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            padding: 0.6rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(201,162,39,0.3);
+        }
+
+        nav .logo {
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav .logo span {
+            font-size: 1.4rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+            background: rgba(201,162,39,0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-hero);
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a227' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #fff;
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero .subtitle {
+            color: var(--secondary);
+            font-size: clamp(0.95rem, 2vw, 1.2rem);
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero .tagline {
+            color: var(--accent);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            opacity: 0.9;
+        }
+
+        .hero-decoration {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-decoration span {
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--secondary);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* Section Styles */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 0.3rem 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(201,162,39,0.05);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin: 2.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3::before {
+            content: '◆';
+            color: var(--secondary);
+            font-size: 0.7rem;
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            text-align: justify;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin: 1.5rem 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card.highlight {
+            border-left: 4px solid var(--secondary);
+            background: linear-gradient(135deg, #fff 0%, #fdfaf0 100%);
+        }
+
+        .card.dark {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .card.dark h4 {
+            color: var(--secondary);
+        }
+
+        .card.dark p {
+            color: var(--accent);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), #e6c84c);
+        }
+
+        .info-card h4 {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .info-card p {
+            font-size: 0.92rem;
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
+
+        .info-card .icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Three Scripts Display */
+        .scripts-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .script-card {
+            background: var(--primary);
+            border-radius: 12px;
+            padding: 1.8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .script-card:hover {
+            transform: scale(1.03);
+        }
+
+        .script-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        .script-card .glyph-preview {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .script-card h4 {
+            color: var(--secondary);
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .script-card .date {
+            color: #8fa3bd;
+            font-size: 0.82rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .script-card p {
+            color: var(--accent);
+            font-size: 0.88rem;
+            text-align: center;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 3rem 0;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--secondary), var(--primary));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.55rem;
+            top: 0.5rem;
+            width: 14px;
+            height: 14px;
+            background: var(--secondary);
+            border: 3px solid var(--bg);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+
+        .timeline-item .year {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-item .event {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .timeline-item.major::before {
+            background: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary), 0 0 12px rgba(26,47,78,0.3);
+        }
+
+        .timeline-item.major .year {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Pull Quote */
+        .pull-quote {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a4364 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2.5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pull-quote::before {
+            content: '"';
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            color: var(--secondary);
+            position: absolute;
+            top: -0.5rem;
+            left: 1rem;
+            opacity: 0.3;
+        }
+
+        .pull-quote p {
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 500;
+            text-align: center;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pull-quote .author {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: block;
+        }
+
+        /* Key Figure Cards */
+        .figure-card {
+            display: flex;
+            gap: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin: 1.5rem 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .figure-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .figure-card .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #2a4364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            border: 3px solid var(--secondary);
+        }
+
+        .figure-card .info h4 {
+            margin: 0 0 0.3rem;
+            color: var(--primary);
+        }
+
+        .figure-card .info .role {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .figure-card .info p {
+            font-size: 0.92rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.92rem;
+        }
+
+        .comparison-table thead {
+            background: var(--primary);
+        }
+
+        .comparison-table thead th {
+            color: var(--secondary);
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        .comparison-table tbody td {
+            padding: 0.9rem 1.2rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tbody tr:nth-child(even) td {
+            background: #fdfaf0;
+        }
+
+        .comparison-table tbody tr:hover td {
+            background: #f5efdf;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: var(--primary);
+            width: 180px;
+        }
+
+        /* Steps */
+        .step-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .step-card .step-number {
+            position: absolute;
+            top: -0.8rem;
+            right: 1rem;
+            background: var(--primary);
+            color: var(--secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .step-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .step-card p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .step-card .result {
+            display: inline-block;
+            background: rgba(201,162,39,0.12);
+            color: var(--highlight);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Debate Cards */
+        .debate-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .debate-card {
+            border-radius: 14px;
+            padding: 1.8rem;
+            position: relative;
+        }
+
+        .debate-card.return {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border: 1px solid #ffcc02;
+        }
+
+        .debate-card.keep {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 1px solid #4caf50;
+        }
+
+        .debate-card h4 {
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .debate-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .debate-card li {
+            padding: 0.5rem 0;
+            font-size: 0.92rem;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .debate-card li:last-child {
+            border-bottom: none;
+        }
+
+        .debate-card li::before {
+            content: '▸ ';
+            font-weight: bold;
+        }
+
+        /* Stone Info Grid */
+        .stone-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .spec-item {
+            background: var(--primary);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .spec-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .spec-item .value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            display: block;
+            font-weight: 700;
+        }
+
+        .spec-item .label {
+            color: var(--accent);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        /* Highlight Text */
+        .highlight-text {
+            background: linear-gradient(120deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+            margin: 1.5rem 0;
+        }
+
+        .highlight-text strong {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--accent);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: #8fa3bd;
+        }
+
+        footer .divider {
+            width: 60px;
+            height: 2px;
+            background: var(--secondary);
+            margin: 1.5rem auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .figure-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .figure-card .avatar {
+                margin: 0 auto;
+            }
+
+            .pull-quote::before {
+                font-size: 3rem;
+            }
+
+            .comparison-table {
+                font-size: 0.82rem;
+            }
+
+            .comparison-table td:first-child {
+                width: 120px;
+            }
+        }
+
+        /* Fade-in Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: rgba(201,162,39,0.15);
+            color: var(--highlight);
+            padding: 0.2rem 0.7rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.2rem 0.3rem 0.2rem 0;
+        }
+
+        /* Key Insight Box */
+        .key-insight {
+            background: linear-gradient(135deg, #1a2f4e, #2a4364);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(201,162,39,0.3);
+            position: relative;
+        }
+
+        .key-insight::before {
+            content: '💡 ข้อคิดสำคัญ';
+            position: absolute;
+            top: -0.8rem;
+            left: 1.5rem;
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 0.2rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .key-insight p {
+            color: #fff;
+            margin: 0;
+            font-size: 1rem;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo"><span>𓂀</span> Rosetta Stone</div>
+        <ul>
+            <li><a href="#background">ภูมิหลัง</a></li>
+            <li><a href="#stone">ศิลา</a></li>
+            <li><a href="#discovery">การค้นพบ</a></li>
+            <li><a href="#decipher">ถอดรหัส</a></li>
+            <li><a href="#impact">ผลกระทบ</a></li>
+            <li><a href="#debate">ข้อถกเถียง</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-decoration">
+                <span>𓂀</span><span>𓆣</span><span>𓅓</span><span>𓋹</span><span>𓊪</span>
+            </div>
+            <h1>Rosetta Stone</h1>
+            <p class="subtitle">ภาษาที่ตายไปกว่า 1,400 ปี และการถอดรหัสที่ใช้เวลายี่สิบสามปี</p>
+            <p class="tagline">
+                เมื่อแผ่นหินสีเข้มหนัก 760 กิโลกรัม กลายเป็นกุญแจที่เปิดประตูสู่อารยธรรมอียิปต์โบราณทั้งหมด
+                นี่คือเรื่องราวของการค้นพบ การแย่งชิง และการถอดรหัสที่เปลี่ยนวิธีที่เราเข้าใจประวัติศาสตร์ตลอดกาล
+            </p>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('intro').scrollIntoView()">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Introduction -->
+        <section id="intro" class="fade-in">
+            <div class="container">
+                <div class="card highlight">
+                    <p>
+                        ในห้องที่ 4 ของพิพิธภัณฑ์บริติชมีแผ่นหินสีเข้มสูงราว 112 เซนติเมตร หนักประมาณ 760 กิโลกรัม วางอยู่ในตู้กระจก มันไม่สวยเหมือนรูปปั้นฟาโรห์ ไม่ใหญ่เหมือนเสาโอเบลิสก์ และเนื้อหาที่จารึกไว้ก็เป็นเพียงประกาศทางการเมืองฉบับหนึ่งของสมัยราชวงศ์ปโตเลมี แต่ผมเชื่อว่านี่คือวัตถุที่เปลี่ยนความรู้เรื่องอียิปต์โบราณมากที่สุดชิ้นหนึ่ง
+                    </p>
+                    <p>
+                        ในบทความนี้ ผมตั้งคำถามหลักสามข้อ ได้แก่ <strong>สาเหตุ</strong> ที่ทำให้อียิปต์สร้างจารึกสามภาษาและอักษรภาพกลายเป็นสิ่งที่ไม่มีใครอ่านได้ <strong>กระบวนการ</strong> ที่หินก้อนนี้ถูกค้นพบ ถูกแย่งชิง และถูกใช้ถอดรหัส และ<strong>ผลกระทบ</strong>ที่การถอดรหัสนี้สร้างต่อความเข้าใจประวัติศาสตร์ พร้อมทั้งข้อถกเถียงที่ยังไม่จบ
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 1: Background -->
+        <section id="background" class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 1</span>
+                    <h2>ภูมิหลัง: ทำไมภาษาที่ใช้มาสามพันปีจึงอ่านไม่ได้</h2>
+                </div>
+
+                <h3>ระบบเขียนของอียิปต์มีสามชั้น</h3>
+                <p>ภาพจำของคนทั่วไปคือ "อักษรเฮียโรกลิฟ" แต่จริง ๆ แล้วอียิปต์โบราณใช้ระบบเขียนหลายแบบที่วิวัฒนาการต่อเนื่องกัน ผมขอแยกให้เห็นชัดดังนี้</p>
+
+                <div class="scripts-display">
+                    <div class="script-card">
+                        <span class="glyph-preview">𓂀 𓆣 𓅓</span>
+                        <h4>เฮียโรกลิฟ</h4>
+                        <p class="date">ราว 3200 ปีก่อน ค.ศ.</p>
+                        <p>อักษรภาพแบบเป็นทางการ ใช้ในงานศาสนา อนุสาวรีย์ และผนังวิหาร ชาวกรีกเรียกว่า <em>hieroglyphika</em> แปลว่า "การสลักศักดิ์สิทธิ์"</p>
+                    </div>
+                    <div class="script-card">
+                        <span class="glyph-preview">𓋿 𓌀 𓎡</span>
+                        <h4>เฮียราติก</h4>
+                        <p class="date">รูปย่อของเฮียโรกลิฟ</p>
+                        <p>อักษรเขียนด้วยพู่กันบนกระดาษปาปิรุส เป็นรูปย่อและลากต่อเนื่อง ใช้ในงานธุรการและศาสนา</p>
+                    </div>
+                    <div class="script-card">
+                        <span class="glyph-preview">𓎛 𓏏 𓆑</span>
+                        <h4>เดโมติก</h4>
+                        <p class="date">ราว 650 ปีก่อน ค.ศ.</p>
+                        <p>รูปแบบที่ย่อมากขึ้นอีก เป็นอักษรของงานเอกสารทั่วไป สัญญา และจดหมาย</p>
+                    </div>
+                </div>
+
+                <h3>การตายของอักษร</h3>
+                <p>ช่วงที่ผู้ปกครองของอียิปต์เปลี่ยนเป็นกรีก (ปโตเลมี) แล้วเป็นโรมัน ระบบเขียนพื้นเมืองค่อย ๆ ลดบทบาทลง ผมสรุปปัจจัยสำคัญได้ดังนี้</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="icon">🏛️</span>
+                        <h4>ภาษากรีกครองตำแหน่ง</h4>
+                        <p>ภาษากรีกกลายเป็นภาษาราชการและภาษาของการค้า ผู้ที่ต้องการงานในระบบรัฐจึงต้องเรียนกรีก ทำให้ระบบเขียนพื้นเมืองค่อย ๆ ถูกแทนที่</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">✝️</span>
+                        <h4>คริสต์ศาสนาแพร่เข้ามา</h4>
+                        <p>ชาวคริสต์ในอียิปต์ (คอปต์) พัฒนาอักษรคอปติกขึ้นจากอักษรกรีก ซึ่งทุกคนอ่านออกง่ายกว่า แทนที่จะใช้ระบบเดิม</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">🔒</span>
+                        <h4>วิหารเก่าถูกปิด</h4>
+                        <p>จักรพรรดิธีโอโดซิอุสที่ 1 ออกกฎหมายห้ามพิธีกรรมนอกศาสนาในปลายศตวรรษที่ 4 ทำให้นักบวชผู้รักษาความรู้เฮียโรกลิฟสูญเสียที่อยู่</p>
+                    </div>
+                </div>
+
+                <div class="card dark">
+                    <h4>จุดสิ้นสุดที่วัดได้</h4>
+                    <p>หลักฐานที่ผู้เชี่ยวชาญใช้ระบุ "จุดสิ้นสุด" คือจารึกที่วิหารไอซิสบนเกาะฟีลี (Philae) ใกล้อัสวาน — จารึกเฮียโรกลิฟชิ้นสุดท้ายที่มีวันที่ชัดเจนลงวันที่ <strong style="color:var(--secondary)">ค.ศ. 394</strong> และจารึกเดโมติกชิ้นสุดท้ายลงวันที่ <strong style="color:var(--secondary)">ค.ศ. 452</strong> หลังจากนั้นไม่มีใครเขียนหรืออ่านระบบเหล่านี้ได้อีกเลย</p>
+                    <p style="margin-top:1rem; font-size:1.3rem; text-align:center; color:var(--secondary); font-weight:700;">
+                        1,428 ปี แห่งความเงียบงัน<br>
+                        <span style="font-size:0.85rem; font-weight:400; color:var(--accent);">(ค.ศ. 394 – ค.ศ. 1822)</span>
+                    </p>
+                </div>
+
+                <h3>ยุคแห่งความเข้าใจผิด</h3>
+                <p>ในช่วงเวลาแห่งความเงียบงันนั้น ชาวยุโรปไม่ได้เพิกเฉยต่ออักษรเฮียโรกลิฟเลย ตรงกันข้าม พวกเขาสนใจมาก แต่ตีความผิดแนวทางอย่างสิ้นเชิง</p>
+
+                <div class="figure-card">
+                    <div class="avatar">📜</div>
+                    <div class="info">
+                        <h4>Horapollo</h4>
+                        <p class="role">นักเขียนชาวอียิปต์ ราวศตวรรษที่ 5</p>
+                        <p>เขียนงานชื่อ <em>Hieroglyphica</em> อธิบายว่าอักษรแต่ละตัวเป็นสัญลักษณ์เชิงปรัชญา หนังสือเล่มนี้มีอิทธิพลต่อยุโรปยุคเรอเนซองส์อย่างมาก และผลักให้คนมองเฮียโรกลิฟเป็นรหัสลึกลับมากกว่าระบบเสียงของภาษา</p>
+                    </div>
+                </div>
+
+                <div class="figure-card">
+                    <div class="avatar">⛪</div>
+                    <div class="info">
+                        <h4>Athanasius Kircher</h4>
+                        <p class="role">นักวิชาการเยซูอิต ศตวรรษที่ 17</p>
+                        <p>ตีพิมพ์งานที่อ้างว่าอ่านเฮียโรกลิฟได้ แต่คำแปลของเขาเป็นข้อความลึกลับเชิงปรัชญาล้วน ๆ อย่างไรก็ตาม Kircher ทำสิ่งที่ถูกต้องไว้อย่างหนึ่ง — เสนอว่าภาษาคอปติกสืบเนื่องจากภาษาอียิปต์โบราณ ซึ่งภายหลังกลายเป็นกุญแจสำคัญของการถอดรหัส</p>
+                    </div>
+                </div>
+
+                <div class="key-insight">
+                    <p>ก่อนปี 1799 ปัญหาไม่ได้อยู่ที่ขาดความพยายาม แต่อยู่ที่<strong style="color:var(--secondary)">ไม่มีข้อความสองภาษาที่ใช้ตรวจสอบสมมติฐานได้</strong> และมีสมมติฐานครอบงำที่ผิด คือเชื่อว่าอักษรเหล่านี้เป็นสัญลักษณ์ความคิดล้วน ๆ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 2: The Stone -->
+        <section id="stone" class="fade-in" style="background: #f0ece3;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 2</span>
+                    <h2>หินก้อนนี้คืออะไร</h2>
+                </div>
+
+                <h3>ข้อมูลทางกายภาพ</h3>
+                <div class="stone-specs">
+                    <div class="spec-item">
+                        <span class="value">112.3</span>
+                        <span class="label">ซม. (สูง)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="value">75.7</span>
+                        <span class="label">ซม. (กว้าง)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="value">28.4</span>
+                        <span class="label">ซม. (หนา)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="value">760</span>
+                        <span class="label">กก. (น้ำหนัก)</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>สภาพปัจจุบัน</h4>
+                    <p>วัสดุคือ <strong>แกรโนไดโอไรต์ (granodiorite)</strong> ไม่ใช่หินบะซอลต์ตามที่บางแหล่งเคยระบุ หินเป็นเศษของแผ่นศิลาที่ใหญ่กว่าเดิม โดยส่วนบนและมุมขวาล่างหักหายไป ข้อความแบ่งเป็นสามส่วน:</p>
+                    <p>
+                        <span class="badge">บน: เฮียโรกลิฟ (14 บรรทัด)</span>
+                        <span class="badge">กลาง: เดโมติก (32 บรรทัด)</span>
+                        <span class="badge">ล่าง: กรีกโบราณ (54 บรรทัด)</span>
+                    </p>
+                </div>
+
+                <h3>เนื้อหา: พระราชโองการแห่งเมมฟิส</h3>
+                <p>ข้อความทั้งสามส่วนเป็นเนื้อหาเดียวกัน เรียกว่า <strong>พระราชโองการแห่งเมมฟิส (Memphis Decree)</strong> ลงวันที่ตรงกับ 27 มีนาคม 196 ปีก่อนคริสตกาล ออกโดยสภานักบวชของอียิปต์ที่ประชุมกันที่เมมฟิส เพื่อฉลองครบรอบหนึ่งปีของพิธีราชาภิเษก <strong>ปโตเลมีที่ 5 เอปิฟาเนส</strong> ซึ่งขณะนั้นเป็นเด็กอายุประมาณ 13 ปี</p>
+
+                <div class="card highlight">
+                    <h4>สาระสำคัญของพระราชโองการ</h4>
+                    <ul style="padding-left:1.2rem; margin:1rem 0;">
+                        <li style="margin-bottom:0.5rem;">ยกย่องกษัตริย์ในฐานะผู้ทำคุณประโยชน์แก่วิหารและประชาชน</li>
+                        <li style="margin-bottom:0.5rem;">ลดหรือยกเว้นภาษีบางประเภทให้วิหาร และปล่อยตัวนักโทษบางกลุ่ม</li>
+                        <li style="margin-bottom:0.5rem;">เล่าถึงชัยชนะของกษัตริย์เหนือกบฏ (รวมถึงการปราบกบฏที่ป้อมในเขตเดลต้า)</li>
+                        <li style="margin-bottom:0.5rem;">สั่งให้ตั้งรูปปั้นกษัตริย์และประกอบพิธีบูชาในวิหารทั่วอียิปต์</li>
+                        <li><strong>สั่งให้จารึกพระราชโองการนี้ไว้ในอักษร "ศักดิ์สิทธิ์ อักษรพื้นเมือง และอักษรกรีก"</strong></li>
+                    </ul>
+                </div>
+
+                <div class="pull-quote">
+                    <p>ประโยคสุดท้ายสำคัญมาก เพราะแปลว่าจารึกสามภาษาไม่ได้เป็นความบังเอิญ — มันถูกกำหนดไว้ในเนื้อหาของพระราชโองการเอง</p>
+                </div>
+
+                <h3>ทำไมต้องออกพระราชโองการนี้</h3>
+                <p>เมื่อผมดูบริบททางประวัติศาสตร์ จะเห็นว่าพระราชโองการนี้ไม่ใช่พิธีกรรมธรรมดา แต่เป็นเครื่องมือทางการเมืองอย่างแท้จริง</p>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <h4>ราชวงศ์ไม่มั่นคง</h4>
+                    <p>ปโตเลมีที่ 5 ขึ้นครองราชย์ตั้งแต่ยังเด็ก (ราว 204 ปีก่อนคริสตกาล) หลังบิดาสิ้นพระชนม์ ราชสำนักเต็มไปด้วยการแย่งอำนาจของผู้สำเร็จราชการ</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <h4>มีกบฏของชาวอียิปต์พื้นเมือง</h4>
+                    <p>ในช่วงราว 205–186 ปีก่อนคริสตกาล ภาคใต้ของอียิปต์ (เขตธีบส์) แยกตัวภายใต้ผู้ปกครองพื้นเมือง ซึ่งเป็นความท้าทายต่อราชวงศ์กรีกโดยตรง</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <h4>นักบวชคือพันธมิตรที่ต้องซื้อใจ</h4>
+                    <p>วิหารเป็นเจ้าของที่ดินและเป็นสถาบันที่ประชาชนพื้นเมืองยึดถือ ราชวงศ์ต้องการให้นักบวชรับรองความชอบธรรมของกษัตริย์ต่างเชื้อชาติ ผลตอบแทนที่นักบวชได้คือสิทธิพิเศษทางภาษีและเกียรติยศ</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">4</span>
+                    <h4>สังคมสามภาษา</h4>
+                    <p>กรีกคือภาษาของราชสำนักและทหาร เฮียโรกลิฟคือภาษาของศาสนา เดโมติกคือภาษาของงานเอกสารที่ข้าราชการและประชาชนพื้นเมืองอ่านกัน การจารึกสามอักษรจึงสื่อสารกับสามกลุ่มผู้อ่านพร้อมกัน</p>
+                </div>
+
+                <div class="key-insight">
+                    <p>ศิลาโรเซตตาเป็นเอกสารเชิงโฆษณาชวนเชื่อ (propaganda) ที่สะท้อนข้อตกลงอำนาจระหว่างราชวงศ์กับนักบวช — <strong style="color:var(--secondary)">ไม่ได้เป็นสิ่งที่ใครตั้งใจให้เป็นกุญแจสำหรับคนในอนาคต</strong> และมีสำเนาจำนวนมากทั่วอียิปต์ ศิลาโรเซตตาเป็นเพียงชิ้นหนึ่งที่รอดมาให้เราเห็นพร้อมกับสามส่วนครบถ้วนพอที่จะใช้งานได้</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 3: Discovery -->
+        <section id="discovery" class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 3</span>
+                    <h2>การค้นพบในปี 1799</h2>
+                </div>
+
+                <h3>ปฏิบัติการของนโปเลียนในอียิปต์</h3>
+                <p>เดือนกรกฎาคม 1798 กองทัพฝรั่งเศสภายใต้นโปเลียน โบนาปาร์ต ยกพลขึ้นบกที่อียิปต์ จุดประสงค์เชิงยุทธศาสตร์คือคุกคามเส้นทางของอังกฤษไปอินเดีย แต่การเดินทางครั้งนี้มีมิติพิเศษ — นโปเลียนนำนักวิชาการ วิศวกร และศิลปินราว 160 คน ไปด้วย และตั้ง <strong>สถาบันอียิปต์ (Institut d'Égypte)</strong> ขึ้นที่ไคโรในเดือนสิงหาคมปีเดียวกัน</p>
+
+                <div class="card">
+                    <h4>ผลลัพธ์ที่ไม่มีใครคาดคิด</h4>
+                    <p>ทางทหาร ฝรั่งเศสเพลี่ยงพล้ำเมื่อกองเรือของเนลสันทำลายกองเรือฝรั่งเศสที่อ่าวอาบูกีร์ แต่ทางวิชาการ ผลงานคือชุดหนังสือ <em>Description de l'Égypte</em> ซึ่งกลายเป็นรากฐานให้ความสนใจอียิปต์ในยุโรปทั้งทวีป</p>
+                </div>
+
+                <h3>เหตุการณ์ที่ราชิด</h3>
+                <p>ในเดือนกรกฎาคม 1799 ระหว่างการเสริมป้อมที่ป้อม Julien ใกล้เมืองราชิด (Rashid ที่ยุโรปเรียกว่า Rosetta) ในเขตเดลต้าไนล์ ทหารฝรั่งเศสพบแผ่นหินชิ้นหนึ่งที่ถูกนำมาใช้เป็นวัสดุก่อสร้าง</p>
+
+                <div class="figure-card">
+                    <div class="avatar">🎖️</div>
+                    <div class="info">
+                        <h4>ปีแยร์-ฟรองซัว บูชาร์ (Pierre-François Bouchard)</h4>
+                        <p class="role">นายทหารช่างฝรั่งเศส</p>
+                        <p>ผู้ที่เห็นความสำคัญของจารึกและแจ้งขึ้นไปยังผู้บังคับบัญชา เขาสังเกตเห็นว่ามีข้อความสามระบบที่ดูเหมือนจะบอกเนื้อหาเดียวกัน จึงตระหนักทันทีว่านี่อาจเป็นสิ่งสำคัญ</p>
+                    </div>
+                </div>
+
+                <div class="highlight-text">
+                    <p><strong>ข้อสังเกต:</strong> หินน่าจะไม่ได้ถูกสร้างที่ราชิด แต่ถูกขนย้ายมาใช้ซ้ำในยุคกลาง นักวิชาการมักเสนอว่าต้นทางเป็นวิหารในเมืองไซส์ (Sais) หรือบริเวณใกล้เคียง แต่ยังเป็นข้อสันนิษฐานที่ไม่มีหลักฐานยืนยันแน่ชัด</p>
+                </div>
+
+                <h3>ความตระหนักรู้ที่เกิดขึ้นทันที</h3>
+                <p>นักวิชาการฝรั่งเศสรู้ทันทีว่ามีข้อความกรีกอยู่ในจารึก และกรีกอ่านได้ นั่นหมายความว่าข้อความอีกสองอักษรที่ดูเหมือนบอกเนื้อหาเดียวกันอาจเป็นช่องทางเข้าถึง สำเนาจากหินถูกทำขึ้นและส่งกลับยุโรป ทำให้นักวิชาการจำนวนหนึ่งเริ่มทำงานได้ทันที แม้ตัวหินจะยังอยู่ในอียิปต์</p>
+            </div>
+        </section>
+
+        <!-- Part 4: Politics of Possession -->
+        <section class="fade-in" style="background: #f0ece3;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 4</span>
+                    <h2>การเมืองของการครอบครอง</h2>
+                </div>
+
+                <h3>จากกองทัพฝรั่งเศงสู่ธงอังกฤษ</h3>
+                <p>หลังนโปเลียนเดินทางกลับฝรั่งเศสในเดือนสิงหาคม 1799 กองทัพฝรั่งเศสที่เหลือในอียิปต์แพ้ต่อกองกำลังอังกฤษ-ออตโตมันในปี 1801 ข้อตกลงยอมจำนนที่อเล็กซานเดรีย (Capitulation of Alexandria) กำหนดให้ฝรั่งเศสส่งมอบโบราณวัตถุที่ได้มาให้ฝ่ายอังกฤษ</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="year">กุมภาพันธ์ 1802</span>
+                        <span class="event">หินถึงท่าเรือพอร์ตสมัธ บนเรือรบฝรั่งเศสที่ยึดมา (HMS Égyptienne)</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">มีนาคม 1802</span>
+                        <span class="event">นำเสนอต่อสมาคมนักโบราณคดี (Society of Antiquaries) ในลอนดอน</span>
+                    </div>
+                    <div class="timeline-item major">
+                        <span class="year">1802</span>
+                        <span class="event">ย้ายเข้าพิพิธภัณฑ์บริติช และอยู่ที่นั่นเกือบต่อเนื่องมาตลอดสองศตวรรษ</span>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="icon">📚</span>
+                        <h4>ด้านการเผยแพร่ความรู้</h4>
+                        <p>อังกฤษทำสำเนาปูนปลาสเตอร์และพิมพ์จากหินส่งให้มหาวิทยาลัยหลายแห่งในยุโรป (อ็อกซ์ฟอร์ด เคมบริดจ์ เอดินบะระ ดับลิน) ทำให้การศึกษาไม่ถูกจำกัดอยู่ที่ใดที่หนึ่ง</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">⚔️</span>
+                        <h4>ด้านการเมือง</h4>
+                        <p>การที่ฝรั่งเศสเป็นผู้ค้นพบแต่อังกฤษเป็นผู้ครอบครอง กลายเป็นฉากหลังของการแข่งขันระหว่างสองชาติในการถอดรหัส</p>
+                    </div>
+                </div>
+
+                <div class="card dark">
+                    <h4>ร่องรอยบนตัวหิน</h4>
+                    <p>บนตัวหินปัจจุบันยังมีข้อความที่ถูกทาด้วยสีขาวในศตวรรษที่ 19 ว่า "Captured in Egypt by the British Army in 1801" และ "Presented by King George III" ซึ่งสะท้อนมุมมองของผู้ครอบครองในเวลานั้น การอนุรักษ์ปี 1999 ล้างสิ่งสะสมบนผิวหินออก ทำให้เห็นลักษณะธรรมชาติของหินชัดขึ้น</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 5: Why Three Languages Still Wasn't Easy -->
+        <section class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 5</span>
+                    <h2>ทำไมมีสามภาษาแล้วก็ยังไม่ง่าย</h2>
+                </div>
+
+                <p>คนทั่วไปมักเข้าใจว่า "มีกรีกแปลให้แล้ว ก็แค่เทียบ" แต่ผมยืนยันว่างานจริงยากกว่านั้นมาก มาดูเหตุผลทีละข้อ</p>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <h4>ไม่รู้ว่าระบบเขียนทำงานแบบไหน</h4>
+                    <p>กรีกอ่านได้ แต่ไม่มีใครรู้ว่าเฮียโรกลิฟทำงานอย่างไร มีสามสมมติฐานหลักที่แข่งกัน:</p>
+                    <p style="margin-top:0.8rem;">
+                        <span class="badge">ทุกตัวเป็นสัญลักษณ์ความคิด (ideographic)</span>
+                        <span class="badge">ทุกตัวเป็นเสียง (alphabetic)</span>
+                        <span class="badge">แบบผสม — คำตอบที่ถูก แต่ยังไม่มีใครพิสูจน์</span>
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <h4>ส่วนเฮียโรกลิฟของหินเสียหาย</h4>
+                    <p>ส่วนบนของหินหักหายไป ทำให้เฮียโรกลิฟเหลือไม่ครบ และไม่มีบรรทัดใดสมบูรณ์เต็ม นักวิชาการจึงมักเริ่มจากเดโมติกซึ่งสมบูรณ์กว่า</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <h4>ปัญหาเรื่องสัดส่วน</h4>
+                    <p>จำนวนเครื่องหมายเฮียโรกลิฟบนหินมีมากกว่าจำนวนคำกรีกอย่างมาก (ราว 1,400 เครื่องหมาย เทียบกับกรีกราว 480 คำ) ถ้าอักษรหนึ่งตัวแทนหนึ่งคำ จำนวนไม่น่าต่างกันขนาดนี้ ตัวเลขนี้จึงเป็นเบาะแสว่าระบบน่าจะผสม</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">4</span>
+                    <h4>ไม่รู้ว่าภาษาอียิปต์ฟังเป็นอย่างไร</h4>
+                    <p>แม้อ่านออกเสียงอักษรได้ ก็ต้องรู้ว่าคำนั้นหมายถึงอะไร นี่คือเหตุผลที่ภาษาคอปติกมีความสำคัญอย่างยิ่ง</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 6: Decipherment Sequence -->
+        <section id="decipher" class="fade-in" style="background:#f0ece3;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 6</span>
+                    <h2>ลำดับการถอดรหัส: ใครทำอะไรในช่วงไหน</h2>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <h4>แปลกรีก (1802)</h4>
+                    <p>บาทหลวงสตีเฟน เวสตัน (Stephen Weston) เป็นคนแรกที่แปลข้อความกรีก นำเสนอต่อสมาคมนักโบราณคดีในปี 1802 ขั้นนี้ไม่ยาก แต่ทำให้ทุกคนรู้เนื้อหาโดยรวมของจารึก</p>
+                    <span class="result">ผล: ทุกคนรู้เนื้อหาของจารึก</span>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <h4>จับชื่อในเดโมติก (1802)</h4>
+                    <p><strong>Silvestre de Sacy</strong> นักตะวันออกศึกษาชาวฝรั่งเศง ลองค้นหาชื่อเฉพาะ (เช่น Ptolemy, Alexander) ในเดโมติกโดยดูตำแหน่งที่ชื่อเหล่านี้ควรปรากฏตามกรีก</p>
+                    <p><strong>Johan David Åkerblad</strong> นักการทูตและนักภาษาศาสตร์ชาวสวีเดน ศึกษาต่อและระบุชื่อเฉพาะได้หลายชื่อ โดยใช้ความรู้ภาษาคอปติก แต่ข้อผิดพลาดใหญ่คือเขาเชื่อว่าเดโมติกเป็นอักษรเสียงล้วน</p>
+                    <span class="result">ผล: มีวิธีการใหม่ แต่ความก้าวหน้าติดขัดหลังจากนั้นหลายปี</span>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <h4>โธมัส ยังก์ (ราว 1814–1819)</h4>
+                    <p>แพทย์และผู้รู้รอบด้านชาวอังกฤษ ผู้มีชื่อเสียงจากงานด้านทฤษฎีคลื่นแสง ทำสิ่งสำคัญหลายอย่างกับศิลาโรเซตตา:</p>
+                    <ul style="padding-left:1.2rem; margin:0.8rem 0;">
+                        <li style="margin-bottom:0.4rem;">เทียบข้อความเดโมติกกับกรีกอย่างเป็นระบบ และระบุความหมายของคำเดโมติกได้หลายสิบคำ</li>
+                        <li style="margin-bottom:0.4rem;">สังเกตว่าเดโมติกมีความสัมพันธ์กับเฮียราติกและเฮียโรกลิฟ ไม่ใช่ระบบแยกกัน</li>
+                        <li style="margin-bottom:0.4rem;">ระบุว่า <strong>ตราประจำพระนาม (cartouche)</strong> เป็นที่เก็บพระนามกษัตริย์ และอ่านชื่อ "ปโตเลมี" ได้ถูกต้องในระดับหนึ่ง</li>
+                    </ul>
+                    <span class="result">จุดอ่อน: สมมติว่าค่าเสียงมีเฉพาะในชื่อต่างชาติ และเป็นงานเสริม ไม่ได้ทุ่มเวลาเต็มที่</span>
+                </div>
+
+                <div class="pull-quote">
+                    <p>ความรู้ภาษาที่เป็นลูกหลานของภาษาเป้าหมาย (คอปติก) มีค่าเท่ากับหรือมากกว่าตัวจารึกสองภาษา — ถ้าไม่มีคอปติก ศิลาโรเซตตาอย่างเดียวคงไม่พอ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 7: 1822 -->
+        <section class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 7</span>
+                    <h2>ปี 1822: จุดเปลี่ยน</h2>
+                </div>
+
+                <div class="figure-card">
+                    <div class="avatar">𓂀</div>
+                    <div class="info">
+                        <h4>ฌอง-ฟรองซัว ชองโปลลียง (Jean-François Champollion, 1790–1832)</h4>
+                        <p class="role">นักภาษาศาสตร์ชาวฝรั่งเศส</p>
+                        <p>เกิดที่ฟีฌัก ทางใต้ของฝรั่งเศง เป็นเด็กอัจฉริยะด้านภาษา และมีสิ่งหนึ่งที่เหนือกว่าคู่แข่งทุกคน — <strong>เขาเรียนภาษาคอปติกอย่างจริงจังตั้งแต่วัยรุ่น</strong> จนอ่านและพูดได้คล่อง สำหรับเขา คอปติกไม่ใช่เครื่องมือเสริม แต่เป็นตัวแทนของภาษาอียิปต์ที่ยังมีชีวิต</p>
+                    </div>
+                </div>
+
+                <h3>หลักฐานที่เปลี่ยนทุกอย่าง</h3>
+
+                <div class="card highlight">
+                    <h4>หลักฐานที่ 1: ศิลาจารึกที่เกาะฟีลี</h4>
+                    <p>เสาโอเบลิสก์ที่วิลเลียม จอห์น แบงก์ส (William John Bankes) นำไปตั้งที่อังกฤษ มีตราประจำพระนามเฮียโรกลิฟสองกรอบ นักวิชาการระบุได้ว่ากรอบหนึ่งเป็น "คลีโอพัตรา" ชองโปลลียงนำมาเทียบกับ "ปโตเลมี" แล้วพบว่าเครื่องหมายที่ใช้แทนเสียง <strong>P, L, O</strong> ปรากฏตรงกันในทั้งสองชื่อ ส่วนเสียงที่ต่างกัน (T กับ K) ก็ใช้เครื่องหมายต่างกัน</p>
+                </div>
+
+                <div class="card highlight">
+                    <h4>หลักฐานที่ 2: ชื่อฟาโรห์อียิปต์แท้</h4>
+                    <p>ชื่อปโตเลมีและคลีโอพัตราเป็นชื่อกรีก ใครก็อ้างได้ว่าอียิปต์ "ยืม" วิธีเขียนเสียงมาเฉพาะกรณีต่างชาติ ชองโปลลียงจึงต้องพิสูจน์กับชื่อพื้นเมือง เขาได้สำเนาตราประจำพระนามจากวิหารที่อาบูซิมเบล แล้วอ่านได้ว่า:</p>
+                    <p>
+                        <span class="badge">☀️ + ms + s → รามเสส (Ramesses)</span>
+                        <span class="badge">🦆 + ms → ทุตโมส (Thutmose)</span>
+                    </p>
+                    <p style="margin-top:0.8rem;"><strong>กุญแจคือคอปติก</strong> — ในภาษาคอปติกคำว่า <em>ms</em> (mise) แปลว่า "เกิด" และคำว่า <em>Ra</em> คือ "ดวงอาทิตย์" เมื่อเอาความรู้นี้ไปเทียบกับรูปจานสุริยะ เขาจึงเห็นว่าเครื่องหมายหนึ่งตัวอาจมีทั้งความหมายและเสียง</p>
+                </div>
+
+                <div class="card dark">
+                    <h4>การประกาศ: 27 กันยายน 1822</h4>
+                    <p>ชองโปลลียงอ่านรายงานต่อสภาวิชาการจารึกและวรรณกรรม (Académie des Inscriptions et Belles-Lettres) ในรูปของจดหมายถึงเลขานุการสภา Bon-Joseph Dacier (<em>Lettre à M. Dacier</em>) และต่อมาในปี 1824 ตีพิมพ์หนังสือ <em>Précis du système hiéroglyphique</em> ซึ่งวางหลักการครบถ้วน</p>
+                </div>
+
+                <h3>สรุปข้อค้นพบหลัก</h3>
+                <p>ระบบเฮียโรกลิฟเป็นระบบผสมที่มีอย่างน้อยสามประเภทเครื่องหมาย:</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="icon">📖</span>
+                        <h4>โลโกแกรม (Logograms)</h4>
+                        <p>เครื่องหมายที่แทนคำทั้งคำ เช่น รูปดวงอาทิตย์แทนคำว่า "ดวงอาทิตย์"</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">🔊</span>
+                        <h4>โฟโนแกรม (Phonograms)</h4>
+                        <p>เครื่องหมายที่แทนเสียงหนึ่งตัวหรือหลายพยัญชนะ เหมือนตัวอักษร</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">🏷️</span>
+                        <h4>ดีเทอร์มิเนทีฟ (Determinatives)</h4>
+                        <p>เครื่องหมายท้ายคำที่ไม่ออกเสียง แต่บอกหมวดความหมาย (เช่น คน สัตว์ สิ่งของ)</p>
+                    </div>
+                </div>
+
+                <div class="pull-quote">
+                    <p>หลักนี้ใช้กับทุกยุค ไม่ใช่เฉพาะชื่อต่างชาติในยุคปโตเลมี<br>— นี่คือความแตกต่างระหว่างการเดาที่ถูกบางส่วน กับการถอดรหัสที่ใช้งานได้จริง</p>
+                </div>
+
+                <h3>หลังจากนั้น</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="year">1828–1829</span>
+                        <span class="event">เดินทางไปอียิปต์กับอีปโปลิโต โรเซลลีนี (Ippolito Rosellini) เพื่อเทียบข้อสรุปกับของจริง</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1831</span>
+                        <span class="event">ได้เก้าอี้ศาสตราจารย์ด้านอียิปต์วิทยาที่ Collège de France</span>
+                    </div>
+                    <div class="timeline-item major">
+                        <span class="year">4 มีนาคม 1832</span>
+                        <span class="event">เสียชีวิตที่ปารีสด้วยอาการอัมพาตเฉียบพลัน อายุเพียง 41 ปี</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1836–1841</span>
+                        <span class="event">พี่ชายจัดพิมพ์ไวยากรณ์และพจนานุกรมจากต้นฉบับของน้องชาย</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 8: Young vs Champollion -->
+        <section class="fade-in" style="background:#f0ece3;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 8</span>
+                    <h2>ยังก์กับชองโปลลียง: ข้อพิพาทเรื่องเครดิต</h2>
+                </div>
+
+                <p>การแข่งขันนี้ถูกเล่าเป็นเรื่องชาตินิยมอังกฤษ-ฝรั่งเศงมาก แต่เมื่อผมดูข้อเท็จจริง ภาพซับซ้อนกว่านั้น</p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>ประเด็น</th>
+                            <th>โธมัส ยังก์</th>
+                            <th>ชองโปลลียง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ความรู้คอปติก</td>
+                            <td>พอใช้ ใช้เป็นเครื่องมือ</td>
+                            <td>ลึกมาก เป็นหัวใจของวิธี</td>
+                        </tr>
+                        <tr>
+                            <td>เป้าหมายหลัก</td>
+                            <td>ศิลาโรเซตตาและเดโมติก</td>
+                            <td>ระบบเขียนอียิปต์ทั้งหมด</td>
+                        </tr>
+                        <tr>
+                            <td>ข้อสรุปเรื่องค่าเสียง</td>
+                            <td>ใช้เฉพาะชื่อต่างชาติ</td>
+                            <td>ใช้ทั้งระบบ ทุกยุค</td>
+                        </tr>
+                        <tr>
+                            <td>เวลาที่ทุ่มให้</td>
+                            <td>งานข้าง (เป็นแพทย์ นักฟิสิกส์)</td>
+                            <td>ทั้งชีวิต</td>
+                        </tr>
+                        <tr>
+                            <td>ผลที่ตามมา</td>
+                            <td>ปูฐานข้อมูลและแนวคิด</td>
+                            <td>วางระบบที่ใช้งานได้จริง</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="key-insight">
+                    <p>ข้อสรุปของนักประวัติศาสตร์สายกระแสหลักค่อนข้างตรงกันว่า <strong style="color:var(--secondary)">ยังก์สร้างความก้าวหน้าสำคัญและเป็นผู้เปิดทาง</strong> แต่การถอดรหัสให้เป็นระบบและสามารถอ่านข้อความใหม่ได้ <strong style="color:var(--secondary)">เป็นผลงานของชองโปลลียง</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 9: Impact -->
+        <section id="impact" class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 9</span>
+                    <h2>ผลกระทบ</h2>
+                </div>
+
+                <h3>ประวัติศาสตร์อียิปต์ถูกเขียนใหม่จากเสียงของชาวอียิปต์เอง</h3>
+                <p>ก่อนถอดรหัส ความรู้เรื่องอียิปต์ฟาโรห์มาจากคนนอก เช่น เฮโรโดทัส และ มาเนโท หลังถอดรหัส นักวิชาการอ่านได้โดยตรงจาก:</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="icon">👑</span>
+                        <h4>ราชการและการทหาร</h4>
+                        <p>รายพระนามกษัตริย์ จารึกเหตุการณ์ทางทหาร และเอกสารราชการ</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">📖</span>
+                        <h4>ตำราศาสนา</h4>
+                        <p>คัมภีร์ผู้ตาย (Book of the Dead) และข้อความในพีระมิด (Pyramid Texts)</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="icon">✍️</span>
+                        <h4>ชีวิตประจำวัน</h4>
+                        <p>วรรณกรรม จดหมาย สัญญา กฎหมาย และเรื่องเล่า</p>
+                    </div>
+                </div>
+
+                <h3>แบบอย่างการถอดรหัสภาษาอื่น</h3>
+                <p>ศิลาโรเซตตาถูกใช้เป็นอุปมาของ "จารึกสองภาษาที่เป็นกุญแจ" แต่ในความเป็นจริง การถอดรหัสภาษาโบราณอื่นไม่ได้พึ่งสิ่งนี้เสมอไป</p>
+
+                <div class="card highlight">
+                    <h4>คูนิฟอร์ม</h4>
+                    <p>จารึกที่เบฮิสตุน (Behistun) เป็นจารึกสามภาษา (เปอร์เซียโบราณ เอลาไมต์ บาบิโลเนีย) ซึ่งเฮนรี รอว์ลินสัน (Henry Rawlinson) ศึกษา ใกล้เคียงกับบทบาทของศิลาโรเซตตาที่สุด ส่วนการเริ่มอ่านเปอร์เซียโบราณมาจากผลงานของ Georg Grotefend ในปี 1802</p>
+                </div>
+
+                <div class="card highlight">
+                    <h4>ลิเนียร์บี (Linear B)</h4>
+                    <p>ไมเคิล เวนทริส (Michael Ventris) ถอดรหัสได้ในปี 1952 <strong>โดยไม่มีจารึกสองภาษาเลย</strong> ใช้การวิเคราะห์เชิงโครงสร้างและสถิติของเครื่องหมาย (ต่อยอดงานของอลิซ โคเบอร์) แล้วพบว่าเป็นภาษากรีกไมซีนี — แสดงว่าจารึกสองภาษาช่วยได้มาก แต่ไม่ใช่เงื่อนไขจำเป็น</p>
+                </div>
+
+                <div class="card dark">
+                    <h4>ระบบที่ยังถอดไม่ได้</h4>
+                    <p>ลิเนียร์เอ (Linear A) อักษรสินธุ และรองโกรองโก (Rongorongo) ของเกาะอีสเตอร์ ล้วนมีจุดร่วมคือ <strong style="color:var(--secondary)">ไม่มีข้อความสองภาษาที่เชื่อถือได้</strong> และ/หรือ ไม่มีภาษาลูกหลานที่รู้จักชัดเจนช่วยเป็นสะพาน</p>
+                </div>
+
+                <div class="key-insight">
+                    <p>เงื่อนไขของการถอดรหัสสำเร็จมักประกอบด้วย: (1) ข้อความมากพอ (2) จุดยึดที่รู้ความหมายหรือเสียงอยู่แล้ว และ (3) ความรู้เรื่องภาษาที่เกี่ยวข้อง — <strong style="color:var(--secondary)">ศิลาโรเซตตาให้ข้อ (2) ส่วนคอปติกให้ข้อ (3)</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part 10: Current Debates -->
+        <section id="debate" class="fade-in" style="background:#f0ece3;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">ตอนที่ 10</span>
+                    <h2>ข้อถกเถียงปัจจุบัน: หินก้อนนี้ควรอยู่ที่ไหน</h2>
+                </div>
+
+                <p>ศิลาโรเซตตาเป็นหนึ่งในวัตถุที่มีผู้เข้าชมมากที่สุดของพิพิธภัณฑ์บริติช และเป็นเป้าของการเรียกร้องให้ส่งคืนอียิปต์มาตั้งแต่ต้นศตวรรษที่ 21 ผู้ที่ผลักดันอย่างเปิดเผยคนสำคัญคือ ซาฮี ฮาวัส (Zahi Hawass) ซึ่งยื่นข้อเรียกร้องอย่างเป็นทางการในช่วงปี 2003–2009</p>
+
+                <div class="debate-container">
+                    <div class="debate-card return">
+                        <h4>🌍 ฝ่ายที่ต้องการให้ส่งคืน</h4>
+                        <ul>
+                            <li>หินเป็นของอียิปต์โดยกำเนิดและสะท้อนมรดกทางวัฒนธรรมของประเทศ</li>
+                            <li>การได้มาเกิดขึ้นในบริบทที่อียิปต์ถูกยึดครองโดยกองกำลังต่างชาติ</li>
+                            <li>อียิปต์มีศักยภาพจัดแสดงและอนุรักษ์ ดังที่แสดงจากการพัฒนาพิพิธภัณฑ์ใหม่ ๆ</li>
+                        </ul>
+                    </div>
+                    <div class="debate-card keep">
+                        <h4>🏛️ ฝ่ายสนับสนุนการคงอยู่</h4>
+                        <ul>
+                            <li>การครอบครองมีฐานทางกฎหมายจากข้อตกลงยอมจำนนปี 1801</li>
+                            <li>พิพิธภัณฑ์เปิดให้ผู้เข้าชมจากทั่วโลกโดยไม่เสียค่าเข้า</li>
+                            <li>กังวลเรื่องบรรทัดฐาน: หากส่งคืนชิ้นนี้ จะกระทบกับการเรียกร้องวัตถุอื่นอีกมาก</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-text">
+                    <p><strong>ข้อสังเกต:</strong> ในประเด็นนี้ เป็นข้อถกเถียงเชิงนโยบายและจริยธรรมที่แต่ละฝ่ายมีน้ำหนักของตนเอง และสถานะของข้อเรียกร้องเปลี่ยนไปตามการเมืองในแต่ละช่วงเวลา</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Timeline -->
+        <section class="fade-in">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">สรุป</span>
+                    <h2>ไทม์ไลน์ทั้งหมด</h2>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="year">ราว 3200 ปีก่อน ค.ศ.</span>
+                        <span class="event">เฮียโรกลิฟเริ่มปรากฏ</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">ราว 650 ปีก่อน ค.ศ.</span>
+                        <span class="event">เดโมติกเริ่มใช้</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">196 ปีก่อน ค.ศ. (27 มี.ค.)</span>
+                        <span class="event">พระราชโองการแห่งเมมฟิส ออกในรัชสมัยปโตเลมีที่ 5</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">ค.ศ. 394</span>
+                        <span class="event">จารึกเฮียโรกลิฟชิ้นสุดท้ายที่มีวันที่ (ฟีลี)</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">ค.ศ. 452</span>
+                        <span class="event">จารึกเดโมติกชิ้นสุดท้ายที่มีวันที่ (ฟีลี)</span>
+                    </div>
+                    <div class="timeline-item major">
+                        <span class="year">1798</span>
+                        <span class="event">นโปเลียนบุกอียิปต์ ตั้งสถาบันอียิปต์</span>
+                    </div>
+                    <div class="timeline-item major">
+                        <span class="year">1799 (กรกฎาคม)</span>
+                        <span class="event">ค้นพบศิลาที่ป้อม Julien ใกล้ราชิด</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1801</span>
+                        <span class="event">ฝรั่งเศสยอมจำนนต่ออังกฤษ-ออตโตมัน</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1802</span>
+                        <span class="event">หินถึงอังกฤษ · เวสตันแปลกรีก · เดอ ซาซีและโอเคอร์บลัดจับชื่อในเดโมติก</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">ราว 1814–1819</span>
+                        <span class="event">ยังก์วิเคราะห์เดโมติก และเผยแพร่ในบทความ "Egypt"</span>
+                    </div>
+                    <div class="timeline-item major">
+                        <span class="year">27 กันยายน 1822</span>
+                        <span class="event">ชองโปลลียงอ่าน Lettre à M. Dacier — จุดเปลี่ยนของประวัติศาสตร์</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1824</span>
+                        <span class="event">Précis du système hiéroglyphique ตีพิมพ์</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1828–1829</span>
+                        <span class="event">ชองโปลลียงเดินทางไปอียิปต์</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1832</span>
+                        <span class="event">ชองโปลลียงเสียชีวิต อายุ 41 ปี</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1836–1841</span>
+                        <span class="event">ไวยากรณ์ของชองโปลลียงตีพิมพ์หลังเสียชีวิต</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year">1927</span>
+                        <span class="event">Egyptian Grammar ของการ์ดิเนอร์ — ตำรามาตรฐานที่ยังใช้อ้างอิง</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="divider"></div>
+        <p>บทความนี้เขียนจากความรู้ทางประวัติศาสตร์ที่เป็นที่ยอมรับในระดับวิชาการ</p>
+        <p style="margin-top:0.5rem;">เรียบเรียงและจัดรูปแบบเพื่อความเข้าใจง่าย · เป็นความรู้ทั่วไป 08 October 2026</p>
+    </footer>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Fade-in Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

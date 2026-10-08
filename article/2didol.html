@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>วิวัฒนาการและโครงสร้างธุรกิจของ "ไอดอลสาวน้อย 2D" ในญี่ปุ่น</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF8F2; --bg2:#F4EFE6; --card:#FFFFFF;
+  --ink:#2E2924; --ink2:#6B6156; --line:#E7DFD1; --gold:#B08D46;
+  --e1:#C2410C; --e2:#D6336C; --e3:#9C36B5; --e4:#087F5B; --e5:#1971C2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);font-size:16.5px;line-height:1.95;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Prompt',sans-serif;line-height:1.5}
+p{margin-bottom:14px}
+strong,b{font-weight:700;color:#1F1B16}
+a{color:inherit}
+section[id]{scroll-margin-top:78px}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+.num{font-family:'Prompt',sans-serif;font-weight:700;color:var(--ac,#B08D46)}
+/* ---------- progress bar ---------- */
+#pbar{position:fixed;top:0;left:0;height:4px;width:0;z-index:99;background:linear-gradient(90deg,var(--e1),var(--e2),var(--e3),var(--e4),var(--e5))}
+/* ---------- hero ---------- */
+.hero{position:relative;background:#1C1610;color:#F7F0E1;overflow:hidden;padding:76px 0 0}
+.hero-glow{position:absolute;top:-220px;left:50%;transform:translateX(-50%);width:900px;height:640px;background:radial-gradient(circle,rgba(214,140,60,.20),rgba(176,141,70,.07) 45%,transparent 68%);pointer-events:none}
+.beam{position:absolute;top:-40px;width:150px;height:135%;filter:blur(7px);opacity:.5;transform-origin:top center;pointer-events:none}
+.beam.b1{left:10%;background:linear-gradient(180deg,rgba(194,65,12,.5),transparent 72%);transform:rotate(20deg)}
+.beam.b2{left:46%;background:linear-gradient(180deg,rgba(214,51,108,.42),transparent 70%);transform:rotate(-7deg)}
+.beam.b3{right:11%;background:linear-gradient(180deg,rgba(25,113,194,.45),transparent 72%);transform:rotate(-21deg)}
+.sp{position:absolute;color:#F5D38A;opacity:.4;font-size:14px;animation:tw 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes tw{0%,100%{opacity:.12;transform:scale(.7)}50%{opacity:.85;transform:scale(1.15)}}
+.hero-inner{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:0 24px;text-align:center}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:'Prompt';font-size:12.5px;letter-spacing:.2em;color:#D8C08A;border:1px solid rgba(216,192,138,.4);border-radius:999px;padding:6px 18px;margin-bottom:28px}
+.hero h1{font-size:clamp(29px,5vw,49px);font-weight:800;line-height:1.4;margin-bottom:18px}
+.grad{background:linear-gradient(92deg,#FFB169,#F783AC,#B197FC);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:16.5px;color:rgba(247,240,225,.82);max-width:740px;margin:0 auto 26px;line-height:2}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:8px}
+.hero-meta span{font-family:'Prompt';font-size:12.5px;border:1px solid rgba(247,240,225,.22);border-radius:999px;padding:4px 15px;color:rgba(247,240,225,.75)}
+.spectrum{position:relative;z-index:2;max-width:1080px;margin:44px auto 0;padding:0 24px}
+.spec-row{display:flex;gap:5px;align-items:flex-end}
+.spec{flex:1;display:flex;flex-direction:column;justify-content:flex-end}
+.spec i{display:block;border-radius:5px 5px 0 0;background:var(--sc);opacity:.92}
+.spec .yr{font-family:'Prompt';font-weight:600;font-size:11.5px;letter-spacing:.08em;color:rgba(247,240,225,.85);text-align:center;padding:9px 0 0}
+.spec .lb{font-family:'Prompt';font-size:10px;letter-spacing:.04em;color:rgba(247,240,225,.5);text-align:center;padding-bottom:16px}
+/* ---------- nav ---------- */
+nav.toc{position:sticky;top:0;z-index:90;background:rgba(251,248,242,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.toc .row{max-width:1180px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;padding:10px 16px;scrollbar-width:thin}
+.toc a{flex:0 0 auto;font-family:'Prompt';font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:6px 14px;border-radius:999px;border:1px solid transparent;white-space:nowrap;transition:.2s}
+.toc a:hover{color:var(--ink);border-color:var(--line);background:#fff}
+.toc a.on{background:#2E2924;color:#F7F0E1}
+/* ---------- sections ---------- */
+section.sec{padding:68px 0 14px}
+section.sec.tint{background:var(--bg2)}
+.sec-head{margin-bottom:24px}
+.eyebrow{display:flex;align-items:center;gap:10px;font-family:'Prompt';font-weight:600;font-size:12.5px;letter-spacing:.22em;color:var(--ac);margin-bottom:12px}
+.eyebrow .ico{display:inline-flex;width:36px;height:36px;border-radius:11px;background:var(--tint);align-items:center;justify-content:center;font-size:17px;border:1px solid var(--line)}
+.sec-head h2{font-size:clamp(23px,3.6vw,33px);font-weight:700;line-height:1.45}
+.sec-head .hsub{font-size:16px;color:var(--ink2);margin-top:7px;font-family:'Prompt';font-weight:400}
+.rule{width:64px;height:4px;border-radius:4px;background:var(--ac);margin-top:16px}
+h3.sub-h{font-size:20.5px;font-weight:600;margin:44px 0 14px;display:flex;align-items:center;gap:11px}
+h3.sub-h::before{content:"";width:11px;height:11px;border-radius:4px;background:var(--ac);flex:none}
+/* ---------- components ---------- */
+.callout{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:14px;padding:20px 24px;margin:18px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.callout .ct{font-family:'Prompt';font-weight:600;font-size:16px;display:flex;gap:9px;align-items:center;margin-bottom:8px;color:var(--ac)}
+.keybox{background:var(--tint);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:18px 0}
+.keybox .kt{font-family:'Prompt';font-weight:700;color:var(--ac);font-size:14.5px;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.keybox p{margin:0;font-size:15.5px}
+.note{font-size:13.5px;color:var(--ink2);background:var(--bg2);border:1px dashed #CBBFA9;border-radius:12px;padding:13px 18px;margin:16px 0;line-height:1.9}
+section.tint .note{background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
+.chip{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 15px;font-size:14px;font-weight:600}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--dc,var(--ac));flex:none}
+ul.bl{list-style:none;padding:0}
+ul.bl li{position:relative;padding-left:26px;margin-bottom:9px}
+ul.bl li::before{content:"";position:absolute;left:5px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--ac)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px 13px;text-align:center}
+.stat .n{font-family:'Prompt';font-weight:800;font-size:clamp(21px,2.6vw,29px);color:var(--ac);line-height:1.3}
+.stat .l{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.65}
+.grid{display:grid;gap:14px;margin:20px 0}
+.grid.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.card h4{font-size:16px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px;line-height:1.5}
+.card h4 .ci{width:36px;height:36px;flex:none;border-radius:11px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--line)}
+.card p{font-size:14.5px;color:#4A443C;line-height:1.9;margin:0}
+.card p+p{margin-top:8px}
+.duo .card.plus{border-top:4px solid #0CA678}
+.duo .card.con{border-top:4px solid #E8590C}
+.steps{margin:22px 0}
+.step{position:relative;padding:0 0 10px 64px;margin-bottom:22px}
+.step .sn{position:absolute;left:0;top:0;width:46px;height:46px;border-radius:14px;background:var(--tint);border:1px solid var(--line);color:var(--ac);font-family:'Prompt';font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center}
+.step h4{font-size:16.5px;font-weight:600;margin-bottom:6px}
+.step p{font-size:15px;margin:0;color:#4A443C}
+/* ---------- charts ---------- */
+.chart{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 22px 16px;margin:20px 0}
+.chart h4{font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:9px}
+.chart .cu{font-size:12.5px;color:var(--ink2);margin:2px 0 4px;font-family:'Prompt'}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:8px 0 14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.bgroup{margin-bottom:13px}
+.byear{font-family:'Prompt';font-weight:600;font-size:13.5px;margin-bottom:6px;color:var(--ink2)}
+.brow{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;margin-bottom:6px}
+.brow .bl{font-size:12px;color:var(--ink2);text-align:right;font-family:'Prompt'}
+.btrack{background:var(--bg2);border-radius:8px;height:27px;overflow:hidden}
+.bfill{height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;color:#fff;font-family:'Prompt';font-size:12.5px;font-weight:600;min-width:76px;white-space:nowrap}
+.gup{display:inline-block;font-family:'Prompt';font-size:12px;font-weight:600;color:#0B7A45;background:#E2F5EC;border-radius:999px;padding:1px 9px;margin-left:8px}
+.pbar{height:9px;background:var(--bg2);border-radius:9px;overflow:hidden;margin-top:10px}
+.pbar i{display:block;height:100%;border-radius:9px;background:var(--ac)}
+/* ---------- flow ---------- */
+.flow{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin:20px 0}
+.flow .fi{display:inline-flex;align-items:center;gap:8px;background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;font-family:'Prompt'}
+.flow .fa{color:var(--ac);font-weight:700;font-family:'Prompt';font-size:16px}
+/* ---------- timeline ---------- */
+.tl{margin:26px 0}
+.tl-item{display:flex;gap:18px}
+.tl-rail{flex:0 0 auto;display:flex;flex-direction:column;align-items:center}
+.tl-dot{width:17px;height:17px;border-radius:50%;background:var(--tc);flex:none;margin-top:9px;box-shadow:0 0 0 4px #fff,0 0 0 6px var(--tc)}
+.tl-line{width:3px;flex:1;background:var(--line);margin-top:4px;min-height:22px}
+.tl-item:last-child .tl-line{display:none}
+.tl-card{flex:1;background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px 22px;margin-bottom:20px}
+.tl-years{display:inline-block;font-family:'Prompt';font-weight:700;font-size:13px;color:#fff;background:var(--tc);border-radius:8px;padding:2px 12px;margin-bottom:8px}
+.tl-card h4{font-size:17px;font-weight:600;margin-bottom:6px}
+.tl-card p{font-size:14.5px;color:#4A443C;margin:0;line-height:1.9}
+/* ---------- table ---------- */
+.tblwrap{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:16px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:780px;font-size:14px}
+thead th{background:#241E17;color:#F3EBDC;font-family:'Prompt';font-weight:600;font-size:13px;letter-spacing:.03em;text-align:left;padding:13px 16px;white-space:nowrap}
+tbody td{padding:14px 16px;border-top:1px solid var(--line);vertical-align:top;line-height:1.85;color:#4A443C}
+tbody tr:hover{background:#FBF7EF}
+td .era{display:inline-block;font-family:'Prompt';font-weight:700;color:#fff;background:var(--ec);border-radius:8px;padding:2px 11px;font-size:12.5px;white-space:nowrap}
+td b{font-family:'Prompt'}
+/* ---------- footer ---------- */
+footer{background:#1C1610;color:#CFC5B2;margin-top:76px;padding:46px 22px 64px;font-size:13.5px;text-align:center;line-height:2}
+footer .fl{font-family:'Prompt';font-weight:600;color:#EAD9AE;letter-spacing:.12em;font-size:12px;margin-bottom:10px}
+#top{position:fixed;right:18px;bottom:18px;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.13);cursor:pointer;font-size:17px;z-index:80;opacity:0;pointer-events:none;transition:.25s;color:var(--ink)}
+#top.show{opacity:1;pointer-events:auto}
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media (max-width:600px){
+  body{font-size:16px}
+  section.sec{padding:56px 0 10px}
+  .callout,.card,.tl-card{padding:16px 18px}
+  .step{padding-left:56px}.step .sn{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+
+<div id="pbar"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="beam b1"></div><div class="beam b2"></div><div class="beam b3"></div>
+  <span class="sp" style="left:16%;top:24%">✦</span>
+  <span class="sp" style="left:78%;top:16%;animation-delay:1.2s">✦</span>
+  <span class="sp" style="left:60%;top:40%;animation-delay:2.1s">✦</span>
+  <span class="sp" style="left:28%;top:56%;animation-delay:.6s">✦</span>
+  <div class="hero-inner">
+    <span class="kicker">รายงานเชิงวิเคราะห์ · อุตสาหกรรมคอนเทนต์ญี่ปุ่น</span>
+    <h1>วิวัฒนาการและโครงสร้างธุรกิจของ<br><span class="grad">"ไอดอลสาวน้อย 2D"</span> ในญี่ปุ่น</h1>
+    <p class="sub">จากตู้อาร์เคด THE IDOLM@STER สู่ยุคเกมมือถือมหาศาลและ VTuber — การไล่เรียงไทม์ไลน์เชิงธุรกิจของอุตสาหกรรมที่เชื่อมเกม อนิเมะ เพลง ไลฟ์คอนเสิร์ต สินค้า และการท่องเที่ยวเข้าไว้ด้วยกัน</p>
+    <div class="hero-meta">
+      <span>ผู้แข่งขันในวงการนี้</span>
+      <span>ช่วงข้อมูลปี 2005 – 2026</span>
+      <span>มีกราฟ · สถิติ · ตารางประกอบ</span>
+    </div>
+  </div>
+  <div class="spectrum" aria-hidden="true">
+    <div class="spec-row">
+      <div class="spec" style="--sc:#C2410C"><i style="height:32px"></i><span class="yr">2005–2010</span><span class="lb">IDOLM@STER</span></div>
+      <div class="spec" style="--sc:#D6336C"><i style="height:56px"></i><span class="yr">2010–2015</span><span class="lb">Love Live! · Aikatsu!</span></div>
+      <div class="spec" style="--sc:#9C36B5"><i style="height:68px"></i><span class="yr">2015–2020</span><span class="lb">ยุคเกมมือถือ</span></div>
+      <div class="spec" style="--sc:#087F5B"><i style="height:96px"></i><span class="yr">2021–2023</span><span class="lb">Uma Musume</span></div>
+      <div class="spec" style="--sc:#1971C2"><i style="height:78px"></i><span class="yr">2024–2026</span><span class="lb">Multi-Leader</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="toc"><div class="row">
+  <a href="#overview">ภาพรวม</a>
+  <a href="#intro">กรอบการศึกษา</a>
+  <a href="#genesis">การกำเนิด</a>
+  <a href="#imas">Idolmaster</a>
+  <a href="#ll">Love Live! · Aikatsu!</a>
+  <a href="#ppbd">PriPara · BanG Dream!</a>
+  <a href="#uma">Uma Musume</a>
+  <a href="#holo">Hololive</a>
+  <a href="#mm">มีเดียมิกซ์</a>
+  <a href="#d3">ผลต่อไอดอล 3D</a>
+  <a href="#inflow">อิทธิพลอุตสาหกรรมอื่น</a>
+  <a href="#timeline">ไทม์ไลน์</a>
+  <a href="#conclusion">บทสรุป</a>
+</div></nav>
+
+<!-- ═══════════════ 00 OVERVIEW ═══════════════ -->
+<section class="sec" id="overview" style="--ac:#B08D46;--tint:#F7F0DF">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">📌</span>PART 00 · OVERVIEW</div>
+    <h2>ภาพรวม: มากกว่าวัฒนธรรมย่อยของโอตาคุ</h2>
+    <div class="rule"></div>
+  </header>
+
+  <div class="keybox reveal">
+    <div class="kt">💡 ข้อสรุปสำคัญของงานวิจัย</div>
+    <p>อุตสาหกรรม "ไอดอลสาวน้อย 2D" ในญี่ปุ่น <strong>ไม่ใช่เพียงปรากฏการณ์ทางวัฒนธรรมย่อยของโอตาคุ</strong> แต่ได้เติบโตจนกลายเป็น <strong>โครงสร้างธุรกิจขนาดใหญ่</strong> ที่เชื่อมโยงอุตสาหกรรมต่าง ๆ เข้าด้วยกันอย่างแนบแน่น</p>
+  </div>
+
+  <div class="chips reveal">
+    <span class="chip"><span class="dot" style="--dc:#C2410C"></span>🎮 เกม</span>
+    <span class="chip"><span class="dot" style="--dc:#D6336C"></span>📺 อนิเมะ</span>
+    <span class="chip"><span class="dot" style="--dc:#9C36B5"></span>🎵 เพลง</span>
+    <span class="chip"><span class="dot" style="--dc:#E67700"></span>🎫 ไลฟ์คอนเสิร์ต</span>
+    <span class="chip"><span class="dot" style="--dc:#B08D46"></span>🧸 สินค้า</span>
+    <span class="chip"><span class="dot" style="--dc:#0B7285"></span>✈️ การท่องเที่ยวเชิงคอนเทนต์ในพื้นที่จริง</span>
+  </div>
+
+  <div class="reveal">
+    <p><strong>จุดกำเนิดเชิงรูปแบบ</strong> มาจากอาร์เคดเกม <b class="num">'THE IDOLM@STER'</b> ในปี <b class="num">2005</b> ซึ่งเป็นผู้นิยามบทบาท <strong>"โปรดิวเซอร์"</strong> และ <strong>"การสนับสนุน (โอชิ) ไอดอล"</strong> ผ่านเครือข่ายออนไลน์ในระดับประเทศ</p>
+    <p>หลังจากนั้น แฟรนไชส์ต่าง ๆ <strong>ผลัดกันขึ้นเป็นผู้นำเทรนด์ของแต่ละยุคสมัย</strong> โดยวัดจากทั้งรายได้และขนาดฐานแฟนคลับ:</p>
+  </div>
+
+  <div class="flow reveal" style="margin:16px 0 22px">
+    <span class="fi">Idolmaster</span><span class="fa">→</span>
+    <span class="fi">Love Live!</span><span class="fa">→</span>
+    <span class="fi">Aikatsu!</span><span class="fa">→</span>
+    <span class="fi">Pretty Rhythm / PriPara</span><span class="fa">→</span>
+    <span class="fi">BanG Dream!</span><span class="fa">→</span>
+    <span class="fi">Uma Musume</span><span class="fa">→</span>
+    <span class="fi">Hololive</span>
+  </div>
+
+  <div class="reveal">
+    <p>ขณะเดียวกัน โมเดลธุรกิจแบบ <strong>Media Mix</strong> และ <strong>IP Developer เชิงรุก</strong> ที่บริษัทอย่าง <b>Bandai Namco</b>, <b>Bushiroad</b>, <b>Cygames</b> และ <b>Cover Corp</b> นำมาใช้ ได้ส่งผลกระทบเชิงโครงสร้างต่ออุตสาหกรรมไอดอล 3D (ศิลปินตัวจริง) ตั้งแต่รูปแบบไลฟ์ ไปจนถึงการสร้าง <strong>"ไลน์สินค้า"</strong> และ <strong>"แบรนด์แฟนคลับ"</strong> ที่พึ่งพา IP มากกว่าตัวบุคคล</p>
+    <p>งานนี้จัดวางไทม์ไลน์เชิงยุคสมัยจากอดีตจนถึงปัจจุบัน แบ่งตามแฟรนไชส์ที่เป็นผู้นำเทรนด์หลักในธุรกิจไอดอล 2D หญิง พร้อมสังเคราะห์ <strong>จุดพีค ขาขึ้น–ขาลง</strong> และผลกระทบระหว่างอุตสาหกรรมที่เกี่ยวข้องอย่างเป็นระบบ</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 01 INTRO ═══════════════ -->
+<section class="sec tint" id="intro" style="--ac:#77675A;--tint:#F3EFEB">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🔍</span>PART 01 · FRAMEWORK</div>
+    <h2>บทนำ: กรอบการศึกษาวงการไอดอล 2D หญิงในญี่ปุ่น</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">"ไอดอล 2D" คืออะไร</h3>
+  <div class="callout reveal">
+    <div class="ct">🎤 นิยามในบริบทของงานนี้</div>
+    <p>ตัวละครหญิงในสื่ออนิเมะ เกม และสื่อดิจิทัลอื่น ๆ ที่ถูกสร้างขึ้นให้มีคุณลักษณะคล้าย "ไอดอล" คือ</p>
+    <ul class="bl">
+      <li>มีการ<strong>ร้องเพลง เต้น และแสดงบนเวที</strong></li>
+      <li>มีเรื่องเล่าเกี่ยวกับ<strong>เส้นทางการเติบโต</strong></li>
+      <li>มีความสัมพันธ์เชิง <strong>"สนับสนุน"</strong> ระหว่างแฟนคลับกับตัวละคร</li>
+      <li>เชื่อมต่อกับ<strong>นักพากย์หรือศิลปินในโลกจริง</strong> ผ่านกิจกรรมอย่างคอนเสิร์ตที่นักพากย์แสดงบทบาทเป็นตัวละครนั้น ๆ "ไลฟ์ทอล์ค" และอีเวนท์ที่ผสมผสานตัวละครกับตัวบุคคลในระดับสูง</li>
+    </ul>
+  </div>
+  <div class="keybox reveal">
+    <div class="kt">💡 Key Insight</div>
+    <p>ความเป็น "2D" <strong>ไม่ได้แปลว่ามีเพียงภาพสองมิติ</strong> หากแต่หมายถึงการที่ <strong>"ตัวละคร" หรือ IP เป็นศูนย์กลางของธุรกิจและคอมมูนิตี้</strong> มากกว่าความเป็นศิลปินบุคคลแบบไอดอล 3D ดั้งเดิม</p>
+  </div>
+
+  <h3 class="sub-h reveal">สองตัวชี้วัดหลักของการวิเคราะห์</h3>
+  <p class="reveal">กรอบการวิเคราะห์เน้นสองตัวชี้วัด เพื่อใช้วัดส่วนแบ่งการตลาดและจุดพีคของแต่ละแฟรนไชส์และยุคสมัย:</p>
+  <div class="grid g2 reveal">
+    <div class="card">
+      <h4><span class="ci">💴</span>รายได้</h4>
+      <p>อ้างอิงจากยอดขายเกมมือถือ ยอดขายสินค้าการ์ดเช่น <b>Data Carddass</b> ของ Aikatsu! และข้อมูลรายได้ที่บริษัทผู้ถือ IP เปิดเผย เพื่อวัดทั้งส่วนแบ่งการตลาดและจุดพีคของแต่ละแฟรนไชส์และยุคสมัย</p>
+    </div>
+    <div class="card">
+      <h4><span class="ci">👥</span>ฐานแฟนคลับ</h4>
+      <p>จำนวนดาวน์โหลดของเกมมือถือ (เช่น <b>Uma Musume ทะลุ 19 ล้านครั้ง</b>ในญี่ปุ่นภายในปี 2023) จำนวนแฟนที่เดินทางไป "แสวงบุญตามสถานที่จริง" (กรณี <b>Love Live! Sunshine!!</b> ในเมือง Numazu) และตัวชี้วัดผู้ชมออนไลน์ อย่างจำนวนผู้เข้าชมรายเดือนและเวลารับชมของ Hololive</p>
+    </div>
+  </div>
+
+  <h3 class="sub-h reveal">เกณฑ์การแบ่งยุคสมัย: Business–Leadership</h3>
+  <p class="reveal">งานนี้แบ่งยุคสมัยอุตสาหกรรมตาม "ผู้นำเทรนด์" โดยเลือกเกณฑ์แบบ <strong>business–leadership</strong> กล่าวคือ พิจารณาแฟรนไชส์ที่ในช่วงเวลาหนึ่ง ๆ มีทั้งรายได้และฐานแฟนคลับโดดเด่นจนสามารถ <strong>"กำหนดรูปแบบ" ให้กับทั้งตลาด</strong> ได้ ตัวอย่างเช่น</p>
+  <div class="grid g2 reveal">
+    <div class="card"><h4><span class="ci">🎮</span>Idolmaster</h4><p>ผู้นำยุคแรกของอาร์เคดเกมและแผ่นคอนโซล</p></div>
+    <div class="card"><h4><span class="ci">🏫</span>Love Live! และ Aikatsu!</h4><p>ผู้สร้างโมเดล "school idol" และ "เด็กผู้หญิงเล่นการ์ดไอดอล" ในช่วงต้นทศวรรษ 2010</p></div>
+    <div class="card"><h4><span class="ci">🏇</span>Uma Musume</h4><p>นำโมเดลเกมมือถือ free-to-play ไปสู่รายได้ระดับ<strong>หลายร้อยพันล้านเยนต่อปี</strong>ภายใต้ธีมไอดอล</p></div>
+    <div class="card"><h4><span class="ci">🎭</span>Hololive</h4><p>สร้างโครงสร้าง VTuber ผสมผสานความเป็นไอดอล 2D กับนักแสดง 3D ผ่านเทคโนโลยีและการจัดการเชิงบริษัท</p></div>
+  </div>
+
+  <h3 class="sub-h reveal">ข้อจำกัดของข้อมูล</h3>
+  <div class="note reveal">⚠️ หลายแฟรนไชส์ไม่ได้เปิดเผยรายได้แยกส่วนอย่างละเอียด โดยเฉพาะซีรีส์ย่อย และข้อมูลยอดขายบางส่วนในยุคอาร์เคดแรก ๆ อาจไม่ครบถ้วน งานนี้จึงต้องใช้การผสมผสานระหว่างตัวเลขที่เปิดเผยกับการวิเคราะห์เชิงคุณภาพบนฐานความรู้ทั่วไปของวงการ เพื่อสังเคราะห์ภาพรวม โดยระมัดระวังไม่กล่าวอ้างตัวเลขที่ไม่มีต้นทางรองรับ และจะชี้ให้เห็นระดับความน่าเชื่อถือของข้อมูลอย่างชัดเจนเมื่อจำเป็น</div>
+
+  <h3 class="sub-h reveal">ขอบเขตของงาน</h3>
+  <div class="note reveal">🎯 งานนี้มุ่งเน้นการวิเคราะห์เชิง <strong>"ธุรกิจ"</strong> โดยหลีกเลี่ยงการลงลึกในพฤติกรรมแฟนคลับระดับจิตวิทยา หรือวาทกรรมโอตาคุเชิงสังคมวัฒนธรรม ยกเว้นในกรณีที่จำเป็นต่อการอธิบายกลไกทางตลาด เช่น การเข้าร่วมไลฟ์หรือการเดินทางท่องเที่ยวตามสถานที่ในเรื่อง ทั้งหมดนี้เพื่อเน้นให้เห็นว่า ไอดอล 2D หญิงคือ <strong>"โมเดลธุรกิจ"</strong> ที่มีผลกระทบต่อทั้งอุตสาหกรรมไอดอลจริง ๆ และอุตสาหกรรมอื่น ๆ อย่างไร</div>
+</div>
+</section>
+
+<!-- ═══════════════ 02 GENESIS ═══════════════ -->
+<section class="sec" id="genesis" style="--ac:#C2410C;--tint:#FDEBE0">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🕹️</span>PART 02 · THE ORIGIN</div>
+    <h2>การกำเนิด: จากอาร์เคด 'THE IDOLM@STER' สู่โมเดล 2D Idol แบบใหม่</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">บริบทก่อนปี 2005: ยุคเกมจีบสาวและการทดลอง "ไอดอลในเกม"</h3>
+  <div class="reveal">
+    <p>ก่อนที่ 'THE IDOLM@STER' เวอร์ชันอาร์เคดจะเปิดให้บริการในปี 2005 ภูมิทัศน์ของเกมที่มีความสัมพันธ์กับ "ไอดอล" หรือหญิงสาวในบทบาทใกล้เคียงไอดอล ยังอยู่ภายใต้กรอบของ<strong>เกมจีบสาว</strong> เช่น 'Tokimeki Memorial' ซึ่งเน้นโครงเรื่องโรแมนติกระหว่างตัวเอกชายกับตัวละครหญิง โครงสร้างเช่นนี้ทำให้ศูนย์กลางของประสบการณ์อยู่ที่ <strong>"ความรักแบบแฟนสาว"</strong> มากกว่าความเป็น "ศิลปิน" หรือ "นักแสดงบนเวที" ที่แฟนคลับร่วมกันสนับสนุน — แม้จะมีองค์ประกอบของการไล่ตามความฝันและการพัฒนาตัวละคร แต่เกมเหล่านี้<strong>ไม่ได้สร้างระบบธุรกิจรอบ "การโปรดิวซ์ไอดอล"</strong> และไม่ผูกกับกิจกรรมในโลกจริง เช่น คอนเสิร์ตของนักพากย์ในระดับอุตสาหกรรม</p>
+    <p>ในบริบทอาร์เคด ญี่ปุ่นช่วงปลายยุค 1990 ถึงต้น 2000 กำลังทดลองรูปแบบตู้เกมใหม่ ๆ โดยเฉพาะตู้ที่ใช้<strong>การ์ดและระบบเครือข่ายออนไลน์</strong> เช่น โครงการ <b>"Rewritable Stage"</b> ของ Namco ซึ่งเป็นแพลตฟอร์มตู้เกมที่ใช้การ์ดเขียน–อ่านข้อมูลได้ใหม่ เพื่อเชื่อมต่อข้อมูลผู้เล่นและตัวละครข้ามเครื่องเล่น การทดลองนี้นำไปสู่เกม 'Dragon Chronicle' ในปี <b class="num">2003</b> ซึ่งเป็นเกมใช้การ์ดบนตู้ Rewritable Stage รุ่นแรก และเป็นจุดตั้งต้นเชิงเทคโนโลยีที่ทำให้ Namco เริ่มมองหา <strong>"เกมอันดับสอง"</strong> บนแพลตฟอร์มเดียวกัน</p>
+    <p>ความสำเร็จของรายการออดิชันไอดอลทางโทรทัศน์ในช่วงต้นทศวรรษ 2000 และการขยายตัวของอินเทอร์เน็ตในร้านเกม ทำให้ทีมพัฒนาของ Namco เริ่มทดลองผสมผสานระหว่าง <strong>"ธีมไอดอล"</strong> กับ<strong>ระบบเครือข่ายอาร์เคด</strong> แนวคิดไม่ใช่การทำเกมจีบสาวอีกเกมหนึ่ง แต่เป็นการสร้างประสบการณ์แบบ <strong>"ออดิชันไอดอล"</strong> ที่ผู้เล่นหลายคนแข่งขันกันผ่านออนไลน์ — ผู้เล่นไม่ใช่คนรักของไอดอล แต่เป็น "โปรดิวเซอร์" ที่กำลังสร้างไอดอลให้ประสบความสำเร็จ</p>
+  </div>
+  <div class="keybox reveal">
+    <div class="kt">🔄 จุดหักเหของทั้งอุตสาหกรรม</div>
+    <p>การเปลี่ยนโครงความสัมพันธ์จาก <strong>"ความรัก" เป็น "การสนับสนุน (โอชิ)"</strong> — ซึ่งจะกลายเป็นหัวใจของโมเดลธุรกิจไอดอล 2D หญิงในยุคต่อมา</p>
+  </div>
+
+  <h3 class="sub-h reveal">โครงการ Rewritable Stage และการพัฒนา Arcade 'THE IDOLM@STER'</h3>
+  <p class="reveal">'THE IDOLM@STER' เวอร์ชันอาร์เคด ถูกพัฒนาขึ้นในฐานะเกมลำดับที่สองบนตู้ "Rewritable Stage" ของ Namco โดยมีเป้าหมายให้เป็น <strong>"Idol Produce Manager Game"</strong> คือเกมที่ผู้เล่นสัมผัสประสบการณ์เป็นโปรดิวเซอร์ไอดอลอย่างเต็มรูปแบบ ตู้เกมประกอบด้วยสองส่วนหลัก:</p>
+  <div class="grid g2 reveal">
+    <div class="card"><h4><span class="ci">🖥️</span>Station</h4><p>จุดเล่นเกมหลักที่มี<strong>หน้าจอสัมผัส</strong>สำหรับผู้เล่นโปรดิวซ์ไอดอลของตัวเอง</p></div>
+    <div class="card"><h4><span class="ci">📺</span>Live Tower</h4><p>จอแสดงผลขนาดใหญ่ที่แสดงผลการเล่นของผู้เล่นในร้านแบบ<strong>เรียลไทม์</strong> ทำให้เกิดการ "โชว์ผลงาน" ของไอดอลที่ถูกโปรดิวซ์ผ่านสายตาของผู้เล่นคนอื่น</p></div>
+  </div>
+
+  <div class="callout reveal">
+    <div class="ct">🎮 โครงสร้างการเล่น</div>
+    <p>ผู้เล่กรับบทเป็นโปรดิวเซอร์ในสำนักงานบันเทิง <b>"765 Production"</b> เลือกไอดอลหญิงจาก "ผู้สมัคร" <b class="num">9 คนให้เลือก</b> เพื่อโปรดิวซ์ โดยทำการฝึกซ้อมเพื่อเพิ่มค่าสถานะ และเข้าออดิชันเพื่อแย่งชิงโอกาสออกทีวีและเพิ่มจำนวนแฟนคลับ ภายในกรอบเวลา <b class="num">1 ปีในเกม</b> — หากไม่สามารถพาไอดอลถึงระดับที่กำหนดได้ ไอดอลจะ <b>"รีไทร์"</b> และการโปรดิวซ์ต้องจบลงด้วย<b>คอนเสิร์ตอำลา (Graduate Live)</b> โครงสร้างนี้สร้างความเข้มข้นเชิงดราม่า พร้อมกระตุ้นให้ผู้เล่นกลับมาเล่นซ้ำผ่าน<b>การ์ดรีไรท์</b>ซึ่งเก็บบันทึกข้อมูลตัวละครและโปรดิวเซอร์</p>
+  </div>
+
+  <div class="reveal">
+    <p><strong>ในเชิงธุรกิจ</strong> อาร์เคด Idolmaster นำเสนอโมเดลรายได้ที่แตกต่างจากอาร์เคดทั่วไป โดยการกำหนดราคาแบบขาย <strong>"เวลาการโปรดิวซ์"</strong> มากกว่าการขายจำนวนเกมแบบต่อครั้ง:</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">¥200</div><div class="l">ต่อการเล่น 1 รอบ</div></div>
+    <div class="stat"><div class="n">¥500</div><div class="l">ต่อการเล่น 3 รอบ</div></div>
+    <div class="stat"><div class="n">🇯🇵 ระดับประเทศ</div><div class="l">จัดอันดับโปรดิวเซอร์–ไอดอลผ่านเครือข่ายระดับประเทศ</div></div>
+  </div>
+  <div class="reveal">
+    <p>การผูกเกมเข้ากับเครือข่ายระดับประเทศทำให้จัดอันดับโปรดิวเซอร์และไอดอลได้ ซึ่ง<strong>สร้างแรงจูงใจให้ผู้เล่นกลับมาเล่นบ่อย ๆ</strong> เพื่อรักษาตำแหน่งในแรงกิ้ง ขณะเดียวกันตู้ Live Tower ทำให้ผู้คนที่เดินผ่านไปมาเห็นภาพ PV ของไอดอลที่ถูกโปรดิวซ์ และสนใจเข้าร่วมเป็นโปรดิวเซอร์เอง</p>
+    <p>แม้ในระยะแรกจะมีเสียงคัดค้านภายในบริษัทว่าแนวคิดเช่นนี้จะ <strong>"ขายไม่ออก"</strong> เพราะเป็นการนำธีมไอดอลมาสู่อาร์เคดในยุคที่ตลาดเกมจีบสาวอยู่บนคอนโซลและ PC เป็นหลัก แต่การทดสอบในสถานที่จริง (Local Test) เช่น ที่ร้านเกมใน<b>นากาโนะ</b> กลับพบว่ามี<strong>ผู้เล่นต่อคิวจำนวนมาก</strong> และบรรยากาศการแข่งขันในร้านทำให้ทีมพัฒนาได้รับการยืนยันว่าโครงการมีศักยภาพเชิงตลาด การตอบรับนี้ทำให้ Namco ตัดสินใจเดินหน้าพัฒนาเต็มตัว:</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">26 ก.ค. 2005</div><div class="l">วันเปิดให้เล่นอย่างเป็นทางการ — จุดเริ่มต้นของซีรีส์ Idolmaster ทั้งหมด</div></div>
+  </div>
+
+  <h3 class="sub-h reveal">กลไกเกม โปรดิวเซอร์ และนวัตกรรมเชิงธุรกิจ</h3>
+  <div class="steps reveal">
+    <div class="step">
+      <span class="sn">01</span>
+      <h4>บทบาท "โปรดิวเซอร์" ในฐานะ Player Identity ใหม่</h4>
+      <p>ความสำคัญของอาร์เคด Idolmaster ไม่ได้อยู่แค่การนำธีมไอดอลมาเป็นเกม แต่คือการสร้าง "บทบาทโปรดิวเซอร์" ขึ้นใหม่ ผู้เล่นไม่ได้ถูกเชิญชวนให้จินตนาการว่าตนเองเป็นแฟนหนุ่มของไอดอล แต่เป็น<strong>ผู้จัดการอาชีพ</strong>ที่ต้องตัดสินใจเชิงยุทธศาสตร์ เช่น ฝึกซ้อมด้านใด จัดตารางงานอย่างไร เข้าร่วมออดิชันไหน ภายในขอบเขตของ "สัญญา" ที่มีเวลาจำกัดและเป้าหมายชัดเจน — สะท้อนโมเดลของวงการไอดอลจริงในญี่ปุ่นที่ต้องแข่งขันสูงและมีการวางแผนอาชีพอย่างเข้มข้น ทำให้ผู้เล่นได้สัมผัส "โครงสร้างธุรกิจ" ของไอดอลผ่านรูปแบบเกมเชิงระบบ</p>
+    </div>
+    <div class="step">
+      <span class="sn">02</span>
+      <h4>เครือข่ายออนไลน์ระดับประเทศ กับ "เศรษฐกิจการแข่งขัน"</h4>
+      <p>ผู้เล่นแข่งขันแรงกิ้งกับโปรดิวเซอร์คนอื่นผ่านระบบเน็ตเวิร์ก และเห็นอิทธิพลของการโปรดิวซ์ที่ดีเลิศในรูปของแฟนคลับที่เพิ่มขึ้นและตำแหน่งในแรงกิ้ง ระบบนี้สร้างกลไก <strong>"พีระมิด"</strong> ที่มีโปรดิวเซอร์ระดับบนเป็นผู้กำหนดมาตรฐาน และผู้เล่นทั่วไปพยายามไล่ตาม ส่งผลให้การเล่นไม่ใช่แค่การบริโภคเนื้อหา แต่เป็นการเข้าร่วมใน "เศรษฐกิจการแข่งขัน" ที่สร้างคุณค่าและชื่อเสียงในคอมมูนิตี้</p>
+    </div>
+    <div class="step">
+      <span class="sn">03</span>
+      <h4>ต้นแบบการมีชีวิต "ข้ามสื่อ" ตั้งแต่ยุคต้น</h4>
+      <p>อาร์เคด Idolmaster เริ่มทดลองเชื่อมต่อกับโทรศัพท์มือถือและบริการออนไลน์ เพื่อส่งอีเมลจากไอดอลถึงโปรดิวเซอร์ และกิจกรรมเสริมอื่น ๆ ที่ทำให้ตัวละครมีชีวิต "ข้ามสื่อ" ตั้งแต่ยุคต้น แม้ภายหลังบริการเครือข่ายของเวอร์ชันอาร์เคดจะถูกยุติในปี <b class="num">2010</b> และตู้เกมเข้าสู่โหมดออฟไลน์ แต่นวัตกรรมเหล่านี้กลับกลายเป็น<strong>ต้นแบบให้กับแฟรนไชส์ Idolmaster</strong> ในรูปแบบเกมคอนโซล มัลติมีเดีย และมือถือในทศวรรษต่อ ๆ มา</p>
+    </div>
+  </div>
+
+  <h3 class="sub-h reveal">การต่อยอดสู่ Project iM@S และแฟรนไชส์ย่อย</h3>
+  <div class="reveal">
+    <p>ความสำเร็จเชิงคอนเซ็ปต์ทำให้ Namco ขยายโครงการสู่ <b>"PROJECT IM@S"</b> ซึ่งประกาศให้ Idolmaster กลายเป็น <strong>IP มัลติมีเดียอย่างเต็มรูปแบบ</strong> ครอบคลุมเกมคอนโซล แผ่นเพลง ซีดีดรามา อนิเมะ และอีเวนท์ไลฟ์ของนักพากย์ จุดสำคัญคือการย้ายศูนย์กลางจากตู้เกมอาร์เคดไปสู่คอนโซล <b>Xbox 360</b> ในปี <b class="num">2007</b> ซึ่งทำให้แฟนคลับติดตามไอดอลผ่านเนื้อหาที่ลึกขึ้นและเน้นเรื่องเล่า จนเกิดฐานแฟนคลับออนไลน์จำนวนมากผ่านแพลตฟอร์มอย่าง <b>Nico Nico Douga</b> ที่เต็มไปด้วยวิดีโอ AMV และ MAD ของ Idolmaster</p>
+    <p>การเปิดตัวตัวละครใหม่อย่าง <b>Hoshii Miki</b> บน Xbox 360 ทำให้จำนวนไอดอลเพิ่มจาก <b class="num">9 เป็น 11 คน</b> และก่อรูป <strong>"ไฟจราจร 3 สี"</strong> คือชุดสามตัวละครหลักที่มีสีประจำตัวแตกต่างกัน และถูกใช้เป็นแกนของการตลาดในภาคต่อ ๆ มา ขณะเดียวกันการประกาศ PROJECT IM@S ในปี <b class="num">2006</b> เป็นสัญญาณว่าบริษัทมอง Idolmaster ไม่ใช่แค่เกมเดียว แต่เป็น<strong>แพลตฟอร์ม IP</strong> ที่จะถูกแตกเป็นหลายซีรีส์ย่อย รวมถึงการเชื่อมต่อกับนักพากย์ในฐานะ "ไอดอล 3D" ที่แสดงบทบาทตัวละครนั้นบนเวทีจริง</p>
+    <div class="keybox">
+      <div class="kt">🧬 การมองแบบธุรกิจ</div>
+      <p>การเกิดขึ้นของซีรีส์ย่อยอย่าง <b>Cinderella Girls, Million Live, Shiny Colors</b> และล่าสุด <b>Gakuen Idolmaster</b> จึงต้องถูกมองในฐานะ <strong>"การแตกแบรนด์"</strong> ภายในกรอบ IP เดิมที่เริ่มต้นจากอาร์เคด โดยแต่ละซีรีส์พัฒนาโมเดลธุรกิจที่แตกต่างกันตามยุคของแพลตฟอร์มและความคาดหวังของตลาด</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 03 IDOLMASTER ═══════════════ -->
+<section class="sec tint" id="imas" style="--ac:#E67700;--tint:#FFF1DE">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🎤</span>PART 03 · IDOLMASTER</div>
+    <h2>การขยายตัวของแฟรนไชส์ Idolmaster: จาก 765PRO สู่ Gakuen Idolmaster</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">765PRO และยุคคอนโซล–อนิเมะ</h3>
+  <div class="reveal">
+    <p>แกนหลักดั้งเดิมของ Idolmaster คือสาย <b>"765 Production"</b> หรือที่แฟนมักเรียกว่า <strong>"ต้นตำหรับ (本家)"</strong> ซึ่งเริ่มต้นจากอาร์เคดและขยายสู่ Xbox 360, PS3 และอนิเมะทีวี ซีรีส์นี้สร้างภาพของไอดอลหญิงยุคแรก เช่น <b>Amami Haruka, Kisaragi Chihaya</b> และ <b>Takatsuki Yayoi</b> ในฐานะ "ต้นแบบ" ของไอดอล 2D ที่แฟนรู้จักกันอย่างกว้างขวาง ในเชิงธุรกิจ 765PRO คือรากฐานสำคัญที่สร้างแบรนด์ Idolmaster ให้เป็นที่รู้จัก และวางแบบแผนการเชื่อมต่อระหว่าง<strong>เกม เพลง และไลฟ์ของนักพากย์</strong></p>
+    <p>การออกอนิเมะทีวีในปี <b class="num">2011</b> ทำให้ Idolmaster เข้าสู่ตลาดอนิเมะแผ่นดิสก์และเพลงในวงกว้าง แต่ในด้านรายได้จากเกม แกน 765PRO พบว่า<strong>การพึ่งพาคอนโซลเพียงอย่างเดียวไม่เพียงพอ</strong>เมื่อเข้าสู่ยุคเกมมือถือและโซเชียลเกมในต้นทศวรรษ 2010 แฟรนไชส์จึงต้องขยายไปยังแพลตฟอร์มใหม่และกลุ่มลูกค้าใหม่ผ่านซีรีส์ย่อย ซึ่งนำไปสู่การเกิดของ Cinderella Girls และ Million Live ในท้ายที่สุด</p>
+  </div>
+
+  <h3 class="sub-h reveal">Cinderella Girls: จากโซเชียลเกมสู่เกมมือถือ</h3>
+  <div class="reveal">
+    <p><b>'IDOLMASTER Cinderella Girls'</b> เริ่มต้นจากโซเชียลเกมบน <b>Mobage</b> โดยมีคอนเซ็ปต์ <strong>"โปรดิวซ์ไอดอลจำนวนมาก"</strong> ผ่านระบบการ์ดสะสม ซึ่งสะท้อนการขยายฐานตัวละครไปสู่จำนวน<strong>หลายร้อยคน</strong> และเปิดพื้นที่ให้แฟนสามารถยึดติดกับ "ไอดอลรอง" ที่อาจไม่ได้อยู่ในสายหลัก 765PRO</p>
+    <p>จุดเด่นเชิงธุรกิจคือการใช้โมเดล <strong>free-to-play และการ์ดกาชา</strong> เพื่อสร้างรายได้อย่างต่อเนื่อง ซึ่งแตกต่างจากเกมคอนโซลที่รายได้ส่วนใหญ่เกิดจากการขายแผ่นครั้งเดียว การมาของเกมมือถือ <b>'Starlight Stage'</b> ยิ่งเสริมให้ Cinderella Girls กลายเป็น IP เกมมือถือที่สำคัญของ Bandai Namco ในยุคเดียวกับ Love Live! School Idol Festival และต่อมากับ Shiny Colors</p>
+    <p>แม้จะไม่มีตัวเลขรายได้ตรงที่เปิดเผย เช่นเดียวกับที่มีการรายงานสำหรับ Uma Musume หรือ Gakuen Idolmaster แต่จากบริบทตลาดเกมมือถือและการอยู่ใน<strong>อันดับต้น ๆ ของยอดขายเป็นเวลานาน</strong> สามารถประเมินได้ว่าซีรีส์นี้มีรายได้ระดับ <b class="num">หลายหมื่นล้านเยน</b> ตลอดช่วงชีวิตของเกม และมีฐานแฟนคลับกว้างขวางในกลุ่มผู้เล่นมือถือ</p>
+    <p>ในด้านไลฟ์คอนเสิร์ต Cinderella Girls จัด "ไลฟ์" ขนาดใหญ่ที่<strong>นักพากย์ขึ้นเวทีในฐานะตัวละคร</strong> ร้องเพลงที่แฟนรู้จักจากเกม พร้อมการใช้โปรเจกชั่นและเวทีที่ผสมผสานโลก 2D และ 3D การจัดไลฟ์เหล่านี้ไม่เพียงเพิ่มรายได้จากบัตรและสินค้า แต่ยังเสริมความผูกพันระหว่างแฟนกับ IP ทำให้ฐานแฟนคลับมีความยั่งยืนและพร้อมสนับสนุนสินค้าใหม่ ๆ ต่อเนื่อง</p>
+  </div>
+
+  <h3 class="sub-h reveal">Million Live: โมเดล "ไลฟ์" และการสร้างฐานแฟนพันธุ์ลึก</h3>
+  <div class="reveal">
+    <p><b>'IDOLMASTER Million Live'</b> ถูกพัฒนาขึ้นเพื่อขยายจำนวนไอดอลและเปิดพื้นที่ให้กับนักพากย์รุ่นใหม่ โดยเน้นคอนเซ็ปต์ <strong>"โรงละคร"</strong> และการแสดงไลฟ์ที่ต่อเนื่อง เหมือนที่ชื่อเกมมือถือภาคหลังคือ <b>'Million Live! Theater Days'</b> สื่อถึงความสำคัญของเวทีและโรงละครในเรื่องเล่า ในเชิงธุรกิจ Million Live แตกต่างจาก Cinderella Girls ในการเน้นการสร้าง <strong>"แฟนคลับเดนตาย"</strong> ที่ให้ความสำคัญกับการเข้าร่วมไลฟ์จริงและการติดตามนักพากย์ในฐานะศิลปินมากขึ้น</p>
+    <p>แม้ไม่มีตัวเลขยอดขายเกมมือถือที่เปิดเผยตรง ๆ แต่จากบริบทของตลาด การจัดไลฟ์ขนาดใหญ่หลายครั้ง และการทำอนิเมะทีวีในเวลาต่อมา สามารถเห็นได้ว่าซีรีส์นี้ถูกวางตำแหน่งเป็น <strong>"เสาหลัก" อีกเสาหนึ่งของ IP Idolmaster</strong> ซึ่งสร้างรายได้ผ่านทั้งเกม เพลง และกิจกรรมไลฟ์ ในระดับที่แม้จะไม่เทียบเท่า Cinderella Girls ในช่วงพีค แต่ก็มีความสำคัญเชิงโครงสร้างของ IP</p>
+  </div>
+
+  <h3 class="sub-h reveal">Shiny Colors และ Gakuen Idolmaster: ยุคเกมมือถือเชิงบริการ</h3>
+  <div class="reveal">
+    <p><b>'IDOLMASTER Shiny Colors'</b> ในฐานะเกมบราวเซอร์และมือถือ ที่เน้นการเล่นเชิงจำลองการโปรดิวซ์แบบลึกและเนื้อเรื่องขนาดใหญ่ สะท้อนว่าตลาดไอดอล 2D ในยุคปลายทศวรรษ 2010 เริ่มแบ่งออกเป็นสองเส้น คือเส้น <strong>"เกมริธึม / กาชา"</strong> อย่าง Cinderella Girls และ Love Live! กับเส้น <strong>"ซิมูเลชันโปรดิวซ์"</strong> ที่เน้นการอ่านเนื้อเรื่องและพัฒนาตัวละครแบบลึก Shiny Colors จึงสามารถดึงกลุ่มแฟนที่สนใจด้านเรื่องเล่ามากกว่าเกมจังหวะ และสร้างรายได้ผ่านแพ็กเกจในเกมและสินค้าเกี่ยวกับตัวละคร</p>
+    <p>ส่วน <b>'Gakuen IDOLMASTER'</b> ถือเป็น<strong>จุดเปลี่ยนสำคัญในยุคล่าสุด</strong> เพราะเป็นการกลับไปเน้น "ประสบการณ์โปรดิวซ์" บนเกมมือถืออย่างเต็มตัว ใช้ระบบภาพสามมิติ และนำเสนอตัวละครในบริบทยุคใหม่ของโรงเรียนไอดอล เกมนี้เปิดให้บริการในปี <b class="num">2024</b> ในฐานะ <strong>"แบรนด์ที่ 6"</strong> ของซีรีส์ Idolmaster และถูกผลักดันอย่างหนักจนสามารถขึ้น<strong>อันดับหนึ่งของยอดขายเกมมือถือในญี่ปุ่น</strong>ในช่วงหนึ่งของปี 2026</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">อันดับ 1</div><div class="l">ยอดขายเกมมือถือในญี่ปุ่น (สัปดาห์หนึ่งของพฤษภาคม 2026)</div></div>
+    <div class="stat"><div class="n">+314%</div><div class="l">อัตราเติบโตของรายได้รายสัปดาห์ ในโอกาสครบรอบ 2 ปี + เนื้อเรื่องใหม่</div></div>
+    <div class="stat"><div class="n">≈ 86.96 ร้อยล้านเยน</div><div class="l">รายได้รวมโดยประมาณตั้งแต่เปิดจนถึงต้นปี 2026</div></div>
+    <div class="stat"><div class="n">4–11 ร้อยล้านเยน</div><div class="l">รายได้รายเดือนในปี 2026 · อันดับยอดขายเฉลี่ยราว 60–80 ของตลาด</div></div>
+  </div>
+  <div class="reveal">
+    <p>แม้ตัวเลขเหล่านี้จะเป็นค่าประมาณ ไม่ใช่ตัวเลขทางการ แต่การที่เกมนี้อยู่ในอันดับบนสุดของรายได้หลายครั้ง ชี้ให้เห็นว่าซีรีส์ Idolmaster ยังมีศักยภาพการแข่งขันในตลาดเกมมือถือยุค Uma Musume และ VTuber อยู่มาก โดยเฉพาะเมื่อใช้<strong>โมเดลโปรดิวซ์แบบอาร์เคด</strong>ที่ถูกปรับให้เข้ากับเกมบริการ (service game) ในปัจจุบัน</p>
+    <p>การประกาศ Gakuen IDOLMASTER ในฐานะ "แบรนด์ที่ 6" และการเปิดเกมอาร์เคดใหม่ <b>'IDOLMASTER TOURS'</b> ในปี <b class="num">2025</b> สะท้อนว่า Bandai Namco ยังคงลงทุนใน IP Idolmaster อย่างต่อเนื่อง และมองเห็นความสำคัญของการเชื่อมต่อระหว่างเกมมือถือกับตู้เกมอาร์เคด ซึ่งเป็น<strong>ต้นกำเนิดของ IP</strong> — สิ่งนี้จะมีความสำคัญเมื่อวิเคราะห์ไทม์ไลน์ของผู้ครองตลาดในช่วงปัจจุบัน</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 04 LOVE LIVE / AIKATSU ═══════════════ -->
+<section class="sec" id="ll" style="--ac:#D6336C;--tint:#FCE7F1">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🏫</span>PART 04 · MASS MARKET</div>
+    <h2>แฟรนไชส์คู่แข่งหลัก: Love Live! และ Aikatsu! กับการสร้างตลาดมวลชน</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">Love Live!: โมเดล "School Idol Project" และการบูรณาการสื่อ</h3>
+  <div class="reveal">
+    <p>หาก Idolmaster เป็นผู้บุกเบิกโมเดลโปรดิวซ์ไอดอล 2D ผ่านอาร์เคดและคอนโซล <b>Love Live!</b> ก็เป็นผู้บุกเบิกโมเดล <strong>"School Idol Project"</strong> ที่เน้นการเล่าเรื่องของกลุ่มไอดอลนักเรียนหญิงในโรงเรียนมัธยม โดยผสานอนิเมะ เพลง และไลฟ์ของนักพากย์อย่างใกล้ชิด เริ่มจากคอนเซ็ปต์ร่วมระหว่างสำนักพิมพ์ <b>Dengeki G's Magazine</b>, สตูดิโออนิเมะ <b>Sunrise</b> และค่ายเพลง <b>Lantis</b> ซึ่งร่วมกันสร้างวง <b>μ's</b> ในฐานะ school idol กลุ่มแรกที่ผสมผสานการวาดภาพ 2D กับการแสดงจริงของนักพากย์ฝ่ายหญิง</p>
+    <p>ยุคของ μ's สร้างโมเดลธุรกิจสำคัญคือการทำอนิเมะทีวีพร้อมเพลงประกอบที่ถูกปล่อยเป็นซิงเกิลและอัลบั้ม ซึ่ง<strong>ทุกเพลงถูกออกแบบให้ใช้ในไลฟ์จริงของนักพากย์</strong>ที่แสดงบทบาทเป็นตัวละครเหล่านั้น ไลฟ์ใหญ่ของ Love Live! มักเต็มไปด้วย<strong>ผู้ชมหลายหมื่นคน</strong> และใช้เทคโนโลยีเช่นหน้าจอ LED และโปรเจ็กชัน เพื่อสร้างบรรยากาศที่ผสมผสานโลก 2D กับ 3D ในเชิงสัญญะ ทำให้แฟนคลับสัมผัสทั้งตัวละครและนักพากย์ในคราวเดียว</p>
+    <p>ในเชิงธุรกิจ เกมมือถือ <b>'Love Live! School Idol Festival'</b> ซึ่งเปิดให้บริการในปี <b class="num">2013</b> เป็นองค์ประกอบสำคัญที่ขยายฐานแฟนคลับไปยังกลุ่มผู้เล่นมือถือ โดยใช้โมเดล free-to-play และกาชาแบบคล้าย Cinderella Girls และเกมมือถือ Idolmaster ในภายหลัง เกมนี้ช่วยสร้างรายได้อย่างต่อเนื่องและผูกแฟนเข้ากับ IP ผ่านการเล่นเกมริธึมของ μ's และต่อมาของ Aqours และวงอื่น ๆ จึงอาจกล่าวได้ว่า Love Live! สร้าง <strong>"โมเดลสากล"</strong> ของแฟรนไชส์ไอดอล 2D ที่ผสมระหว่างอนิเมะ เกมมือถือ และไลฟ์คอนเสิร์ต ซึ่งถูกนำไปเลียนแบบหรือดัดแปลงโดยแฟรนไชส์อื่น ๆ ในทศวรรษ 2010</p>
+  </div>
+
+  <h3 class="sub-h reveal">Love Live! Sunshine!! และคอนเทนต์ทัวริซึมเมือง Numazu</h3>
+  <div class="reveal">
+    <p>ยุคของ <b>Aqours</b> ซึ่งเป็นวงหลักใน 'Love Live! Sunshine!!' มีความสำคัญทางธุรกิจไม่เพียงเพราะยอดขายอนิเมะและเพลง แต่ด้วยผลกระทบต่อ<strong>เศรษฐกิจท้องถิ่น</strong>ผ่านปรากฏการณ์ "ตามรอยสถานที่จริง" เมือง <b>Numazu</b> จังหวัด Shizuoka ถูกใช้เป็นฉากหลักในอนิเมะ และองค์กรท้องถิ่นร่วมมือกับผู้สร้าง IP ใช้สถานที่จริงเป็นทรัพยากรท่องเที่ยวเชิงคอนเทนต์ ส่งผลให้แฟน Love Live! ทั่วประเทศเดินทางมาเยือนเมืองนี้ในฐานะ <strong>"สถานที่ศักดิ์สิทธิ์"</strong> ของ Aqours</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">≈ 237 พันล้านเยน</div><div class="l">ผลกระทบทางเศรษฐกิจรวมต่อซีรีส์ทั้งหมด — กรณีศึกษาคอนเทนต์ทัวริซึมระดับประเทศ</div></div>
+    <div class="stat"><div class="n">82.5%</div><div class="l">สัดส่วนแฟนที่มาเยือน Numazu มากกว่าหนึ่งครั้ง (สำรวจปี 2018)</div></div>
+    <div class="stat"><div class="n">21.5 ครั้ง/คน</div><div class="l">ค่าเฉลี่ยการกลับมาเยือนซ้ำ — สะท้อนความผูกพันระยะยาวระหว่างแฟนกับเมือง</div></div>
+  </div>
+  <div class="reveal">
+    <p>หากคิดในเชิงธุรกิจ จะเห็นว่า Love Live! ไม่เพียงสร้างรายได้จากอนิเมะ เกม และสินค้า แต่ยังสร้าง <strong>"เศรษฐกิจแฟนคลับ"</strong> ที่ขยายสู่การท่องเที่ยว ที่พัก ร้านอาหาร และบริการในพื้นที่จริง การวิเคราะห์นี้ชี้ว่า IP school idol สามารถทำหน้าที่เป็น <strong>"ทรัพย์สินทางวัฒนธรรม"</strong> ที่เมืองจริงใช้ดึงดูดนักท่องเที่ยว โดยไม่จำเป็นต้องลงทุนสร้างธีมพาร์คขนาดใหญ่ เพราะแฟนรู้สึกว่าทุกมุมในเมืองคือส่วนหนึ่งของเรื่องเล่า การที่คอนเสิร์ตของ Aqours มักจัดในพื้นที่ใกล้ Numazu และมีอีเวนท์ร่วมกับหน่วยงานท้องถิ่น ยิ่งเสริมให้วงนี้ทำหน้าที่เป็นสะพานเชื่อมระหว่างบริษัทคอนเทนต์กับองค์กรท้องถิ่นในฐานะ <strong>"หุ้นส่วนธุรกิจ"</strong> ซึ่งเป็นแนวทางที่จะเห็นในแฟรนไชส์อื่น เช่น Aikatsu! และ PriPara ในระดับที่เล็กกว่า</p>
+  </div>
+
+  <h3 class="sub-h reveal">ยุค Nijigasaki, Liella!, Hasunosora, Ikizulive!: การกระจายแบรนด์และความท้าทาย</h3>
+  <div class="reveal">
+    <p>หลังยุค Aqours Love Live! ไม่หยุดอยู่กับวงเดียว แต่ขยายไปสู่หลายโครงการย่อย ได้แก่ <b>Nijigasaki High School Idol Club</b>, <b>Liella!</b>, <b>Hasunosora Girls' High School Idol Club</b> และล่าสุด <b>Ikizulive! Love Live! Bluebird</b> แต่ละโครงการถูกออกแบบให้ตอบโจทย์กลุ่มแฟนที่แตกต่างกัน ทั้งในเรื่องโทนเนื้อเรื่อง แนวเพลง และการจัดไลฟ์ของนักพากย์ อย่างไรก็ตามในเชิงธุรกิจ การแตกแบรนด์เช่นนี้มีทั้งข้อดีและความท้าทาย:</p>
+  </div>
+  <div class="grid g2 duo reveal">
+    <div class="card plus"><h4><span class="ci">✅</span>ข้อดี</h4><p>ขยายฐานแฟนไปสู่กลุ่มใหม่ และ<strong>ลดความเสี่ยง</strong>หากวงใดวงหนึ่งสูญเสียความนิยม</p></div>
+    <div class="card con"><h4><span class="ci">⚠️</span>ความท้าทาย</h4><p>รักษาคุณค่าของแบรนด์ Love Live! ให้ไม่เจือจาง และ<strong>จัดสรรทรัพยากร</strong>ระหว่างโครงการให้สมดุล เช่น งบประมาณผลิตอนิเมะ การจัดไลฟ์ และการโปรโมทเกมมือถือ</p></div>
+  </div>
+  <div class="reveal">
+    <p><strong>จุดพีคทางธุรกิจ</strong>ของ Love Live! มักถูกมองว่าอยู่ในช่วงปลายยุค μ's ถึงต้นยุค Aqours เมื่อยอดขายแผ่นและเพลงอยู่ในระดับสูงสุด และคอนเสิร์ตในโดมขนาดใหญ่เต็มทุกที่นั่ง หลังจากนั้นแม้รายได้โดยรวมยังสูง แต่ต้องแข่งขันกับแฟรนไชส์อื่น ๆ เช่น BanG Dream!, Aikatsu!, PriPara และ Uma Musume ซึ่งเข้ามาแบ่งส่วนตลาดเพลงและเกมมือถือ จนรายได้ลดลงไปจากจุดสูงสุดลงไป</p>
+  </div>
+
+  <h3 class="sub-h reveal">Aikatsu! Series: Data Carddass และตลาดเด็กผู้หญิงเชิงแมส</h3>
+  <div class="reveal">
+    <p>ในขณะที่ Idolmaster และ Love Live! เจาะตลาดโอตาคุวัยรุ่นและผู้ใหญ่ <b>Aikatsu!</b> สร้างตลาดใหม่ของ <strong>"เด็กผู้หญิงวัยประถม–มัธยมต้น"</strong> ผ่านแพลตฟอร์ม <b>"DATA CARDDASS"</b> ซึ่งเป็นตู้เกมอ่านการ์ดที่ให้เด็ก ๆ เล่นเกมริธึมและแฟชั่นในบทบาท "ไอดอล" โดยการสแกนการ์ดแฟชั่นที่ซื้อจากร้านค้าปลีก</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">110 ล้านใบ</div><div class="l">การ์ดที่ผลิต–ส่งออกสะสม ภายใน ~1.5 ปีแรก (ถึง มี.ค. 2014) หลังเปิดตู้ปี 2012</div></div>
+    <div class="stat"><div class="n">3.4+ พันล้านใบ</div><div class="l">จำนวนการ์ดที่ผลิตรวมทั้งซีรีส์ต่อมา</div></div>
+    <div class="stat"><div class="n">15.9 พันล้านเยน</div><div class="l">ยอดขายรวมของกลุ่ม Bandai Namco ปี 2014 ที่มี Aikatsu! เป็น IP หลักในตลาดเด็กผู้หญิง</div></div>
+  </div>
+  <div class="reveal">
+    <p>ตัวเลขเหล่านี้ชี้ว่าตลาดไอดอล 2D หญิงไม่ได้จำกัดเฉพาะคนดูอนิเมะตอนดึกหรือผู้เล่นเกมมือถือ แต่ขยายไปสู่เด็กผู้หญิงที่เล่นเกมในห้างและซื้อตุ๊กตา เสื้อผ้า และอุปกรณ์แฟชั่นที่เชื่อมโยงกับ IP โมเดลธุรกิจของ Aikatsu! ใช้<strong>การ์ดเป็น "ตัวกลาง"</strong> เชื่อมเกมกับสินค้า ทำให้รายได้เกิดจากทั้งการเล่นตู้เกมและการซื้อการ์ดเป็นของสะสม อีกทั้งยังมีอนิเมะทีวี เพลง และสินค้าของเล่นที่ขยายแบรนด์ไปสู่ตลาดกว้าง — ช่วงพีคของ Aikatsu! ในปี <b class="num">2013–2015</b> ทำให้แฟรนไชส์นี้เป็น <strong>"ผู้นำตลาดเด็กผู้หญิง"</strong> และมีส่วนแบ่งตลาดสำคัญในกลุ่มอายุที่ Love Live! และ Idolmaster เข้าถึงได้น้อยกว่า</p>
+  </div>
+
+  <h3 class="sub-h reveal">การสืบทอดจาก Ichigo สู่ Stars, Friends, Planet, on Parade, Academy</h3>
+  <div class="reveal">
+    <p>ซีรีส์หลัก 'Aikatsu!' ซึ่งนำโดยตัวละคร <b>Hoshimiya Ichigo</b> มักถูกมองว่าเป็น "ตำนาน" ที่วางรากฐานของโลกไอดอลเด็กผู้หญิงใน IP นี้ หลังจากนั้น Bandai Namco ขยายแบรนด์ไปสู่ซีรีส์ย่อยต่อเนื่อง:</p>
+    <div class="chips">
+      <span class="chip">Aikatsu Stars!</span>
+      <span class="chip">Aikatsu Friends!</span>
+      <span class="chip">Aikatsu Planet!</span>
+      <span class="chip">Aikatsu on Parade!</span>
+      <span class="chip">Aikatsu Academy!</span>
+    </div>
+    <p>แต่ละซีรีส์นำเสนอธีมและตัวละครใหม่เพื่อรักษาความสดใหม่และตอบโจทย์กลุ่มแฟนรุ่นใหม่ โดยตู้เกม Data Carddass ยังคงเป็นแกนรายได้หลักควบคู่กับอนิเมะและสินค้า การดึงตัวละครจากหลายซีรีส์มารวมกันใน 'Aikatsu on Parade!' สะท้อนว่าบริษัทมอง IP นี้เป็น <strong>"จักรวาลไอดอล"</strong> ที่นำตัวละครจากยุคต่าง ๆ มาปะทะกัน ทำให้แฟนรุ่นเก่าผูกพันกับตัวละครยุค Ichigo ในขณะที่แฟนรุ่นใหม่ได้พบตัวละครจาก Stars หรือ Friends ในฉากเดียวกัน — การกระจายซีรีส์เช่นนี้รักษาแบรนด์ในระยะยาวได้ แต่ก็มีความท้าทายเช่นเดียวกับ Love Live! ในการจัดการทรัพยากรและหลีกเลี่ยงการทำให้แบรนด์ดู "กระจัดกระจาย" เกินไป และไม่สามารถรักษาความนิยมได้เหมือนยุคทองของ Hoshimiya Ichigo ได้</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 05 PRIPARA / BANG DREAM ═══════════════ -->
+<section class="sec tint" id="ppbd" style="--ac:#9C36B5;--tint:#F6EAFC">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🌈</span>PART 05 · BRANCHING OUT</div>
+    <h2>Pretty Rhythm / PriPara และ BanG Dream!: การแตกแขนงของโมเดลไอดอล 2D</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">Pretty Rhythm และ PriPara: จากแฟชั่น–เต้นสู่ Prism Paradise</h3>
+  <div class="reveal">
+    <p>แฟรนไชส์ <b>Pretty Rhythm</b> เริ่มจากซีรีส์อนิเมะที่เน้นการเต้นและแฟชั่น โดยมีทั้ง 'Pretty Rhythm' หลัก, 'Dear My Future' และ 'Rainbow Live' ซึ่งค่อย ๆ สร้างโลกของเด็กผู้หญิงที่ใฝ่ฝันจะเป็นไอดอลและแฟชั่นไอคอน เส้นทางนี้ถูกสืบทอดและขยายผ่าน <b>'PriPara (Prism Paradise)'</b> ซึ่งผสมผสานเกมตู้แฟชั่น–เต้นกับอนิเมะทีวีบนโจทย์คล้าย Aikatsu! แต่มีโทนเนื้อเรื่องที่เน้นความแฟนตาซีและ "โลกของไอดอล" ที่มีระบบภายในเอง</p>
+    <p>PriPara และซีรีส์ต่อเนื่อง แสดงให้เห็นการขยายแฟรนไชส์อย่างต่อเนื่องในตลาดเด็กผู้หญิง แต่เน้นกลุ่มที่เล็กกว่า Aikatsu! ในแง่ส่วนแบ่งตลาด กระนั้นโมเดลการใช้ตู้เกมและการ์ดแฟชั่นก็ใกล้เคียงกัน และช่วยสร้างตลาดของ "ไอดอล 2D เด็กผู้หญิง" ให้กว้างขึ้น:</p>
+    <div class="chips">
+      <span class="chip">Idol Time PriPara</span>
+      <span class="chip">Kiratto Pri☆Chan</span>
+      <span class="chip">Waccha PriMagi!</span>
+      <span class="chip">Himitsu no AiPri</span>
+      <span class="chip">Onegai AiPri</span>
+    </div>
+    <p>แม้ไม่มีตัวเลขรายได้ตรงของ PriPara และ Pretty Rhythm แต่จากบริบทอุตสาหกรรมทราบว่าเกมตู้และสินค้าการ์ดของ IP นี้มีการผลิตและจัดจำหน่ายในระดับ<strong>หลายสิบล้านใบ</strong> และมีบทบาทสำคัญในร้านเกมและห้างสำหรับเด็ก ภาพรวมจึงมองได้ว่า PriPara เป็น <strong>"แฟรนไชส์คู่แข่ง"</strong> ของ Aikatsu! ในตลาดเด็กผู้หญิง แต่ไม่ได้ขึ้นเป็นผู้นำเทรนด์ของทั้งวงการไอดอล 2D ในระดับเทียบเท่า Idolmaster หรือ Love Live! หากมองทั้งตลาดรวม</p>
+  </div>
+
+  <h3 class="sub-h reveal">BanG Dream!: Girl Band ที่ใช้กลยุทธ์ไอดอล 2D</h3>
+  <div class="reveal">
+    <p><b>BanG Dream!</b> เป็นกรณีศึกษาน่าสนใจ เพราะแม้ถูกนิยามว่าเป็น "girl band" มากกว่า "ไอดอล" แต่ในเชิงกลยุทธ์ธุรกิจ IP นี้ใช้วิธีการ<strong>ใกล้เคียงกับแฟรนไชส์ไอดอล 2D มาก</strong> ทั้งในด้านมีเดีย การตลาด และการสร้างคอมมูนิตี้ <b>Bushiroad</b> ผู้พัฒนาและผู้ถือ IP วางกลยุทธ์ <strong>"IP Developer Strategy"</strong> ซึ่งเป็นการสร้างและเติบโต IP ผ่านโมเดล <strong>"One-stop Media Mix"</strong> กล่าวคือ ทำให้บริษัทสามารถดำเนินการผลิตและโปรโมตในหลากหลายสื่อภายในกลุ่มบริษัทเดียว ทั้งอนิเมะ เกม การ์ตูน ไลฟ์คอนเสิร์ต และสินค้า</p>
+    <p>BanG Dream! เป็นตัวอย่างชัดของโมเดลนี้ ในฐานะ <strong>"New Generation Girls Band Project"</strong> ที่มีอนิเมะ เกมมือถือ การ์ตูน และไลฟ์คอนเสิร์ตโดย<strong>นักพากย์ที่เล่นเครื่องดนตรีจริงบนเวที</strong> สำคัญคือการนำเสียงของนักพากย์และการแสดงจริงมาเป็นแกนของ IP ทำให้แฟนรู้สึกว่า girl band ในโลก 2D มีตัวตนในโลก 3D อย่างแนบแน่น คล้ายกับโมเดลของ Love Live! และ Idolmaster</p>
+    <p>ในแง่รายได้ Bushiroad ใช้ BanG Dream! และ IP อื่น ๆ เพื่อยกระดับกลุ่มธุรกิจไปสู่การเป็น <strong>"IP Developer 2.0"</strong> และเชื่อมโยงกับกลยุทธ์ <strong>"Global Mega Character Platform"</strong> ที่พยายามนำ IP ญี่ปุ่นไปสู่ตลาดโลก โดยใช้มีเดียและโปรโมชันมิกซ์อย่างรวดเร็ว เพื่อสร้าง "mega IP" ที่มีช่องทางการสัมผัสและแหล่งรายได้หลากหลาย เช่น เกมมือถือ แผ่นเพลง ไลฟ์ทัวร์ และสินค้า — แม้ BanG Dream! จะไม่ถูกนับในกลุ่ม "ไอดอลแท้ ๆ" ตามนิยาม แต่เมื่อดูจากกลยุทธ์และตลาดเป้าหมายซึ่งเป็นแฟนอนิเมะหญิงและชายวัยรุ่น–ผู้ใหญ่ที่เข้าร่วมไลฟ์และเล่นเกมมือถือ โมเดลของ BanG Dream! จึงใกล้เคียงกับไอดอล 2D อย่างมาก และครถถูกวิเคราะห์ร่วมในงานนี้</p>
+    <div class="keybox">
+      <div class="kt">🎸 การผลัดวงรุ่นใหม่</div>
+      <p>ยุคแรกของเกมมือถือ 'BanG Dream! Girls Band Party' นำโดยวงอย่าง <b>Poppin'Party</b> และ <b>Roselia</b> ซึ่งสร้างฐานแฟนผ่านเพลงร็อกและไลฟ์ที่เข้มข้น ต่อมายุค <b>Our Notes</b> และวงใหม่อย่าง <b>MyGO!!!!!</b> และ <b>Ave Mujica</b> แสดงถึงการเปลี่ยนแปลงเชิงธุรกิจในการผลัดวงรุ่นใหม่มารับช่วง โดยยังคงรักษากลยุทธ์มีเดียมิกซ์และไลฟ์หนักเป็นหัวใจ — สะท้อนการจัดการ IP แบบไอดอล 2D ที่ต้อง<strong>หมุนวงรุ่นใหม่เข้าตลาดโดยไม่ทำให้แฟรนไชส์หลักสูญเสียฐานแฟนเดิมมากนัก</strong></p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 06 UMA MUSUME ═══════════════ -->
+<section class="sec" id="uma" style="--ac:#087F5B;--tint:#E2F5EE">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🏇</span>PART 06 · MOBILE MEGA-HIT</div>
+    <h2>ยุคเกมมือถือขนาดใหญ่: Uma Musume และการเปลี่ยนสมดุลตลาด</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">คอนเซ็ปต์ Uma Musume และโมเดลธุรกิจ</h3>
+  <div class="reveal">
+    <p><b>'Uma Musume Pretty Derby'</b> ของ Cygames เป็นหนึ่งใน IP ที่สำคัญที่สุดของยุคเกมมือถือในญี่ปุ่น เพราะผสมผสานธีม <strong>"ม้าแข่งในตำนาน"</strong> กับตัวละครหญิงในบทบาท "Uma Musume" ที่วิ่งแข่งและขึ้นเวทีในฐานะไอดอล เปิดให้บริการในเดือน<b>กุมภาพันธ์ 2021</b> และทันทีก็ได้รับการตอบรับมหาศาลจากทั้งผู้เล่นทั่วไปและแฟนอนิเมะ เนื่องจากคอนเซ็ปต์แปลกใหม่ ระบบเกมที่ลึก และการผูกเนื้อหากับ<strong>ประวัติศาสตร์ม้าแข่งจริงในญี่ปุ่น</strong></p>
+    <p>โมเดลธุรกิจใช้รูปแบบ <strong>free-to-play พร้อมระบบกาชา</strong>ที่ผู้เล่นสุ่มตัวละคร Uma Musume ใหม่ ๆ ซึ่งผูกกับทั้งเนื้อเรื่อง การแข่ง และเพลง การที่ Cygames มีประสบการณ์จากเกมมือถือขนาดใหญ่อื่น เช่น <b>Granblue Fantasy</b> ซ้ำยังเป็นผู้ร่วมพัฒนาเกมดนตรี Idol Master Cinderella Girls Starlight Stage ด้วย จึงทำให้ออกแบบระบบ monetization ที่สร้างรายได้สูงโดยไม่กระทบประสบการณ์ผู้เล่นมากเกินไป ขณะเดียวกันยังขยายไปสู่อนิเมะทีวี เพลง และไลฟ์ของนักพากย์ที่แสดงบทบาท Uma Musume บนเวที ทำให้ IP นี้มีลักษณะ<strong>ใกล้เคียงกับไอดอล 2D อย่างชัดเจน</strong> แม้แก่นเรื่องจะเป็นเรื่องแข่งม้า</p>
+  </div>
+
+  <h3 class="sub-h reveal">รายได้และฐานแฟนคลับ: การขึ้นสู่ผู้นำตลาดเกมมือถือ</h3>
+  <div class="chart reveal">
+    <h4>📊 รายได้ของ Uma Musume ในญี่ปุ่น (พันล้านเยน)</h4>
+    <p class="cu">เปรียบเทียบ 2 ชุดการประมาณค่า</p>
+    <div class="legend">
+      <span><i style="background:#087F5B"></i>การประมาณค่าชุดที่ 1</span>
+      <span><i style="background:#7BD0B2"></i>การประมาณค่าชุดที่ 2</span>
+    </div>
+    <div class="bgroup">
+      <div class="byear">ปี 2021</div>
+      <div class="brow"><span class="bl">ชุดที่ 1</span><div class="btrack"><div class="bfill" style="width:100%;background:linear-gradient(90deg,#087F5B,#0CA678)">129.57</div></div></div>
+      <div class="brow"><span class="bl">ชุดที่ 2</span><div class="btrack"><div class="bfill" style="width:78%;background:linear-gradient(90deg,#57B893,#7BD0B2)">100.769</div></div></div>
+    </div>
+    <div class="bgroup">
+      <div class="byear">ปี 2022</div>
+      <div class="brow"><span class="bl">ชุดที่ 1</span><div class="btrack"><div class="bfill" style="width:69%;background:linear-gradient(90deg,#087F5B,#0CA678)">89.418</div></div></div>
+      <div class="brow"><span class="bl">ชุดที่ 2</span><div class="btrack"><div class="bfill" style="width:52%;background:linear-gradient(90deg,#57B893,#7BD0B2)">66.809</div></div></div>
+    </div>
+    <div class="bgroup" style="margin-bottom:6px">
+      <div class="byear">ปี 2023</div>
+      <div class="brow"><span class="bl">ชุดที่ 1</span><div class="btrack"><div class="bfill" style="width:36%;background:linear-gradient(90deg,#087F5B,#0CA678)">46.572</div></div></div>
+      <div class="brow"><span class="bl">ชุดที่ 2</span><div class="btrack"><div class="bfill" style="width:37%;background:linear-gradient(90deg,#57B893,#7BD0B2)">47.541</div></div></div>
+    </div>
+  </div>
+  <div class="reveal">
+    <p>แม้ตัวเลขทั้งสองชุดต่างกัน แต่ทั้งคู่สะท้อนภาพเดียวกันคือ <strong>Year 1 ของ Uma Musume มีรายได้ระดับแสนล้านเยน</strong> ซึ่งสูงที่สุดในตลาดเกมมือถือญี่ปุ่นในปีนั้น และในปีถัดมามีการลดลงแต่ยังอยู่ในระดับสูงมากเมื่อเทียบกับ IP อื่น</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">19 ล้านครั้ง</div><div class="l">ดาวน์โหลดสะสมในญี่ปุ่น (ภายในสิงหาคม 2023) — penetration rate สูงมากเทียบประชากรและผู้เล่นเกมมือถือโดยรวม</div></div>
+    <div class="stat"><div class="n">อันดับ 45 → 1</div><div class="l">กระโดดยอดขายในตลาดญี่ปุ่นภายในวันเดียว (ปลาย ก.พ. 2026) สัมพันธ์กับอีเวนท์/กาชาใหญ่ — ฐานแฟนยังตอบสนองอย่างมีพลัง</div></div>
+    <div class="stat"><div class="n">หลายพันล้านเยน/เดือน</div><div class="l">ระดับรายได้ต่อเนื่องในปี 2026</div></div>
+  </div>
+  <div class="reveal">
+    <p>เมื่อพิจารณาภาพรวม รายได้ระดับร้อยพันล้านเยนต่อปีในช่วงพีคและการอยู่อันดับบนสุดของตลาดอย่างสม่ำเสมอ ทำให้ Uma Musume ควรถูกจัดอยู่ในกลุ่ม <strong>"ผู้นำตลาด" ของยุคต้น–กลางทศวรรษ 2020</strong> หากวัดจากตัวเลขรายได้ด้านเกมมือถือเพียงอย่างเดียว — เมื่อเทียบกับ Idolmaster, Love Live! หรือ BanG Dream! ซึ่งแม้จะมีรายได้สูง แต่ไม่มีตัวเลขยืนยันที่ระบุระดับใกล้เคียง Uma Musume ในช่วงเดียวกัน</p>
+  </div>
+
+  <h3 class="sub-h reveal">ผลกระทบต่อแฟรนไชส์ไอดอล 2D รุ่นเก่า</h3>
+  <div class="steps reveal">
+    <div class="step"><span class="sn">01</span>
+      <h4>ยกระดับมาตรฐานรายได้ของเกมมือถือไอดอล</h4>
+      <p>จากจุดที่เกมมือถือไอดอลอย่าง Cinderella Girls, Love Live! SIF และ BanG Dream! สร้างรายได้ระดับหลายหมื่นล้านเยนตลอดอายุเกม Uma Musume แสดงให้เห็นว่า IP ที่ผสมผสานเรื่องราวแข่งม้าและไอดอล สามารถสร้างรายได้ระดับ<strong>ร้อยพันล้านเยนต่อปีใน Year 1</strong> ทำให้ผู้ถือ IP รายอื่นและนักลงทุนเริ่มมองว่าการลงทุนในเกมมือถือไอดอลมีศักยภาพสร้าง "mega-hit" หากออกแบบคอนเซ็ปต์และโมเดลธุรกิจถูกต้อง</p>
+    </div>
+    <div class="step"><span class="sn">02</span>
+      <h4>แย่งเวลาเล่นและงบกาชาของผู้เล่นเดิม</h4>
+      <p>Uma Musume ดึงความสนใจของผู้เล่นที่เคยเล่นเกมมือถืออื่น เช่น Idolmaster หรือ Love Live! มาสู่ IP ใหม่ ซึ่งมีทั้งผลในเชิง "แย่งเวลาเล่น" และ cross-fandom — แฟนบางส่วนยังเล่นหลายเกมพร้อมกันแต่ต้องกระจายงบประมาณค่าใช้จ่ายในกาชา ผลคือรายได้ของแฟรนไชส์เดิมอาจลดลง หรืออย่างน้อยหยุดเติบโตในอัตราเดิม ข้อมูลง่าย ๆ คือรายได้ของเกมไอดอล 2D แบบดั้งเดิมบางเกมเริ่มลดลงหลังปี 2021 ขณะที่ Uma Musume ครองอันดับบนสุดอย่างต่อเนื่อง</p>
+    </div>
+    <div class="step"><span class="sn">03</span>
+      <h4>ขยายความหมายของ "ไอดอล 2D" ให้กว้างขึ้น</h4>
+      <p>สู่ตัวละครที่ไม่ใช่ "นักร้องไอดอล" ในแบบ school idol หรือออฟฟิสไอดอล แต่เป็น<strong>นักกีฬาที่มีเส้นทางอาชีพในโลกแข่งม้า และมีการขึ้นเวทีร้องเพลงเป็นกิจกรรมเสริม</strong> การขยายความหมายนี้ทำให้ตลาดเปิดรับ IP แบบ "ผสมผสาน" มากขึ้น และอาจส่งผลให้แฟรนไชส์เดิมอย่าง Idolmaster และ Love Live! ต้องทดลองคอนเซ็ปต์ใหม่ เช่น การผสมผสานกับกีฬา อีสปอร์ต หรือกิจกรรมอื่น ๆ เพื่อสร้างจุดต่าง</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 07 HOLOLIVE ═══════════════ -->
+<section class="sec tint" id="holo" style="--ac:#1971C2;--tint:#E5F1FB">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">💠</span>PART 07 · VTUBER IDOL</div>
+    <h2>VTuber สายไอดอล: Hololive และการกำเนิด "3D–2D Hybrid Idol"</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">โครงสร้างธุรกิจของ Hololive Production</h3>
+  <div class="reveal">
+    <p><b>Hololive Production</b> ดำเนินการโดยบริษัท <b>Cover Corp</b> เป็นตัวอย่างสำคัญของการสร้าง <strong>"VTuber โปรดักชัน"</strong> ที่มีโครงสร้างธุรกิจคล้ายค่ายไอดอล แต่ใช้ตัวละคร 2D/3D เป็น "หน้ากาก" ของนักแสดงในโลกจริง ธุรกิจมี<strong>เสาหลักสี่ด้าน</strong> ซึ่งรวมกันเป็นโครงสร้างรายได้คล้ายบริษัทบันเทิงครบวงจร:</p>
+  </div>
+  <div class="grid g2 reveal">
+    <div class="card"><h4><span class="ci">📺</span>Streaming / Content</h4><p>VTuber ในเครือ <b>Hololive</b> และ <b>Holostars</b> ทำไลฟ์สตรีมและปล่อยวิดีโออย่างต่อเนื่องบนแพลตฟอร์มอย่าง YouTube<br><b class="num">≈ 6.342 พันล้านเยน/ปี</b><span class="gup">+20% YoY</span></p><div class="pbar"><i style="width:79%"></i></div></div>
+    <div class="card"><h4><span class="ci">🎫</span>Live / Event</h4><p>คอนเสิร์ตออนไลน์–ออฟไลน์ที่ VTuber แสดงเพลงและโชว์บนเวที<br><b class="num">≈ 3.429 พันล้านเยน</b><span class="gup">+55.6% ในปีเดียว</span></p><div class="pbar"><i style="width:43%"></i></div></div>
+    <div class="card"><h4><span class="ci">🛍️</span>Merchandising</h4><p>สินค้าและของสะสมของ VTuber ในเครือ<br><b class="num">≈ 8.003 พันล้านเยน</b><span class="gup">+65.6%</span></p><div class="pbar"><i style="width:100%"></i></div></div>
+    <div class="card"><h4><span class="ci">🤝</span>License / Tie-up</h4><p>การอนุญาตใช้ IP และความร่วมมือเชิงพาณิชย์ — เสาที่เติบโตเร็วที่สุด<br><b class="num">≈ 2.676 พันล้านเยน</b><span class="gup">+94.2%</span></p><div class="pbar"><i style="width:33%"></i></div></div>
+  </div>
+
+  <div class="chart reveal">
+    <h4>📊 รายได้รวมของ Cover Corp (พันล้านเยน)</h4>
+    <p class="cu">ปีงบประมาณ 2023 (เม.ย. 2022 – มี.ค. 2023) รายได้รวม ≈ 20.451 พันล้านเยน เพิ่มขึ้น 49.7% จากปีก่อน และรายได้สุทธิเพิ่มขึ้นกว่า 100% — เข้าสู่เฟส "การเติบโตเชิงโครงสร้าง"</p>
+    <div class="bgroup"><div class="brow"><span class="bl">ปี 2022</span><div class="btrack"><div class="bfill" style="width:32%;background:linear-gradient(90deg,#1864AB,#1971C2)">13.663</div></div></div></div>
+    <div class="bgroup"><div class="brow"><span class="bl">ปี 2023</span><div class="btrack"><div class="bfill" style="width:47%;background:linear-gradient(90deg,#1864AB,#1971C2)">20.451</div></div></div></div>
+    <div class="bgroup"><div class="brow"><span class="bl">ปี 2024</span><div class="btrack"><div class="bfill" style="width:70%;background:linear-gradient(90deg,#1864AB,#1971C2)">30.166</div></div></div></div>
+    <div class="bgroup" style="margin-bottom:4px"><div class="brow"><span class="bl">ปี 2025</span><div class="btrack"><div class="bfill" style="width:100%;background:linear-gradient(90deg,#1864AB,#4DABF7)">43.401</div></div></div></div>
+  </div>
+
+  <div class="reveal">
+    <p>ในมุมมองเชิงธุรกิจ Hololive ถูกวางตำแหน่งเป็น <strong>"VTuber Production Corp."</strong> ที่มีพันธกิจสร้าง <strong>"Creator Ecosystems"</strong> ใหม่จากญี่ปุ่นไปสู่โลก โดยใช้ VTuber เป็นแกนของคอนเทนต์และการบริโภค ตัวเลขด้านผู้ชมสะท้อนขนาดของระบบนิเวศนี้:</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">84 คน</div><div class="l">จำนวน VTuber ในสังกัด</div></div>
+    <div class="stat"><div class="n">43 คน</div><div class="l">VTuber ที่มีผู้ติดตามเกิน 1 ล้านคน</div></div>
+    <div class="stat"><div class="n">27.59 ล้านคน</div><div class="l">ผู้เข้าชมยูนีคเฉลี่ยต่อเดือน</div></div>
+    <div class="stat"><div class="n">6.4 พันล้านครั้ง</div><div class="l">ยอดรับชมรวมต่อปี</div></div>
+    <div class="stat"><div class="n">700+ ล้านชั่วโมง</div><div class="l">เวลารับชมรวม</div></div>
+    <div class="stat"><div class="n">27.5%</div><div class="l">สัดส่วนผู้ชมต่างประเทศ — ฐานผู้ชมระดับโลก</div></div>
+  </div>
+
+  <h3 class="sub-h reveal">การเติบโตเชิงรายได้และตัวชี้วัดผู้ชม</h3>
+  <div class="reveal">
+    <p>การเติบโตของ Cover Corp และ Hololive เกิดจากการผสมผสานระหว่าง<strong>การสร้างคอนเทนต์บนแพลตฟอร์มออนไลน์ การขยายสู่ไลฟ์คอนเสิร์ต และการเพิ่มไลน์สินค้าอย่างรวดเร็ว</strong> ความสำเร็จในแต่ละเสาหลักทำให้รายได้รวมเติบโตเกือบ 50% ในปีเดียว และกำไรสุทธิเพิ่มขึ้นกว่า 100% ซึ่งเป็นอัตราสูงอย่างมากเมื่อเทียบกับบริษัทบันเทิงโดยทั่วไป</p>
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><div class="n">≈ 100 ล้านเยน</div><div class="l">รายได้เฉลี่ยต่อ VTuber (ไตรมาสที่ 4 ปี 2023)</div></div>
+    <div class="stat"><div class="n">≈ 270 ล้านเยน</div><div class="l">รายได้เฉลี่ยต่อ VTuber ต่อปี</div></div>
+  </div>
+  <div class="reveal">
+    <p>ตัวเลขนี้แม้เป็นค่าเฉลี่ย ไม่ใช่การแจกแจงรายตัว แต่สะท้อนว่าการเป็น VTuber ในเครือ Hololive มีศักยภาพสร้างรายได้ระดับสูง และบริษัทอยู่ในสถานะที่สามารถเจรจาธุรกิจและลงทุนในคอนเทนต์ได้อย่างหนัก</p>
+    <div class="keybox">
+      <div class="kt">⚔️ "คู่แข่งเชิงโครงสร้าง" ของวงการไอดอล 2D</div>
+      <p>เมื่อเปรียบเทียบกับแฟรนไชส์ไอดอล 2D หญิงแบบดั้งเดิมอย่าง Idolmaster หรือ Love Live! แม้ไม่มีตัวเลขรายได้รวมของทั้ง IP ให้เทียบโดยตรง แต่จากรายได้ของเกมมือถือและสินค้า คาดว่ารายได้รวมของแฟรนไชส์เหล่านั้นอยู่ในระดับหลายหมื่นล้านเยนต่อปี ในขณะที่ Hololive สามารถสร้างรายได้ระดับเดียวกัน — โดยมีความแตกต่างสำคัญคือ<strong>รายได้ส่วนใหญ่ไม่ได้มาจากเกมหรืออนิเมะ แต่มาจากการสตรีม การขายสินค้า และไลฟ์คอนเสิร์ตแบบไอดอล</strong> นั่นหมายความว่า Hololive เป็นคู่แข่งที่แย่งเวลารับชมและงบประมาณของแฟนคลับกับอุตสาหกรรมไอดอล 2D โดยตรง แม้รูปแบบคอนเทนต์จะต่างกัน</p>
+    </div>
+  </div>
+
+  <h3 class="sub-h reveal">Hololive กับตลาดไอดอล 2D และไอดอลจริง</h3>
+  <div class="keybox reveal">
+    <div class="kt">🎭 รูปแบบใหม่: "3D–2D Hybrid Idol"</div>
+    <p>VTuber มีตัวละคร 2D/3D ที่เป็น IP แต่การแสดงบนสตรีมและในไลฟ์คือ<strong>การแสดงของบุคคลจริง</strong>ที่ใช้ motion capture และเสียงจริงเพื่อแสดงบทบาทตัวละครนั้น โครงสร้างนี้ทำให้ VTuber มีคุณลักษณะของ<strong>ไอดอล 2D</strong> (ตัวละครเป็นศูนย์กลาง) และ<strong>ไอดอล 3D</strong> (การแสดงสดของบุคคล) ในเวลาเดียวกัน</p>
+  </div>
+  <div class="reveal">
+    <p><strong>ผลกระทบต่อวงการไอดอล 2D:</strong> การแย่งเวลารับชมและงบประมาณของแฟนคลับ เพราะผู้ชมที่เคยทุ่มเทให้กับอนิเมะและเกมไอดอลเริ่มหันมาดู VTuber ที่มีคอนเทนต์ต่อเนื่องทุกวัน และบริโภคได้ง่ายผ่าน superchat การซื้อสินค้า และไลฟ์ออนไลน์ ตัวเลขผู้ชมและรายได้ของ Hololive แสดงให้เห็นว่ากลุ่ม VTuber ได้กลายเป็น <strong>"เสาหลักใหม่" ในเศรษฐกิจคอนเทนต์ญี่ปุ่น</strong>เคียงคู่กับอนิเมะและเกมมือถือ ซึ่งย่อมกระทบการจัดสรรงบประมาณการผลิตของบริษัทคอนเทนต์ และช่องทางจิตวิญญาณของแฟนคลับ</p>
+    <p><strong>ผลกระทบต่ออุตสาหกรรมไอดอลจริง:</strong> Hololive และ VTuber โดยรวมทำให้บริษัทไอดอลดั้งเดิมต้องพิจารณาการลงทุนในเทคโนโลยีดิจิทัลและการสตรีมมากขึ้น การที่ Cover Corp สร้างรายได้จากการแจกแจง IP VTuber สู่สินค้าต่าง ๆ และการทำไลฟ์ในฮอลล์ใหญ่ ทำให้เห็นว่าคอนเซ็ปต์ <strong>"ไอดอลเสมือน" มีความสามารถแข่งกับไอดอลจริงในเชิงรายได้และการตลาด</strong> บริษัทไอดอลบางแห่งจึงเริ่มทดลองใช้ VTuber หรืออวาตาร์ดิจิทัลควบคู่กับศิลปินจริง เพื่อให้ทันกับการเปลี่ยนแปลงนี้</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 08 MEDIA MIX ═══════════════ -->
+<section class="sec" id="mm" style="--ac:#B08D46;--tint:#F7F0DF">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🔗</span>PART 08 · MEDIA MIX</div>
+    <h2>กลไกมีเดียมิกซ์และโมเดลธุรกิจของอุตสาหกรรมไอดอล 2D</h2>
+    <div class="rule"></div>
+  </header>
+
+  <div class="reveal">
+    <p>หนึ่งในลักษณะพื้นฐานของอุตสาหกรรมไอดอล 2D หญิงคือการใช้กลยุทธ์ <strong>"มีเดียมิกซ์"</strong> และ <strong>"IP Developer"</strong> อย่างเข้มข้น บริษัทที่ถือ IP มักมีโครงสร้างธุรกิจครอบคลุมหลายสื่อ เพื่อ<strong>เพิ่มจุดสัมผัสของแฟนกับ IP</strong> และสร้างแหล่งรายได้หลายทาง กลยุทธ์นี้เห็นชัดในกรณี Idolmaster, Love Live!, Aikatsu!, Pretty Rhythm/PriPara, BanG Dream!, Uma Musume และ Hololive แม้รูปแบบและสเกลจะแตกต่างกัน — โครงสร้างจุดสัมผัสของแฟนหนึ่งคนจึงกินกว้างหลายช่องทาง:</p>
+  </div>
+
+  <div class="flow reveal">
+    <span class="fi">🎮 เกม / อนิเมะ</span><span class="fa">→</span>
+    <span class="fi">🎵 เพลง</span><span class="fa">→</span>
+    <span class="fi">🎫 ไลฟ์คอนเสิร์ต</span><span class="fa">→</span>
+    <span class="fi">🛍️ สินค้า</span><span class="fa">→</span>
+    <span class="fi">✈️ ท่องเที่ยวตามสถานที่จริง</span><span class="fa">↻</span>
+    <span class="fi">แฟนกลับมาใช้จ่ายซ้ำในหลายช่องทาง</span>
+  </div>
+
+  <div class="grid g2 reveal">
+    <div class="card"><h4><span class="ci">🃏</span>Bushiroad — One-stop Media Mix</h4><p>แนวคิด "IP Developer Strategy" คือการสร้างและเติบโต IP ผ่านโครงสร้าง <b>One-stop Media Mix</b> — มีสภาพแวดล้อมที่ออกแบบและพัฒนา IP ภายในบริษัทเอง แล้วนำไปใช้ในสื่อหลากหลาย (อนิเมะ เกม คอมิก ไลฟ์ สินค้า) พร้อมใช้ <b>Promotion Mix</b> โปรโมตหลายด้านอย่างรวดเร็วและสอดประสาน โดยยก BanG Dream! เป็นกรณีตัวอย่างของการขับเคลื่อน IP ไปสู่ <b>"Mega IP"</b> ที่มีส่วนแบ่งตลาดสูง</p></div>
+    <div class="card"><h4><span class="ci">🕹️</span>Bandai Namco — อาร์เคด × อนิเมะ × สินค้า</h4><p>ใน <b>Aikatsu!</b> การใช้ Data Carddass เป็นหัวใจ ทำให้การเล่นตู้เกมในห้างเชื่อมต่อกับการซื้อการ์ดแฟชั่นและของเล่นโดยตรง ส่วนใน <b>Idolmaster</b> การผสมเกมมือถือกับไลฟ์และเพลง ทำให้ IP มีรายได้ทั้งจาก digital และ physical อย่างต่อเนื่อง</p></div>
+    <div class="card"><h4><span class="ci">🏫</span>Love Live! — อนิเมะ × เกม × ไลฟ์</h4><p>การผสานอนิเมะและเกมมือถือเข้ากับไลฟ์คอนเสิร์ตของนักพากย์ เป็นแกนของรายได้ที่ทำให้แฟนติดตามทั้งคอนเทนต์ 2D และการแสดง 3D ไปพร้อมกัน</p></div>
+    <div class="card"><h4><span class="ci">🏇</span>Uma Musume — เกม × กีฬา × ท่องเที่ยว</h4><p>แม้เริ่มจากเกมมือถือ แต่ Cygames และพันธมิตรใช้อนิเมะทีวี เพลง และอีเวนท์ร่วมกับสนามแข่งม้าและองค์กรกีฬา เพื่อสร้างคอนเทนต์ทัวริซึมและถ่ายทำในสถานที่จริงร่วมกับภาคส่วนกีฬา — <b>ม้าแข่งจริงกลายเป็นส่วนหนึ่งของเรื่องเล่า IP</b> ทำให้เกิดการเชื่อมต่อระหว่างแฟนเกมกับแฟนกีฬา</p></div>
+    <div class="card"><h4><span class="ci">💠</span>Hololive — VTuber เป็นแกน สินค้าเข้าชีวิตประจำวัน</h4><p>ใช้ VTuber เป็นเมนคอนเทนต์ และขยาย IP ผ่านไลฟ์คอนเสิร์ตที่ใช้เทคโนโลยี 3D บนเวที รวมถึงการสร้างสินค้าอย่างฟิกเกอร์ เสื้อผ้า และของใช้ เพื่อให้แฟนนำ IP ไปอยู่ในชีวิตประจำวันได้จริง</p></div>
+  </div>
+
+  <div class="keybox reveal">
+    <div class="kt">♻️ ผลลัพธ์: "วงจรค่าเพิ่ม" และ Ecosystem เชิงเศรษฐกิจ</div>
+    <p>แฟนหนึ่งคนมีโอกาสใช้จ่ายในหลายช่องทาง — เล่นเกม ซื้อเพลง เข้าร่วมไลฟ์ ซื้อสินค้า หรือเดินทางตามรอยสถานที่จริง ผลกระทบเห็นชัดในกรณี Love Live! Sunshine!! ที่ทำให้เมือง Numazu มีแฟนกลับมาเยือนซ้ำเฉลี่ยมากกว่า <b class="num">20 ครั้ง</b> และมีผลกระทบทางเศรษฐกิจราว <b class="num">237 พันล้านเยน</b> — มีเดียมิกซ์จึงไม่ใช่แค่การขายสินค้าหลายประเภท แต่คือการสร้าง <strong>"ecosystem" ทางเศรษฐกิจที่ IP เป็นแกนกลาง</strong></p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 09 IMPACT ON 3D ═══════════════ -->
+<section class="sec tint" id="d3" style="--ac:#C92A2A;--tint:#FBE9E9">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🤝</span>PART 09 · IMPACT ON 3D IDOLS</div>
+    <h2>ผลกระทบต่ออุตสาหกรรมไอดอล 3D และการปรับตัวเชิงธุรกิจ</h2>
+    <div class="rule"></div>
+  </header>
+
+  <div class="reveal">
+    <p>หนึ่งในคำถามหลักของงานนี้คือ อุตสาหกรรมไอดอล 2D หญิงส่งผลอย่างไรต่ออุตสาหกรรมไอดอล 3D หรือ "ศิลปินไอดอลจริง" ในญี่ปุ่น — โดยเฉพาะใน<strong>มิติธุรกิจ</strong> ไม่ใช่มิติพฤติกรรมแฟนคลับ ในการตอบคำถามนี้ ต้องมองที่โครงสร้างรายได้และแบบแผนการจัดการศิลปินของทั้งสองฝ่าย:</p>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step"><span class="sn">01</span>
+      <h4>นักพากย์หญิงกลายเป็นทรัพยากรสำคัญของบริษัท</h4>
+      <p>นักพากย์ไม่ได้เป็นเพียงผู้พากย์เสียงตัวละคร แต่กลายเป็น<strong>ผู้แสดงไลฟ์คอนเสิร์ต ผู้ร่วมอีเวนท์ และตัวแทน IP ในโลกจริง</strong> โมเดลนี้เห็นชัดใน Idolmaster, Love Live!, BanG Dream! และ Uma Musume ที่นักพากย์ขึ้นเวทีในบทบาทตัวละคร โดยมีความคาดหวังให้มีทักษะการร้อง เต้น หรือเล่นเครื่องดนตรีในระดับหนึ่ง บริษัทจึงต้องลงทุนเทรนนักพากย์คล้ายบริษัทไอดอล และพัฒนาระบบจัดการตารางงานไลฟ์และอีเวนท์ — ขยายขอบเขตธุรกิจของวงการนักพากย์ไปใกล้กับวงการไอดอลจริง</p>
+    </div>
+    <div class="step"><span class="sn">02</span>
+      <h4>IP 2D ยั่งยืนกว่าศิลปินบุคคล</h4>
+      <p>บริษัทบันเทิงที่เคยทำไอดอล 3D เช่นค่ายเพลงหรือต้นสังกัดไอดอล บางรายหันมาลงทุนใน IP 2D เพราะมองว่า <strong>IP มีความยั่งยืนกว่าศิลปินบุคคล</strong>ที่มีอายุงานจำกัดและเสี่ยงต่อการลาออกหรือดราม่า การลงทุนใน IP 2D เปิดโอกาสให้เปลี่ยนตัวนักพากย์หรือสร้างรุ่นใหม่เข้ามาโดยยังรักษาตัวละครเดิมหรืออย่างน้อยรักษาแบรนด์ไว้ — ตัวอย่างเช่น Bushiroad ใช้ BanG Dream! เป็น IP หลัก แต่วงในโลกจริงอย่าง Roselia สามารถเปลี่ยนสมาชิกบางคนได้ ในขณะที่ตัวละครในอนิเมะยังคงอยู่</p>
+    </div>
+    <div class="step"><span class="sn">03</span>
+      <h4>แย่งพื้นที่ในตลาดไลฟ์คอนเสิร์ตและสินค้าแฟนคลับ</h4>
+      <p>อุตสาหกรรมไอดอล 2D และ VTuber จัดไลฟ์ในฮอลล์ขนาดใหญ่ที่ใช้ทรัพยากรคล้ายคอนเสิร์ตของไอดอลจริง เช่น ฮอลล์โดม สนามกีฬา หรือฮอลล์ในเมืองใหญ่ <strong>การแข่งขันแย่งวันจัดฮอลล์และงบประมาณของผู้บริโภค</strong>ระหว่าง IP 2D กับวงไอดอลจริงจึงเพิ่มขึ้น ในบางช่วงเวลาแฟนคลับอาจต้องเลือกว่าจะซื้อบัตรคอนเสิร์ตของวงไอดอลจริงหรือของ IP 2D เช่น Love Live! หรือ Idolmaster ส่งผลให้รายได้ฝั่งหนึ่งเพิ่มในขณะที่อีกฝั่งสูญเสียส่วนแบ่งตลาด</p>
+    </div>
+    <div class="step"><span class="sn">04</span>
+      <h4>"ไอดอลเสมือน" คู่แข่งโดยตรงในตลาดออนไลน์</h4>
+      <p>Hololive และ VTuber ทำให้รูปแบบ "ไอดอลเสมือน" กลายเป็นคู่แข่งตรงของไอดอลจริงในตลาดออนไลน์ เพราะแฟนสามารถบริโภคคอนเทนต์ผ่าน YouTube โดยไม่ต้องออกจากบ้าน และสนับสนุนผ่าน superchat หรือ merchandise ได้อย่างต่อเนื่อง ค่ายไอดอลบางแห่งจึงเริ่มทดลองใช้ VTuber หรือแพลตฟอร์มออนไลน์เสริมศิลปินจริง เช่น รายการไลฟ์สตรีมมิงของไอดอล หรือการใช้ avatar ในบางคอนเทนต์ — เป็นการปรับตัวเชิงธุรกิจเพื่อลดความเหลื่อมล้ำด้านเทคโนโลยีและตอบสนองแฟนรุ่นใหม่</p>
+    </div>
+    <div class="step"><span class="sn">05</span>
+      <h4>อิทธิพลย้อนกลับ: จากไอดอล 3D สู่ไอดอล 2D</h4>
+      <p>ความสัมพันธ์ระหว่างสองอุตสาหกรรมเป็น<strong>แบบสองทิศทาง</strong> — โมเดล "งานอีเวนท์จับมือ" ที่แฟนพบปะศิลปินตัวจริง ถูกดัดแปลงเป็นอีเวนท์พบปะนักพากย์หรืออีเวนท์ลายเซ็นสำหรับแฟน IP 2D การจัด "คาเฟ่ธีมไอดอล" ที่นำอาหารและสินค้า IP มาให้บริการ ก็ได้รับแรงบันดาลใจจากคาเฟ่ของวงไอดอลจริง — อุตสาหกรรมไอดอล 3D จึงไม่ได้เป็นฝ่ายถูกแย่งส่วนแบ่งเพียงฝ่ายเดียว แต่ส่งอิทธิพลกลับด้านภาพลักษณ์และแบบแผนการจัดกิจกรรมเช่นกัน</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 10 INFLOW ═══════════════ -->
+<section class="sec" id="inflow" style="--ac:#0B7285;--tint:#E3F4F7">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🌐</span>PART 10 · CROSS-INDUSTRY</div>
+    <h2>การไหลเวียนของอิทธิพลจากอุตสาหกรรมอื่นสู่ไอดอล 2D</h2>
+    <div class="rule"></div>
+  </header>
+
+  <div class="reveal">
+    <p>อุตสาหกรรมไอดอล 2D ไม่ได้เติบโตอย่างโดดเดี่ยว แต่ได้รับอิทธิพลจากอุตสาหกรรมอื่นอย่างต่อเนื่อง ตั้งแต่เกมมือถือ เครือข่ายสังคมออนไลน์ ไปจนถึงคอนเทนต์ทัวริซึมและ VTuber — โดยเน้นการวิเคราะห์เชิงธุรกิจ:</p>
+  </div>
+
+  <div class="grid g2 reveal">
+    <div class="card"><h4><span class="ci">📱</span>เกมมือถือ Free-to-Play โมเดล Gacha</h4><p><strong>ตัวเร่งสำคัญที่สุดของการเปลี่ยนโมเดลรายได้</strong> — ยุคต้น Idolmaster และ Love Live! พึ่งพาคอนโซลและแผ่นดิสก์ แต่เมื่อ Cinderella Girls, Love Live! SIF และ BanG Dream! Girls Band Party เปิดให้บริการ โมเดลเปลี่ยนเป็นการขาย in-app purchase ผ่านกาชาและแพ็กเกจ ทำให้ IP สร้างรายได้ต่อเนื่องตลอดอายุเกม แทนที่จะเกิดรายได้ส่วนใหญ่ช่วงออกแผ่น อีกทั้งเปิดให้ IP เข้าถึงแฟนใหม่อย่างง่าย โดยเฉพาะวัยรุ่นที่ใช้สมาร์ทโฟนเป็นช่องทางหลัก — ฐานแฟนคลับจึงขยายตัวและหลากหลายทางเพศและอายุ</p></div>
+    <div class="card"><h4><span class="ci">🗃️</span>เครือข่ายสังคมออนไลน์และ UGC</h4><p>Nico Nico Douga, Twitter และ YouTube ทำให้แฟนสร้างเนื้อหา UGC (User-Generated Content) เช่น วิดีโอ MAD และแฟนอาร์ต ซึ่ง<strong>ช่วยโปรโมต IP โดยบริษัทไม่ต้องเสียค่าใช้จ่าย</strong> — กรณี Idolmaster การแพร่หลายของวิดีโอ Remix และ MAD บน Nico Nico Douga ช่วง 2007–2010 สร้างฐานแฟนที่ลึกและทำให้ IP ถูกยอมรับในวงกว้าง ในยุคหลัง Twitter และ YouTube ยิ่งทำให้การสื่อสารกับแฟนคลับเร็วและต่อเนื่อง ผ่านการโปรโมตอีเวนท์และไลฟ์ของ Love Live!, BanG Dream!, Uma Musume และ Hololive</p></div>
+    <div class="card"><h4><span class="ci">✈️</span>คอนเทนต์ทัวริซึม</h4><p>กรณี Love Live! Sunshine!! ทำให้ Numazu กลายเป็น "สถานที่ศักดิ์สิทธิ์" ที่แฟนเดินทางมาท่องเที่ยว สร้างผลกระทบทางเศรษฐกิจสูงถึงราว <b class="num">237 พันล้านเยน</b> — กรณีนี้ทำให้บริษัทคอนเทนต์และหน่วยงานท้องถิ่นอื่นเริ่มมองว่า <strong>การใช้ IP เป็นทรัพยากรท่องเที่ยวเป็นกลยุทธ์ที่มีศักยภาพ</strong> เราจึงเห็นการทดลองใช้ฉากจาก IP อื่น เช่น Aikatsu! หรือ PriPara เป็นส่วนหนึ่งของการโปรโมตเมือง แม้ไม่ถึงระดับผลกระทบของ Numazu แต่ก็สะท้อนการเชื่อมต่อระหว่างธุรกิจคอนเทนต์กับธุรกิจท่องเที่ยว</p></div>
+    <div class="card"><h4><span class="ci">🎥</span>VTuber และแพลตฟอร์มสตรีมมิง</h4><p>อุตสาหกรรมล่าสุดที่ส่งผลต่อไอดอล 2Dชัดเจน — Hololive แสดงว่าคอนเทนต์ไลฟ์ออนไลน์สร้างรายได้ระดับสูงผ่าน superchat และสินค้า โดยเนื้อหาส่วนใหญ่เป็นเพียงการพูดคุย ร้องเพลง หรือเล่นเกม แทนที่จะเป็นอนิเมะหรือเกมที่ผลิตอย่างซับซ้อน สิ่งนี้ทำให้บริษัทไอดอล 2D ต้องพิจารณาใช้ VTuber หรือสตรีมมิงเสริม IP เช่น <strong>การให้ตัวละครใน IP มีช่อง YouTube ของตนเอง หรือการทำรายการไลฟ์โดยนักพากย์ในบทบาทตัวละครอย่างเป็นประจำ</strong></p></div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 11 TIMELINE ═══════════════ -->
+<section class="sec tint" id="timeline" style="--ac:#343A40;--tint:#ECEEF0">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🕰️</span>PART 11 · TIMELINE</div>
+    <h2>ไทม์ไลน์ยุคสมัยและส่วนแบ่งตลาด: จาก Idolmaster สู่ Hololive</h2>
+    <div class="rule"></div>
+  </header>
+
+  <div class="reveal">
+    <p>เพื่อให้เห็นภาพรวมของการเปลี่ยนแปลง เราจัดไทม์ไลน์แบ่งยุคสมัยตาม <strong>"ผู้ครองเทรนด์หลัก"</strong> ซึ่งวัดจากทั้งรายได้และฐานแฟนคลับ โดยยอมรับว่าบางยุคมีผู้เล่นหลายรายแบ่งส่วนตลาดร่วมกัน แต่จะระบุผู้ที่มี<strong>อิทธิพลเชิงรูปแบบชัดเจนที่สุด</strong>ในช่วงนั้น:</p>
+  </div>
+
+  <div class="tl reveal">
+    <div class="tl-item" style="--tc:#C2410C">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-card">
+        <span class="tl-years">2005 – 2010</span>
+        <h4>ผู้บุกเบิกโมเดล: THE IDOLM@STER (อาร์เคด → คอนโซล)</h4>
+        <p>อาร์เคด 'THE IDOLM@STER' และภาคคอนโซล Xbox 360 คือผู้นำด้านการสร้างโมเดลโปรดิวซ์ไอดอล 2D แม้ในเชิงรายได้ IP ยังไม่ถึงระดับหลายหมื่นล้านเยนต่อปี (ตลาดหลักอยู่ที่ตู้เกมและคอนโซล) แต่ในเชิง "รูปแบบ" IDOLMASTER ได้สร้าง<strong>บทบาทโปรดิวเซอร์และกลไกการสนับสนุนไอดอลผ่านเครือข่าย</strong> ซึ่งจะถูกนำไปใช้ซ้ำในแฟรนไชส์อื่น</p>
+      </div>
+    </div>
+    <div class="tl-item" style="--tc:#D6336C">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-card">
+        <span class="tl-years">2010 – 2015</span>
+        <h4>ตลาดมวลชนสองขั้ว: Love Live! × Aikatsu!</h4>
+        <p>สองผู้นำเทรนด์ในตลาดต่างกัน — ตลาดอนิเมะ–เกมมือถือของวัยรุ่น (Love Live! ที่สร้างโมเดล school idol และไลฟ์คอนเสิร์ตนักพากย์) และตลาดเด็กผู้หญิงผ่าน Data Carddass (Aikatsu! ที่ใช้การ์ดแฟชั่นและตู้เกมเป็นหัวใจ) จุดพีคของ Love Live! คือช่วงปลายยุค μ's ถึงต้นยุค Aqours ที่ยอดขายเพลงและแผ่นสูงสุด ส่วนพีคของ Aikatsu! คือปี 2013–2015 ที่ตู้เกมและการ์ดได้รับความนิยมสูงสุด</p>
+      </div>
+    </div>
+    <div class="tl-item" style="--tc:#9C36B5">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-card">
+        <span class="tl-years">2015 – 2020</span>
+        <h4>ยุคเกมมือถือเต็มรูปแบบ</h4>
+        <p>Cinderella Girls, Million Live, Love Live! SIF และ BanG Dream! Girls Band Party ขึ้นมา<strong>แบ่งส่วนตลาดร่วมกัน</strong> — ไม่มี IP ใดครองตลาดแบบเบ็ดเสร็จ แต่ละ IP มีฐานแฟนและรายได้ระดับสูงในกลุ่มของตน Cinderella Girls และ Love Live! SIF มีฐานผู้เล่นมาก ขณะที่ BanG Dream! ผสมผสานเกิร์ลแบนด์กับไลฟ์นักพากย์ที่เล่นเครื่องดนตรีจริง ปลายทศวรรษ VTuber เริ่มเติบโต และ Hololive เริ่มสร้างฐานแฟนระดับนานาชาติ</p>
+      </div>
+    </div>
+    <div class="tl-item" style="--tc:#087F5B">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-card">
+        <span class="tl-years">2021 – 2023</span>
+        <h4>เจ้าตลาดคนใหม่: Uma Musume + Hololive</h4>
+        <p>Uma Musume เป็นผู้นำตลาดเกมมือถือที่ชัดเจนเชิงตัวเลข ด้วยรายได้ระดับ <b class="num">129.57 พันล้านเยน</b> ในปี 2021 และราว <b class="num">89.418 พันล้านเยน</b> ในปี 2022 ขณะที่รายได้ของ Hololive เติบโตจาก <b class="num">13.663</b> พันล้านเยน (2022) เป็น <b class="num">20.451</b> พันล้านเยน (2023) — ช่วงนี้ Uma Musume คือ "เจ้าตลาด" ด้านเกมมือถือไอดอล 2D หญิง ในขณะที่ Hololive คือ "เจ้าตลาด" ด้านคอนเทนต์ VTuber สายไอดอล</p>
+      </div>
+    </div>
+    <div class="tl-item" style="--tc:#1971C2">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-card">
+        <span class="tl-years">2024 – 2026</span>
+        <h4>ภาวะ Multi–Leader</h4>
+        <p>Uma Musume ยังอยู่อันดับบนของยอดขายเกมมือถือแม้รายได้ลดลงจากพีค · Idolmaster กลับมาแนวหน้าด้วย Gakuen IDOLMASTER ที่มีรายได้ระดับหลายพันล้านเยนต่อเดือนและขึ้นอันดับหนึ่งในบางช่วง · Hololive เติบโตต่อเนื่องจาก 30.166 พันล้านเยน (2024) เป็น 43.401 พันล้านเยน (2025) · ขณะที่รายอื่นก็ยังคงพยายามปรับตัวเข้ากับยุคสมัย ไม่ว่าจะเป็น Love Live! ขยายสู่โครงการ Bluebird และไลฟ์ของวงใหม่ · Band Dream! รุ่นที่ 2 ยุคของเกม Our Notes ที่มีความเข้มข้นกว่าเดิม · Aikatsu! และ PriPara ยังตีตลาดเด็กผู้หญิงด้วยซีรีส์ใหม่ ๆ — ภาพรวมคือภาวะ <strong>"multi–leader"</strong> ที่ IP เกมมือถือและ VTuber ครองพื้นที่ตลาดร่วมกัน</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-h reveal">ตารางเปรียบเทียบภาพรวมแต่ละยุค</h3>
+  <div class="note reveal">ค่าตัวเลขเป็นการประมาณการตามที่กล่าวถึงในเนื้อหา — ตารางนี้ไม่ได้ให้ส่วนแบ่งตลาดเชิงเปอร์เซ็นต์ เนื่องจากขาดข้อมูลรายได้รวมของตลาดไอดอล 2D หญิงในแต่ละปี แต่ใช้เป็นภาพรวมของ "จุดพีค" และผู้ครองเทรนด์หลักในยุคต่าง ๆ ได้</div>
+  <div class="tblwrap reveal">
+    <table>
+      <thead><tr><th>ยุคสมัยโดยประมาณ</th><th>IP ผู้นำเทรนด์หลัก</th><th>ตัวชี้วัดสำคัญ (รายได้ / ฐานแฟน)</th><th>ลักษณะเด่นทางธุรกิจ</th></tr></thead>
+      <tbody>
+        <tr><td><span class="era" style="--ec:#C2410C">2005–2010</span></td>
+          <td><b>THE IDOLM@STER</b></td>
+          <td>ตู้เกม Rewritable Stage · การทดสอบตลาดประสบความสำเร็จ · ขยายสู่ PROJECT IM@S</td>
+          <td>โมเดลโปรดิวเซอร์ · เน็ตเวิร์กอาร์เคด · มีเดียมิกซ์แรกเริ่ม</td></tr>
+        <tr><td><span class="era" style="--ec:#D6336C">2010–2015</span></td>
+          <td><b>Love Live!</b>, <b>Aikatsu!</b></td>
+          <td>คอนเสิร์ตโดมของ μ's · ผลกระทบเศรษฐกิจ Numazu 237 พันล้านเยน · การ์ด Aikatsu! 110 ล้านใบภายใน 1.5 ปี</td>
+          <td>School idol + คอนเทนต์ทัวริซึม · Data Carddass ตลาดเด็กผู้หญิง</td></tr>
+        <tr><td><span class="era" style="--ec:#9C36B5">2015–2020</span></td>
+          <td><b>Cinderella Girls, Love Live! SIF, BanG Dream!</b></td>
+          <td>เกมมือถือไอดอลหลายเกมอยู่อันดับบนของยอดขาย · BanG Dream! เป็นกรณีศึกษาของ IP Developer</td>
+          <td>เกมมือถือ free-to-play · ไลฟ์นักพากย์ · มีเดียมิกซ์เต็มรูปแบบ</td></tr>
+        <tr><td><span class="era" style="--ec:#087F5B">2021–2023</span></td>
+          <td><b>Uma Musume, Hololive</b></td>
+          <td>รายได้ Uma Musume ปี 2021 ~129.57 พันล้านเยน · รายได้ Cover Corp ปี 2023 ~20.451 พันล้านเยน</td>
+          <td>เกมมือถือไอดอล mega-hit · VTuber โปรดักชันเติบโตอย่างรวดเร็ว</td></tr>
+        <tr><td><span class="era" style="--ec:#1971C2">2024–2026</span></td>
+          <td><b>Uma Musume, Gakuen Idolmaster, Hololive</b></td>
+          <td>รายได้ Uma Musume ยังสูงแต่ลดลง · Gakuen Idolmaster ยอดขายเดือนละหลายพันล้านเยนและขึ้นอันดับหนึ่งในบางช่วง · Cover Corp รายได้ปี 2025 ~43.401 พันล้านเยน</td>
+          <td>ภาวะ multi–leader · การแข่งขันระหว่างเกมมือถือและ VTuber · การปรับตัวเข้าสู่ยุคสมัยของ Gen Z</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ 12 CONCLUSION ═══════════════ -->
+<section class="sec" id="conclusion" style="--ac:#3E3830;--tint:#EFECE7">
+<div class="wrap">
+  <header class="sec-head reveal">
+    <div class="eyebrow"><span class="ico">🏁</span>PART 12 · CONCLUSION</div>
+    <h2>บทสรุปและข้อสังเกตเชิงยุทธศาสตร์</h2>
+    <div class="rule"></div>
+  </header>
+
+  <h3 class="sub-h reveal">สังเคราะห์ภาพรวม</h3>
+  <div class="reveal">
+    <p>อุตสาหกรรมไอดอล 2D หญิงในญี่ปุ่นมีวิวัฒนาการเชิงธุรกิจที่ซับซ้อนและเชื่อมโยงกับอุตสาหกรรมอื่นอย่างแนบแน่น — ตั้งแต่การกำเนิดในอาร์เคด 'THE IDOLM@STER' ที่สร้างบทบาทโปรดิวเซอร์และแนวคิด "สนับสนุนไอดอล" ผ่านเครือข่ายออนไลน์ ไปจนถึงการขยายตัวของมีเดียมิกซ์ใน Love Live! และ Aikatsu! ที่นำอนิเมะ เกม และสินค้าไปเชื่อมกับไลฟ์คอนเสิร์ตและคอนเทนต์ทัวริซึม ในยุคเกมมือถือ แฟรนไชส์อย่าง Cinderella Girls, Love Live! SIF และ BanG Dream! ใช้โมเดล free-to-play และกาชาสร้างรายได้ต่อเนื่อง จากนั้น <b>Uma Musume</b> และ <b>Hololive</b> ยกระดับมาตรฐานรายได้และฐานแฟนคลับไปสู่ระดับใหม่ — Uma Musume สร้างรายได้ระดับร้อยพันล้านเยนต่อปีจากเกมมือถือ และ Hololive สร้างโครงสร้าง VTuber โปรดักชันที่มีรายได้หลายหมื่นล้านเยนต่อปีจากการสตรีม ไลฟ์ และสินค้า</p>
+    <p><strong>ต่ออุตสาหกรรมไอดอลจริง (3D):</strong> ไอดอล 2D หญิงเปลี่ยนบทบาทนักพากย์ให้กลายเป็นศิลปินที่บริษัทต้องดูแลและพัฒนาทักษะไม่ต่างจากไอดอล บริษัทบันเทิงจำนวนมากเริ่มมองว่า IP เป็นทรัพย์สินที่ยั่งยืนกว่าศิลปินบุคคล และใช้โมเดลการจัดไลฟ์คอนเสิร์ตและสินค้าแฟนคลับที่ได้แรงบันดาลใจจากไอดอลจริงมาให้บริการแฟน IP 2D ในบางกรณี วงไอดอลจริงก็เริ่มใช้เทคโนโลยี VTuber หรือ avatar เพื่อปรับตัวเข้ากับเศรษฐกิจคอนเทนต์ที่ Hololive และ VTuber สร้างขึ้น</p>
+    <p><strong>จากอุตสาหกรรมอื่น:</strong> เกมมือถือ free-to-play เป็นตัวเร่งสำคัญที่ทำให้ IP อย่าง Cinderella Girls, Love Live!, BanG Dream!, Uma Musume และ Gakuen Idolmaster สร้างรายได้ต่อเนื่องและแข่งขันกันในตลาดเดียวกัน เครือข่ายสังคมออนไลน์และแพลตฟอร์มสตรีมมิงทำให้การโปรโมตต่อเนื่องและการสร้าง UGC ง่ายขึ้น คอนเทนต์ทัวริซึมอย่างกรณี Numazu พิสูจน์ว่าคอนเทนต์ไอดอล 2D สร้างเศรษฐกิจในโลกจริงได้ในระดับเมือง และ VTuber แสดงให้เห็นว่า IP เสมือนสามารถสร้างรายได้และผู้ชมระดับโลก โดยไม่จำเป็นต้องมีเกมหรืออนิเมะเป็นแกน</p>
+  </div>
+
+  <h3 class="sub-h reveal">มองไปข้างหน้า</h3>
+  <div class="reveal">
+    <p>แนวโน้มสำคัญคือการเข้าสู่ภาวะ <strong>"multi–leader"</strong> ที่มีทั้ง IP เกมมือถือและ VTuber ครองพื้นที่ตลาดร่วมกัน ในขณะที่แฟรนไชส์ดั้งเดิม เช่น Idolmaster, Love Live!, Aikatsu! และ PriPara ต้องปรับตัวต่อเนื่อง ทั้งด้านเทคโนโลยีและโครงสร้างมีเดียมิกซ์ — การมาของ Gakuen Idolmaster ซึ่งนำโมเดลโปรดิวซ์แบบอาร์เคดกลับสู่เกมมือถือ และยังขึ้นอันดับหนึ่งของยอดขายได้ในบางช่วง เป็นสัญญาณว่า <strong>การหวนกลับไปใช้จุดแข็งดั้งเดิมของ IP ผสมกับเทคโนโลยีใหม่ สามารถสร้างกระแสใหม่ในตลาดที่อิ่มตัวได้</strong></p>
+  </div>
+
+  <h3 class="sub-h reveal">รายละเอียดอื่นๆ ที่ไม่ได้รวมอยู่ในสาระหลักของบทวิจัย</h3>
+  <div class="grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 1</div><p><strong>การมาของโรค COVID ในปี 2021</strong> ส่งผลให้การเติบโตของพวกสตรีมเมอร์เป็นอย่างมาก ผู้คนต้องกักตัวอยู่บ้านไม่มีอะไรดู ไม่สามารถออกไปงานอีเว้นท์ คอนเสิร์ตได้ในช่วงนั้น Hololive จึงได้แจ้งเกิดจากจุดนี้ แม้ว่าก่อนหน้านั้นจะมี Kizuna AI เป็นผู้บุกเบิกวงการ Virtual Youtuber ญี่ปุ่นสไตล์สาวน้อย 2D ที่เรียกว่าสายโมเอะมาก่อนก็ตาม</p></div>
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 2</div><p><strong>PROJECT SEKAI feat.Hatsune Miku</strong> เป็นโปรเจ็คเกมกดดนตรีบนมือถือ ที่ใช้เพลง Vocaloid เป็นศูนย์กลางและศิลปิน 2D ร่วมถ่ายทอดเรื่องราว ได้ออกมาในปี 2020 ได้รับความนิยมเป็นอย่างสูง ลังเลอยู่มากว่าควรจัดอยู่ในกลุ่มไอดอลดีไหม ? แต่สรุปแล้วเลือกที่จะปล่อยผ่านไป เพราะโมเดลธุรกิจอยู่ในกลุ่มเกมดนตรีมือถือเป็นหลัก แม้จะมีการขึ้นแสดงคอนเสิร์ตในโอกาสครบรอบเท่านั้นในปัจจุบัน แต่อนาคตอาจทำกิจกรรมใกล้เคียงกับไอดอลเต็มรูปแบบ เหมือน Band Dream ด้วย</p></div>
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 3</div><p><strong>คอนเสิร์ตของ Hatsune Miku</strong> Hatsune Miku คือ Vocaloid โปรแกรมเสียงสังเคราะห์ที่มีตัวตนในเน็ตเป็นสาวน้อยผมเขียว ตั้งแต่ปี 2009 ที่เทคโนโลยีเริ่มพร้อมในระดับนึง Crypton และ SEGA ได้จัดคอนเสิร์ตโฮโลแกรม ของ Hatsune Miku ขึ้น เรียกว่าเป็นก้าวแรกที่ตัวละครอนิเมะ สามารถขึ้นมายืนร้องเพลงบนโลกจริงได้ และ Hatsune Miku และคณะ ก็ยังคงจัดต่อมาเรื่อยๆ และปัจจุบันการจัดคอนเสิร์ตของตัวละคร 2D เช่น vtuber และ ไอดอล 2D สามารถเกิดขึ้นได้บ่อยๆ แล้ว</p></div>
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 4</div><p><strong>ฝั่งไอดอลหน่ม 2D ก็เติบโตไม่แพ้กัน</strong> เนื่องจากบทวิจัยนี้ เน้นรวบรวมเนื้อหาของไอดอลสาว 2D เป็นหลัก จึงไม่ได้นำเสนอในฝั่งของไอดอลชาย แต่ในฝั่งของไอดอลชายนั้นก็ดุเดือดไม่แพ้กัน ไม่ว่าจะเป็น Uta Prince 1000%  Ensemble Stars!!  IDOLiSH7  Hypnosis Mic  TSUKIPRO และในปัจจุบัน ก็มาถึงยุคของเหล่า vtuber อย่าง Nijisanji เช่น กลุ่ม ROF-MAO , ChroNoiR หรือ กลุ่มอย่าง Sutopuri (Strawberry Prince) ที่ร่วมวงทำร่าง 2D ด้วย</p></div>
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 5</div><p><strong>การเปลี่ยนผ่าน Platfrom</strong> ในช่วงแรกนั้น Nicodouga ได้รับความนิยมจากเหล่า Content Creator เป็นที่สุด แต่หลังจากเกิดปัญหาขึ้นมากมาย ในที่สุดก็ได้ถูกเปลี่ยนผ่านมาเป็น Youtube และปัจจุบันก็ถูกส่งต่อมายังพวก Tiktok Instragram แทน ทำให้เกิดการเปลี่ยนผ่านของวัฒนธรรมหลายอย่าง ไม่เหมือนจากยุคแรกเริ่มโดยสิ้นเชิง มือถือกลายเป็นเครื่องสือเสพคอนเท้นท์หลัก ดังนั้นแล้วเกมมือถือ และสตรีมมิ่ง จึงกลายเป็นปัจจัยสำคัญต่อการเติบโตของ IP อย่างหลีกเลี่ยงไม่ได้</p></div>
+    <div class="callout" style="margin:0"><div class="ct">✦ เรื่องที่ 6</div><p><strong>ไอดอลจากฝั่งอนิเมะที่ได้เอามารวมในบทวิจัยอื่นๆ</strong> — เนื่องจากจำนวนจากการทำกิจกรรมไอดอลไม่สูงมากนักจึงไม่ได้ใส่มา เช่น กลุ่มซีรีย์ PreCure สาวน้อยเวทมนตร์ต่อสู้ ที่มีการเต้นและร้องเพลงเหมือนกัน · Zombieland Saga อนิเมะของ Cygames ที่เกี่ยวกับซอมบี้มาเป็นไอดอล · Senki Zesshou Symphogear ร้องเพลงและต่อยเหล่าปีศาจร้าย ที่มีนักพากย์ระดับท็อปของวงการมาขึ้นเวทีบ่อยๆ · กลุ่มอนิเมะไอดอลอื่นๆ เช่น Wake Up Girls! AKB0048 Idoly Pride D4DJ และอื่นๆ อีกมากมาย</p></div>
+  </div>
+  <div class="reveal" style="margin-top:22px">
+    <p>แม้ว่ารายละเอียดเหล่านี้ จะมีความสำคัญ แต่บทวิจัยนี้จะเน้นเรื่องของไอดอลสาวน้อย 2D เพียงเท่านั้น เพื่อไม่ให้ภาพรวมผิดเพี้ยนไปเป็นเรื่องของศิลปิน วงการเกมมือถือ หรือวงการสตรีมเมอร์มากเกินไป มิได้มีเจตนาที่จะปล่อยผ่านแต่อย่างใด</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="fl">✦ ไอดอลสาวน้อย 2D · ไทม์ไลน์เชิงธุรกิจ 2005–2026 ✦</div>
+</footer>
+
+<button id="top" aria-label="กลับขึ้นด้านบน">↑</button>
+
+<script>
+// ---- scroll progress ----
+const pbar=document.getElementById('pbar');
+const topBtn=document.getElementById('top');
+function onScroll(){
+  const h=document.documentElement;
+  const sc=h.scrollTop||document.body.scrollTop;
+  pbar.style.width=(sc/(h.scrollHeight-h.clientHeight)*100)+'%';
+  topBtn.classList.toggle('show',sc>600);
+  // scrollspy
+  let idx=0;
+  spySecs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<=130)idx=i;});
+  spyLinks.forEach((a,i)=>a.classList.toggle('on',i===idx));
+}
+const spyLinks=[...document.querySelectorAll('.toc a')];
+const spySecs=spyLinks.map(a=>document.querySelector(a.getAttribute('href')));
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+// ---- reveal on scroll ----
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+}),{threshold:.06});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
