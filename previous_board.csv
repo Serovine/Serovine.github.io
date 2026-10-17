@@ -1,11 +1,26 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-LW,Lamb Weston Holdings Inc.,06-10-26,Before Market,43.6,10.31%,NYSE,+11.63%
-RPM,RPM International Inc.,06-10-26,Before Market,99.19,3.05%,NYSE,+1.34%
-NEOG,Neogen Corporation,06-10-26,After Market,12.15,27.09%,NASDAQ,-3.34%
-PENG,Penguin Solutions Inc.,06-10-26,After Market,61.36,202.71%,NASDAQ,+17.43%
-STZ,Constellation Brands Inc.,06-10-26,After Market,112.87,-26.24%,NYSE,+2.15%
-APLD,Applied Digital Corporation,07-10-26,After Market,25.38,0.75%,NASDAQ,-1.69%
-LEVI,Levi Strauss & Co,07-10-26,After Market,19.87,2.40%,NYSE,-3.15%
-NG,Novagold Resources Inc.,08-10-26,Before Market,6.55,-27.78%,NYSEAMERICAN,-0.79%
-PEP,Pepsico Inc.,08-10-26,Before Market,125.89,-17.96%,NASDAQ,+1.12%
-DAL,Delta Air Lines Inc.,09-10-26,Before Market,84.09,26.57%,NYSE,-1.60%
+C,Citigroup Inc.,13-10-26,Before Market,129.64,5.25%,NYSE,-3.78%
+DPZ,Domino's Pizza Inc,13-10-26,Before Market,309.36,-14.42%,NASDAQ,-4.00%
+GS,Goldman Sachs Group Inc.,13-10-26,Before Market,895.32,-0.45%,NYSE,+0.56%
+JNJ,Johnson & Johnson,13-10-26,Before Market,261.44,10.81%,NYSE,-6.74%
+JPM,JP Morgan Chase & Co.,13-10-26,Before Market,332.99,8.48%,NYSE,+0.13%
+UNH,UnitedHealth Group Incorporated,13-10-26,Before Market,379.3,26.12%,NYSE,+0.51%
+WFC,Wells Fargo & Company,13-10-26,Before Market,83.55,-1.04%,NYSE,-1.76%
+AZZ,AZZ Inc.,13-10-26,After Market,136.85,0.07%,NYSE,-2.62%
+ASML,ASML Holding N.V.,14-10-26,Before Market,1780.34,20.85%,NASDAQ,-1.22%
+BAC,Bank of America Corporation,14-10-26,Before Market,54.32,4.46%,NYSE,-5.31%
+BLK,BlackRock Inc.,14-10-26,Before Market,1082.39,9.48%,NYSE,+0.29%
+FAST,Fastenal Company,14-10-26,Before Market,50.75,4.33%,NASDAQ,+1.02%
+MS,Morgan Stanley,14-10-26,Before Market,190.02,8.14%,NYSE,-3.47%
+STT,State Street Corporation,14-10-26,Before Market,174.96,26.78%,NYSE,-6.41%
+CMC,Commercial Metals Company,15-10-26,Before Market,63.89,-2.57%,NYSE,+0.60%
+FHN,First Horizon Corporation,15-10-26,Before Market,23.08,-2.71%,NYSE,+1.70%
+MAN,ManpowerGroup,15-10-26,Before Market,52.78,100.55%,NYSE,-15.84%
+PLD,Prologis Inc.,15-10-26,Before Market,129.49,-4.17%,NYSE,-2.19%
+SCHW,Charles Schwab Corporation,15-10-26,Before Market,96.7,2.67%,NYSE,-2.35%
+TSM,Taiwan Semiconductor Manufactur,15-10-26,Before Market,453.31,22.93%,NYSE,-2.94%
+USB,U.S. Bancorp,15-10-26,Before Market,57.08,4.40%,NYSE,+1.83%
+CNS,Cohen & Steers Inc,15-10-26,After Market,69.26,11.57%,NYSE,+0.72%
+IBKR,Interactive Brokers Group Inc.,15-10-26,After Market,87.87,23.63%,NASDAQ,-2.81%
+JBHT,J.B. Hunt Transport Services,15-10-26,After Market,229.26,1.34%,NASDAQ,-3.31%
+TRV,The Travelers Companies Inc.,16-10-26,Before Market,368.75,24.99%,NYSE,+0.35%
