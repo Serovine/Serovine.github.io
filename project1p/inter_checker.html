@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Checkers (10x10 Global Draughts)</title>
+    <style>
+        :root {
+            --bg-dark: #1a1d24;
+            --panel-bg: #252932;
+            --text-main: #f0f4f8;
+            --text-muted: #9aa5b1;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --board-light: #e8d8c8;
+            --board-dark: #7a5230;
+            --board-border: #3d2616;
+            --highlight-move: rgba(46, 204, 113, 0.55);
+            --highlight-selected: rgba(241, 196, 15, 0.65);
+            --highlight-last: rgba(52, 152, 219, 0.45);
+            --highlight-hint: rgba(155, 89, 182, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1150px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        /* Board Styling */
+        .board-wrapper {
+            background: var(--board-border);
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            width: min(82vw, 560px);
+            height: min(82vw, 560px);
+            border: 3px solid #24150b;
+        }
+
+        .cell {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cell.light {
+            background-color: var(--board-light);
+        }
+
+        .cell.dark {
+            background-color: var(--board-dark);
+        }
+
+        .cell-num {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.45);
+            pointer-events: none;
+        }
+
+        .cell.selected {
+            background-color: var(--highlight-selected) !important;
+        }
+
+        .cell.last-move {
+            box-shadow: inset 0 0 0 4px var(--highlight-last);
+        }
+
+        .cell.hint-cell {
+            box-shadow: inset 0 0 0 4px var(--highlight-hint);
+        }
+
+        .valid-dot {
+            width: 32%;
+            height: 32%;
+            border-radius: 50%;
+            background-color: var(--highlight-move);
+            border: 2px solid #fff;
+            pointer-events: none;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+
+        /* Pieces */
+        .piece {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .piece:hover {
+            transform: scale(1.06);
+        }
+
+        .piece.white {
+            background: radial-gradient(circle at 35% 30%, #ffffff, #d8d8d8 65%, #9e9e9e 100%);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.5), inset 0 -3px 5px rgba(0,0,0,0.2), inset 0 2px 4px #fff;
+            border: 2px solid #ececec;
+        }
+
+        .piece.black {
+            background: radial-gradient(circle at 35% 30%, #525252, #222222 65%, #0a0a0a 100%);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.6), inset 0 -3px 5px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.2);
+            border: 2px solid #181818;
+        }
+
+        .piece.must-move {
+            animation: pulsePiece 1.2s infinite;
+        }
+
+        .piece.captured-ghost {
+            opacity: 0.35;
+            filter: grayscale(80%);
+            pointer-events: none;
+        }
+
+        @keyframes pulsePiece {
+            0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.8); }
+            70% { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+        }
+
+        .king-crown {
+            font-size: 1.3rem;
+            line-height: 1;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+            pointer-events: none;
+        }
+
+        .piece.white .king-crown {
+            color: #d97706;
+        }
+
+        .piece.black .king-crown {
+            color: #fbbf24;
+        }
+
+        /* Sidebar Controls & Dashboard */
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            max-width: 420px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .status-banner {
+            background: #181b22;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--accent);
+        }
+
+        .status-banner .turn-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .status-banner .sub-text {
+            font-size: 0.85rem;
+            color: #facc15;
+            margin-top: 4px;
+            min-height: 1.2em;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .score-card {
+            background: #1e222a;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .score-card.active-turn {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .score-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .score-count {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .score-kings {
+            font-size: 0.78rem;
+            color: #fbbf24;
+            margin-top: 2px;
+        }
+
+        .settings-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .field label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        select, button {
+            padding: 9px 12px;
+            border-radius: 6px;
+            border: 1px solid #3c4250;
+            background: #181b22;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        button.primary:hover {
+            background: var(--accent-hover);
+        }
+
+        button.secondary:hover:not(:disabled) {
+            background: #2f3542;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .toggles {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 4px 0;
+        }
+
+        .toggles label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .log-box {
+            background: #181b22;
+            border-radius: 8px;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.82rem;
+            border: 1px solid #2e3440;
+        }
+
+        .log-entry {
+            padding: 3px 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .rules-summary {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .board {
+                width: 92vw;
+                height: 92vw;
+            }
+            .sidebar {
+                max-width: 92vw;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>INTERNATIONAL CHECKERS (10x10)</h1>
+        <p>หมากฮอสสากลมาตรฐานโลก (Polish / International Draughts) — กฎบังคับกินสูงสุด & ฮอสบิน</p>
+    </header>
+
+    <div class="game-container">
+        <!-- กระดาน 10x10 -->
+        <div class="board-wrapper">
+            <div id="board" class="board"></div>
+        </div>
+
+        <!-- แผงควบคุมและข้อมูล -->
+        <div class="sidebar">
+            <div class="status-banner">
+                <div id="turnDisplay" class="turn-text">ตาของฝ่ายขาว (คุณ)</div>
+                <div id="ruleNotice" class="sub-text"></div>
+            </div>
+
+            <div class="score-grid">
+                <div id="whiteCard" class="score-card active-turn">
+                    <span class="score-title">⚪ ฝ่ายขาว (White)</span>
+                    <span id="whiteCount" class="score-count">20</span>
+                    <span id="whiteKings" class="score-kings">ฮอส: 0</span>
+                </div>
+                <div id="blackCard" class="score-card">
+                    <span class="score-title">⚫ ฝ่ายดำ (Black)</span>
+                    <span id="blackCount" class="score-count">20</span>
+                    <span id="blackKings" class="score-kings">ฮอส: 0</span>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="field">
+                    <label for="aiLevel">ความฉลาด CPU:</label>
+                    <select id="aiLevel">
+                        <option value="easy">ง่าย (Easy)</option>
+                        <option value="medium" selected>ปกติ (Medium)</option>
+                        <option value="hard">ยาก (Hard - ลึก 4 ชั้น)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="playerSide">ฝั่งของคุณ:</label>
+                    <select id="playerSide">
+                        <option value="W" selected>เล่นฝั่งขาว (เดินก่อน)</option>
+                        <option value="B">เล่นฝั่งดำ (เดินหลัง)</option>
+                        <option value="PVP">เล่น 2 คน (ไม่ใช้ CPU)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-grid">
+                <button id="btnNewGame" class="primary">🔄 เริ่มเกมใหม่</button>
+                <button id="btnUndo" class="secondary" disabled>↩️ ย้อนกลับ (Undo)</button>
+                <button id="btnHint" class="secondary">💡 ขอคำใบ้ (Hint)</button>
+                <button id="btnFlip" class="secondary">🔃 หมุนกระดาน</button>
+            </div>
+
+            <div class="toggles">
+                <label><input type="checkbox" id="chkSound" checked> 🔊 เสียงประกอบ</label>
+                <label><input type="checkbox" id="chkNumbers" checked> 🔢 เลขช่อง (1-50)</label>
+            </div>
+
+            <div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">ประวัติการเดินหมาก (Standard Notation):</div>
+                <div id="moveLog" class="log-box"></div>
+            </div>
+
+            <div class="rules-summary">
+                <strong>กติกาสากล 10x10 (International Rules):</strong><br>
+                • <b>บังคับกินสูงสุด:</b> หากมีหลายทางเลือก ต้องเลือกเส้นทางที่กินหมากได้จำนวนตัวเยอะที่สุดเสมอ<br>
+                • <b>การกินถอยหลัง:</b> เบี้ยธรรมดาเดินหน้าเท่านั้น แต่กระโดดกินถอยหลังได้<br>
+                • <b>ฮอสบิน (Flying King):</b> เดินและกระโดดกินระยะไกลได้หลายช่อง<br>
+                • <b>การเข้าฮอส:</b> ต้องจบตาที่แถวสุดท้ายเท่านั้น หากแค่กระโดดผ่านเพื่อกินต่อยังเป็นเบี้ยธรรมดา
+            </div>
+        </div>
+    </div>
+
+<script>
+/**
+ * ระบบเสียงสังเคราะห์ด้วย Web Audio API (ไม่ต้องโหลดไฟล์ภายนอก)
+ */
+class SoundEngine {
+    constructor() {
+        this.ctx = null;
+        this.enabled = true;
+    }
+
+    init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    playTone(freq, type, duration, vol = 0.12) {
+        if (!this.enabled) return;
+        try {
+            this.init();
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+    }
+
+    move() { this.playTone(320, 'sine', 0.08, 0.15); }
+    capture() {
+        this.playTone(180, 'triangle', 0.12, 0.2);
+        setTimeout(() => this.playTone(260, 'sine', 0.1, 0.15), 50);
+    }
+    king() {
+        [440, 554, 659, 880].forEach((f, i) => {
+            setTimeout(() => this.playTone(f, 'triangle', 0.18, 0.15), i * 80);
+        });
+    }
+    win() {
+        [523, 659, 784, 1046].forEach((f, i) => {
+            setTimeout(() => this.playTone(f, 'sine', 0.25, 0.18), i * 110);
+        });
+    }
+}
+
+const sfx = new SoundEngine();
+
+/**
+ * กติกาและโครงสร้างกระดาน International Checkers (10x10)
+ * ค่าในช่อง:
+ * null = ว่าง
+ * { player: 'W' | 'B', isKing: boolean }
+ */
+const SIZE = 10;
+const DIRS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+
+class InternationalDraughts {
+    constructor() {
+        this.board = [];
+        this.turn = 'W';
+        this.history = [];
+        this.moveList = [];
+        this.flipped = false;
+        this.selectedCell = null;
+        this.activeSequenceMoves = []; // เส้นทางที่ถูกต้องทั้งหมดในตานี้
+        this.currentStepMoves = [];    // เส้นทางที่กรองตามการกดต่อเนื่องของผู้เล่น
+        this.inMultiJump = false;
+        this.capturedSoFar = [];
+        this.lastMoveCells = [];
+        this.hintCells = [];
+        this.gameOver = false;
+        this.aiThinking = false;
+        this.turnCounter = 1;
+
+        this.initDOM();
+        this.startNewGame();
+    }
+
+    initDOM() {
+        this.boardEl = document.getElementById('board');
+        this.turnDisplay = document.getElementById('turnDisplay');
+        this.ruleNotice = document.getElementById('ruleNotice');
+        this.whiteCountEl = document.getElementById('whiteCount');
+        this.blackCountEl = document.getElementById('blackCount');
+        this.whiteKingsEl = document.getElementById('whiteKings');
+        this.blackKingsEl = document.getElementById('blackKings');
+        this.whiteCard = document.getElementById('whiteCard');
+        this.blackCard = document.getElementById('blackCard');
+        this.moveLogEl = document.getElementById('moveLog');
+        this.btnUndo = document.getElementById('btnUndo');
+        this.btnHint = document.getElementById('btnHint');
+        this.aiSelect = document.getElementById('aiLevel');
+        this.sideSelect = document.getElementById('playerSide');
+
+        document.getElementById('btnNewGame').addEventListener('click', () => this.startNewGame());
+        document.getElementById('btnUndo').addEventListener('click', () => this.undoMove());
+        document.getElementById('btnHint').addEventListener('click', () => this.showHint());
+        document.getElementById('btnFlip').addEventListener('click', () => {
+            this.flipped = !this.flipped;
+            this.renderBoard();
+        });
+        document.getElementById('chkSound').addEventListener('change', (e) => {
+            sfx.enabled = e.target.checked;
+        });
+        document.getElementById('chkNumbers').addEventListener('change', () => {
+            this.renderBoard();
+        });
+        this.sideSelect.addEventListener('change', () => this.startNewGame());
+    }
+
+    startNewGame() {
+        this.board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+        // วางหมาก 20 ตัวต่อฝั่ง บนช่องสีเข้ม (r + c) % 2 === 1
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                if ((r + c) % 2 === 1) {
+                    if (r < 4) this.board[r][c] = { player: 'B', isKing: false };
+                    else if (r > 5) this.board[r][c] = { player: 'W', isKing: false };
+                }
+            }
+        }
+
+        this.turn = 'W';
+        this.history = [];
+        this.moveList = [];
+        this.selectedCell = null;
+        this.inMultiJump = false;
+        this.capturedSoFar = [];
+        this.lastMoveCells = [];
+        this.hintCells = [];
+        this.gameOver = false;
+        this.aiThinking = false;
+        this.turnCounter = 1;
+        this.moveLogEl.innerHTML = '';
+
+        // หมุนกระดานอัตโนมัติถ้าผู้เล่นเลือกฝั่งดำ
+        this.flipped = (this.sideSelect.value === 'B');
+
+        this.prepareTurn();
+    }
+
+    cloneBoard(b) {
+        return b.map(row => row.map(cell => cell ? { ...cell } : null));
+    }
+
+    // แปลงพิกัด (r, c) เป็นเลขมาตรฐานสากล 1-50
+    coordToNotation(r, c) {
+        if ((r + c) % 2 === 0) return '';
+        return r * 5 + Math.floor(c / 2) + 1;
+    }
+
+    /**
+     * คำนวณหาตาเดินที่ถูกต้องทั้งหมดของฝั่ง player ตามกฎ International Checkers:
+     * 1. คำนวณเส้นทางการกินของทุกตัว
+     * 2. หามูลค่าการกินสูงสุด (maxCaptures)
+     * 3. หาก maxCaptures > 0 บังคับเลือกเฉพาะเส้นทางที่กินได้เท่ากับ maxCaptures เท่านั้น (Majority Rule)
+     */
+    getAllLegalMoves(boardState, player) {
+        let allCaptures = [];
+
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                const piece = boardState[r][c];
+                if (piece && piece.player === player) {
+                    const caps = this.getPieceCaptures(boardState, r, c, piece, []);
+                    allCaptures.push(...caps);
+                }
+            }
+        }
+
+        if (allCaptures.length > 0) {
+            const maxCapCount = Math.max(...allCaptures.map(m => m.captures.length));
+            return allCaptures.filter(m => m.captures.length === maxCapCount);
+        }
+
+        // หากไม่มีการกินเลย ให้หาตาเดินปกติ
+        let normalMoves = [];
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                const piece = boardState[r][c];
+                if (piece && piece.player === player) {
+                    normalMoves.push(...this.getPieceNormalMoves(boardState, r, c, piece));
+                }
+            }
+        }
+        return normalMoves;
+    }
+
+    getPieceNormalMoves(boardState, r, c, piece) {
+        const moves = [];
+        if (!piece.isKing) {
+            const forwardRow = piece.player === 'W' ? r - 1 : r + 1;
+            for (const dc of [-1, 1]) {
+                const nc = c + dc;
+                if (this.inBounds(forwardRow, nc) && !boardState[forwardRow][nc]) {
+                    moves.push({
+                        steps: [{ r, c }, { r: forwardRow, c: nc }],
+                        captures: []
+                    });
+                }
+            }
+        } else {
+            // ฮอสบิน เดินแนวทแยงได้ไกลจนกว่าจะเจอสิ่งกีดขวาง
+            for (const [dr, dc] of DIRS) {
+                let nr = r + dr;
+                let nc = c + dc;
+                while (this.inBounds(nr, nc) && !boardState[nr][nc]) {
+                    moves.push({
+                        steps: [{ r, c }, { r: nr, c: nc }],
+                        captures: []
+                    });
+                    nr += dr;
+                    nc += dc;
+                }
+            }
+        }
+        return moves;
+    }
+
+    /**
+     * ค้นหาการกระโดดกินแบบ Recursive (รองรับทั้งเบี้ยธรรมดาและฮอสบิน)
+     * กฎ Turkish Strike: หมากที่ถูกกระโดดข้ามไปแล้วในตานี้จะอยู่ใน capturedList
+     * ห้ามกระโดดข้ามซ้ำ แต่ยังคงขวางอยู่บนกระดานจนกว่าจะจบตา
+     */
+    getPieceCaptures(boardState, r, c, piece, capturedList) {
+        let sequences = [];
+
+        if (!piece.isKing) {
+            // เบี้ยธรรมดากินได้ 4 ทิศทาง (หน้าและหลัง)
+            for (const [dr, dc] of DIRS) {
+                const midR = r + dr;
+                const midC = c + dc;
+                const landR = r + 2 * dr;
+                const landC = c + 2 * dc;
+
+                if (this.inBounds(landR, landC)) {
+                    const midPiece = boardState[midR][midC];
+                    const alreadyCaptured = capturedList.some(pos => pos.r === midR && pos.c === midC);
+
+                    if (
+                        midPiece &&
+                        midPiece.player !== piece.player &&
+                        !alreadyCaptured &&
+                        !boardState[landR][landC]
+                    ) {
+                        const nextCaptured = [...capturedList, { r: midR, c: midC }];
+                        // จำลองย้ายหมากตัวเองไปจุดตก (โดยยังไม่ต้องลบหมากที่ถูกกินออก เพื่อรักษากฎห้ามข้ามซ้ำ)
+                        const tempBoard = this.cloneBoard(boardState);
+                        tempBoard[r][c] = null;
+                        tempBoard[landR][landC] = { ...piece }; // กฎสากล: ระหว่างกินต่อเนื่องยังไม่เลื่อนขั้นเป็นฮอส
+
+                        const subCaptures = this.getPieceCaptures(tempBoard, landR, landC, piece, nextCaptured);
+                        if (subCaptures.length > 0) {
+                            for (const sub of subCaptures) {
+                                sequences.push({
+                                    steps: [{ r, c }, ...sub.steps],
+                                    captures: sub.captures
+                                });
+                            }
+                        } else {
+                            sequences.push({
+                                steps: [{ r, c }, { r: landR, c: landC }],
+                                captures: nextCaptured
+                            });
+                        }
+                    }
+                }
+            }
+        } else {
+            // ฮอสบิน (Flying King Capture)
+            for (const [dr, dc] of DIRS) {
+                let scanR = r + dr;
+                let scanC = c + dc;
+                let enemyPos = null;
+
+                // เลื่อนหาหมากตัวแรกในแนวทแยง
+                while (this.inBounds(scanR, scanC)) {
+                    const cellPiece = boardState[scanR][scanC];
+                    if (cellPiece) {
+                        const alreadyCap = capturedList.some(pos => pos.r === scanR && pos.c === scanC);
+                        if (cellPiece.player !== piece.player && !alreadyCap) {
+                            enemyPos = { r: scanR, c: scanC };
+                        }
+                        break; // เจอหมากแล้วหยุดสแกนหาตัวถูกกิน
+                    }
+                    scanR += dr;
+                    scanC += dc;
+                }
+
+                // ถ้าเจอหมากฝ่ายตรงข้ามที่ยังไม่ได้ถูกกิน ให้เช็คช่องว่างด้านหลังทั้งหมดที่สามารถลงจอดได้
+                if (enemyPos) {
+                    let landR = enemyPos.r + dr;
+                    let landC = enemyPos.c + dc;
+
+                    while (this.inBounds(landR, landC) && !boardState[landR][landC]) {
+                        const nextCaptured = [...capturedList, enemyPos];
+                        const tempBoard = this.cloneBoard(boardState);
+                        tempBoard[r][c] = null;
+                        tempBoard[landR][landC] = { ...piece };
+
+                        const subCaptures = this.getPieceCaptures(tempBoard, landR, landC, piece, nextCaptured);
+                        if (subCaptures.length > 0) {
+                            for (const sub of subCaptures) {
+                                sequences.push({
+                                    steps: [{ r, c }, ...sub.steps],
+                                    captures: sub.captures
+                                });
+                            }
+                        } else {
+                            sequences.push({
+                                steps: [{ r, c }, { r: landR, c: landC }],
+                                captures: nextCaptured
+                            });
+                        }
+
+                        landR += dr;
+                        landC += dc;
+                    }
+                }
+            }
+        }
+
+        return sequences;
+    }
+
+    inBounds(r, c) {
+        return r >= 0 && r < SIZE && c >= 0 && c < SIZE;
+    }
+
+    prepareTurn() {
+        this.activeSequenceMoves = this.getAllLegalMoves(this.board, this.turn);
+        this.currentStepMoves = [...this.activeSequenceMoves];
+        this.selectedCell = null;
+        this.inMultiJump = false;
+        this.capturedSoFar = [];
+        this.hintCells = [];
+
+        this.updateDashboard();
+        this.renderBoard();
+
+        // ตรวจสอบจบเกม
+        if (this.activeSequenceMoves.length === 0) {
+            this.gameOver = true;
+            const winner = this.turn === 'W' ? 'ฝ่ายดำ (Black)' : 'ฝ่ายขาว (White)';
+            this.turnDisplay.textContent = `🏆 จบเกม! ${winner} เป็นฝ่ายชนะ!`;
+            this.ruleNotice.textContent = 'ไม่มีตาเดินที่ถูกต้องเหลืออยู่';
+            sfx.win();
+            return;
+        }
+
+        // แจ้งเตือนบังคับกินสูงสุด
+        const maxCaps = this.activeSequenceMoves[0].captures.length;
+        if (maxCaps > 0) {
+            this.ruleNotice.textContent = `⚠️ บังคับกินสูงสุด: ต้องกิน ${maxCaps} ต่อในตานี้!`;
+        } else {
+            this.ruleNotice.textContent = '';
+        }
+
+        // ตรวจสอบว่าเป็นตาของ CPU หรือไม่
+        const mode = this.sideSelect.value;
+        const isAITurn = (mode === 'W' && this.turn === 'B') || (mode === 'B' && this.turn === 'W');
+
+        if (isAITurn && !this.gameOver) {
+            this.aiThinking = true;
+            this.turnDisplay.textContent = `🤖 CPU (${this.turn === 'W' ? 'ขาว' : 'ดำ'}) กำลังคิด...`;
+            setTimeout(() => this.makeAIMove(), 380);
+        }
+    }
+
+    handleCellClick(r, c) {
+        if (this.gameOver || this.aiThinking) return;
+
+        // กรณีอยู่ระหว่างกระโดดกินหลายต่อ บังคับกดเฉพาะช่องถัดไปของตัวเดิม
+        if (this.inMultiJump) {
+            const matchingMoves = this.currentStepMoves.filter(
+                m => m.steps[1].r === r && m.steps[1].c === c
+            );
+            if (matchingMoves.length > 0) {
+                this.advancePlayerMove(r, c, matchingMoves);
+            }
+            return;
+        }
+
+        // เลือกตัวหมากที่จะเดิน
+        const piece = this.board[r][c];
+        if (piece && piece.player === this.turn) {
+            const movesForPiece = this.activeSequenceMoves.filter(
+                m => m.steps[0].r === r && m.steps[0].c === c
+            );
+            if (movesForPiece.length > 0) {
+                this.selectedCell = { r, c };
+                this.currentStepMoves = movesForPiece;
+                this.hintCells = [];
+                this.renderBoard();
+            }
+            return;
+        }
+
+        // กดช่องปลายทางหลังจากเลือกหมากแล้ว
+        if (this.selectedCell) {
+            const matchingMoves = this.currentStepMoves.filter(
+                m => m.steps[1].r === r && m.steps[1].c === c
+            );
+            if (matchingMoves.length > 0) {
+                // บันทึก Snapshot สำหรับปุ่ม Undo ก่อนเริ่มขยับก้าวแรกของตา
+                this.saveHistorySnapshot();
+                this.firstStepOrigin = { ...this.selectedCell };
+                this.advancePlayerMove(r, c, matchingMoves);
+            }
+        }
+    }
+
+    advancePlayerMove(destR, destC, matchingMoves) {
+        const fromR = this.selectedCell.r;
+        const fromC = this.selectedCell.c;
+        const movingPiece = this.board[fromR][fromC];
+
+        // ย้ายหมากไปยังจุดตกของจังหวะนี้
+        this.board[fromR][fromC] = null;
+        this.board[destR][destC] = movingPiece;
+
+        // ถ้ามีการกินในจังหวะนี้ ให้บันทึกหมากที่ถูกกินไว้เป็น Ghost
+        if (matchingMoves[0].captures.length > 0) {
+            const capIndex = this.capturedSoFar.length;
+            const capPos = matchingMoves[0].captures[capIndex];
+            if (capPos) this.capturedSoFar.push(capPos);
+            sfx.capture();
+        } else {
+            sfx.move();
+        }
+
+        // ตัดก้าวแรกออกจากรายการ steps ที่เหลือ
+        const nextRemainingMoves = matchingMoves.map(m => ({
+            steps: m.steps.slice(1),
+            captures: m.captures
+        }));
+
+        // เช็คว่ายังต้องกระโดดต่อหรือไม่
+        if (nextRemainingMoves[0].steps.length > 1) {
+            this.inMultiJump = true;
+            this.selectedCell = { r: destR, c: destC };
+            this.currentStepMoves = nextRemainingMoves;
+            this.renderBoard();
+        } else {
+            // จบตาเดิน: นำหมากที่ถูกกินทั้งหมดออกจากกระดาน
+            for (const cap of this.capturedSoFar) {
+                this.board[cap.r][cap.c] = null;
+            }
+
+            // ตรวจสอบการเลื่อนขั้นเป็นฮอส (เฉพาะเมื่อหยุดนิ่งที่แถวสุดท้ายเมื่อจบตา)
+            let promoted = false;
+            if (!movingPiece.isKing) {
+                if ((movingPiece.player === 'W' && destR === 0) ||
+                    (movingPiece.player === 'B' && destR === SIZE - 1)) {
+                    movingPiece.isKing = true;
+                    promoted = true;
+                    sfx.king();
+                }
+            }
+
+            this.recordMoveNotation(this.firstStepOrigin, { r: destR, c: destC }, this.capturedSoFar.length > 0, promoted);
+            this.lastMoveCells = [this.firstStepOrigin, { r: destR, c: destC }];
+            this.turn = this.turn === 'W' ? 'B' : 'W';
+            this.prepareTurn();
+        }
+    }
+
+    /**
+     * ประมวลผลการเดินแบบสมบูรณ์ทันที (ใช้สำหรับ AI จำลองกระดาน)
+     */
+    applyFullMoveOnBoard(boardState, move, player) {
+        const nextB = this.cloneBoard(boardState);
+        const start = move.steps[0];
+        const end = move.steps[move.steps.length - 1];
+        const piece = { ...nextB[start.r][start.c] };
+
+        nextB[start.r][start.c] = null;
+        for (const cap of move.captures) {
+            nextB[cap.r][cap.c] = null;
+        }
+
+        // กฎสากล: เข้าฮอสเฉพาะตอนจบตาที่แถวสุดท้าย
+        if (!piece.isKing) {
+            if ((player === 'W' && end.r === 0) || (player === 'B' && end.r === SIZE - 1)) {
+                piece.isKing = true;
+            }
+        }
+
+        nextB[end.r][end.c] = piece;
+        return nextB;
+    }
+
+    /**
+     * ระบบ AI (ง่าย / ปกติ / ยาก)
+     */
+    makeAIMove() {
+        if (this.gameOver) return;
+        const level = this.aiSelect.value;
+        const legalMoves = this.activeSequenceMoves;
+        let chosenMove = null;
+
+        if (legalMoves.length === 1) {
+            chosenMove = legalMoves[0];
+        } else if (level === 'easy') {
+            chosenMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+        } else if (level === 'medium') {
+            chosenMove = this.findBestMoveMinimax(this.board, this.turn, 2);
+        } else {
+            chosenMove = this.findBestMoveMinimax(this.board, this.turn, 4);
+        }
+
+        this.executeAnimatedAIMove(chosenMove);
+    }
+
+    executeAnimatedAIMove(move) {
+        const start = move.steps[0];
+        const end = move.steps[move.steps.length - 1];
+        const hadCapture = move.captures.length > 0;
+        const pieceBefore = this.board[start.r][start.c].isKing;
+
+        this.board = this.applyFullMoveOnBoard(this.board, move, this.turn);
+        const promoted = !pieceBefore && this.board[end.r][end.c].isKing;
+
+        if (promoted) sfx.king();
+        else if (hadCapture) sfx.capture();
+        else sfx.move();
+
+        this.recordMoveNotation(start, end, hadCapture, promoted);
+        this.lastMoveCells = [start, end];
+        this.aiThinking = false;
+        this.turn = this.turn === 'W' ? 'B' : 'W';
+        this.prepareTurn();
+    }
+
+    findBestMoveMinimax(boardState, aiPlayer, maxDepth) {
+        const moves = this.getAllLegalMoves(boardState, aiPlayer);
+        let bestMove = moves[0];
+        let bestScore = -Infinity;
+        let alpha = -Infinity;
+        let beta = Infinity;
+
+        // สับเปลี่ยนลำดับเล็กน้อยเพื่อให้ AI ไม่เดินซ้ำรูปแบบเดิมเป๊ะทุกเกมเมื่อคะแนนเท่ากัน
+        const shuffled = [...moves].sort(() => Math.random() - 0.5);
+
+        for (const move of shuffled) {
+            const nextBoard = this.applyFullMoveOnBoard(boardState, move, aiPlayer);
+            const score = this.minimax(
+                nextBoard,
+                maxDepth - 1,
+                alpha,
+                beta,
+                false,
+                aiPlayer,
+                aiPlayer === 'W' ? 'B' : 'W'
+            );
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+            alpha = Math.max(alpha, bestScore);
+        }
+        return bestMove;
+    }
+
+    minimax(boardState, depth, alpha, beta, isMaximizing, aiPlayer, currentTurn) {
+        const legalMoves = this.getAllLegalMoves(boardState, currentTurn);
+        if (legalMoves.length === 0) {
+            return isMaximizing ? -99999 - depth : 99999 + depth;
+        }
+        if (depth === 0) {
+            return this.evaluateBoard(boardState, aiPlayer);
+        }
+
+        const nextTurn = currentTurn === 'W' ? 'B' : 'W';
+
+        if (isMaximizing) {
+            let maxEval = -Infinity;
+            for (const move of legalMoves) {
+                const nextB = this.applyFullMoveOnBoard(boardState, move, currentTurn);
+                const evaluation = this.minimax(nextB, depth - 1, alpha, beta, false, aiPlayer, nextTurn);
+                maxEval = Math.max(maxEval, evaluation);
+                alpha = Math.max(alpha, evaluation);
+                if (beta <= alpha) break;
+            }
+            return maxEval;
+        } else {
+            let minEval = Infinity;
+            for (const move of legalMoves) {
+                const nextB = this.applyFullMoveOnBoard(boardState, move, currentTurn);
+                const evaluation = this.minimax(nextB, depth - 1, alpha, beta, true, aiPlayer, nextTurn);
+                minEval = Math.min(minEval, evaluation);
+                beta = Math.min(beta, evaluation);
+                if (beta <= alpha) break;
+            }
+            return minEval;
+        }
+    }
+
+    /**
+     * Heuristic Evaluation สำหรับกระดาน 10x10
+     */
+    evaluateBoard(boardState, aiPlayer) {
+        let score = 0;
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                const p = boardState[r][c];
+                if (!p) continue;
+
+                let val = 0;
+                if (p.isKing) {
+                    val = 340; // ฮอสบินมีค่าสูงมากในกระดาน 10x10
+                    // โบนัสฮอสคุมแนวทแยงกลางกระดาน
+                    if (r >= 2 && r <= 7 && c >= 2 && c <= 7) val += 20;
+                } else {
+                    val = 100;
+                    // โบนัสการดันหมากขึ้นหน้า
+                    const advancement = p.player === 'W' ? (9 - r) : r;
+                    val += advancement * 6;
+
+                    // โบนัสคุมพื้นที่กลางกระดาน
+                    if (c >= 2 && c <= 7 && r >= 3 && r <= 6) val += 10;
+
+                    // โบนัสรักษาแถวหลังสุด (Back rank protection)
+                    if ((p.player === 'W' && r === 9) || (p.player === 'B' && r === 0)) {
+                        val += 14;
+                    }
+                }
+
+                if (p.player === aiPlayer) score += val;
+                else score -= val;
+            }
+        }
+        return score;
+    }
+
+    saveHistorySnapshot() {
+        this.history.push({
+            board: this.cloneBoard(this.board),
+            turn: this.turn,
+            turnCounter: this.turnCounter,
+            lastMoveCells: [...this.lastMoveCells],
+            logHTML: this.moveLogEl.innerHTML
+        });
+        this.btnUndo.disabled = false;
+    }
+
+    undoMove() {
+        if (this.history.length === 0 || this.aiThinking) return;
+        const snapshot = this.history.pop();
+        this.board = snapshot.board;
+        this.turn = snapshot.turn;
+        this.turnCounter = snapshot.turnCounter;
+        this.lastMoveCells = snapshot.lastMoveCells;
+        this.moveLogEl.innerHTML = snapshot.logHTML;
+        this.gameOver = false;
+        this.btnUndo.disabled = this.history.length === 0;
+        this.prepareTurn();
+    }
+
+    showHint() {
+        if (this.gameOver || this.aiThinking || this.activeSequenceMoves.length === 0) return;
+        const bestMove = this.findBestMoveMinimax(this.board, this.turn, 3);
+        if (bestMove) {
+            const start = bestMove.steps[0];
+            const next = bestMove.steps[1];
+            this.hintCells = [start, next];
+            this.selectedCell = start;
+            this.currentStepMoves = this.activeSequenceMoves.filter(
+                m => m.steps[0].r === start.r && m.steps[0].c === start.c
+            );
+            this.renderBoard();
+        }
+    }
+
+    recordMoveNotation(start, end, isCapture, promoted) {
+        const sNum = this.coordToNotation(start.r, start.c);
+        const eNum = this.coordToNotation(end.r, end.c);
+        const sep = isCapture ? 'x' : '-';
+        const promoTag = promoted ? ' (K)' : '';
+        const text = `${sNum}${sep}${eNum}${promoTag}`;
+
+        if (this.turn === 'W') {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span>#${this.turnCounter}. ⚪ ${text}</span><span id="logB_${this.turnCounter}"></span>`;
+            this.moveLogEl.appendChild(div);
+        } else {
+            const blackSpan = document.getElementById(`logB_${this.turnCounter}`);
+            if (blackSpan) {
+                blackSpan.textContent = `⚫ ${text}`;
+            } else {
+                const div = document.createElement('div');
+                div.className = 'log-entry';
+                div.innerHTML = `<span>#${this.turnCounter}. ...</span><span>⚫ ${text}</span>`;
+                this.moveLogEl.appendChild(div);
+            }
+            this.turnCounter++;
+        }
+        this.moveLogEl.scrollTop = this.moveLogEl.scrollHeight;
+    }
+
+    updateDashboard() {
+        let wCount = 0, bCount = 0, wKings = 0, bKings = 0;
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                const p = this.board[r][c];
+                if (!p) continue;
+                if (p.player === 'W') {
+                    wCount++;
+                    if (p.isKing) wKings++;
+                } else {
+                    bCount++;
+                    if (p.isKing) bKings++;
+                }
+            }
+        }
+
+        this.whiteCountEl.textContent = wCount;
+        this.blackCountEl.textContent = bCount;
+        this.whiteKingsEl.textContent = `ฮอส: ${wKings}`;
+        this.blackKingsEl.textContent = `ฮอส: ${bKings}`;
+
+        this.whiteCard.classList.toggle('active-turn', this.turn === 'W');
+        this.blackCard.classList.toggle('active-turn', this.turn === 'B');
+
+        const mode = this.sideSelect.value;
+        if (this.turn === 'W') {
+            this.turnDisplay.textContent = mode === 'B' ? 'ตาของฝ่ายขาว (CPU)' : '⚪ ตาของฝ่ายขาว (คุณ)';
+        } else {
+            this.turnDisplay.textContent = mode === 'W' ? 'ตาของฝ่ายดำ (CPU)' : '⚫ ตาของฝ่ายดำ (คุณ)';
+        }
+    }
+
+    renderBoard() {
+        this.boardEl.innerHTML = '';
+        const showNumbers = document.getElementById('chkNumbers').checked;
+
+        // หาจุดที่สามารถกดเดินไปได้ในจังหวะปัจจุบัน
+        const validDestinations = new Set();
+        if (this.selectedCell) {
+            for (const m of this.currentStepMoves) {
+                if (m.steps[1]) {
+                    validDestinations.add(`${m.steps[1].r},${m.steps[1].c}`);
+                }
+            }
+        }
+
+        // หาตัวหมากที่มีสิทธิ์ขยับในตานี้ (เพื่อแสดงแอนิเมชันเตือนกรณีบังคับกิน)
+        const movableOrigins = new Set();
+        if (!this.inMultiJump && !this.aiThinking && !this.gameOver) {
+            for (const m of this.activeSequenceMoves) {
+                movableOrigins.add(`${m.steps[0].r},${m.steps[0].c}`);
+            }
+        }
+
+        for (let idxR = 0; idxR < SIZE; idxR++) {
+            for (let idxC = 0; idxC < SIZE; idxC++) {
+                const r = this.flipped ? (SIZE - 1 - idxR) : idxR;
+                const c = this.flipped ? (SIZE - 1 - idxC) : idxC;
+
+                const cell = document.createElement('div');
+                const isDark = (r + c) % 2 === 1;
+                cell.className = `cell ${isDark ? 'dark' : 'light'}`;
+
+                if (this.selectedCell && this.selectedCell.r === r && this.selectedCell.c === c) {
+                    cell.classList.add('selected');
+                }
+                if (this.lastMoveCells.some(pos => pos.r === r && pos.c === c)) {
+                    cell.classList.add('last-move');
+                }
+                if (this.hintCells.some(pos => pos.r === r && pos.c === c)) {
+                    cell.classList.add('hint-cell');
+                }
+
+                // แสดงเลขช่องมาตรฐาน 1-50
+                if (isDark && showNumbers) {
+                    const numSpan = document.createElement('span');
+                    numSpan.className = 'cell-num';
+                    numSpan.textContent = this.coordToNotation(r, c);
+                    cell.appendChild(numSpan);
+                }
+
+                // แสดงตัวหมาก
+                const piece = this.board[r][c];
+                if (piece) {
+                    const pDiv = document.createElement('div');
+                    pDiv.className = `piece ${piece.player === 'W' ? 'white' : 'black'}`;
+
+                    // ไฮไลต์หมากที่ถูกบังคับกิน
+                    const hasMandatoryCapture = this.activeSequenceMoves[0]?.captures.length > 0;
+                    if (hasMandatoryCapture && movableOrigins.has(`${r},${c}`)) {
+                        pDiv.classList.add('must-move');
+                    }
+
+                    // แสดงหมากที่ถูกกระโดดข้ามไปแล้วระหว่างการกินหลายต่อเป็นสีจาง
+                    if (this.capturedSoFar.some(pos => pos.r === r && pos.c === c)) {
+                        pDiv.classList.add('captured-ghost');
+                    }
+
+                    if (piece.isKing) {
+                        const crown = document.createElement('span');
+                        crown.className = 'king-crown';
+                        crown.textContent = '👑';
+                        pDiv.appendChild(crown);
+                    }
+                    cell.appendChild(pDiv);
+                }
+
+                // แสดงจุดเขียวสำหรับช่องปลายทางที่เดินได้
+                if (validDestinations.has(`${r},${c}`)) {
+                    const dot = document.createElement('div');
+                    dot.className = 'valid-dot';
+                    cell.appendChild(dot);
+                }
+
+                if (isDark) {
+                    cell.addEventListener('click', () => this.handleCellClick(r, c));
+                }
+
+                this.boardEl.appendChild(cell);
+            }
+        }
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    new InternationalDraughts();
+});
+</script>
+</body>
+</html>
