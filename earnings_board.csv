@@ -1,8 +1,8 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-GE,GE Aerospace,20-10-26,Before Market,313.83,3.48%,NYSE,
-GM,General Motors Company,20-10-26,Before Market,83.96,3.68%,NYSE,
-MMM,3M Company,20-10-26,Before Market,164.75,7.62%,NYSE,
-RTX,RTX Corporation,20-10-26,Before Market,193.92,-0.53%,NYSE,
+GE,GE Aerospace,20-10-26,Before Market,313.83,3.48%,NYSE,-4.45%
+GM,General Motors Company,20-10-26,Before Market,83.96,3.68%,NYSE,-5.90%
+MMM,3M Company,20-10-26,Before Market,164.75,7.62%,NYSE,+1.81%
+RTX,RTX Corporation,20-10-26,Before Market,193.92,-0.53%,NYSE,-1.46%
 CB,Chubb Limited,20-10-26,After Market,359.79,9.42%,NYSE,
 COF,Capital One Financial Corporati,20-10-26,After Market,201.74,-1.52%,NYSE,
 ISRG,Intuitive Surgical Inc.,20-10-26,After Market,426.7,-9.06%,NASDAQ,
@@ -16,7 +16,7 @@ MCO,Moody's Corporation,21-10-26,Before Market,485.07,7.01%,NYSE,
 NEE,NextEra Energy Inc.,21-10-26,Before Market,79.8,-11.95%,NYSE,
 PM,Philip Morris International Inc,21-10-26,Before Market,205.2,32.25%,NYSE,
 T,AT&T Inc.,21-10-26,Before Market,23.44,-9.38%,NYSE,
-TMO,Thermo Fisher Scientific Inc,21-10-26,Before Market,690,31.26%,NYSE,
+TMO,Thermo Fisher Scientific Inc,21-10-26,Before Market,690.0,31.26%,NYSE,
 IBM,International Business Machines,21-10-26,After Market,232.14,-7.08%,NYSE,
 LRCX,Lam Research Corporation,21-10-26,After Market,263.94,-1.19%,NASDAQ,
 META,Meta Platforms Inc.,21-10-26,After Market,709.33,3.19%,NASDAQ,
@@ -43,6 +43,6 @@ FIX,Comfort Systems USA Inc.,22-10-26,After Market,1439.07,-12.73%,NYSE,
 MXL,MaxLinear Inc,22-10-26,After Market,71.32,171.49%,NASDAQ,
 NEM,Newmont Corporation,22-10-26,After Market,118.6,2.25%,NYSE,
 RNG,Ringcentral Inc.,22-10-26,After Market,75.44,87.45%,NYSE,
-WDC,Western Digital Corporation,22-10-26,After Market,332,-10.83%,NASDAQ,
+WDC,Western Digital Corporation,22-10-26,After Market,332.0,-10.83%,NASDAQ,
 AXP,American Express Company,23-10-26,Before Market,313.59,-4.90%,NYSE,
 INFY,Infosys Limited,23-10-26,Before Market,12.24,-13.52%,NYSE,
