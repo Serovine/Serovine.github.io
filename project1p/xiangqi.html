@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>หมากรุกจีน (Xiangqi - 象棋) คลาสสิก</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wood-light: #e6c280;
+            --wood-mid: #d4a75b;
+            --wood-dark: #8c5828;
+            --wood-border: #4a2810;
+            --crimson-bg: #2b0f0e;
+            --gold-accent: #f3c663;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: radial-gradient(circle at center, #3d1814 0%, #1c0907 100%);
+            color: #f7ebd9;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .chinese-font {
+            font-family: 'Noto Serif TC', 'KaiTi', 'STKaiti', serif;
+        }
+
+        /* Ornate Chinese Frame Styling */
+        .chinese-panel {
+            background: linear-gradient(145deg, rgba(58, 25, 18, 0.92), rgba(34, 13, 10, 0.95));
+            border: 2px solid #8c5a2b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(243, 198, 99, 0.1);
+        }
+
+        .gold-btn {
+            background: linear-gradient(180deg, #f3c663 0%, #c9933b 100%);
+            color: #2b0f0e;
+            font-weight: 700;
+            border: 1px solid #ffe49e;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+            transition: all 0.15s ease;
+        }
+
+        .gold-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #ffda85 0%, #d8a248 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(243, 198, 99, 0.35);
+        }
+
+        .gold-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .gold-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            filter: grayscale(40%);
+        }
+
+        .wood-btn {
+            background: linear-gradient(180deg, #5c2c1d 0%, #3b190f 100%);
+            color: #f3d299;
+            border: 1px solid #966132;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            transition: all 0.15s ease;
+        }
+
+        .wood-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #753926 0%, #4d2215 100%);
+            border-color: #d4a359;
+            color: #fff;
+        }
+
+        .wood-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Board Container */
+        .board-wrapper {
+            background: linear-gradient(135deg, #6b3b19 0%, #42210b 100%);
+            padding: 12px;
+            border-radius: 14px;
+            border: 4px solid #291305;
+            box-shadow: 
+                0 20px 45px rgba(0, 0, 0, 0.85),
+                inset 0 2px 4px rgba(255, 220, 160, 0.3),
+                0 0 0 2px #9e6b36;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            border-radius: 6px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* Custom Scrollbar for Rules & Logs */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(28, 9, 7, 0.6);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8c5a2b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c9933b;
+        }
+
+        @keyframes pulse-check {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.7); }
+            50% { transform: scale(1.04); box-shadow: 0 0 25px rgba(239, 68, 68, 1); }
+        }
+        .check-banner {
+            animation: pulse-check 1.2s infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full border-b border-[#6e411f] bg-[#210b09]/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <!-- Brand Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#e6c280] to-[#b8863b] border-2 border-[#8c1d1d] flex items-center justify-center shadow-md">
+                    <span class="chinese-font text-2xl font-black text-[#991b1b] leading-none">帥</span>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-[#f5d38c] tracking-wide flex items-center gap-2">
+                        หมากรุกจีนคลาสสิก <span class="chinese-font text-sm font-normal text-[#d4a359] hidden sm:inline">(中國象棋)</span>
+                    </h1>
+                    <p class="text-xs text-[#c7a580] hidden sm:block">กติกาสากล พร้อมตัวอักษรจีน-ไทยกำกับบนตัวหมาก</p>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center gap-2">
+                <button id="btnSound" onclick="toggleSound()" class="wood-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm flex items-center gap-1.5" title="เปิด/ปิดเสียง">
+                    <span id="soundIcon">🔊</span>
+                    <span id="soundText" class="hidden md:inline">เสียง: เปิด</span>
+                </button>
+                <button onclick="openRulesModal()" class="gold-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm flex items-center gap-1.5">
+                    <span>📖</span>
+                    <span>กติกาการเล่น</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+        <!-- Left Column: Settings & Status (3 cols on Desktop) -->
+        <section class="lg:col-span-4 xl:col-span-3 flex flex-col gap-4 order-2 lg:order-1">
+            <!-- Game Settings Panel -->
+            <div class="chinese-panel rounded-xl p-4">
+                <h2 class="text-base font-bold text-[#f3c663] border-b border-[#6e411f] pb-2 mb-3 flex items-center justify-between">
+                    <span>⚙️ ตั้งค่ากระดาน</span>
+                    <span id="difficultyBadge" class="text-xs px-2 py-0.5 rounded bg-[#5c2c1d] text-[#f5d38c] border border-[#966132]">ระดับ: ปกติ</span>
+                </h2>
+
+                <!-- Difficulty Selector -->
+                <div class="mb-3">
+                    <label class="block text-xs text-[#d6b794] mb-1.5 font-medium">ระดับความยากของ CPU:</label>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button onclick="setDifficulty('easy')" id="diff-easy" class="diff-btn wood-btn py-1.5 rounded-lg text-xs font-semibold">
+                            🌱 ง่าย
+                        </button>
+                        <button onclick="setDifficulty('normal')" id="diff-normal" class="diff-btn gold-btn py-1.5 rounded-lg text-xs font-semibold">
+                            ⚔️ ปกติ
+                        </button>
+                        <button onclick="setDifficulty('hard')" id="diff-hard" class="diff-btn wood-btn py-1.5 rounded-lg text-xs font-semibold">
+                            🐉 ยาก
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Side Selector -->
+                <div class="mb-4">
+                    <label class="block text-xs text-[#d6b794] mb-1.5 font-medium">เลือกฝั่งของคุณ (เริ่มเกมใหม่เมื่อเปลี่ยน):</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="changePlayerColor('r')" id="side-r" class="gold-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-red-600 border border-white inline-block"></span>
+                            <span>ฝั่งแดง (เดินก่อน)</span>
+                        </button>
+                        <button onclick="changePlayerColor('b')" id="side-b" class="wood-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-slate-900 border border-gray-400 inline-block"></span>
+                            <span>ฝั่งดำ (เดินหลัง)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-[#593318]">
+                    <button id="btnUndo" onclick="undoMove()" class="wood-btn py-2 px-2 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1" disabled>
+                        <span class="text-base leading-none">↩️</span>
+                        <span>ย้อนตาเดิน</span>
+                    </button>
+                    <button id="btnHint" onclick="requestHint()" class="wood-btn py-2 px-2 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1">
+                        <span class="text-base leading-none">💡</span>
+                        <span>ขอคำแนะนำ</span>
+                    </button>
+                    <button onclick="confirmNewGame()" class="gold-btn py-2 px-2 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1">
+                        <span class="text-base leading-none">🔄</span>
+                        <span>เริ่มเกมใหม่</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Captured Pieces Panel -->
+            <div class="chinese-panel rounded-xl p-4">
+                <h2 class="text-sm font-bold text-[#f3c663] border-b border-[#6e411f] pb-2 mb-2.5 flex items-center justify-between">
+                    <span>🏆 หมากที่ถูกกิน</span>
+                    <span id="scoreAdvantage" class="text-xs text-[#d6b794] font-normal">สมดุลกำลังพล</span>
+                </h2>
+                <div class="space-y-2.5">
+                    <div>
+                        <div class="text-xs text-red-300 mb-1 flex justify-between">
+                            <span>หมากดำที่ถูกแดงกิน:</span>
+                            <span id="capturedBlackCount" class="font-bold">0 ตัว</span>
+                        </div>
+                        <div id="capturedBlackBox" class="min-h-[36px] bg-[#1a0907]/70 border border-[#593318] rounded-lg p-1.5 flex flex-wrap gap-1 items-center">
+                            <span class="text-xs text-[#7a5a40] italic">ยังไม่มี</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-300 mb-1 flex justify-between">
+                            <span>หมากแดงที่ถูกดำกิน:</span>
+                            <span id="capturedRedCount" class="font-bold">0 ตัว</span>
+                        </div>
+                        <div id="capturedRedBox" class="min-h-[36px] bg-[#1a0907]/70 border border-[#593318] rounded-lg p-1.5 flex flex-wrap gap-1 items-center">
+                            <span class="text-xs text-[#7a5a40] italic">ยังไม่มี</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Center Column: The Xiangqi Wooden Board (6 cols on Desktop) -->
+        <section class="lg:col-span-5 xl:col-span-6 flex flex-col items-center order-1 lg:order-2">
+            
+            <!-- Status & Turn Banner -->
+            <div class="w-full max-w-[540px] mb-3 chinese-panel rounded-xl px-4 py-2.5 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                    <div id="turnIndicatorDot" class="w-4 h-4 rounded-full bg-red-600 border-2 border-amber-200 shadow-[0_0_8px_#dc2626]"></div>
+                    <div>
+                        <div id="turnStatusText" class="text-sm sm:text-base font-bold text-[#f7ebd9]">ตาของคุณ (ฝั่งแดง)</div>
+                        <div id="subStatusText" class="text-xs text-[#c7a580]">คลิกเลือกตัวหมากเพื่อดูจุดเดินที่ถูกต้อง</div>
+                    </div>
+                </div>
+
+                <!-- Check Alert Badge -->
+                <div id="checkBadge" class="hidden check-banner bg-red-700 text-white border border-amber-300 px-3 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wider">
+                    ⚠️ รุกขุน! (將軍)
+                </div>
+            </div>
+
+            <!-- Hint Notification Banner (Hidden unless Hint pressed) -->
+            <div id="hintBanner" class="hidden w-full max-w-[540px] mb-2.5 bg-amber-950/90 border border-amber-400 text-amber-100 rounded-lg px-3.5 py-2 text-xs sm:text-sm flex items-center justify-between shadow-lg">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">💡</span>
+                    <span id="hintBannerText">คำแนะนำ: เดินม้าไปตำแหน่ง...</span>
+                </div>
+                <button onclick="clearHint()" class="text-amber-300 hover:text-white text-xs underline ml-2">ปิด</button>
+            </div>
+
+            <!-- Wooden Board Wrapper -->
+            <div class="board-wrapper w-full max-w-[540px] flex justify-center items-center">
+                <canvas id="xiangqiCanvas" width="540" height="600"></canvas>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Move Log & Quick Reference (3 cols on Desktop) -->
+        <section class="lg:col-span-3 xl:col-span-3 flex flex-col gap-4 order-3">
+            <!-- Move History Panel -->
+            <div class="chinese-panel rounded-xl p-4 flex flex-col h-[280px] lg:h-[360px]">
+                <div class="flex items-center justify-between border-b border-[#6e411f] pb-2 mb-2">
+                    <h2 class="text-sm font-bold text-[#f3c663]">📜 บันทึกตาเดิน</h2>
+                    <span id="moveCounter" class="text-xs text-[#c7a580]">ตาที่ 0</span>
+                </div>
+                <div id="moveHistoryList" class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs">
+                    <div class="text-[#8a6a4f] italic text-center py-8">เริ่มเดินหมากเพื่อบันทึกประวัติ</div>
+                </div>
+            </div>
+
+            <!-- Quick Cheat Sheet Card -->
+            <div class="chinese-panel rounded-xl p-4">
+                <h2 class="text-sm font-bold text-[#f3c663] border-b border-[#6e411f] pb-1.5 mb-2">
+                    🀄 สรุปเงื่อนไขพิเศษหมากรุกจีน
+                </h2>
+                <ul class="text-xs text-[#e3cbb0] space-y-1.5 leading-relaxed">
+                    <li>• <strong class="text-amber-300">ม้า (馬):</strong> เดินรูปตัว L แต่ถ้ามีหมากขวางชิดตัวในทิศที่จะก้าว จะติด <em>"ขาม้า"</em> เดินไม่ได้</li>
+                    <li>• <strong class="text-amber-300">ช้าง (相/象):</strong> เดินทแยง 2 ช่อง ห้ามข้ามแม่น้ำ และห้ามมีหมากขวางจุดกึ่งกลาง <em>(ตาช้าง)</em></li>
+                    <li>• <strong class="text-amber-300">ปืนใหญ่ (炮):</strong> เวลาเดินปกติห้ามมีสิ่งกีดขวาง แต่เวลา <em>"กิน"</em> ต้องกระโดดข้ามหมาก 1 ตัว (ฐานปืน)</li>
+                    <li>• <strong class="text-amber-300">ขุนประจันหน้า:</strong> ขุนทั้งสองฝ่ายห้ามอยู่แนวตั้งตรงกันโดยไม่มีตัวหมากคั่นกลางเด็ดขาด</li>
+                </ul>
+                <button onclick="openRulesModal()" class="w-full mt-3 wood-btn py-1.5 rounded-lg text-xs text-amber-300 font-medium">
+                    อ่านกติกาฉบับเต็มทั้งหมด →
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Thai Rules Modal (หน้าต่างกติกาหมากรุกจีนภาษาไทย) -->
+    <div id="rulesModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6">
+        <div class="chinese-panel rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border-2 border-[#d4a359] shadow-2xl overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="px-5 py-4 bg-[#1c0907] border-b border-[#6e411f] flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">📜</span>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-[#f3c663]">กติกาหมากรุกจีนสากล (Xiangqi - 中國象棋)</h2>
+                        <p class="text-xs text-[#c7a580]">คู่มือวิธีเดินหมากทั้ง 7 ชนิด พื้นที่บนกระดาน และกติกาแพ้-ชนะ</p>
+                    </div>
+                </div>
+                <button onclick="closeRulesModal()" class="w-8 h-8 rounded-lg bg-[#4a2016] hover:bg-[#6e3021] text-[#f3c663] font-bold flex items-center justify-center">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-5 overflow-y-auto space-y-6 text-sm text-[#f2e3ce] leading-relaxed">
+                
+                <!-- Section 1: Overview & Win Condition -->
+                <div class="bg-[#1a0907]/70 border border-[#6e411f] rounded-xl p-4">
+                    <h3 class="text-base font-bold text-[#f3c663] mb-2">1. เป้าหมายของเกมและการตัดสินแพ้-ชนะ</h3>
+                    <p class="mb-2">
+                        หมากรุกจีนวางตัวหมากและเดินบน <strong>"จุดตัดของเส้น"</strong> (9 เส้นแนวตั้ง × 10 เส้นแนวนอน) โดยปกติ <strong>ฝ่ายสีแดงจะเป็นฝ่ายเริ่มเดินก่อน</strong> สลับกันเดินคนละ 1 ตา
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-[#e6ccb2]">
+                        <li><strong class="text-red-400">รุกจน (Checkmate - 絕殺):</strong> เมื่อขุนถูกโจมตี (รุก) และไม่มีตาเดินใดที่สามารถหนี ป้องกัน หรือกินตัวที่มาโจมตีได้ ฝ่ายนั้นจะเป็นฝ่ายแพ้</li>
+                        <li><strong class="text-amber-300">อับหมาก (Stalemate - 困斃):</strong> ต่างจากหมากรุกสากล! ในกติกาหมากรุกจีน <em>หากถึงตาเดินของฝ่ายใดแล้วไม่มีตาเดินที่ถูกกติกาเหลือเลย (แม้ขุนจะไม่ถูกรุกอยู่ก็ตาม) ฝ่ายที่เดินต่อไม่ได้จะถือเป็นฝ่ายแพ้ทันที</em></li>
+                    </ul>
+                </div>
+
+                <!-- Section 2: Special Board Zones -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-[#1a0907]/70 border border-[#6e411f] rounded-xl p-4">
+                        <h4 class="font-bold text-[#f3c663] mb-1">🏯 เขตพระราชวัง (ปราสาท 3×3)</h4>
+                        <p class="text-xs sm:text-sm text-[#e6ccb2]">
+                            พื้นที่กรอบสี่เหลี่ยมที่มีเส้นทแยงมุมกากบาท (9 จุดตัด) อยู่ตรงกลางท้ายกระดานของแต่ละฝั่ง <strong>"ขุน"</strong> และ <strong>"องครักษ์"</strong> จะสามารถเดินได้เฉพาะภายในเขตวังของตนเองเท่านั้น ห้ามก้าวออกนอกวังเด็ดขาด
+                        </p>
+                    </div>
+                    <div class="bg-[#1a0907]/70 border border-[#6e411f] rounded-xl p-4">
+                        <h4 class="font-bold text-[#f3c663] mb-1">🌊 แม่น้ำฉู่เหอ - ฮั่นเจี้ย (楚河 漢界)</h4>
+                        <p class="text-xs sm:text-sm text-[#e6ccb2]">
+                            แนวกั้นกึ่งกลางกระดานระหว่างแดนสีแดงและแดนสีดำ มีผลต่อหมาก 2 ชนิด คือ:
+                            <br>• <strong>ช้าง (相/象):</strong> ห้ามเดินข้ามแม่น้ำไปยังแดนศัตรู
+                            <br>• <strong>เบี้ย (兵/卒):</strong> เมื่อเดินข้ามแม่น้ำไปแล้ว จะได้รับความสามารถเดินซ้าย-ขวาได้
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 3: The 7 Pieces -->
+                <div>
+                    <h3 class="text-base font-bold text-[#f3c663] mb-3">2. วิธีเดินและเงื่อนไขของหมากทั้ง 7 ชนิด</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        
+                        <!-- General -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#8c1d1d] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">帥 / 將</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">ขุน</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">ขุน (แม่ทัพ) - ฝั่งละ 1 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">เดินในแนวตรง (ขึ้น-ลง-ซ้าย-ขวา) ครั้งละ <strong>1 จุดตัด</strong> และต้องอยู่ภายในเขตวัง 3×3 เท่านั้น</p>
+                            </div>
+                        </div>
+
+                        <!-- Advisor -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#8c1d1d] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">仕 / 士</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">องครักษ์</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">องครักษ์ - ฝั่งละ 2 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">เดินตาม<strong>แนวเส้นทแยงมุม</strong> ครั้งละ 1 จุดตัด อยู่ได้เฉพาะภายในเขตวัง (มีจุดที่ไปได้ทั้งหมด 5 จุดในวัง)</p>
+                            </div>
+                        </div>
+
+                        <!-- Elephant -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#8c1d1d] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">相 / 象</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">ช้าง</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">ช้าง (เสนาบดี) - ฝั่งละ 2 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">เดินทแยงมุมครั้งละ <strong>2 จุดตัด</strong> ห้ามข้ามแม่น้ำ หากมีหมากตัวใดวางขวางที่จุดกึ่งกลางทแยงมุม จะเรียกว่าติด <em>"ตาช้าง"</em> ไม่สามารถเดินผ่านทางนั้นได้</p>
+                            </div>
+                        </div>
+
+                        <!-- Horse -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#1e293b] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">馬</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">ม้า</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">ม้า - ฝั่งละ 2 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">เดินแนวตรง 1 จุด แล้วเฉียงออกอีก 1 จุด (คล้ายตัว L) <strong>ข้อสำคัญ:</strong> หากมีหมากติดอยู่ชิดตัวม้าในทิศทางที่จะก้าวออกไป จะเรียกว่าติด <em>"ขาม้า"</em> ไม่สามารถกระโดดข้ามทิศนั้นได้</p>
+                            </div>
+                        </div>
+
+                        <!-- Chariot -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#1e293b] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">車</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">เรือ</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">เรือ (รถศึก) - ฝั่งละ 2 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">หมากที่มีพลังโจมตีสูงที่สุด เดินและกินในแนวตรง (ขึ้น-ลง-ซ้าย-ขวา) ได้ไกลไม่จำกัดตราบใดที่ไม่มีตัวหมากขวางทาง</p>
+                            </div>
+                        </div>
+
+                        <!-- Cannon -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#8c1d1d] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">炮</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">ปืนใหญ่</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">ปืนใหญ่ - ฝั่งละ 2 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1"><strong>เวลาเดินปกติ:</strong> เดินแนวตรงเหมือนเรือทุกประการ <br><strong>เวลากินหมาก:</strong> ต้องมีตัวหมาก (ฝ่ายใดก็ได้) คั่นกลางตรงหน้า <strong>1 ตัวพอดี</strong> เพื่อใช้เป็น "ฐานปืน" กระโดดข้ามไปกินเป้าหมายด้านหลัง</p>
+                            </div>
+                        </div>
+
+                        <!-- Soldier -->
+                        <div class="bg-[#240e0b] border border-[#754724] rounded-xl p-3.5 flex gap-3 md:col-span-2">
+                            <div class="flex flex-col items-center justify-center min-w-[68px] bg-[#e6c280] text-[#8c1d1d] rounded-lg p-2 border-2 border-[#8c5828]">
+                                <span class="chinese-font text-2xl font-black leading-none">兵 / 卒</span>
+                                <span class="text-xs font-bold mt-1 text-[#2b0f0e]">เบี้ย</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <div class="font-bold text-amber-300">เบี้ย (ทหารราบ) - ฝั่งละ 5 ตัว</div>
+                                <p class="text-[#dec4a8] mt-1">
+                                    • <strong>ก่อนข้ามแม่น้ำ:</strong> เดินตรงไปข้างหน้าได้อย่างเดียว ครั้งละ 1 จุดตัด<br>
+                                    • <strong>หลังข้ามแม่น้ำเข้าแดนศัตรู:</strong> สามารถเลือกเดินตรงไปข้างหน้า หรือเดินออกซ้าย-ขวาได้ครั้งละ 1 จุดตัด (ห้ามเดินถอยหลังเด็ดขาด และเมื่อถึงเส้นหลังสุดจะเดินได้แค่ซ้าย-ขวา)
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Section 4: Flying General Rule -->
+                <div class="bg-red-950/60 border border-red-500/60 rounded-xl p-4">
+                    <h3 class="text-base font-bold text-red-300 mb-1">⚔️ กฎเหล็ก: ขุนประจันหน้า (Flying General - 王不見王)</h3>
+                    <p class="text-xs sm:text-sm text-red-100">
+                        ขุนสีแดง (帥) และขุนสีดำ (將) <strong>ห้ามอยู่ในแนวเส้นตั้งเดียวกันโดยไม่มีตัวหมากอื่นคั่นกลางเด็ดขาด</strong> ห้ามผู้เล่นขยับตัวหมากตัวสุดท้ายที่คั่นกลางออก หรือเดินขุนเข้าไปอยู่ในแนวเดียวกับขุนอีกฝ่ายแบบโล่งๆ (ในระบบเกมจะล็อกไม่ให้เดินเข้าตาที่ผิดกฎนี้โดยอัตโนมัติ)
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-5 py-3 bg-[#1c0907] border-t border-[#6e411f] flex justify-end">
+                <button onclick="closeRulesModal()" class="gold-btn px-6 py-2 rounded-lg text-sm">
+                    เข้าใจแล้ว กลับสู่กระดาน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over / Confirmation Modal -->
+    <div id="dialogModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="chinese-panel rounded-2xl max-w-md w-full p-6 text-center border-2 border-[#f3c663] shadow-2xl">
+            <div id="dialogIcon" class="text-5xl mb-3">🏆</div>
+            <h3 id="dialogTitle" class="text-xl font-bold text-[#f3c663] mb-2">จบการแข่งขัน!</h3>
+            <p id="dialogMessage" class="text-sm text-[#e6ccb2] mb-6 leading-relaxed">คุณเอาชนะ CPU ได้สำเร็จ</p>
+            <div id="dialogActions" class="flex justify-center gap-3">
+                <button onclick="closeDialogModal()" class="wood-btn px-5 py-2 rounded-lg text-sm font-medium">ดูกระดาน</button>
+                <button onclick="startNewGame(); closeDialogModal();" class="gold-btn px-6 py-2 rounded-lg text-sm">เล่นใหม่อีกครั้ง</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. PIECE DEFINITIONS & CONSTANTS (ข้อมูลตัวหมากจีน + ไทย)
+           ========================================================================== */
+        const PIECE_INFO = {
+            // Red Pieces (Uppercase)
+            'K': { char: '帥', thai: 'ขุน', color: 'r', type: 'k', val: 10000 },
+            'A': { char: '仕', thai: 'องครักษ์', color: 'r', type: 'a', val: 120 },
+            'E': { char: '相', thai: 'ช้าง', color: 'r', type: 'e', val: 120 },
+            'H': { char: '馬', thai: 'ม้า', color: 'r', type: 'h', val: 270 },
+            'R': { char: '車', thai: 'เรือ', color: 'r', type: 'r', val: 600 },
+            'C': { char: '炮', thai: 'ปืนใหญ่', color: 'r', type: 'c', val: 285 },
+            'P': { char: '兵', thai: 'เบี้ย', color: 'r', type: 'p', val: 60 },
+            // Black Pieces (Lowercase)
+            'k': { char: '將', thai: 'ขุน', color: 'b', type: 'k', val: 10000 },
+            'a': { char: '士', thai: 'องครักษ์', color: 'b', type: 'a', val: 120 },
+            'e': { char: '象', thai: 'ช้าง', color: 'b', type: 'e', val: 120 },
+            'h': { char: '馬', thai: 'ม้า', color: 'b', type: 'h', val: 270 },
+            'r': { char: '車', thai: 'เรือ', color: 'b', type: 'r', val: 600 },
+            'c': { char: '炮', thai: 'ปืนใหญ่', color: 'b', type: 'c', val: 285 },
+            'p': { char: '卒', thai: 'เบี้ย', color: 'b', type: 'p', val: 60 }
+        };
+
+        // Positional Bonus Tables (from Red's perspective: row 0 is top/enemy, row 9 is bottom/home)
+        const PST = {
+            p: [
+                [ 9,  9,  9, 11, 13, 11,  9,  9,  9],
+                [35, 40, 48, 55, 60, 55, 48, 40, 35],
+                [30, 35, 42, 48, 52, 48, 42, 35, 30],
+                [20, 25, 30, 35, 38, 35, 30, 25, 20],
+                [14, 18, 22, 26, 28, 26, 22, 18, 14],
+                [ 2,  0,  6,  0,  8,  0,  6,  0,  2],
+                [ 0,  0, -2,  0,  4,  0, -2,  0,  0],
+                [ 0,  0,  0,  0,  0,  0,  0,  0,  0],
+                [ 0,  0,  0,  0,  0,  0,  0,  0,  0],
+                [ 0,  0,  0,  0,  0,  0,  0,  0,  0]
+            ],
+            h: [
+                [ 4,  8, 16, 12,  4, 12, 16,  8,  4],
+                [ 4, 10, 28, 16,  8, 16, 28, 10,  4],
+                [12, 16, 24, 28, 24, 28, 24, 16, 12],
+                [10, 20, 24, 26, 22, 26, 24, 20, 10],
+                [ 8, 16, 20, 22, 20, 22, 20, 16,  8],
+                [ 6, 14, 18, 20, 18, 20, 18, 14,  6],
+                [ 4, 10, 14, 14, 12, 14, 14, 10,  4],
+                [ 2,  6, 10, 10,  6, 10, 10,  6,  2],
+                [ 0,  2,  6,  6, -8,  6,  6,  2,  0],
+                [-4, -2,  2,  2, -4,  2,  2, -2, -4]
+            ],
+            r: [
+                [14, 14, 12, 18, 16, 18, 12, 14, 14],
+                [16, 20, 18, 24, 26, 24, 18, 20, 16],
+                [12, 14, 12, 18, 18, 18, 12, 14, 12],
+                [12, 18, 16, 22, 22, 22, 16, 18, 12],
+                [12, 14, 12, 18, 18, 18, 12, 14, 12],
+                [12, 16, 14, 20, 20, 20, 14, 16, 12],
+                [ 6, 10,  8, 14, 14, 14,  8, 10,  6],
+                [ 4,  8,  6, 14, 12, 14,  6,  8,  4],
+                [ 8,  4,  8, 16,  8, 16,  8,  4,  8],
+                [-2, 10,  6, 14, 12, 14,  6, 10, -2]
+            ],
+            c: [
+                [ 6,  4,  0, -10, -12, -10,  0,  4,  6],
+                [ 2,  2,  0,  -4, -14,  -4,  0,  2,  2],
+                [ 2,  6,  4,   0,  10,   0,  4,  6,  2],
+                [ 0,  0,  0,   2,   8,   2,  0,  0,  0],
+                [ 0,  0,  2,   4,   8,   4,  2,  0,  0],
+                [-2,  0,  4,   2,   6,   2,  4,  0, -2],
+                [ 0,  0,  0,   2,   4,   2,  0,  0,  0],
+                [ 4,  0,  8,   6,  10,   6,  8,  0,  4],
+                [ 0,  2,  4,   6,   6,   6,  4,  2,  0],
+                [ 0,  0,  2,   6,   6,   6,  2,  0,  0]
+            ]
+        };
+
+        /* ==========================================================================
+           2. WEB AUDIO SYNTHESIZER (เสียงประกอบโดยไม่ต้องใช้ไฟล์เสียงภายนอก)
+           ========================================================================== */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'select') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(680, now + 0.04);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'move') {
+                // Realistic wooden token clack
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(210, now);
+                osc.frequency.exponentialRampToValueAtTime(65, now + 0.07);
+                gain.gain.setValueAtTime(0.35, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'capture') {
+                // Sharp double wooden slap
+                [0, 0.03].forEach((offset, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = idx === 0 ? 'square' : 'triangle';
+                    osc.frequency.setValueAtTime(idx === 0 ? 300 : 160, now + offset);
+                    osc.frequency.exponentialRampToValueAtTime(45, now + offset + 0.1);
+                    gain.gain.setValueAtTime(0.32, now + offset);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.11);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + offset);
+                    osc.stop(now + offset + 0.12);
+                });
+            } else if (type === 'check') {
+                // Warning brass gong chime
+                [440, 587.33].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.11);
+                    gain.gain.setValueAtTime(0.22, now + i * 0.11);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.11 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.11);
+                    osc.stop(now + i * 0.11 + 0.36);
+                });
+            } else if (type === 'win' || type === 'lose') {
+                const notes = type === 'win' ? [523.25, 659.25, 783.99, 1046.5] : [392.00, 349.23, 329.63, 261.63];
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.13);
+                    gain.gain.setValueAtTime(0.22, now + i * 0.13);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.13 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.13);
+                    osc.stop(now + i * 0.13 + 0.36);
+                });
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundText').textContent = soundEnabled ? 'เสียง: เปิด' : 'เสียง: ปิด';
+            if (soundEnabled) playSound('select');
+        }
+
+        /* ==========================================================================
+           3. GAME STATE & BOARD INITIALIZATION
+           ========================================================================== */
+        const canvas = document.getElementById('xiangqiCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let board = [];
+        let turn = 'r'; // 'r' (Red moves first) or 'b' (Black)
+        let playerColor = 'r'; // User side ('r' or 'b')
+        let difficulty = 'normal'; // 'easy', 'normal', 'hard'
+        let selectedSq = null; // { r, c }
+        let validMoves = []; // [{ fr, fc, tr, tc }]
+        let lastMove = null; // { fr, fc, tr, tc, piece, captured }
+        let hintMove = null; // { fr, fc, tr, tc }
+        let historyStack = []; // For Undo functionality
+        let capturedByRed = []; // Black pieces captured by Red
+        let capturedByBlack = []; // Red pieces captured by Black
+        let isGameOver = false;
+        let isThinking = false;
+
+        function createInitialBoard() {
+            return [
+                ['r', 'h', 'e', 'a', 'k', 'a', 'e', 'h', 'r'],
+                [null, null, null, null, null, null, null, null, null],
+                [null, 'c', null, null, null, null, null, 'c', null],
+                ['p', null, 'p', null, 'p', null, 'p', null, 'p'],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                ['P', null, 'P', null, 'P', null, 'P', null, 'P'],
+                [null, 'C', null, null, null, null, null, 'C', null],
+                [null, null, null, null, null, null, null, null, null],
+                ['R', 'H', 'E', 'A', 'K', 'A', 'E', 'H', 'R']
+            ];
+        }
+
+        function cloneBoard(b) {
+            return b.map(row => row.slice());
+        }
+
+        function getPieceColor(p) {
+            if (!p) return null;
+            return p === p.toUpperCase() ? 'r' : 'b';
+        }
+
+        /* ==========================================================================
+           4. XIANGQI MOVE GENERATOR & INTERNATIONAL RULES VALIDATION
+           ========================================================================== */
+        function inBounds(r, c) {
+            return r >= 0 && r <= 9 && c >= 0 && c <= 8;
+        }
+
+        function inPalace(r, c, color) {
+            if (c < 3 || c > 5) return false;
+            return color === 'r' ? (r >= 7 && r <= 9) : (r >= 0 && r <= 2);
+        }
+
+        // Generate pseudo-legal moves for piece at (r, c)
+        function getPseudoMovesForPiece(b, r, c) {
+            const p = b[r][c];
+            if (!p) return [];
+            const color = getPieceColor(p);
+            const type = p.toLowerCase();
+            const moves = [];
+
+            const addMoveIfValid = (tr, tc) => {
+                if (!inBounds(tr, tc)) return;
+                const target = b[tr][tc];
+                if (!target || getPieceColor(target) !== color) {
+                    moves.push({ fr: r, fc: c, tr, tc });
+                }
+            };
+
+            if (type === 'k') {
+                // General: 1 step orthogonally inside Palace
+                const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of dirs) {
+                    const tr = r + dr, tc = c + dc;
+                    if (inPalace(tr, tc, color)) addMoveIfValid(tr, tc);
+                }
+            } else if (type === 'a') {
+                // Advisor: 1 step diagonally inside Palace
+                const dirs = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+                for (const [dr, dc] of dirs) {
+                    const tr = r + dr, tc = c + dc;
+                    if (inPalace(tr, tc, color)) addMoveIfValid(tr, tc);
+                }
+            } else if (type === 'e') {
+                // Elephant: 2 steps diagonally, cannot cross river, blocked by "Elephant's Eye" (ตาช้าง)
+                const dirs = [[-2, -2], [-2, 2], [2, -2], [2, 2]];
+                for (const [dr, dc] of dirs) {
+                    const tr = r + dr, tc = c + dc;
+                    const eyeR = r + dr / 2, eyeC = c + dc / 2;
+                    if (!inBounds(tr, tc)) continue;
+                    // Check river boundary
+                    if (color === 'r' && tr < 5) continue;
+                    if (color === 'b' && tr > 4) continue;
+                    // Check Elephant Eye
+                    if (b[eyeR][eyeC] === null) {
+                        addMoveIfValid(tr, tc);
+                    }
+                }
+            } else if (type === 'h') {
+                // Horse: L-shape, blocked by "Horse's Leg" (ขาม้า)
+                const jumps = [
+                    { leg: [-1, 0], to: [-2, -1] }, { leg: [-1, 0], to: [-2, 1] },
+                    { leg: [1, 0],  to: [2, -1] },  { leg: [1, 0],  to: [2, 1] },
+                    { leg: [0, -1], to: [-1, -2] }, { leg: [0, -1], to: [1, -2] },
+                    { leg: [0, 1],  to: [-1, 2] },  { leg: [0, 1],  to: [1, 2] }
+                ];
+                for (const j of jumps) {
+                    const legR = r + j.leg[0], legC = c + j.leg[1];
+                    if (inBounds(legR, legC) && b[legR][legC] === null) {
+                        addMoveIfValid(r + j.to[0], c + j.to[1]);
+                    }
+                }
+            } else if (type === 'r') {
+                // Chariot: Orthogonal any distance
+                const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of dirs) {
+                    let tr = r + dr, tc = c + dc;
+                    while (inBounds(tr, tc)) {
+                        const target = b[tr][tc];
+                        if (!target) {
+                            moves.push({ fr: r, fc: c, tr, tc });
+                        } else {
+                            if (getPieceColor(target) !== color) {
+                                moves.push({ fr: r, fc: c, tr, tc });
+                            }
+                            break;
+                        }
+                        tr += dr;
+                        tc += dc;
+                    }
+                }
+            } else if (type === 'c') {
+                // Cannon: Moves like Chariot when non-capturing; jumps over 1 screen piece to capture
+                const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of dirs) {
+                    let tr = r + dr, tc = c + dc;
+                    let jumped = false;
+                    while (inBounds(tr, tc)) {
+                        const target = b[tr][tc];
+                        if (!jumped) {
+                            if (!target) {
+                                moves.push({ fr: r, fc: c, tr, tc });
+                            } else {
+                                jumped = true; // Found screen/platform piece
+                            }
+                        } else {
+                            if (target) {
+                                if (getPieceColor(target) !== color) {
+                                    moves.push({ fr: r, fc: c, tr, tc });
+                                }
+                                break;
+                            }
+                        }
+                        tr += dr;
+                        tc += dc;
+                    }
+                }
+            } else if (type === 'p') {
+                // Soldier: 1 step forward; after crossing river, also 1 step left/right
+                const forward = color === 'r' ? -1 : 1;
+                addMoveIfValid(r + forward, c);
+                const crossedRiver = color === 'r' ? (r <= 4) : (r >= 5);
+                if (crossedRiver) {
+                    addMoveIfValid(r, c - 1);
+                    addMoveIfValid(r, c + 1);
+                }
+            }
+
+            return moves;
+        }
+
+        // Check if the two Generals face each other directly with no intervening pieces
+        function isGeneralsFacing(b) {
+            let rKing = null, bKing = null;
+            for (let r = 0; r < 10; r++) {
+                for (let c = 3; c <= 5; c++) {
+                    if (b[r][c] === 'K') rKing = { r, c };
+                    else if (b[r][c] === 'k') bKing = { r, c };
+                }
+            }
+            if (!rKing || !bKing || rKing.c !== bKing.c) return false;
+            for (let r = bKing.r + 1; r < rKing.r; r++) {
+                if (b[r][rKing.c] !== null) return false;
+            }
+            return true;
+        }
+
+        // Check if `color`'s General is currently under attack (or facing enemy General)
+        function isKingInCheck(b, color) {
+            if (isGeneralsFacing(b)) return true;
+
+            const kingChar = color === 'r' ? 'K' : 'k';
+            let kr = -1, kc = -1;
+            for (let r = 0; r < 10; r++) {
+                for (let c = 3; c <= 5; c++) {
+                    if (b[r][c] === kingChar) {
+                        kr = r; kc = c; break;
+                    }
+                }
+                if (kr !== -1) break;
+            }
+            if (kr === -1) return true; // King captured
+
+            const enemyColor = color === 'r' ? 'b' : 'r';
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (p && getPieceColor(p) === enemyColor) {
+                        const enemyMoves = getPseudoMovesForPiece(b, r, c);
+                        for (const m of enemyMoves) {
+                            if (m.tr === kr && m.tc === kc) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Generate strictly legal moves for a single piece
+        function getLegalMovesForSquare(b, r, c) {
+            const p = b[r][c];
+            if (!p) return [];
+            const color = getPieceColor(p);
+            const pseudo = getPseudoMovesForPiece(b, r, c);
+            const legal = [];
+
+            for (const m of pseudo) {
+                const savedTarget = b[m.tr][m.tc];
+                b[m.tr][m.tc] = b[m.fr][m.fc];
+                b[m.fr][m.fc] = null;
+
+                if (!isKingInCheck(b, color)) {
+                    legal.push(m);
+                }
+
+                b[m.fr][m.fc] = b[m.tr][m.tc];
+                b[m.tr][m.tc] = savedTarget;
+            }
+            return legal;
+        }
+
+        // Generate all legal moves for `color`
+        function getAllLegalMoves(b, color) {
+            const allMoves = [];
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (p && getPieceColor(p) === color) {
+                        const legal = getLegalMovesForSquare(b, r, c);
+                        for (const m of legal) allMoves.push(m);
+                    }
+                }
+            }
+            return allMoves;
+        }
+
+        /* ==========================================================================
+           5. AI ENGINE (ระดับ ง่าย - ปกติ - ยาก พร้อม Alpha-Beta & PST)
+           ========================================================================== */
+        function evaluateBoard(b) {
+            let score = 0;
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (!p) continue;
+                    const info = PIECE_INFO[p];
+                    let val = info.val;
+                    const type = info.type;
+
+                    // Add Positional Piece-Square Table Bonus
+                    if (PST[type]) {
+                        const pstRow = info.color === 'r' ? r : (9 - r);
+                        val += PST[type][pstRow][c];
+                    }
+
+                    if (info.color === 'r') score += val;
+                    else score -= val;
+                }
+            }
+            return score;
+        }
+
+        // Order moves so captures are searched first (speeds up Alpha-Beta Pruning significantly)
+        function sortMoves(b, moves) {
+            return moves.sort((a, m2) => {
+                const capA = b[a.tr][a.tc] ? PIECE_INFO[b[a.tr][a.tc]].val : 0;
+                const capB = b[m2.tr][m2.tc] ? PIECE_INFO[b[m2.tr][m2.tc]].val : 0;
+                return capB - capA;
+            });
+        }
+
+        function minimax(b, depth, alpha, beta, maximizingColor) {
+            if (depth === 0) {
+                return evaluateBoard(b);
+            }
+
+            const moves = sortMoves(b, getAllLegalMoves(b, maximizingColor));
+            if (moves.length === 0) {
+                // In Xiangqi, having no legal moves (Checkmate or Stalemate) is a loss
+                return maximizingColor === 'r' ? (-20000 - depth * 100) : (20000 + depth * 100);
+            }
+
+            if (maximizingColor === 'r') {
+                let maxEval = -Infinity;
+                for (const m of moves) {
+                    const captured = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = b[m.fr][m.fc];
+                    b[m.fr][m.fc] = null;
+
+                    const ev = minimax(b, depth - 1, alpha, beta, 'b');
+
+                    b[m.fr][m.fc] = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = captured;
+
+                    if (ev > maxEval) maxEval = ev;
+                    if (ev > alpha) alpha = ev;
+                    if (beta <= alpha) break;
+                }
+                return maxEval;
+            } else {
+                let minEval = Infinity;
+                for (const m of moves) {
+                    const captured = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = b[m.fr][m.fc];
+                    b[m.fr][m.fc] = null;
+
+                    const ev = minimax(b, depth - 1, alpha, beta, 'r');
+
+                    b[m.fr][m.fc] = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = captured;
+
+                    if (ev < minEval) minEval = ev;
+                    if (ev < beta) beta = ev;
+                    if (beta <= alpha) break;
+                }
+                return minEval;
+            }
+        }
+
+        function findBestMove(b, aiColor, level) {
+            const moves = sortMoves(b, getAllLegalMoves(b, aiColor));
+            if (moves.length === 0) return null;
+
+            // Easy Mode: Depth 1 + 35% chance to pick among top 3 decent moves
+            if (level === 'easy') {
+                const scored = moves.map(m => {
+                    const captured = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = b[m.fr][m.fc];
+                    b[m.fr][m.fc] = null;
+                    const s = evaluateBoard(b) + (Math.random() * 45 - 22.5);
+                    b[m.fr][m.fc] = b[m.tr][m.tc];
+                    b[m.tr][m.tc] = captured;
+                    return { move: m, score: s };
+                });
+                scored.sort((a, b) => aiColor === 'r' ? b.score - a.score : a.score - b.score);
+                const pickIndex = (scored.length > 2 && Math.random() < 0.35) ? 1 : 0;
+                return scored[pickIndex].move;
+            }
+
+            // Normal Mode: Depth 3 | Hard Mode: Depth 4
+            const searchDepth = level === 'normal' ? 3 : 4;
+            let bestMove = moves[0];
+            let bestVal = aiColor === 'r' ? -Infinity : Infinity;
+            let alpha = -Infinity;
+            let beta = Infinity;
+
+            for (const m of moves) {
+                const captured = b[m.tr][m.tc];
+                b[m.tr][m.tc] = b[m.fr][m.fc];
+                b[m.fr][m.fc] = null;
+
+                const nextColor = aiColor === 'r' ? 'b' : 'r';
+                const val = minimax(b, searchDepth - 1, alpha, beta, nextColor);
+
+                b[m.fr][m.fc] = b[m.tr][m.tc];
+                b[m.tr][m.tc] = captured;
+
+                if (aiColor === 'r') {
+                    if (val > bestVal) {
+                        bestVal = val;
+                        bestMove = m;
+                    }
+                    if (val > alpha) alpha = val;
+                } else {
+                    if (val < bestVal) {
+                        bestVal = val;
+                        bestMove = m;
+                    }
+                    if (val < beta) beta = val;
+                }
+            }
+            return bestMove;
+        }
+
+        /* ==========================================================================
+           6. BOARD RENDERING (กระดานลายไม้โบราณ + ตัวหมากจีนคู่ภาษาไทย)
+           ========================================================================== */
+        const BOARD_MARGIN_X = 42;
+        const BOARD_MARGIN_Y = 42;
+
+        function getMetrics() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const padX = w * 0.08;
+            const padY = h * 0.072;
+            const cellW = (w - padX * 2) / 8;
+            const cellH = (h - padY * 2) / 9;
+            return { w, h, padX, padY, cellW, cellH };
+        }
+
+        // Convert logical (r, c) to screen (x, y), taking board flip into account if player is Black
+        function boardToScreen(r, c) {
+            const { padX, padY, cellW, cellH } = getMetrics();
+            const dispR = playerColor === 'r' ? r : (9 - r);
+            const dispC = playerColor === 'r' ? c : (8 - c);
+            return {
+                x: padX + dispC * cellW,
+                y: padY + dispR * cellH
+            };
+        }
+
+        function screenToBoard(x, y) {
+            const { padX, padY, cellW, cellH } = getMetrics();
+            const dispC = Math.round((x - padX) / cellW);
+            const dispR = Math.round((y - padY) / cellH);
+            if (dispR < 0 || dispR > 9 || dispC < 0 || dispC > 8) return null;
+
+            const screenPt = {
+                x: padX + dispC * cellW,
+                y: padY + dispR * cellH
+            };
+            const dist = Math.hypot(x - screenPt.x, y - screenPt.y);
+            if (dist > cellW * 0.48) return null;
+
+            const r = playerColor === 'r' ? dispR : (9 - dispR);
+            const c = playerColor === 'r' ? dispC : (8 - dispC);
+            return { r, c };
+        }
+
+        function drawFiducialMark(cx, cy, col, cellW) {
+            const gap = cellW * 0.08;
+            const len = cellW * 0.18;
+            ctx.strokeStyle = '#52290e';
+            ctx.lineWidth = 1.6;
+
+            const drawCorner = (dx, dy) => {
+                ctx.beginPath();
+                ctx.moveTo(cx + dx * gap, cy + dy * (gap + len));
+                ctx.lineTo(cx + dx * gap, cy + dy * gap);
+                ctx.lineTo(cx + dx * (gap + len), cy + dy * gap);
+                ctx.stroke();
+            };
+
+            const dispCol = playerColor === 'r' ? col : (8 - col);
+            if (dispCol > 0) {
+                drawCorner(-1, -1);
+                drawCorner(-1, 1);
+            }
+            if (dispCol < 8) {
+                drawCorner(1, -1);
+                drawCorner(1, 1);
+            }
+        }
+
+        function renderBoard() {
+            const { w, h, padX, padY, cellW, cellH } = getMetrics();
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Classic Warm Wood Background Gradient
+            const woodGrad = ctx.createLinearGradient(0, 0, w, h);
+            woodGrad.addColorStop(0, '#eccb8d');
+            woodGrad.addColorStop(0.5, '#dfa45b');
+            woodGrad.addColorStop(1, '#c99349');
+            ctx.fillStyle = woodGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Subtle Wood Grain Lines
+            ctx.save();
+            ctx.strokeStyle = 'rgba(110, 58, 18, 0.08)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < h; i += 14) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.bezierCurveTo(w * 0.3, i + 5, w * 0.7, i - 5, w, i + 2);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 2. Outer Decorative Double Border
+            const outPad = 7;
+            ctx.strokeStyle = '#472108';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(padX - outPad, padY - outPad, cellW * 8 + outPad * 2, cellH * 9 + outPad * 2);
+
+            // 3. Grid Lines (9 vertical x 10 horizontal)
+            ctx.strokeStyle = '#472108';
+            ctx.lineWidth = 1.6;
+
+            // Horizontal lines
+            for (let r = 0; r < 10; r++) {
+                const y = padY + r * cellH;
+                ctx.beginPath();
+                ctx.moveTo(padX, y);
+                ctx.lineTo(padX + cellW * 8, y);
+                ctx.stroke();
+            }
+
+            // Vertical lines (interrupted by the River between row 4 and 5)
+            for (let c = 0; c < 9; c++) {
+                const x = padX + c * cellW;
+                if (c === 0 || c === 8) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, padY);
+                    ctx.lineTo(x, padY + cellH * 9);
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(x, padY);
+                    ctx.lineTo(x, padY + cellH * 4);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, padY + cellH * 5);
+                    ctx.lineTo(x, padY + cellH * 9);
+                    ctx.stroke();
+                }
+            }
+
+            // 4. Palace Diagonal X Lines (เขตพระราชวัง 3x3)
+            ctx.beginPath();
+            // Top Palace
+            ctx.moveTo(padX + 3 * cellW, padY);
+            ctx.lineTo(padX + 5 * cellW, padY + 2 * cellH);
+            ctx.moveTo(padX + 5 * cellW, padY);
+            ctx.lineTo(padX + 3 * cellW, padY + 2 * cellH);
+            // Bottom Palace
+            ctx.moveTo(padX + 3 * cellW, padY + 7 * cellH);
+            ctx.lineTo(padX + 5 * cellW, padY + 9 * cellH);
+            ctx.moveTo(padX + 5 * cellW, padY + 7 * cellH);
+            ctx.lineTo(padX + 3 * cellW, padY + 9 * cellH);
+            ctx.stroke();
+
+            // 5. Fiducial Marks for Cannons and Soldiers
+            const markCoords = [
+                [2, 1], [2, 7], [7, 1], [7, 7], // Cannons
+                [3, 0], [3, 2], [3, 4], [3, 6], [3, 8], // Top Soldiers
+                [6, 0], [6, 2], [6, 4], [6, 6], [6, 8]  // Bottom Soldiers
+            ];
+            for (const [mr, mc] of markCoords) {
+                const pt = boardToScreen(mr, mc);
+                drawFiducialMark(pt.x, pt.y, mc, cellW);
+            }
+
+            // 6. River Inscription (楚河 - ฉู่เหอ / 漢界 - ฮั่นเจี้ย)
+            ctx.save();
+            const riverY = padY + cellH * 4.5;
+            ctx.fillStyle = 'rgba(71, 33, 8, 0.78)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const fontSizeRiver = Math.round(cellH * 0.46);
+            ctx.font = `900 ${fontSizeRiver}px "Noto Serif TC", serif`;
+            ctx.fillText('楚 河', padX + cellW * 2, riverY - 4);
+            ctx.fillText('漢 界', padX + cellW * 6, riverY - 4);
+
+            // Small Thai River Labels
+            ctx.font = `600 ${Math.round(cellH * 0.2)}px "Noto Sans Thai", sans-serif`;
+            ctx.fillStyle = 'rgba(82, 41, 14, 0.7)';
+            ctx.fillText('(แม่น้ำฉู่เหอ)', padX + cellW * 2, riverY + cellH * 0.3);
+            ctx.fillText('(แม่น้ำฮั่นเจี้ย)', padX + cellW * 6, riverY + cellH * 0.3);
+            ctx.restore();
+
+            // 7. Highlight Last Move (Origin & Destination)
+            if (lastMove) {
+                const fromPt = boardToScreen(lastMove.fr, lastMove.fc);
+                const toPt = boardToScreen(lastMove.tr, lastMove.tc);
+
+                // Origin dashed ring
+                ctx.save();
+                ctx.strokeStyle = 'rgba(37, 99, 235, 0.75)';
+                ctx.lineWidth = 2.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.arc(fromPt.x, fromPt.y, cellW * 0.44, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+
+                // Destination glowing ring
+                ctx.save();
+                ctx.strokeStyle = 'rgba(37, 99, 235, 0.9)';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.arc(toPt.x, toPt.y, cellW * 0.46, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 8. Highlight Hint Move (if requested)
+            if (hintMove) {
+                const hFrom = boardToScreen(hintMove.fr, hintMove.fc);
+                const hTo = boardToScreen(hintMove.tr, hintMove.tc);
+
+                ctx.save();
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(hFrom.x, hFrom.y);
+                ctx.lineTo(hTo.x, hTo.y);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
+                ctx.beginPath();
+                ctx.arc(hTo.x, hTo.y, cellW * 0.46, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 9. Draw All Pieces (ตัวอักษรจีนคู่กับชื่อภาษาไทย)
+            const radius = cellW * 0.435;
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = board[r][c];
+                    if (!p) continue;
+                    const pt = boardToScreen(r, c);
+                    const isSelected = selectedSq && selectedSq.r === r && selectedSq.c === c;
+                    drawPieceToken(pt.x, pt.y, radius, p, isSelected);
+                }
+            }
+
+            // 10. Draw Valid Moves Indicators (Dots & Capture Rings)
+            for (const m of validMoves) {
+                const pt = boardToScreen(m.tr, m.tc);
+                const isCapture = board[m.tr][m.tc] !== null;
+
+                ctx.save();
+                if (isCapture) {
+                    // Red Target Ring for Capturable Enemy Piece
+                    ctx.strokeStyle = '#dc2626';
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, radius * 1.06, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'rgba(220, 38, 38, 0.22)';
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, radius * 1.06, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Green/Gold Dot for Empty Legal Square
+                    ctx.fillStyle = 'rgba(22, 163, 74, 0.88)';
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, cellW * 0.14, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawPieceToken(x, y, radius, p, isSelected) {
+            const info = PIECE_INFO[p];
+            const isRed = info.color === 'r';
+
+            ctx.save();
+
+            // Lift effect if piece is selected
+            if (isSelected) {
+                y -= 4;
+                ctx.shadowColor = 'rgba(245, 158, 11, 0.95)';
+                ctx.shadowBlur = 16;
+                ctx.shadowOffsetY = 6;
+            } else {
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetY = 3;
+            }
+
+            // Outer Wooden Token Body
+            const bodyGrad = ctx.createRadialGradient(
+                x - radius * 0.25, y - radius * 0.25, radius * 0.1,
+                x, y, radius
+            );
+            bodyGrad.addColorStop(0, '#fff3d6');
+            bodyGrad.addColorStop(0.7, '#ebd09a');
+            bodyGrad.addColorStop(1, '#b88b4a');
+
+            ctx.fillStyle = bodyGrad;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Reset shadow for inner details
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Outer Rim Border
+            ctx.lineWidth = isSelected ? 3 : 2;
+            ctx.strokeStyle = isSelected ? '#f59e0b' : '#5c3412';
+            ctx.stroke();
+
+            // Inner Engraved Ring (Red or Dark Slate/Black)
+            const inkColor = isRed ? '#b91c1c' : '#1e293b';
+            ctx.lineWidth = 1.7;
+            ctx.strokeStyle = inkColor;
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 0.84, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Traditional Chinese Character (Upper-Center)
+            ctx.fillStyle = inkColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const chineseFontSize = Math.round(radius * 0.94);
+            ctx.font = `900 ${chineseFontSize}px "Noto Serif TC", "KaiTi", serif`;
+            ctx.fillText(info.char, x, y - radius * 0.18);
+
+            // Small Thai Label Pill/Text at the bottom of the token
+            const thaiFontSize = Math.max(9, Math.round(radius * 0.34));
+            ctx.font = `700 ${thaiFontSize}px "Noto Sans Thai", sans-serif`;
+            ctx.fillStyle = isRed ? '#7f1d1d' : '#0f172a';
+            ctx.fillText(info.thai, x, y + radius * 0.50);
+
+            ctx.restore();
+        }
+
+        /* ==========================================================================
+           7. GAMEPLAY CONTROLLER, INTERACTIONS & UI UPDATES
+           ========================================================================== */
+        function handleBoardClick(e) {
+            if (isGameOver || isThinking || turn !== playerColor) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            const sq = screenToBoard(clickX, clickY);
+            if (!sq) return;
+
+            // Check if clicked on a valid destination square for the currently selected piece
+            if (selectedSq) {
+                const chosenMove = validMoves.find(m => m.tr === sq.r && m.tc === sq.c);
+                if (chosenMove) {
+                    executeMove(chosenMove);
+                    return;
+                }
+            }
+
+            // Otherwise, check if clicked on own piece to select it
+            const clickedPiece = board[sq.r][sq.c];
+            if (clickedPiece && getPieceColor(clickedPiece) === playerColor) {
+                selectedSq = sq;
+                validMoves = getLegalMovesForSquare(board, sq.r, sq.c);
+                playSound('select');
+                renderBoard();
+            } else {
+                selectedSq = null;
+                validMoves = [];
+                renderBoard();
+            }
+        }
+
+        canvas.addEventListener('click', handleBoardClick);
+
+        function executeMove(move) {
+            clearHint();
+
+            const piece = board[move.fr][move.fc];
+            const captured = board[move.tr][move.tc];
+
+            // Save state for Undo
+            historyStack.push({
+                board: cloneBoard(board),
+                turn: turn,
+                lastMove: lastMove ? { ...lastMove } : null,
+                capturedByRed: [...capturedByRed],
+                capturedByBlack: [...capturedByBlack],
+                moveNotation: formatMoveNotation(piece, move, captured)
+            });
+
+            // Apply move on board
+            board[move.tr][move.tc] = piece;
+            board[move.fr][move.fc] = null;
+
+            if (captured) {
+                if (getPieceColor(piece) === 'r') capturedByRed.push(captured);
+                else capturedByBlack.push(captured);
+            }
+
+            lastMove = { ...move, piece, captured };
+            selectedSq = null;
+            validMoves = [];
+            turn = turn === 'r' ? 'b' : 'r';
+
+            // Sound & Check evaluation
+            const inCheckNow = isKingInCheck(board, turn);
+            if (inCheckNow) {
+                playSound('check');
+            } else if (captured) {
+                playSound('capture');
+            } else {
+                playSound('move');
+            }
+
+            updateUI();
+            renderBoard();
+
+            // Check for Game Over (Checkmate or Stalemate)
+            const remainingMoves = getAllLegalMoves(board, turn);
+            if (remainingMoves.length === 0) {
+                handleGameOver(turn, inCheckNow);
+                return;
+            }
+
+            // Trigger CPU Move if it's CPU's turn
+            if (turn !== playerColor && !isGameOver) {
+                isThinking = true;
+                updateUI();
+                setTimeout(() => {
+                    makeCPUMove();
+                }, 320);
+            }
+        }
+
+        function makeCPUMove() {
+            if (isGameOver) return;
+            const cpuColor = playerColor === 'r' ? 'b' : 'r';
+            const aiMove = findBestMove(board, cpuColor, difficulty);
+            isThinking = false;
+
+            if (aiMove) {
+                executeMove(aiMove);
+            } else {
+                const inCheckNow = isKingInCheck(board, cpuColor);
+                handleGameOver(cpuColor, inCheckNow);
+            }
+        }
+
+        function handleGameOver(loserColor, wasInCheck) {
+            isGameOver = true;
+            const playerWon = loserColor !== playerColor;
+            playSound(playerWon ? 'win' : 'lose');
+
+            const reasonText = wasInCheck ? 'รุกจน (Checkmate - 絕殺)' : 'อับหมากไร้ตาเดิน (Stalemate - 困斃)';
+            const icon = playerWon ? '🏆' : '⚔️';
+            const title = playerWon ? 'ยินดีด้วย! คุณเป็นฝ่ายชนะ' : 'พ่ายแพ้! CPU เป็นฝ่ายชนะ';
+            const msg = playerWon
+                ? `คุณเอาชนะ CPU (ระดับ${getDiffName(difficulty)}) ด้วยการ${reasonText}`
+                : `CPU เอาชนะคุณด้วยการ${reasonText} ลองกดปุ่มย้อนตาเดินหรือเริ่มเกมใหม่อีกครั้ง!`;
+
+            document.getElementById('turnStatusText').textContent = title;
+            document.getElementById('subStatusText').textContent = reasonText;
+
+            showDialogModal(icon, title, msg, false);
+        }
+
+        /* ==========================================================================
+           8. HELPER FEATURES: UNDO, HINT, MOVE LOG & SETTINGS
+           ========================================================================== */
+        function undoMove() {
+            if (isThinking || historyStack.length === 0) return;
+            clearHint();
+
+            // If it's player's turn and at least 2 plies exist, undo both CPU move and Player move
+            if (turn === playerColor && historyStack.length >= 2) {
+                historyStack.pop(); // Pop CPU's move
+                const prevState = historyStack.pop(); // Pop Player's move
+                restoreState(prevState);
+            } else if (historyStack.length >= 1 && playerColor === 'r') {
+                const prevState = historyStack.pop();
+                restoreState(prevState);
+            }
+
+            isGameOver = false;
+            selectedSq = null;
+            validMoves = [];
+            playSound('select');
+            updateUI();
+            renderBoard();
+        }
+
+        function restoreState(state) {
+            board = cloneBoard(state.board);
+            turn = state.turn;
+            lastMove = state.lastMove;
+            capturedByRed = [...state.capturedByRed];
+            capturedByBlack = [...state.capturedByBlack];
+        }
+
+        function requestHint() {
+            if (isGameOver || isThinking || turn !== playerColor) return;
+            const suggested = findBestMove(board, playerColor, 'normal');
+            if (!suggested) return;
+
+            hintMove = suggested;
+            selectedSq = { r: suggested.fr, c: suggested.fc };
+            validMoves = getLegalMovesForSquare(board, suggested.fr, suggested.fc);
+
+            const pInfo = PIECE_INFO[board[suggested.fr][suggested.fc]];
+            const targetPiece = board[suggested.tr][suggested.tc];
+            const actionDesc = targetPiece
+                ? `กิน "${PIECE_INFO[targetPiece].thai}" (${PIECE_INFO[targetPiece].char})`
+                : `เดินไปจุดตัด (${10 - suggested.tr}, ${suggested.tc + 1})`;
+
+            const banner = document.getElementById('hintBanner');
+            const bannerText = document.getElementById('hintBannerText');
+            bannerText.textContent = `แนะนำ: ขยับ "${pInfo.thai} (${pInfo.char})" จาก (${10 - suggested.fr}, ${suggested.fc + 1}) เพื่อ${actionDesc}`;
+            banner.classList.remove('hidden');
+
+            playSound('select');
+            renderBoard();
+        }
+
+        function clearHint() {
+            hintMove = null;
+            document.getElementById('hintBanner').classList.add('hidden');
+        }
+
+        function formatMoveNotation(piece, move, captured) {
+            const info = PIECE_INFO[piece];
+            const sideLabel = info.color === 'r' ? 'แดง' : 'ดำ';
+            const fromStr = `(${10 - move.fr},${move.fc + 1})`;
+            const toStr = `(${10 - move.tr},${move.tc + 1})`;
+            const capStr = captured ? ` กิน${PIECE_INFO[captured].thai}` : '';
+            return {
+                color: info.color,
+                sideLabel,
+                text: `${info.char} ${info.thai} ${fromStr} → ${toStr}${capStr}`
+            };
+        }
+
+        function updateUI() {
+            // 1. Turn Indicator
+            const dot = document.getElementById('turnIndicatorDot');
+            const statusText = document.getElementById('turnStatusText');
+            const subText = document.getElementById('subStatusText');
+
+            if (!isGameOver) {
+                if (turn === 'r') {
+                    dot.className = 'w-4 h-4 rounded-full bg-red-600 border-2 border-amber-200 shadow-[0_0_8px_#dc2626]';
+                } else {
+                    dot.className = 'w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-400 shadow-[0_0_8px_#94a3b8]';
+                }
+
+                if (turn === playerColor) {
+                    statusText.textContent = `ตาของคุณ (ฝั่ง${playerColor === 'r' ? 'แดง' : 'ดำ'})`;
+                    subText.textContent = 'คลิกเลือกตัวหมากเพื่อดูจุดเดินที่ถูกต้อง';
+                } else {
+                    statusText.textContent = `CPU กำลังคิดกลยุทธ์...`;
+                    subText.textContent = `ฝ่าย${turn === 'r' ? 'แดง' : 'ดำ'} (ระดับ${getDiffName(difficulty)})`;
+                }
+            }
+
+            // 2. Check Alert Badge
+            const inCheck = isKingInCheck(board, turn);
+            const checkBadge = document.getElementById('checkBadge');
+            if (inCheck && !isGameOver) {
+                checkBadge.classList.remove('hidden');
+            } else {
+                checkBadge.classList.add('hidden');
+            }
+
+            // 3. Undo & Hint Buttons
+            const canUndo = !isThinking && (
+                (turn === playerColor && historyStack.length >= 2) ||
+                (playerColor === 'r' && historyStack.length === 1)
+            );
+            document.getElementById('btnUndo').disabled = !canUndo;
+            document.getElementById('btnHint').disabled = isThinking || isGameOver || turn !== playerColor;
+
+            // 4. Captured Pieces Display
+            renderCapturedBox('capturedBlackBox', 'capturedBlackCount', capturedByRed);
+            renderCapturedBox('capturedRedBox', 'capturedRedCount', capturedByBlack);
+
+            // 5. Move History Log
+            const logEl = document.getElementById('moveHistoryList');
+            document.getElementById('moveCounter').textContent = `ตาเดินรวม ${historyStack.length}`;
+            if (historyStack.length === 0) {
+                logEl.innerHTML = `<div class="text-[#8a6a4f] italic text-center py-8">เริ่มเดินหมากเพื่อบันทึกประวัติ</div>`;
+            } else {
+                logEl.innerHTML = historyStack.map((item, idx) => {
+                    const n = item.moveNotation;
+                    const badgeClass = n.color === 'r'
+                        ? 'bg-red-900/80 text-red-200 border-red-600'
+                        : 'bg-slate-800 text-slate-200 border-slate-500';
+                    return `
+                        <div class="flex items-center gap-2 bg-[#1a0907]/60 px-2.5 py-1.5 rounded border border-[#4a2810]">
+                            <span class="text-[#9c7a54] font-mono w-5">${idx + 1}.</span>
+                            <span class="px-1.5 py-0.5 text-[10px] rounded border ${badgeClass}">${n.sideLabel}</span>
+                            <span class="text-[#f2e3ce] font-medium truncate">${n.text}</span>
+                        </div>
+                    `;
+                }).join('');
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+        }
+
+        function renderCapturedBox(boxId, countId, list) {
+            const box = document.getElementById(boxId);
+            const countEl = document.getElementById(countId);
+            countEl.textContent = `${list.length} ตัว`;
+
+            if (list.length === 0) {
+                box.innerHTML = `<span class="text-xs text-[#7a5a40] italic">ยังไม่มี</span>`;
+                return;
+            }
+
+            box.innerHTML = list.map(p => {
+                const info = PIECE_INFO[p];
+                const textCol = info.color === 'r' ? 'text-red-700 border-red-700' : 'text-slate-900 border-slate-800';
+                return `
+                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#e6c280] border ${textCol} text-xs font-bold shadow-sm">
+                        <span class="chinese-font">${info.char}</span>
+                        <span class="text-[10px] opacity-85">${info.thai}</span>
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function getDiffName(d) {
+            if (d === 'easy') return 'ง่าย';
+            if (d === 'normal') return 'ปกติ';
+            return 'ยาก';
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            ['easy', 'normal', 'hard'].forEach(d => {
+                const btn = document.getElementById(`diff-${d}`);
+                if (d === level) {
+                    btn.className = 'diff-btn gold-btn py-1.5 rounded-lg text-xs font-semibold';
+                } else {
+                    btn.className = 'diff-btn wood-btn py-1.5 rounded-lg text-xs font-semibold';
+                }
+            });
+            document.getElementById('difficultyBadge').textContent = `ระดับ: ${getDiffName(level)}`;
+            playSound('select');
+        }
+
+        function changePlayerColor(color) {
+            if (playerColor === color) return;
+            playerColor = color;
+            const btnR = document.getElementById('side-r');
+            const btnB = document.getElementById('side-b');
+            if (color === 'r') {
+                btnR.className = 'gold-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5';
+                btnB.className = 'wood-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5';
+            } else {
+                btnB.className = 'gold-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5';
+                btnR.className = 'wood-btn py-1.5 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5';
+            }
+            startNewGame();
+        }
+
+        function confirmNewGame() {
+            if (historyStack.length > 0 && !isGameOver) {
+                showDialogModal(
+                    '🔄',
+                    'เริ่มกระดานใหม่หรือไม่?',
+                    'เกมปัจจุบันยังไม่จบ คุณต้องการล้างกระดานและเริ่มเกมใหม่ใช่หรือไม่?',
+                    true
+                );
+            } else {
+                startNewGame();
+            }
+        }
+
+        function startNewGame() {
+            clearHint();
+            board = createInitialBoard();
+            turn = 'r';
+            selectedSq = null;
+            validMoves = [];
+            lastMove = null;
+            historyStack = [];
+            capturedByRed = [];
+            capturedByBlack = [];
+            isGameOver = false;
+            isThinking = false;
+
+            playSound('move');
+            updateUI();
+            renderBoard();
+
+            // If player chose Black ('b'), CPU (Red) makes the first move automatically
+            if (playerColor === 'b') {
+                isThinking = true;
+                updateUI();
+                setTimeout(() => {
+                    makeCPUMove();
+                }, 400);
+            }
+        }
+
+        /* ==========================================================================
+           9. MODALS & RESPONSIVE CANVAS RESIZING
+           ========================================================================== */
+        function openRulesModal() {
+            playSound('select');
+            document.getElementById('rulesModal').classList.remove('hidden');
+        }
+
+        function closeRulesModal() {
+            playSound('select');
+            document.getElementById('rulesModal').classList.add('hidden');
+        }
+
+        function showDialogModal(icon, title, message, isConfirm) {
+            document.getElementById('dialogIcon').textContent = icon;
+            document.getElementById('dialogTitle').textContent = title;
+            document.getElementById('dialogMessage').textContent = message;
+
+            const actions = document.getElementById('dialogActions');
+            if (isConfirm) {
+                actions.innerHTML = `
+                    <button onclick="closeDialogModal()" class="wood-btn px-5 py-2 rounded-lg text-sm font-medium">ยกเลิก</button>
+                    <button onclick="startNewGame(); closeDialogModal();" class="gold-btn px-6 py-2 rounded-lg text-sm">ยืนยันเริ่มใหม่</button>
+                `;
+            } else {
+                actions.innerHTML = `
+                    <button onclick="closeDialogModal()" class="wood-btn px-5 py-2 rounded-lg text-sm font-medium">ดูกระดาน</button>
+                    <button onclick="startNewGame(); closeDialogModal();" class="gold-btn px-6 py-2 rounded-lg text-sm">เล่นใหม่อีกครั้ง</button>
+                `;
+            }
+            document.getElementById('dialogModal').classList.remove('hidden');
+        }
+
+        function closeDialogModal() {
+            document.getElementById('dialogModal').classList.add('hidden');
+        }
+
+        function resizeCanvas() {
+            const wrapper = canvas.parentElement;
+            const maxW = Math.min(wrapper.clientWidth - 24, 520);
+            const aspect = 10 / 9; // Height to Width ratio
+            canvas.width = Math.max(300, Math.floor(maxW));
+            canvas.height = Math.floor(canvas.width * aspect);
+            renderBoard();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        window.onload = function () {
+            board = createInitialBoard();
+            resizeCanvas();
+            updateUI();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โชงิ (Shogi - 将棋) หมากรุกญี่ปุ่น</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;700;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --board-bg: #e4b56b;
+            --board-border: #5c3a21;
+        }
+
+        html, body {
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', sans-serif;
+            background-color: #161412;
+            background-image: 
+                radial-gradient(circle at 50% 40%, rgba(120, 80, 40, 0.16), transparent 75%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 4px);
+            color: #f5f5f4;
+            user-select: none;
+        }
+
+        .kanji-font {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        /* กรอบกระดานไม้ Kaya ขนาดปรับตามหน้าจออัตโนมัติ ไม่ดันจอให้ยืด */
+        .shogi-board-wrapper {
+            width: min(calc(100dvh - 86px), calc(100vw - 560px), 650px);
+            height: min(calc(100dvh - 86px), calc(100vw - 560px), 650px);
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(145deg, #d8a256, #e8bc78, #cfa055);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.75),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                0 0 0 4px #4a2e16,
+                0 0 0 6px #784f2a;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            padding: 8px 10px 10px 10px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 1023px) {
+            .shogi-board-wrapper {
+                width: min(calc(100dvh - 90px), calc(100vw - 260px), 580px);
+                height: min(calc(100dvh - 90px), calc(100vw - 260px), 580px);
+            }
+        }
+
+        @media (max-width: 639px) {
+            .shogi-board-wrapper {
+                width: min(calc(100dvh - 210px), calc(100vw - 20px));
+                height: min(calc(100dvh - 210px), calc(100vw - 20px));
+                padding: 5px;
+            }
+        }
+
+        .shogi-grid {
+            display: grid;
+            grid-template-columns: repeat(9, minmax(0, 1fr));
+            grid-template-rows: repeat(9, minmax(0, 1fr));
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #2d1b0d;
+            background-color: #e4b56b;
+            background-image: repeating-linear-gradient(
+                90deg,
+                rgba(160, 100, 40, 0.06) 0px,
+                rgba(160, 100, 40, 0.06) 3px,
+                transparent 3px,
+                transparent 9px
+            );
+            position: relative;
+        }
+
+        .shogi-cell {
+            border: 1px solid #3d2512;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color 0.12s ease;
+        }
+
+        /* จุดพิกัดดาวบนกระดาน (Hoshi) */
+        .hoshi-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #2d1b0d;
+            border-radius: 50%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* ตัวหมากรูปทรงห้าเหลี่ยมแบบดั้งเดิม */
+        .shogi-piece {
+            width: 84%;
+            height: 88%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(50% 4%, 93% 20%, 84% 96%, 16% 96%, 7% 20%);
+            background: linear-gradient(180deg, #fff5dc 0%, #f3d7a0 75%, #e2bd7c 100%);
+            padding-top: 6%;
+            z-index: 10;
+        }
+
+        .piece-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0px 2px 2px rgba(45, 27, 13, 0.55));
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+
+        /* หมากฝั่ง CPU หันหัวลง */
+        .piece-wrapper.gote {
+            transform: rotate(180deg);
+            filter: drop-shadow(0px -2px 2px rgba(45, 27, 13, 0.55));
+        }
+
+        .piece-wrapper.selected {
+            transform: scale(1.07);
+            filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.7));
+            z-index: 25;
+        }
+
+        .piece-wrapper.gote.selected {
+            transform: rotate(180deg) scale(1.07);
+        }
+
+        .piece-kanji {
+            font-family: 'Noto Serif JP', serif;
+            font-weight: 900;
+            line-height: 1;
+            font-size: clamp(0.75rem, 1.9vh, 1.25rem);
+            color: #1a110a;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .piece-thai {
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            font-size: clamp(0.42rem, 1vh, 0.62rem);
+            line-height: 1.05;
+            color: #4a3520;
+            margin-top: 1px;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+
+        /* หมากที่เลื่อนขั้นแล้วจะเป็นสีแดงชาด (Shu-iro) */
+        .promoted .piece-kanji {
+            color: #b91c1c;
+        }
+        .promoted .piece-thai {
+            color: #991b1b;
+        }
+
+        /* การไฮไลท์ช่องต่างๆ */
+        .cell-selected {
+            background-color: rgba(250, 204, 21, 0.55) !important;
+        }
+
+        .cell-last-move {
+            background-color: rgba(245, 158, 11, 0.35);
+        }
+
+        .cell-check {
+            animation: pulse-red 0.9s infinite alternate;
+        }
+
+        @keyframes pulse-red {
+            0% { background-color: rgba(220, 38, 38, 0.45); box-shadow: inset 0 0 6px #dc2626; }
+            100% { background-color: rgba(239, 68, 68, 0.85); box-shadow: inset 0 0 14px #991b1b; }
+        }
+
+        /* ตัวบอกทางเดินปลอดภัย vs เสี่ยงโดนกิน */
+        .move-indicator-safe {
+            position: absolute;
+            width: 32%;
+            height: 32%;
+            border-radius: 50%;
+            background-color: rgba(22, 163, 74, 0.85);
+            box-shadow: 0 0 6px rgba(22, 163, 74, 0.9);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .cell-safe-capture {
+            background-color: rgba(34, 197, 94, 0.38) !important;
+            box-shadow: inset 0 0 0 2.5px #16a34a;
+        }
+
+        .move-indicator-danger {
+            position: absolute;
+            inset: 1.5px;
+            border: 2px dashed #dc2626;
+            background-color: rgba(239, 68, 68, 0.25);
+            border-radius: 3px;
+            z-index: 20;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 1px;
+        }
+
+        .danger-badge {
+            background-color: #dc2626;
+            color: white;
+            font-size: 0.55rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* ไฮไลท์ศัตรูที่เล็งโจมตีช่องที่เราเอาเมาส์ชี้ */
+        .cell-attacker-highlight {
+            background-color: rgba(220, 38, 38, 0.7) !important;
+            box-shadow: inset 0 0 0 3px #fef08a, 0 0 12px rgba(220, 38, 38, 0.9) !important;
+            z-index: 30;
+        }
+
+        .cell-best-hint {
+            box-shadow: inset 0 0 0 3px #3b82f6, 0 0 10px rgba(59, 130, 246, 0.8) !important;
+            background-color: rgba(59, 130, 246, 0.28) !important;
+        }
+
+        /* ถาดวางหมากในมือ (Komadai) */
+        .komadai-panel {
+            background: linear-gradient(145deg, #2e1d12, #1f130b);
+            border: 1px solid #6f4518;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
+        }
+
+        .hand-piece-btn {
+            position: relative;
+            width: 40px;
+            height: 44px;
+            transition: transform 0.12s ease;
+        }
+
+        .hand-piece-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .hand-piece-btn.selected {
+            transform: translateY(-2px) scale(1.06);
+            outline: 2px solid #facc15;
+            border-radius: 5px;
+            background-color: rgba(250, 204, 21, 0.18);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1917;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #57534e;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Compact Top Header Bar (50px, shrink-0) -->
+    <header class="h-[50px] shrink-0 w-full bg-stone-900/95 border-b border-amber-900/40 px-3 flex items-center justify-between gap-2 z-30">
+        <!-- Brand & Status Badge -->
+        <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow border border-amber-300/40 shrink-0">
+                <span class="kanji-font text-lg font-black text-stone-950">将</span>
+            </div>
+            <div class="truncate">
+                <div class="flex items-center gap-1.5">
+                    <h1 class="text-sm font-bold text-amber-400 truncate">โชงิ หมากรุกญี่ปุ่น</h1>
+                    <span id="turn-counter" class="text-[10px] font-semibold bg-stone-800 px-2 py-0.5 rounded-full text-amber-300 border border-stone-700">ตาที่ 1</span>
+                </div>
+            </div>
+
+            <!-- Turn & Check Status Pill -->
+            <div id="header-turn-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/70 border border-amber-600/50 text-xs font-semibold text-amber-300 ml-2">
+                <i id="header-turn-icon" class="fa-solid fa-user text-[10px]"></i>
+                <span id="header-turn-text">ตาของคุณ (先手)</span>
+            </div>
+
+            <div id="check-alert" class="hidden items-center gap-1 bg-red-600 text-white px-2.5 py-1 rounded-full text-[11px] font-bold animate-pulse shadow">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="check-alert-text">รุกขุน (王手)!</span>
+            </div>
+        </div>
+
+        <!-- Compact Controls Bar -->
+        <div class="flex items-center gap-1.5 shrink-0">
+            <!-- AI Difficulty -->
+            <div class="flex items-center bg-stone-950 p-0.5 rounded-lg border border-stone-700 text-[11px]">
+                <span class="text-stone-400 px-1.5 hidden md:inline">CPU:</span>
+                <button onclick="setDifficulty('easy')" id="diff-easy" class="px-2 py-0.5 rounded bg-amber-500 text-stone-950 font-bold transition">ง่าย</button>
+                <button onclick="setDifficulty('normal')" id="diff-normal" class="px-2 py-0.5 rounded text-stone-300 hover:text-white transition">ปกติ</button>
+                <button onclick="setDifficulty('hard')" id="diff-hard" class="px-2 py-0.5 rounded text-stone-300 hover:text-white transition">ยาก</button>
+            </div>
+
+            <!-- Danger Radar Toggle Button -->
+            <button onclick="toggleDangerButton()" id="btn-danger-toggle" title="เปิด/ปิดเรดาร์เตือนช่องโดนกิน" class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-950/90 text-emerald-300 border border-emerald-600/60 hover:bg-emerald-900 transition">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="hidden xl:inline">เตือนภัย: เปิด</span>
+            </button>
+
+            <!-- Sound Toggle Button -->
+            <button onclick="toggleSoundButton()" id="btn-sound-toggle" title="เปิด/ปิดเสียงวางหมาก" class="w-7 h-7 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-400 border border-stone-700 flex items-center justify-center text-xs transition">
+                <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+            </button>
+
+            <!-- Undo Button -->
+            <button onclick="undoMove()" id="btn-undo" title="ย้อนตาเดิน" class="flex items-center gap-1 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 px-2.5 py-1 rounded-lg text-xs font-medium transition disabled:opacity-40 disabled:pointer-events-none">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span class="hidden md:inline">ย้อนตา</span>
+            </button>
+
+            <!-- Restart Button -->
+            <button onclick="restartGame()" title="เริ่มกระดานใหม่" class="flex items-center gap-1 bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-800/60 px-2.5 py-1 rounded-lg text-xs font-medium transition">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                <span class="hidden md:inline">เริ่มใหม่</span>
+            </button>
+
+            <!-- Rules Modal Button -->
+            <button onclick="openRulesModal()" class="flex items-center gap-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold px-2.5 py-1 rounded-lg text-xs shadow transition">
+                <i class="fa-solid fa-book-open"></i>
+                <span>กติกาการเล่น</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Viewport (flex-1 min-h-0 overflow-hidden) -->
+    <main class="flex-1 min-h-0 w-full max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 lg:gap-4 p-2 lg:p-3 overflow-hidden">
+
+        <!-- Left Side Panel: CPU Komadai + Radar Legend + Player Komadai -->
+        <aside class="w-full sm:w-56 lg:w-64 sm:h-full max-h-full flex sm:flex-col justify-between gap-2 shrink-0 order-2 sm:order-1">
+            
+            <!-- Top Box: CPU (Gote) Komadai -->
+            <div class="komadai-panel rounded-xl p-2.5 flex-1 sm:flex-initial flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded bg-stone-800 border border-stone-600 flex items-center justify-center text-red-400 text-xs">
+                            <i class="fa-solid fa-robot"></i>
+                        </span>
+                        <span class="text-xs font-bold text-stone-200">หมากเชลย CPU (後手)</span>
+                    </div>
+                    <span id="cpu-thinking" class="hidden text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/40 animate-pulse">
+                        คิดอยู่...
+                    </span>
+                </div>
+                <div id="cpu-hand" class="flex flex-wrap items-center gap-1 min-h-[46px] content-start">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Middle Box: Radar Status & Hint Button (Hidden on tiny mobile to save space) -->
+            <div class="hidden sm:flex bg-stone-900/90 border border-stone-700/80 rounded-xl p-2.5 flex-col justify-between gap-2">
+                <div class="space-y-1.5 text-[11px]">
+                    <div class="font-bold text-amber-400 flex items-center justify-between">
+                        <span><i class="fa-solid fa-radar mr-1"></i>เรดาร์ช่วยเดิน</span>
+                        <button onclick="requestBestMoveHint()" id="btn-hint" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2 py-0.5 rounded text-[10px] shadow transition">
+                            <i class="fa-solid fa-lightbulb mr-0.5"></i>ขอคำใบ้
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 text-stone-300">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shrink-0 shadow"></span>
+                        <span class="truncate">ปลอดภัย (ไม่ถูกกินทันที)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-stone-300">
+                        <span class="w-3.5 h-3.5 rounded border border-dashed border-red-500 bg-red-500/30 inline-flex items-center justify-center text-[8px] text-white shrink-0"><i class="fa-solid fa-skull"></i></span>
+                        <span class="truncate">เสี่ยงถูกกิน (ชี้เพื่อดูศัตรู)</span>
+                    </div>
+                </div>
+
+                <!-- Live Hover Threat Alert Box -->
+                <div id="threat-hover-info" class="min-h-[42px] bg-stone-950/90 border border-stone-800 rounded-lg p-2 flex items-center gap-2 text-[11px] text-stone-300 leading-tight">
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-sm shrink-0"></i>
+                    <span id="threat-hover-text">คลิกหมากเพื่อดูช่องเดินและคำเตือน</span>
+                </div>
+            </div>
+
+            <!-- Bottom Box: Player (Sente) Komadai -->
+            <div class="komadai-panel rounded-xl p-2.5 flex-1 sm:flex-initial flex flex-col justify-between border-amber-600/60">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-xs">
+                            <i class="fa-solid fa-hand-back-fist"></i>
+                        </span>
+                        <span class="text-xs font-bold text-amber-300">หมากเชลยของคุณ (คลิกวาง)</span>
+                    </div>
+                    <button onclick="requestBestMoveHint()" class="sm:hidden bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">คำใบ้</button>
+                </div>
+                <div id="player-hand" class="flex flex-wrap items-center gap-1 min-h-[46px] content-start">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Center Proportional 9x9 Shogi Board -->
+        <section class="flex items-center justify-center shrink-0 order-1 sm:order-2">
+            <div class="shogi-board-wrapper">
+                <!-- Top File Coordinates (9 to 1) -->
+                <div class="grid grid-cols-9 text-center text-[10px] sm:text-[11px] font-bold text-stone-900 leading-none mb-1 pr-3 shrink-0">
+                    <span>9</span><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+                </div>
+
+                <!-- Board Grid + Right Rank Coordinates -->
+                <div class="flex-1 min-h-0 flex items-center">
+                    <div id="shogi-board" class="shogi-grid flex-1 h-full">
+                        <!-- 81 Cells generated by JS -->
+                    </div>
+                    <div class="flex flex-col justify-around h-full pl-1 text-[10px] sm:text-[11px] font-bold text-stone-900 select-none shrink-0">
+                        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>七</span><span>八</span><span>九</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side Panel: Turn Card, Quick Promotion Guide & Internal Scrollable Move Log -->
+        <aside class="hidden lg:flex w-64 h-full max-h-full flex-col gap-2 shrink-0 order-3">
+            
+            <!-- Turn Status Card -->
+            <div id="turn-banner" class="bg-stone-900/90 border border-amber-500/40 rounded-xl p-2.5 flex items-center gap-2.5 shrink-0">
+                <div id="turn-icon" class="w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center font-bold shrink-0">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="min-w-0">
+                    <div id="turn-title" class="font-bold text-xs text-amber-300 truncate">ตาของคุณ (ผู้เล่น - 先手)</div>
+                    <div id="turn-subtitle" class="text-[11px] text-stone-400 truncate">เลือกหมากเพื่อเดินหรือวางหมาก</div>
+                </div>
+            </div>
+
+            <!-- Scrollable Move History Log (flex-1 min-h-0 overflow-y-auto) -->
+            <div class="bg-stone-900/90 border border-stone-700/80 rounded-xl p-2.5 flex-1 min-h-0 flex flex-col">
+                <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-stone-800 shrink-0">
+                    <h2 class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scroll"></i> ประวัติการเดินหมาก
+                    </h2>
+                    <span id="move-count-badge" class="text-[10px] text-stone-400">0 ตาเดิน</span>
+                </div>
+                <div id="move-log" class="flex-1 min-h-0 overflow-y-auto space-y-1 pr-1 text-[11px]">
+                    <div class="text-stone-500 italic text-center py-6">เริ่มเกมด้วยการคลิกหมากของคุณ</div>
+                </div>
+            </div>
+
+            <!-- Compact Promotion Reference Card (shrink-0) -->
+            <div class="bg-stone-900/90 border border-stone-700/80 rounded-xl p-2.5 shrink-0">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[11px] font-bold text-amber-400">การเลื่อนขั้น (3 แถวบน)</span>
+                    <button onclick="openRulesModal('pieces')" class="text-[10px] text-amber-300 hover:underline">ดูผังเดิน &rarr;</button>
+                </div>
+                <div class="grid grid-cols-2 gap-1 text-[10px]">
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">飛</b> เรือ</span>
+                        <span class="text-red-400 font-bold">&rarr; 龍 มังกร</span>
+                    </div>
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">角</b> ช้าง</span>
+                        <span class="text-red-400 font-bold">&rarr; 馬 ม้าปีศาจ</span>
+                    </div>
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">銀</b> เงิน</span>
+                        <span class="text-red-400 font-bold">&rarr; 全 ทอง</span>
+                    </div>
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">桂</b> ม้า</span>
+                        <span class="text-red-400 font-bold">&rarr; 圭 ทอง</span>
+                    </div>
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">香</b> หอก</span>
+                        <span class="text-red-400 font-bold">&rarr; 杏 ทอง</span>
+                    </div>
+                    <div class="bg-stone-950/80 px-1.5 py-1 rounded border border-stone-800 flex justify-between">
+                        <span><b class="kanji-font text-amber-200">歩</b> เบี้ย</span>
+                        <span class="text-red-400 font-bold">&rarr; と ทอง</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- Promotion Dialog Modal (หน้าต่างถามการเลื่อนขั้น) -->
+    <div id="promotion-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-stone-900 border-2 border-amber-500 rounded-2xl max-w-sm w-full p-5 shadow-2xl text-center">
+            <h3 class="text-base font-bold text-amber-400 mb-1">ต้องการเลื่อนขั้นหมากหรือไม่?</h3>
+            <p class="text-xs text-stone-300 mb-4">หมากเข้าสู่เขตแดนศัตรู (3 แถวบนสุด) สามารถเลื่อนขั้นเพื่อเพิ่มพลังได้</p>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btn-promote-yes" class="flex flex-col items-center justify-center p-3 rounded-xl bg-amber-500/15 border-2 border-amber-500 hover:bg-amber-500/30 transition group">
+                    <div id="promo-preview-yes" class="w-14 h-16 mb-1.5 flex items-center justify-center"></div>
+                    <span class="text-xs font-bold text-amber-300">เลื่อนขั้น (成り)</span>
+                    <span id="promo-desc-yes" class="text-[10px] text-stone-400 mt-0.5">พลังเพิ่มขึ้น</span>
+                </button>
+
+                <button id="btn-promote-no" class="flex flex-col items-center justify-center p-3 rounded-xl bg-stone-800/80 border-2 border-stone-600 hover:border-stone-400 transition group">
+                    <div id="promo-preview-no" class="w-14 h-16 mb-1.5 flex items-center justify-center"></div>
+                    <span class="text-xs font-bold text-stone-200">ไม่เลื่อนขั้น</span>
+                    <span class="text-[10px] text-stone-400 mt-0.5">คงสถานะเดิม</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="gameover-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-stone-900 border-2 border-amber-500 rounded-2xl max-w-md w-full p-6 shadow-2xl text-center">
+            <div id="gameover-icon" class="w-14 h-14 mx-auto mb-3 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-2xl text-amber-400">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <h2 id="gameover-title" class="text-xl font-bold text-amber-400 mb-1.5">จบการแข่งขัน!</h2>
+            <p id="gameover-desc" class="text-xs text-stone-300 mb-5">คุณเอาชนะรุกฆาต CPU ได้สำเร็จ</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeGameOverModal()" class="px-4 py-2 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-medium transition">
+                    ดูกระดาน
+                </button>
+                <button onclick="restartGame(); closeGameOverModal();" class="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow transition">
+                    <i class="fa-solid fa-play mr-1"></i> เล่นใหม่อีกครั้ง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comprehensive Thai Rules Modal (หน้าต่างกติกาภาษาไทยฉบับสมบูรณ์) -->
+    <div id="rules-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-2 sm:p-4">
+        <div class="bg-stone-900 border border-amber-700/70 rounded-2xl max-w-4xl w-full max-h-[88dvh] flex flex-col shadow-2xl overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-4 py-3 bg-stone-950 border-b border-stone-800 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <span class="kanji-font text-lg font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700">将棋</span>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-bold text-amber-400">คู่มือกติกาหมากรุกญี่ปุ่น (Shogi Rules)</h2>
+                        <p class="text-[11px] text-stone-400">อธิบายพื้นฐาน ผังการเดินหมาก การเลื่อนขั้น และกติกาการนำหมากเชลยกลับมาวาง</p>
+                    </div>
+                </div>
+                <button onclick="closeRulesModal()" class="w-7 h-7 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Tabs -->
+            <div class="flex flex-wrap gap-1 px-4 pt-2 bg-stone-950/60 border-b border-stone-800 text-xs font-semibold shrink-0">
+                <button onclick="switchRuleTab('basic')" id="tab-btn-basic" class="rule-tab-btn px-3 py-1.5 rounded-t-lg bg-stone-900 text-amber-400 border-t border-x border-stone-700">1. พื้นฐาน & ระบบเตือนภัย</button>
+                <button onclick="switchRuleTab('pieces')" id="tab-btn-pieces" class="rule-tab-btn px-3 py-1.5 rounded-t-lg text-stone-400 hover:text-stone-200">2. การเดินหมาก & เลื่อนขั้น</button>
+                <button onclick="switchRuleTab('drop')" id="tab-btn-drop" class="rule-tab-btn px-3 py-1.5 rounded-t-lg text-stone-400 hover:text-stone-200">3. การดรอปหมาก & ข้อห้ามพิเศษ</button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm leading-relaxed text-stone-200 flex-1 min-h-0">
+                
+                <!-- Tab 1: Basic & Danger System -->
+                <div id="rule-tab-basic" class="rule-tab-content space-y-3">
+                    <div class="bg-amber-950/30 border border-amber-700/40 rounded-xl p-3.5">
+                        <h3 class="text-sm font-bold text-amber-300 mb-1"><i class="fa-solid fa-bullseye mr-1.5"></i>เป้าหมายของเกม (Objective)</h3>
+                        <p class="text-stone-300 text-xs leading-relaxed">
+                            กระดานโชงิมีขนาด <strong>9×9 ช่อง</strong> ผู้เล่นทั้งสองฝ่ายจะผลัดกันเดินคนละ 1 ตา เป้าหมายสูงสุดคือการรุกจนขุน (<span class="kanji-font text-amber-300">玉/王</span>) ของฝ่ายตรงข้ามไม่มีตาเดินหนีได้ หรือที่เรียกว่า <strong>"รุกฆาต" (Checkmate / 詰み - Tsumi)</strong>
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-stone-950/70 border border-stone-800 rounded-xl p-3.5">
+                            <h4 class="font-bold text-amber-400 mb-1.5 flex items-center gap-1.5 text-xs">
+                                <i class="fa-solid fa-compass"></i> ทิศทางของตัวหมาก
+                            </h4>
+                            <p class="text-stone-300 text-xs leading-relaxed">
+                                หมากโชงิทุกตัวเป็นสีไม้เดียวกัน แต่แบ่งฝั่งด้วย <strong>"ปลายแหลมของห้าเหลี่ยม"</strong>:
+                            </p>
+                            <ul class="list-disc list-inside mt-1.5 space-y-1 text-xs text-stone-300">
+                                <li><strong class="text-amber-300">หมากของคุณ (Sente):</strong> ปลายแหลมชี้ขึ้นด้านบน</li>
+                                <li><strong class="text-red-400">หมากของ CPU (Gote):</strong> ปลายแหลมชี้ลงด้านล่าง</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-stone-950/70 border border-stone-800 rounded-xl p-3.5">
+                            <h4 class="font-bold text-emerald-400 mb-1.5 flex items-center gap-1.5 text-xs">
+                                <i class="fa-solid fa-shield-virus"></i> ระบบเตือนภัยอัจฉริยะ (Danger Hint)
+                            </h4>
+                            <p class="text-stone-300 text-xs leading-relaxed">
+                                เมื่อคลิกเลือกหมาก ระบบจะจำลองอนาคตให้ทุกช่องที่เดินไปได้:
+                            </p>
+                            <ul class="mt-1.5 space-y-1 text-xs">
+                                <li class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                                    <span><strong>จุดสีเขียว:</strong> เดินไปช่องนี้แล้วปลอดภัยในตาถัดไป</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="px-1.5 py-0.5 rounded bg-red-600 text-white text-[10px]"><i class="fa-solid fa-skull"></i> กรอบประสีแดง</span>
+                                    <span><strong>อันตราย!</strong> ชี้เพื่อดูว่าหมากศัตรูตัวไหนเล็งกินอยู่</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-950/70 border border-stone-800 rounded-xl p-3.5">
+                        <h4 class="font-bold text-amber-400 mb-1.5 text-xs"><i class="fa-solid fa-angles-up mr-1.5"></i>การเลื่อนขั้นหมาก (Promotion / 成り)</h4>
+                        <p class="text-xs text-stone-300 leading-relaxed">
+                            พื้นที่ <strong>3 แถวบนสุดของกระดาน</strong> คือแดนของฝ่าย CPU เมื่อหมากของคุณเดินเข้าไป เดินภายใน หรือเดินออกจาก 3 แถวนี้ คุณจะได้รับสิทธิ์เลือก <strong>"เลื่อนขั้น"</strong> (ตัวอักษรเปลี่ยนเป็น<span class="text-red-400 font-bold">สีแดง</span>และเก่งขึ้น):
+                        </p>
+                        <ul class="list-disc list-inside mt-1.5 text-xs text-stone-300 space-y-1">
+                            <li><strong>ขุน (玉) และ ทอง (金)</strong> ไม่สามารถเลื่อนขั้นได้</li>
+                            <li><strong>เรือ (飛)</strong> เลื่อนเป็น <strong>มังกร (龍)</strong>: เดินเหมือนเรือ + เดินทแยงมุมได้ 1 ช่อง</li>
+                            <li><strong>ช้าง (角)</strong> เลื่อนเป็น <strong>ม้าปีศาจ (馬)</strong>: เดินเหมือนช้าง + เดินตรงขึ้น-ลง-ซ้าย-ขวาได้ 1 ช่อง</li>
+                            <li><strong>เงิน (銀), ม้า (桂), หอก (香), เบี้ย (歩)</strong> เมื่อเลื่อนขั้นแล้ว จะเดินเหมือน <strong>"ขุนพลทอง (金)"</strong> ทุกประการ!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Piece Movements Diagrams -->
+                <div id="rule-tab-pieces" class="rule-tab-content hidden space-y-3">
+                    <p class="text-xs text-stone-400">
+                        สัญลักษณ์ในแผนผัง: <span class="text-amber-400 font-bold">●</span> = เดินไปได้ 1 ช่อง | <span class="text-sky-400 font-bold">↑ ↗ →</span> = เดินยาวไปได้เรื่อยๆ จนกว่าจะติดหมากตัวอื่น | <span class="text-purple-400 font-bold">★</span> = กระโดดข้ามหมากตัวอื่นได้
+                    </p>
+                    <div id="rules-piece-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Tab 3: Drop Rules & Special Restrictions -->
+                <div id="rule-tab-drop" class="rule-tab-content hidden space-y-3">
+                    <div class="bg-amber-950/30 border border-amber-700/40 rounded-xl p-3.5">
+                        <h3 class="text-sm font-bold text-amber-300 mb-1"><i class="fa-solid fa-hand-holding-hand mr-1.5"></i>การนำหมากเชลยกลับมาวาง (Drop / 打ち)</h3>
+                        <p class="text-stone-300 text-xs leading-relaxed">
+                            หมากของศัตรูที่คุณกินได้ จะกลับคืนสู่สถานะยังไม่เลื่อนขั้นและเข้ามาอยู่ใน <strong>"ถาดหมากเชลยของคุณ"</strong> ในตาเดินของคุณ แทนที่จะขยับหมากบนกระดาน คุณสามารถคลิกหมากในถาดแล้ว <strong>วางลงบนช่องว่างใดก็ได้บนกระดาน</strong> นับเป็น 1 ตาเดิน!
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-red-400 text-xs"><i class="fa-solid fa-ban mr-1.5"></i>ข้อห้ามสำคัญในการวางหมาก (Drop Restrictions):</h4>
+                        
+                        <div class="bg-stone-950/80 border border-stone-800 rounded-xl p-3">
+                            <div class="font-bold text-amber-300 text-xs mb-0.5">1. กติกานิฟุ (二歩 - Nifu / ห้ามเบี้ยซ้อนแนวตั้ง)</div>
+                            <p class="text-xs text-stone-300">
+                                ห้ามนำ <strong>เบี้ย (歩)</strong> ในมือ ลงไปวางในแถวแนวตั้ง (File) ที่มีเบี้ยของคุณที่ยังไม่ได้เลื่อนขั้นวางอยู่ก่อนแล้ว
+                            </p>
+                        </div>
+
+                        <div class="bg-stone-950/80 border border-stone-800 rounded-xl p-3">
+                            <div class="font-bold text-amber-300 text-xs mb-0.5">2. ห้ามวางหมากในจุดอับที่เดินต่อไม่ได้ (行き所のない駒)</div>
+                            <p class="text-xs text-stone-300">
+                                ห้ามวาง <strong>เบี้ย (歩)</strong> หรือ <strong>หอก (香)</strong> ลงในแถวบนสุด และห้ามวาง <strong>ม้า (桂)</strong> ลงใน 2 แถวบนสุดของกระดาน
+                            </p>
+                        </div>
+
+                        <div class="bg-stone-950/80 border border-stone-800 rounded-xl p-3">
+                            <div class="font-bold text-amber-300 text-xs mb-0.5">3. กติกาอุจิฟุซึเมะ (打ち歩詰め - Uchifuzume)</div>
+                            <p class="text-xs text-stone-300">
+                                ห้าม "วาง" เบี้ยจากในมือเพื่อรุกฆาตขุนศัตรูทันทีในตานั้น (แต่สามารถใช้เบี้ยที่อยู่บนกระดานเดินไปรุกฆาตได้ตามปกติ)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-4 py-2.5 bg-stone-950 border-t border-stone-800 flex justify-end shrink-0">
+                <button onclick="closeRulesModal()" class="bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold px-4 py-1.5 rounded-lg text-xs transition">
+                    เข้าใจแล้ว กลับสู่กระดาน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /***********************************************************************
+         * 1. ข้อมูลหมากโชงิ (PIECE DEFINITIONS & KANJI + THAI LABELS)
+         ***********************************************************************/
+        const SENTE = 1;  // ผู้เล่น (เดินขึ้นบน row ลดลง)
+        const GOTE = -1;  // CPU (เดินลงล่าง row เพิ่มขึ้น)
+
+        const PIECE_DATA = {
+            K:  { kanji: '玉', goteKanji: '王', thai: 'ขุน',      promoted: false, canPromote: false, promoteTo: null, base: 'K', value: 15000 },
+            R:  { kanji: '飛', thai: 'เรือ',      promoted: false, canPromote: true,  promoteTo: '+R', base: 'R', value: 1000 },
+            '+R':{ kanji: '龍', thai: 'มังกร',    promoted: true,  canPromote: false, promoteTo: null, base: 'R', value: 1350 },
+            B:  { kanji: '角', thai: 'ช้าง',      promoted: false, canPromote: true,  promoteTo: '+B', base: 'B', value: 900 },
+            '+B':{ kanji: '馬', thai: 'ม้าปีศาจ', promoted: true,  canPromote: false, promoteTo: null, base: 'B', value: 1200 },
+            G:  { kanji: '金', thai: 'ทอง',      promoted: false, canPromote: false, promoteTo: null, base: 'G', value: 600 },
+            S:  { kanji: '銀', thai: 'เงิน',     promoted: false, canPromote: true,  promoteTo: '+S', base: 'S', value: 500 },
+            '+S':{ kanji: '全', thai: 'เงินเลื่อน',promoted: true,  canPromote: false, promoteTo: null, base: 'S', value: 600 },
+            N:  { kanji: '桂', thai: 'ม้า',      promoted: false, canPromote: true,  promoteTo: '+N', base: 'N', value: 400 },
+            '+N':{ kanji: '圭', thai: 'ม้าเลื่อน', promoted: true,  canPromote: false, promoteTo: null, base: 'N', value: 580 },
+            L:  { kanji: '香', thai: 'หอก',      promoted: false, canPromote: true,  promoteTo: '+L', base: 'L', value: 350 },
+            '+L':{ kanji: '杏', thai: 'หอกเลื่อน', promoted: true,  canPromote: false, promoteTo: null, base: 'L', value: 570 },
+            P:  { kanji: '歩', thai: 'เบี้ย',     promoted: false, canPromote: true,  promoteTo: '+P', base: 'P', value: 100 },
+            '+P':{ kanji: 'と', thai: 'เบี้ยเลื่อน',promoted: true,  canPromote: false, promoteTo: null, base: 'P', value: 560 }
+        };
+
+        const HAND_ORDER = ['R', 'B', 'G', 'S', 'N', 'L', 'P'];
+
+        /***********************************************************************
+         * 2. ระบบเสียงจำลองไม้กระทบกระดาน (WEB AUDIO API SYNTHESIZER)
+         ***********************************************************************/
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playClackSound(isCapture = false, isCheck = false) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const bufferSize = audioCtx.sampleRate * 0.045;
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.008));
+                }
+
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(isCapture ? 1550 : 1250, now);
+                filter.Q.setValueAtTime(3.5, now);
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(isCapture ? 0.95 : 0.7, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.045);
+
+                whiteNoise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                whiteNoise.start(now);
+
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(isCapture ? 320 : 260, now);
+                osc.frequency.exponentialRampToValueAtTime(90, now + 0.05);
+                oscGain.gain.setValueAtTime(0.5, now);
+                oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.connect(oscGain);
+                oscGain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.055);
+
+                if (isCheck) {
+                    const bell = audioCtx.createOscillator();
+                    const bellGain = audioCtx.createGain();
+                    bell.type = 'sine';
+                    bell.frequency.setValueAtTime(880, now + 0.06);
+                    bell.frequency.setValueAtTime(1174.66, now + 0.16);
+                    bellGain.gain.setValueAtTime(0.22, now + 0.06);
+                    bellGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+                    bell.connect(bellGain);
+                    bellGain.connect(audioCtx.destination);
+                    bell.start(now + 0.06);
+                    bell.stop(now + 0.46);
+                }
+            } catch (e) {}
+        }
+
+        /***********************************************************************
+         * 3. สถานะของกระดานและตัวแปรหลัก (GAME STATE)
+         ***********************************************************************/
+        let board = [];
+        let hands = {
+            [SENTE]: { R: 0, B: 0, G: 0, S: 0, N: 0, L: 0, P: 0 },
+            [GOTE]:  { R: 0, B: 0, G: 0, S: 0, N: 0, L: 0, P: 0 }
+        };
+        let currentTurn = SENTE;
+        let selectedBoardPos = null;
+        let selectedHandType = null;
+        let currentLegalMoves = [];
+        let hoveredAttackers = [];
+        let lastMove = null;
+        let bestMoveHint = null;
+        let moveHistory = [];
+        let difficulty = 'easy';
+        let showDangerHint = true;
+        let isGameOver = false;
+        let isCpuThinking = false;
+
+        function createInitialBoard() {
+            const b = Array(9).fill(null).map(() => Array(9).fill(null));
+            const backRank = ['L', 'N', 'S', 'G', 'K', 'G', 'S', 'N', 'L'];
+            for (let c = 0; c < 9; c++) {
+                b[0][c] = { type: backRank[c], owner: GOTE };
+                b[2][c] = { type: 'P', owner: GOTE };
+                b[6][c] = { type: 'P', owner: SENTE };
+                b[8][c] = { type: backRank[c], owner: SENTE };
+            }
+            b[1][1] = { type: 'R', owner: GOTE };
+            b[1][7] = { type: 'B', owner: GOTE };
+            b[7][1] = { type: 'B', owner: SENTE };
+            b[7][7] = { type: 'R', owner: SENTE };
+            return b;
+        }
+
+        function cloneState(b, h) {
+            return {
+                board: b.map(row => row.map(cell => cell ? { ...cell } : null)),
+                hands: {
+                    [SENTE]: { ...h[SENTE] },
+                    [GOTE]:  { ...h[GOTE] }
+                }
+            };
+        }
+
+        /***********************************************************************
+         * 4. กติกาการเดินหมากและการตรวจสอบรุก (SHOGI MOVE GENERATION & VALIDATION)
+         ***********************************************************************/
+        function inBounds(r, c) {
+            return r >= 0 && r < 9 && c >= 0 && c < 9;
+        }
+
+        function getMovementPattern(type, owner) {
+            const f = owner === SENTE ? -1 : 1;
+            const b = -f;
+
+            const goldSteps = [
+                [f, -1], [f, 0], [f, 1],
+                [0, -1],         [0, 1],
+                         [b, 0]
+            ];
+
+            switch (type) {
+                case 'K':
+                    return {
+                        steps: [
+                            [-1, -1], [-1, 0], [-1, 1],
+                            [0, -1],           [0, 1],
+                            [1, -1],  [1, 0],  [1, 1]
+                        ],
+                        slides: []
+                    };
+                case 'G':
+                case '+S':
+                case '+N':
+                case '+L':
+                case '+P':
+                    return { steps: goldSteps, slides: [] };
+                case 'S':
+                    return {
+                        steps: [
+                            [f, -1], [f, 0], [f, 1],
+                            [b, -1],         [b, 1]
+                        ],
+                        slides: []
+                    };
+                case 'N':
+                    return {
+                        steps: [[f * 2, -1], [f * 2, 1]],
+                        slides: []
+                    };
+                case 'L':
+                    return {
+                        steps: [],
+                        slides: [[f, 0]]
+                    };
+                case 'P':
+                    return {
+                        steps: [[f, 0]],
+                        slides: []
+                    };
+                case 'R':
+                    return {
+                        steps: [],
+                        slides: [[-1, 0], [1, 0], [0, -1], [0, 1]]
+                    };
+                case '+R':
+                    return {
+                        steps: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
+                        slides: [[-1, 0], [1, 0], [0, -1], [0, 1]]
+                    };
+                case 'B':
+                    return {
+                        steps: [],
+                        slides: [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+                    };
+                case '+B':
+                    return {
+                        steps: [[-1, 0], [1, 0], [0, -1], [0, 1]],
+                        slides: [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+                    };
+                default:
+                    return { steps: [], slides: [] };
+            }
+        }
+
+        function getPseudoMovesFromSquare(b, r, c) {
+            const piece = b[r][c];
+            if (!piece) return [];
+            const { steps, slides } = getMovementPattern(piece.type, piece.owner);
+            const moves = [];
+
+            for (const [dr, dc] of steps) {
+                const nr = r + dr, nc = c + dc;
+                if (inBounds(nr, nc)) {
+                    const target = b[nr][nc];
+                    if (!target || target.owner !== piece.owner) {
+                        moves.push({ from: { r, c }, to: { r: nr, c: nc } });
+                    }
+                }
+            }
+
+            for (const [dr, dc] of slides) {
+                let nr = r + dr, nc = c + dc;
+                while (inBounds(nr, nc)) {
+                    const target = b[nr][nc];
+                    if (!target) {
+                        moves.push({ from: { r, c }, to: { r: nr, c: nc } });
+                    } else {
+                        if (target.owner !== piece.owner) {
+                            moves.push({ from: { r, c }, to: { r: nr, c: nc } });
+                        }
+                        break;
+                    }
+                    nr += dr;
+                    nc += dc;
+                }
+            }
+            return moves;
+        }
+
+        function getAttackersOfSquare(b, targetR, targetC, attackerOwner) {
+            const attackers = [];
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (p && p.owner === attackerOwner) {
+                        const pMoves = getPseudoMovesFromSquare(b, r, c);
+                        if (pMoves.some(m => m.to.r === targetR && m.to.c === targetC)) {
+                            attackers.push({ r, c, type: p.type });
+                        }
+                    }
+                }
+            }
+            return attackers;
+        }
+
+        function findKingPosition(b, owner) {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (p && p.owner === owner && p.type === 'K') {
+                        return { r, c };
+                    }
+                }
+            }
+            return null;
+        }
+
+        function isKingInCheck(b, owner) {
+            const kingPos = findKingPosition(b, owner);
+            if (!kingPos) return true;
+            const attackers = getAttackersOfSquare(b, kingPos.r, kingPos.c, -owner);
+            return attackers.length > 0;
+        }
+
+        function isInPromotionZone(r, owner) {
+            return owner === SENTE ? r <= 2 : r >= 6;
+        }
+
+        function isMandatoryPromotion(type, toR, owner) {
+            if (type === 'P' || type === 'L') {
+                return owner === SENTE ? toR === 0 : toR === 8;
+            }
+            if (type === 'N') {
+                return owner === SENTE ? toR <= 1 : toR >= 7;
+            }
+            return false;
+        }
+
+        function canPiecePromoteOnMove(type, fromR, toR, owner) {
+            if (!PIECE_DATA[type].canPromote) return false;
+            return isInPromotionZone(fromR, owner) || isInPromotionZone(toR, owner);
+        }
+
+        function applyMoveToState(b, h, move, owner) {
+            const next = cloneState(b, h);
+            if (move.dropType) {
+                next.hands[owner][move.dropType]--;
+                next.board[move.to.r][move.to.c] = { type: move.dropType, owner };
+            } else {
+                const movingPiece = { ...next.board[move.from.r][move.from.c] };
+                const captured = next.board[move.to.r][move.to.c];
+                if (captured && captured.type !== 'K') {
+                    const baseType = PIECE_DATA[captured.type].base;
+                    next.hands[owner][baseType]++;
+                }
+                if (move.promote && PIECE_DATA[movingPiece.type].promoteTo) {
+                    movingPiece.type = PIECE_DATA[movingPiece.type].promoteTo;
+                }
+                next.board[move.from.r][move.from.c] = null;
+                next.board[move.to.r][move.to.c] = movingPiece;
+            }
+            return next;
+        }
+
+        function getLegalMovesForSquare(b, h, r, c) {
+            const piece = b[r][c];
+            if (!piece) return [];
+            const pseudo = getPseudoMovesFromSquare(b, r, c);
+            const legal = [];
+
+            for (const m of pseudo) {
+                const canPromote = canPiecePromoteOnMove(piece.type, r, m.to.r, piece.owner);
+                const mustPromote = isMandatoryPromotion(piece.type, m.to.r, piece.owner);
+
+                const testState = applyMoveToState(b, h, { ...m, promote: mustPromote }, piece.owner);
+                if (!isKingInCheck(testState.board, piece.owner)) {
+                    legal.push({
+                        from: { r, c },
+                        to: m.to,
+                        canPromote,
+                        mustPromote
+                    });
+                }
+            }
+            return legal;
+        }
+
+        function getLegalDropsForType(b, h, owner, dropType) {
+            if (!h[owner][dropType] || h[owner][dropType] <= 0) return [];
+            const legalDrops = [];
+
+            const pawnColumns = new Set();
+            if (dropType === 'P') {
+                for (let c = 0; c < 9; c++) {
+                    for (let r = 0; r < 9; r++) {
+                        const p = b[r][c];
+                        if (p && p.owner === owner && p.type === 'P') {
+                            pawnColumns.add(c);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (let r = 0; r < 9; r++) {
+                if (isMandatoryPromotion(dropType, r, owner)) continue;
+
+                for (let c = 0; c < 9; c++) {
+                    if (b[r][c] !== null) continue;
+                    if (dropType === 'P' && pawnColumns.has(c)) continue;
+
+                    const move = { dropType, to: { r, c } };
+                    const testState = applyMoveToState(b, h, move, owner);
+                    if (!isKingInCheck(testState.board, owner)) {
+                        if (dropType === 'P' && isKingInCheck(testState.board, -owner)) {
+                            const oppResponses = getAllLegalMovesForPlayer(testState.board, testState.hands, -owner, true);
+                            if (oppResponses.length === 0) continue;
+                        }
+                        legalDrops.push(move);
+                    }
+                }
+            }
+            return legalDrops;
+        }
+
+        function getAllLegalMovesForPlayer(b, h, owner, skipUchifuzumeCheck = false) {
+            const allMoves = [];
+
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (p && p.owner === owner) {
+                        const sqMoves = getLegalMovesForSquare(b, h, r, c);
+                        for (const m of sqMoves) {
+                            if (m.mustPromote) {
+                                allMoves.push({ from: m.from, to: m.to, promote: true });
+                            } else if (m.canPromote) {
+                                allMoves.push({ from: m.from, to: m.to, promote: true });
+                                if (p.type === 'S' || p.type === 'N' || p.type === 'L') {
+                                    allMoves.push({ from: m.from, to: m.to, promote: false });
+                                }
+                            } else {
+                                allMoves.push({ from: m.from, to: m.to, promote: false });
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (const type of HAND_ORDER) {
+                if (h[owner][type] > 0) {
+                    if (skipUchifuzumeCheck) {
+                        for (let r = 0; r < 9; r++) {
+                            if (isMandatoryPromotion(type, r, owner)) continue;
+                            for (let c = 0; c < 9; c++) {
+                                if (b[r][c] !== null) continue;
+                                if (type === 'P') {
+                                    let hasPawn = false;
+                                    for (let rr = 0; rr < 9; rr++) {
+                                        if (b[rr][c] && b[rr][c].owner === owner && b[rr][c].type === 'P') {
+                                            hasPawn = true; break;
+                                        }
+                                    }
+                                    if (hasPawn) continue;
+                                }
+                                const move = { dropType: type, to: { r, c } };
+                                const testState = applyMoveToState(b, h, move, owner);
+                                if (!isKingInCheck(testState.board, owner)) {
+                                    allMoves.push(move);
+                                }
+                            }
+                        }
+                    } else {
+                        const drops = getLegalDropsForType(b, h, owner, type);
+                        allMoves.push(...drops);
+                    }
+                }
+            }
+
+            return allMoves;
+        }
+
+        /***********************************************************************
+         * 5. ระบบวิเคราะห์ช่องอันตราย (DANGER / THREAT HINT SYSTEM)
+         ***********************************************************************/
+        function enrichMovesWithDangerInfo(b, h, moves, owner) {
+            return moves.map(m => {
+                const simMove = { ...m, promote: m.mustPromote || m.canPromote };
+                const nextState = applyMoveToState(b, h, simMove, owner);
+
+                const rawAttackers = getAttackersOfSquare(nextState.board, m.to.r, m.to.c, -owner);
+                const legalAttackers = rawAttackers.filter(att => {
+                    const capMove = { from: { r: att.r, c: att.c }, to: m.to, promote: false };
+                    const afterCap = applyMoveToState(nextState.board, nextState.hands, capMove, -owner);
+                    return !isKingInCheck(afterCap.board, -owner);
+                });
+
+                return {
+                    ...m,
+                    isDangerous: legalAttackers.length > 0,
+                    attackers: legalAttackers
+                };
+            });
+        }
+
+        /***********************************************************************
+         * 6. ระบบ AI 3 ระดับความยาก (EASY / NORMAL / HARD)
+         ***********************************************************************/
+        function evaluateBoardState(b, h) {
+            let score = 0;
+
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const p = b[r][c];
+                    if (!p) continue;
+                    const baseVal = PIECE_DATA[p.type].value;
+                    let posBonus = 0;
+
+                    if (p.type !== 'K') {
+                        const advancement = p.owner === GOTE ? r : (8 - r);
+                        posBonus += advancement * 6;
+                        posBonus += (4 - Math.abs(4 - c)) * 4;
+                    } else {
+                        const safetyRank = p.owner === GOTE ? (2 - r) : (r - 6);
+                        posBonus += safetyRank * 18;
+                    }
+
+                    if (p.owner === GOTE) {
+                        score += baseVal + posBonus;
+                    } else {
+                        score -= baseVal + posBonus;
+                    }
+                }
+            }
+
+            for (const type of HAND_ORDER) {
+                const handVal = PIECE_DATA[type].value * 1.08;
+                score += h[GOTE][type] * handVal;
+                score -= h[SENTE][type] * handVal;
+            }
+
+            return score;
+        }
+
+        function orderMovesForSearch(b, moves) {
+            return moves.sort((m1, m2) => {
+                let s1 = 0, s2 = 0;
+                if (!m1.dropType && b[m1.to.r][m1.to.c]) s1 += PIECE_DATA[b[m1.to.r][m1.to.c].type].value * 10;
+                if (!m2.dropType && b[m2.to.r][m2.to.c]) s2 += PIECE_DATA[b[m2.to.r][m2.to.c].type].value * 10;
+                if (m1.promote) s1 += 300;
+                if (m2.promote) s2 += 300;
+                if (m1.dropType) s1 -= 50;
+                if (m2.dropType) s2 -= 50;
+                return s2 - s1;
+            });
+        }
+
+        function minimaxAlphaBeta(b, h, depth, alpha, beta, maximizingPlayer) {
+            if (depth === 0) {
+                return evaluateBoardState(b, h);
+            }
+
+            const owner = maximizingPlayer ? GOTE : SENTE;
+            let legalMoves = getAllLegalMovesForPlayer(b, h, owner, true);
+
+            if (legalMoves.length === 0) {
+                return maximizingPlayer ? -99999 - depth * 100 : 99999 + depth * 100;
+            }
+
+            legalMoves = orderMovesForSearch(b, legalMoves);
+            if (legalMoves.length > 30) {
+                legalMoves = legalMoves.slice(0, 30);
+            }
+
+            if (maximizingPlayer) {
+                let maxEval = -Infinity;
+                for (const m of legalMoves) {
+                    const next = applyMoveToState(b, h, m, GOTE);
+                    const ev = minimaxAlphaBeta(next.board, next.hands, depth - 1, alpha, beta, false);
+                    maxEval = Math.max(maxEval, ev);
+                    alpha = Math.max(alpha, ev);
+                    if (beta <= alpha) break;
+                }
+                return maxEval;
+            } else {
+                let minEval = Infinity;
+                for (const m of legalMoves) {
+                    const next = applyMoveToState(b, h, m, SENTE);
+                    const ev = minimaxAlphaBeta(next.board, next.hands, depth - 1, alpha, beta, true);
+                    minEval = Math.min(minEval, ev);
+                    beta = Math.min(beta, ev);
+                    if (beta <= alpha) break;
+                }
+                return minEval;
+            }
+        }
+
+        function computeBestMoveFor(b, h, owner, level) {
+            let moves = getAllLegalMovesForPlayer(b, h, owner);
+            if (moves.length === 0) return null;
+
+            moves = orderMovesForSearch(b, moves);
+
+            if (level === 'easy') {
+                const scored = moves.map(m => {
+                    const next = applyMoveToState(b, h, m, owner);
+                    const rawScore = evaluateBoardState(next.board, next.hands) * (owner === GOTE ? 1 : -1);
+                    const noise = (Math.random() - 0.5) * 280;
+                    return { move: m, score: rawScore + noise };
+                });
+                scored.sort((a, b) => b.score - a.score);
+                return scored[0].move;
+            }
+
+            const searchDepth = level === 'normal' ? 2 : 3;
+            const candidateLimit = level === 'normal' ? 26 : 36;
+            const candidates = moves.slice(0, candidateLimit);
+
+            let bestMove = candidates[0];
+            let bestVal = owner === GOTE ? -Infinity : Infinity;
+
+            for (const m of candidates) {
+                const next = applyMoveToState(b, h, m, owner);
+                const oppMoves = getAllLegalMovesForPlayer(next.board, next.hands, -owner, true);
+                if (oppMoves.length === 0) return m;
+
+                const val = minimaxAlphaBeta(
+                    next.board,
+                    next.hands,
+                    searchDepth - 1,
+                    -Infinity,
+                    Infinity,
+                    owner === SENTE
+                );
+
+                const jitter = (Math.random() - 0.5) * 6;
+                const finalVal = val + jitter;
+
+                if (owner === GOTE) {
+                    if (finalVal > bestVal) {
+                        bestVal = finalVal;
+                        bestMove = m;
+                    }
+                } else {
+                    if (finalVal < bestVal) {
+                        bestVal = finalVal;
+                        bestMove = m;
+                    }
+                }
+            }
+
+            return bestMove;
+        }
+
+        /***********************************************************************
+         * 7. การแสดงผลและการโต้ตอบ (UI RENDERING & INTERACTION)
+         ***********************************************************************/
+        function createPieceHTML(type, owner, extraClasses = '') {
+            const info = PIECE_DATA[type];
+            const kanji = (type === 'K' && owner === GOTE) ? info.goteKanji : info.kanji;
+            const goteClass = owner === GOTE ? 'gote' : '';
+            const promotedClass = info.promoted ? 'promoted' : '';
+
+            return `
+                <div class="piece-wrapper ${goteClass} ${extraClasses}">
+                    <div class="shogi-piece ${promotedClass}">
+                        <span class="piece-kanji">${kanji}</span>
+                        <span class="piece-thai">${info.thai}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAll() {
+            renderBoard();
+            renderHands();
+            updateStatusUI();
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('shogi-board');
+            boardEl.innerHTML = '';
+
+            const senteInCheck = isKingInCheck(board, SENTE);
+            const goteInCheck = isKingInCheck(board, GOTE);
+            const senteKingPos = findKingPosition(board, SENTE);
+            const goteKingPos = findKingPosition(board, GOTE);
+
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'shogi-cell';
+
+                    if ((r === 3 || r === 6) && (c === 3 || c === 6)) {
+                        const dot = document.createElement('div');
+                        dot.className = 'hoshi-dot';
+                        dot.style.top = '-3px';
+                        dot.style.left = '-3px';
+                        cell.appendChild(dot);
+                    }
+
+                    const isSelected = selectedBoardPos && selectedBoardPos.r === r && selectedBoardPos.c === c;
+                    if (isSelected) cell.classList.add('cell-selected');
+
+                    if (lastMove) {
+                        if ((lastMove.from && lastMove.from.r === r && lastMove.from.c === c) ||
+                            (lastMove.to && lastMove.to.r === r && lastMove.to.c === c)) {
+                            cell.classList.add('cell-last-move');
+                        }
+                    }
+
+                    if (bestMoveHint) {
+                        if ((bestMoveHint.from && bestMoveHint.from.r === r && bestMoveHint.from.c === c) ||
+                            (bestMoveHint.to && bestMoveHint.to.r === r && bestMoveHint.to.c === c)) {
+                            cell.classList.add('cell-best-hint');
+                        }
+                    }
+
+                    if (senteInCheck && senteKingPos && senteKingPos.r === r && senteKingPos.c === c) {
+                        cell.classList.add('cell-check');
+                    }
+                    if (goteInCheck && goteKingPos && goteKingPos.r === r && goteKingPos.c === c) {
+                        cell.classList.add('cell-check');
+                    }
+
+                    if (hoveredAttackers.some(att => att.r === r && att.c === c)) {
+                        cell.classList.add('cell-attacker-highlight');
+                    }
+
+                    const piece = board[r][c];
+                    if (piece) {
+                        cell.innerHTML += createPieceHTML(piece.type, piece.owner, isSelected ? 'selected' : '');
+                    }
+
+                    const legalTarget = currentLegalMoves.find(m => m.to.r === r && m.to.c === c);
+                    if (legalTarget) {
+                        if (showDangerHint && legalTarget.isDangerous) {
+                            const dangerEl = document.createElement('div');
+                            dangerEl.className = 'move-indicator-danger';
+                            dangerEl.innerHTML = `<div class="danger-badge" title="ระวังโดนกิน!"><i class="fa-solid fa-skull"></i></div>`;
+                            cell.appendChild(dangerEl);
+
+                            cell.addEventListener('mouseenter', () => showThreatAttackers(legalTarget));
+                            cell.addEventListener('mouseleave', () => clearThreatAttackers());
+                        } else {
+                            if (piece) {
+                                cell.classList.add('cell-safe-capture');
+                            } else {
+                                const safeDot = document.createElement('div');
+                                safeDot.className = 'move-indicator-safe';
+                                cell.appendChild(safeDot);
+                            }
+                            cell.addEventListener('mouseenter', () => showSafeMoveInfo());
+                            cell.addEventListener('mouseleave', () => clearThreatAttackers());
+                        }
+                    }
+
+                    cell.addEventListener('click', () => handleCellClick(r, c));
+                    boardEl.appendChild(cell);
+                }
+            }
+        }
+
+        function showThreatAttackers(legalTarget) {
+            hoveredAttackers = legalTarget.attackers || [];
+            const names = hoveredAttackers.map(a => `${PIECE_DATA[a.type].thai}(${PIECE_DATA[a.type].kanji})`).join(', ');
+            const infoBox = document.getElementById('threat-hover-info');
+            if (infoBox) {
+                infoBox.className = 'min-h-[42px] bg-red-950/90 border border-red-500 rounded-lg p-2 flex items-center gap-2 text-[11px] text-red-100 leading-tight shadow';
+                infoBox.innerHTML = `
+                    <i class="fa-solid fa-skull-crossbones text-red-400 text-sm animate-pulse shrink-0"></i>
+                    <span><strong>ระวังโดนกิน!</strong> เล็งโดย: <b>${names}</b></span>
+                `;
+            }
+            updateAttackerHighlightsOnly();
+        }
+
+        function showSafeMoveInfo() {
+            const infoBox = document.getElementById('threat-hover-info');
+            if (infoBox) {
+                infoBox.className = 'min-h-[42px] bg-emerald-950/80 border border-emerald-600/60 rounded-lg p-2 flex items-center gap-2 text-[11px] text-emerald-200 leading-tight';
+                infoBox.innerHTML = `
+                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm shrink-0"></i>
+                    <span><strong>ช่องปลอดภัย:</strong> ไม่ถูกกินในตาถัดไป</span>
+                `;
+            }
+        }
+
+        function clearThreatAttackers() {
+            if (hoveredAttackers.length > 0) {
+                hoveredAttackers = [];
+                updateAttackerHighlightsOnly();
+            }
+            const infoBox = document.getElementById('threat-hover-info');
+            if (infoBox) {
+                infoBox.className = 'min-h-[42px] bg-stone-950/90 border border-stone-800 rounded-lg p-2 flex items-center gap-2 text-[11px] text-stone-300 leading-tight';
+                infoBox.innerHTML = `
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-sm shrink-0"></i>
+                    <span>${showDangerHint ? 'สีเขียว = ปลอดภัย, สีแดง = เสี่ยงถูกกิน' : 'ปิดเรดาร์เตือนภัยอยู่'}</span>
+                `;
+            }
+        }
+
+        function updateAttackerHighlightsOnly() {
+            const cells = document.querySelectorAll('#shogi-board .shogi-cell');
+            cells.forEach((cell, idx) => {
+                const r = Math.floor(idx / 9);
+                const c = idx % 9;
+                if (hoveredAttackers.some(a => a.r === r && a.c === c)) {
+                    cell.classList.add('cell-attacker-highlight');
+                } else {
+                    cell.classList.remove('cell-attacker-highlight');
+                }
+            });
+        }
+
+        function renderHands() {
+            const playerHandEl = document.getElementById('player-hand');
+            const cpuHandEl = document.getElementById('cpu-hand');
+            playerHandEl.innerHTML = '';
+            cpuHandEl.innerHTML = '';
+
+            let playerHasAny = false;
+            for (const type of HAND_ORDER) {
+                const count = hands[SENTE][type];
+                if (count > 0) {
+                    playerHasAny = true;
+                    const btn = document.createElement('button');
+                    btn.className = `hand-piece-btn ${selectedHandType === type ? 'selected' : ''}`;
+                    btn.innerHTML = `
+                        ${createPieceHTML(type, SENTE)}
+                        <span class="absolute -top-1 -right-1 bg-amber-500 text-stone-950 font-bold text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center shadow border border-stone-900">${count}</span>
+                    `;
+                    btn.onclick = () => handleHandPieceClick(type);
+                    playerHandEl.appendChild(btn);
+                }
+            }
+            if (!playerHasAny) {
+                playerHandEl.innerHTML = `<span class="text-[11px] text-stone-500 italic">ไม่มีหมากเชลย</span>`;
+            }
+
+            let cpuHasAny = false;
+            for (const type of HAND_ORDER) {
+                const count = hands[GOTE][type];
+                if (count > 0) {
+                    cpuHasAny = true;
+                    const div = document.createElement('div');
+                    div.className = 'hand-piece-btn opacity-90 pointer-events-none';
+                    div.innerHTML = `
+                        ${createPieceHTML(type, GOTE)}
+                        <span class="absolute -bottom-1 -right-1 bg-red-600 text-white font-bold text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center shadow border border-stone-900">${count}</span>
+                    `;
+                    cpuHandEl.appendChild(div);
+                }
+            }
+            if (!cpuHasAny) {
+                cpuHandEl.innerHTML = `<span class="text-[11px] text-stone-500 italic">ไม่มีหมากเชลย</span>`;
+            }
+        }
+
+        function updateStatusUI() {
+            document.getElementById('turn-counter').textContent = `ตาที่ ${moveHistory.length + 1}`;
+
+            const turnBanner = document.getElementById('turn-banner');
+            const turnIcon = document.getElementById('turn-icon');
+            const turnTitle = document.getElementById('turn-title');
+            const turnSubtitle = document.getElementById('turn-subtitle');
+
+            const headerBadge = document.getElementById('header-turn-badge');
+            const headerIcon = document.getElementById('header-turn-icon');
+            const headerText = document.getElementById('header-turn-text');
+
+            if (currentTurn === SENTE) {
+                if (turnBanner) {
+                    turnBanner.className = 'bg-stone-900/90 border border-amber-500/50 rounded-xl p-2.5 flex items-center gap-2.5 shrink-0';
+                    turnIcon.className = 'w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center font-bold shrink-0';
+                    turnIcon.innerHTML = '<i class="fa-solid fa-user"></i>';
+                    turnTitle.className = 'font-bold text-xs text-amber-300 truncate';
+                    turnTitle.textContent = 'ตาของคุณ (ผู้เล่น - 先手)';
+                    turnSubtitle.textContent = 'คลิกหมากเพื่อเดิน หรือวางหมากเชลย';
+                }
+                headerBadge.className = 'hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/70 border border-amber-600/50 text-xs font-semibold text-amber-300 ml-2';
+                headerIcon.className = 'fa-solid fa-user text-[10px]';
+                headerText.textContent = 'ตาของคุณ (先手)';
+            } else {
+                if (turnBanner) {
+                    turnBanner.className = 'bg-stone-900/90 border border-red-500/40 rounded-xl p-2.5 flex items-center gap-2.5 shrink-0';
+                    turnIcon.className = 'w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold shrink-0';
+                    turnIcon.innerHTML = '<i class="fa-solid fa-robot"></i>';
+                    turnTitle.className = 'font-bold text-xs text-red-300 truncate';
+                    turnTitle.textContent = 'ตาของ CPU (後手)';
+                    turnSubtitle.textContent = 'CPU กำลังประมวลผลตาเดิน...';
+                }
+                headerBadge.className = 'hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/70 border border-red-600/50 text-xs font-semibold text-red-300 ml-2';
+                headerIcon.className = 'fa-solid fa-robot text-[10px]';
+                headerText.textContent = 'ตาของ CPU (後手)';
+            }
+
+            const checkAlert = document.getElementById('check-alert');
+            const checkText = document.getElementById('check-alert-text');
+            if (isKingInCheck(board, SENTE)) {
+                checkAlert.classList.remove('hidden');
+                checkAlert.classList.add('flex');
+                checkText.textContent = 'ขุนของคุณถูกรุก (王手)!';
+            } else if (isKingInCheck(board, GOTE)) {
+                checkAlert.classList.remove('hidden');
+                checkAlert.classList.add('flex');
+                checkText.textContent = 'คุณกำลังรุกขุน CPU!';
+            } else {
+                checkAlert.classList.add('hidden');
+                checkAlert.classList.remove('flex');
+            }
+
+            document.getElementById('btn-undo').disabled = moveHistory.length === 0 || isCpuThinking;
+        }
+
+        function handleHandPieceClick(type) {
+            if (isGameOver || currentTurn !== SENTE || isCpuThinking) return;
+            bestMoveHint = null;
+            hoveredAttackers = [];
+
+            if (selectedHandType === type) {
+                selectedHandType = null;
+                currentLegalMoves = [];
+            } else {
+                selectedBoardPos = null;
+                selectedHandType = type;
+                const drops = getLegalDropsForType(board, hands, SENTE, type);
+                currentLegalMoves = enrichMovesWithDangerInfo(board, hands, drops, SENTE);
+            }
+            renderAll();
+        }
+
+        function handleCellClick(r, c) {
+            if (isGameOver || currentTurn !== SENTE || isCpuThinking) return;
+
+            const targetMove = currentLegalMoves.find(m => m.to.r === r && m.to.c === c);
+            if (targetMove) {
+                hoveredAttackers = [];
+                if (!targetMove.dropType && targetMove.canPromote && !targetMove.mustPromote) {
+                    const movingPiece = board[targetMove.from.r][targetMove.from.c];
+                    promptPromotionChoice(movingPiece.type, (promoteChoice) => {
+                        executeTurnMove({
+                            from: targetMove.from,
+                            to: targetMove.to,
+                            promote: promoteChoice
+                        });
+                    });
+                    return;
+                }
+
+                executeTurnMove({
+                    from: targetMove.from,
+                    to: targetMove.to,
+                    dropType: targetMove.dropType,
+                    promote: targetMove.mustPromote || false
+                });
+                return;
+            }
+
+            const clickedPiece = board[r][c];
+            if (clickedPiece && clickedPiece.owner === SENTE) {
+                bestMoveHint = null;
+                hoveredAttackers = [];
+                if (selectedBoardPos && selectedBoardPos.r === r && selectedBoardPos.c === c) {
+                    selectedBoardPos = null;
+                    currentLegalMoves = [];
+                } else {
+                    selectedHandType = null;
+                    selectedBoardPos = { r, c };
+                    const rawMoves = getLegalMovesForSquare(board, hands, r, c);
+                    currentLegalMoves = enrichMovesWithDangerInfo(board, hands, rawMoves, SENTE);
+                }
+                renderAll();
+                return;
+            }
+
+            selectedBoardPos = null;
+            selectedHandType = null;
+            currentLegalMoves = [];
+            hoveredAttackers = [];
+            renderAll();
+        }
+
+        function promptPromotionChoice(pieceType, callback) {
+            const modal = document.getElementById('promotion-modal');
+            const promotedType = PIECE_DATA[pieceType].promoteTo;
+
+            document.getElementById('promo-preview-yes').innerHTML = createPieceHTML(promotedType, SENTE);
+            document.getElementById('promo-preview-no').innerHTML = createPieceHTML(pieceType, SENTE);
+            document.getElementById('promo-desc-yes').textContent = `${PIECE_DATA[pieceType].thai} → ${PIECE_DATA[promotedType].thai}`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            document.getElementById('btn-promote-yes').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                callback(true);
+            };
+            document.getElementById('btn-promote-no').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                callback(false);
+            };
+        }
+
+        function executeTurnMove(move) {
+            const prevState = cloneState(board, hands);
+            const movingOwner = currentTurn;
+            let capturedPiece = null;
+            let pieceTypeBefore = move.dropType;
+
+            if (!move.dropType) {
+                pieceTypeBefore = board[move.from.r][move.from.c].type;
+                capturedPiece = board[move.to.r][move.to.c];
+            }
+
+            const nextState = applyMoveToState(board, hands, move, movingOwner);
+            board = nextState.board;
+            hands = nextState.hands;
+
+            const oppInCheck = isKingInCheck(board, -movingOwner);
+            playClackSound(!!capturedPiece, oppInCheck);
+
+            const notation = formatShogiMoveNotation(move, pieceTypeBefore, capturedPiece, movingOwner);
+            moveHistory.push({
+                prevBoard: prevState.board,
+                prevHands: prevState.hands,
+                prevLastMove: lastMove,
+                owner: movingOwner,
+                notation
+            });
+
+            lastMove = { from: move.from || null, to: move.to };
+            selectedBoardPos = null;
+            selectedHandType = null;
+            currentLegalMoves = [];
+            bestMoveHint = null;
+            hoveredAttackers = [];
+
+            renderMoveLog();
+
+            const nextPlayer = -movingOwner;
+            const oppLegalMoves = getAllLegalMovesForPlayer(board, hands, nextPlayer);
+
+            if (oppLegalMoves.length === 0) {
+                currentTurn = nextPlayer;
+                renderAll();
+                handleGameOver(movingOwner);
+                return;
+            }
+
+            currentTurn = nextPlayer;
+            renderAll();
+
+            if (currentTurn === GOTE && !isGameOver) {
+                isCpuThinking = true;
+                document.getElementById('cpu-thinking').classList.remove('hidden');
+                updateStatusUI();
+
+                setTimeout(() => {
+                    const cpuMove = computeBestMoveFor(board, hands, GOTE, difficulty);
+                    isCpuThinking = false;
+                    document.getElementById('cpu-thinking').classList.add('hidden');
+                    if (cpuMove) {
+                        executeTurnMove(cpuMove);
+                    } else {
+                        handleGameOver(SENTE);
+                    }
+                }, 380);
+            }
+        }
+
+        function formatShogiMoveNotation(move, pieceType, capturedPiece, owner) {
+            const rankKanji = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
+            const fileNum = 9 - move.to.c;
+            const rankStr = rankKanji[move.to.r];
+            const symbol = owner === SENTE ? '☗ คุณ' : '☖ CPU';
+            const pInfo = PIECE_DATA[pieceType];
+
+            let actionStr = '';
+            if (move.dropType) {
+                actionStr = 'วาง(打)';
+            } else {
+                if (capturedPiece) actionStr += 'กิน ';
+                if (move.promote) actionStr += 'เลื่อนขั้น!';
+            }
+
+            return `${symbol}: ${fileNum}${rankStr} ${pInfo.thai}(${pInfo.kanji}) ${actionStr}`;
+        }
+
+        function renderMoveLog() {
+            const logEl = document.getElementById('move-log');
+            const badgeEl = document.getElementById('move-count-badge');
+            if (!logEl) return;
+
+            badgeEl.textContent = `${moveHistory.length} ตาเดิน`;
+
+            if (moveHistory.length === 0) {
+                logEl.innerHTML = `<div class="text-stone-500 italic text-center py-6">เริ่มเกมด้วยการคลิกหมากของคุณ</div>`;
+                return;
+            }
+
+            logEl.innerHTML = moveHistory.map((item, idx) => {
+                const isPlayer = item.owner === SENTE;
+                return `
+                    <div class="px-2 py-1 rounded ${isPlayer ? 'bg-amber-950/35 border border-amber-800/30 text-amber-200' : 'bg-stone-800/60 text-stone-300'} truncate">
+                        <span>${idx + 1}. ${item.notation}</span>
+                    </div>
+                `;
+            }).join('');
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        /***********************************************************************
+         * 8. ปุ่มควบคุมเพิ่มเติม (UNDO, HINT, DIFFICULTY, RESTART, MODALS)
+         ***********************************************************************/
+        function undoMove() {
+            if (isCpuThinking || moveHistory.length === 0) return;
+            isGameOver = false;
+
+            if (currentTurn === SENTE && moveHistory.length >= 2) {
+                moveHistory.pop();
+                const playerRecord = moveHistory.pop();
+                board = playerRecord.prevBoard;
+                hands = playerRecord.prevHands;
+                lastMove = playerRecord.prevLastMove;
+                currentTurn = SENTE;
+            } else {
+                const lastRecord = moveHistory.pop();
+                board = lastRecord.prevBoard;
+                hands = lastRecord.prevHands;
+                lastMove = lastRecord.prevLastMove;
+                currentTurn = lastRecord.owner;
+            }
+
+            selectedBoardPos = null;
+            selectedHandType = null;
+            currentLegalMoves = [];
+            bestMoveHint = null;
+            hoveredAttackers = [];
+            renderMoveLog();
+            renderAll();
+        }
+
+        function requestBestMoveHint() {
+            if (isGameOver || currentTurn !== SENTE || isCpuThinking) return;
+            const best = computeBestMoveFor(board, hands, SENTE, 'normal');
+            if (!best) return;
+
+            bestMoveHint = best;
+            if (best.dropType) {
+                selectedBoardPos = null;
+                selectedHandType = best.dropType;
+                const drops = getLegalDropsForType(board, hands, SENTE, best.dropType);
+                currentLegalMoves = enrichMovesWithDangerInfo(board, hands, drops, SENTE);
+            } else {
+                selectedHandType = null;
+                selectedBoardPos = best.from;
+                const moves = getLegalMovesForSquare(board, hands, best.from.r, best.from.c);
+                currentLegalMoves = enrichMovesWithDangerInfo(board, hands, moves, SENTE);
+            }
+            renderAll();
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            ['easy', 'normal', 'hard'].forEach(l => {
+                const btn = document.getElementById(`diff-${l}`);
+                if (l === level) {
+                    btn.className = 'px-2 py-0.5 rounded bg-amber-500 text-stone-950 font-bold transition';
+                } else {
+                    btn.className = 'px-2 py-0.5 rounded text-stone-300 hover:text-white transition';
+                }
+            });
+        }
+
+        function toggleDangerButton() {
+            showDangerHint = !showDangerHint;
+            const btn = document.getElementById('btn-danger-toggle');
+            if (showDangerHint) {
+                btn.className = 'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-950/90 text-emerald-300 border border-emerald-600/60 hover:bg-emerald-900 transition';
+                btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i><span class="hidden xl:inline">เตือนภัย: เปิด</span>';
+            } else {
+                btn.className = 'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-stone-800 text-stone-400 border border-stone-700 hover:bg-stone-700 transition';
+                btn.innerHTML = '<i class="fa-solid fa-shield"></i><span class="hidden xl:inline">เตือนภัย: ปิด</span>';
+            }
+            clearThreatAttackers();
+            renderBoard();
+        }
+
+        function toggleSoundButton() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            const btn = document.getElementById('btn-sound-toggle');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                btn.classList.replace('text-stone-500', 'text-amber-400');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+                btn.classList.replace('text-amber-400', 'text-stone-500');
+            }
+        }
+
+        function restartGame() {
+            isCpuThinking = false;
+            isGameOver = false;
+            document.getElementById('cpu-thinking').classList.add('hidden');
+            board = createInitialBoard();
+            hands = {
+                [SENTE]: { R: 0, B: 0, G: 0, S: 0, N: 0, L: 0, P: 0 },
+                [GOTE]:  { R: 0, B: 0, G: 0, S: 0, N: 0, L: 0, P: 0 }
+            };
+            currentTurn = SENTE;
+            selectedBoardPos = null;
+            selectedHandType = null;
+            currentLegalMoves = [];
+            hoveredAttackers = [];
+            lastMove = null;
+            bestMoveHint = null;
+            moveHistory = [];
+            renderMoveLog();
+            renderAll();
+        }
+
+        function handleGameOver(winner) {
+            isGameOver = true;
+            const modal = document.getElementById('gameover-modal');
+            const title = document.getElementById('gameover-title');
+            const desc = document.getElementById('gameover-desc');
+            const icon = document.getElementById('gameover-icon');
+
+            if (winner === SENTE) {
+                title.textContent = 'ชัยชนะเป็นของคุณ! (รุกฆาต 詰み)';
+                title.className = 'text-xl font-bold text-amber-400 mb-1.5';
+                desc.textContent = 'ยอดเยี่ยมมาก! คุณสามารถรุกฆาตขุนของ CPU ได้สำเร็จตามกติกาโชงิ';
+                icon.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+            } else {
+                title.textContent = 'คุณเป็นฝ่ายพ่ายแพ้ (ถูกรุกฆาต)';
+                title.className = 'text-xl font-bold text-red-400 mb-1.5';
+                desc.textContent = 'ขุนของคุณไม่มีตาเดินหนีได้ ลองใช้ปุ่มย้อนตาเดินเพื่อแก้หมาก หรือเริ่มกระดานใหม่ได้เลย!';
+                icon.innerHTML = '<i class="fa-solid fa-chess-king"></i>';
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGameOverModal() {
+            const modal = document.getElementById('gameover-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /***********************************************************************
+         * 9. หน้าต่างกติกาภาษาไทยพร้อมแผนผังการเดิน 3x3 (THAI RULES MODAL & DIAGRAMS)
+         ***********************************************************************/
+        function openRulesModal(defaultTab = 'basic') {
+            const modal = document.getElementById('rules-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            switchRuleTab(defaultTab);
+        }
+
+        function closeRulesModal() {
+            const modal = document.getElementById('rules-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function switchRuleTab(tabId) {
+            ['basic', 'pieces', 'drop'].forEach(id => {
+                const content = document.getElementById(`rule-tab-${id}`);
+                const btn = document.getElementById(`tab-btn-${id}`);
+                if (id === tabId) {
+                    content.classList.remove('hidden');
+                    btn.className = 'rule-tab-btn px-3 py-1.5 rounded-t-lg bg-stone-900 text-amber-400 border-t border-x border-stone-700';
+                } else {
+                    content.classList.add('hidden');
+                    btn.className = 'rule-tab-btn px-3 py-1.5 rounded-t-lg text-stone-400 hover:text-stone-200';
+                }
+            });
+        }
+
+        function buildPieceRulesDiagrams() {
+            const container = document.getElementById('rules-piece-grid');
+            const items = [
+                {
+                    title: 'ขุน (玉 / 王 - King)',
+                    desc: 'เดินได้รอบตัว 1 ช่องทุกทิศทาง หากถูกรุกฆาตจะแพ้ทันที',
+                    kanji: '玉', promoted: false,
+                    grid: [
+                        ['●','●','●'],
+                        ['●','玉','●'],
+                        ['●','●','●']
+                    ]
+                },
+                {
+                    title: 'ขุนพลทอง (金 - Gold)',
+                    desc: 'เดินได้ 6 ทิศทาง (ยกเว้นถอยหลังทแยงมุม 2 ช่องล่าง)',
+                    kanji: '金', promoted: false,
+                    grid: [
+                        ['●','●','●'],
+                        ['●','金','●'],
+                        [' ','●',' ']
+                    ]
+                },
+                {
+                    title: 'ขุนพลเงิน (銀 - Silver)',
+                    desc: 'เดินหน้า 3 ช่อง และถอยหลังทแยง 2 ช่อง (เลื่อนเป็น 全 เดินเหมือนทอง)',
+                    kanji: '銀', promoted: false,
+                    grid: [
+                        ['●','●','●'],
+                        [' ','銀',' '],
+                        ['●',' ','●']
+                    ]
+                },
+                {
+                    title: 'เรือ (飛 - Rook)',
+                    desc: 'เดินตรงยาวขึ้น-ลง-ซ้าย-ขวา กี่ช่องก็ได้',
+                    kanji: '飛', promoted: false,
+                    grid: [
+                        [' ','↑',' '],
+                        ['←','飛','→'],
+                        [' ','↓',' ']
+                    ]
+                },
+                {
+                    title: 'มังกร (龍 - เรือเลื่อนขั้น)',
+                    desc: 'เดินยาวเหมือนเรือ + เดินทแยงมุมได้อีก 1 ช่องรอบตัว',
+                    kanji: '龍', promoted: true,
+                    grid: [
+                        ['●','↑','●'],
+                        ['←','龍','→'],
+                        ['●','↓','●']
+                    ]
+                },
+                {
+                    title: 'ช้าง (角 - Bishop)',
+                    desc: 'เดินทแยงมุมยาวทั้ง 4 ทิศทางกี่ช่องก็ได้',
+                    kanji: '角', promoted: false,
+                    grid: [
+                        ['↖',' ','↗'],
+                        [' ','角',' '],
+                        ['↙',' ','↘']
+                    ]
+                },
+                {
+                    title: 'ม้าปีศาจ (馬 - ช้างเลื่อนขั้น)',
+                    desc: 'เดินทแยงยาวเหมือนช้าง + เดินตรงขึ้น-ลง-ซ้าย-ขวาได้ 1 ช่อง',
+                    kanji: '馬', promoted: true,
+                    grid: [
+                        ['↖','●','↗'],
+                        ['●','馬','●'],
+                        ['↙','●','↘']
+                    ]
+                },
+                {
+                    title: 'อัศวินม้า (桂 - Knight)',
+                    desc: 'กระโดดไปข้างหน้า 2 ช่องแล้วเฉียงซ้าย/ขวา 1 ช่อง (ข้ามหมากได้)',
+                    kanji: '桂', promoted: false,
+                    grid: [
+                        ['★',' ','★'],
+                        [' ','↑',' '],
+                        [' ','桂',' ']
+                    ]
+                },
+                {
+                    title: 'หอก (香) & เบี้ย (歩)',
+                    desc: 'หอก (香) พุ่งตรงไปข้างหน้ายาว / เบี้ย (歩) เดินหน้าทีละ 1 ช่อง',
+                    kanji: '香', promoted: false,
+                    grid: [
+                        [' ','↑',' '],
+                        [' ','●',' '],
+                        [' ','香/歩',' ']
+                    ]
+                }
+            ];
+
+            container.innerHTML = items.map(item => {
+                const cellsHtml = item.grid.flat().map(sym => {
+                    let styleClass = 'text-stone-500';
+                    if (sym === '●') styleClass = 'text-amber-400 font-bold text-sm';
+                    else if (['↑','↓','←','→','↖','↗','↙','↘'].includes(sym)) styleClass = 'text-sky-400 font-bold text-xs';
+                    else if (sym === '★') styleClass = 'text-purple-400 font-bold text-xs';
+                    else if (sym.trim() !== '') styleClass = `kanji-font font-black text-xs ${item.promoted ? 'text-red-400' : 'text-amber-200'} bg-stone-800`;
+
+                    return `<div class="w-7 h-7 border border-stone-700 flex items-center justify-center ${styleClass}">${sym}</div>`;
+                }).join('');
+
+                return `
+                    <div class="bg-stone-950/80 border border-stone-800 rounded-xl p-2.5 flex flex-col justify-between gap-1.5">
+                        <div>
+                            <div class="font-bold ${item.promoted ? 'text-red-400' : 'text-amber-300'} text-xs mb-0.5">${item.title}</div>
+                            <p class="text-[10px] text-stone-400 leading-snug">${item.desc}</p>
+                        </div>
+                        <div class="grid grid-cols-3 w-fit mx-auto border border-stone-700 rounded overflow-hidden">
+                            ${cellsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.onload = function () {
+            buildPieceRulesDiagrams();
+            restartGame();
+        };
+    </script>
+</body>
+</html>
