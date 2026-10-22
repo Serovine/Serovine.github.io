@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมากฮอสรัสเซีย (Шашки / Russian Draughts)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: radial-gradient(circle at center, #2c1e16 0%, #170f0b 100%);
+            color: #f3e5ab;
+            min-height: 100vh;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* Wood Board Frame */
+        .board-frame {
+            background: linear-gradient(145deg, #5c3a21, #3d2514);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 
+                        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+                        inset 0 -4px 8px rgba(0, 0, 0, 0.6);
+            border: 4px solid #2a180c;
+        }
+
+        /* Board Grid */
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            max-width: 540px;
+            border: 3px solid #1e1108;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+        }
+
+        .square-light {
+            background-color: #e6cca0;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.05) 100%);
+        }
+
+        .square-dark {
+            background-color: #6e4124;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        /* Pieces */
+        .piece {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .piece-white {
+            background: radial-gradient(circle at 35% 30%, #ffffff, #e6dec8 65%, #b8ab90 100%);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6),
+                        inset 0 -4px 6px rgba(0, 0, 0, 0.25),
+                        inset 0 3px 5px rgba(255, 255, 255, 0.9);
+            border: 2px solid #cfc2a9;
+        }
+
+        .piece-white::after {
+            content: '';
+            width: 72%;
+            height: 72%;
+            border-radius: 50%;
+            border: 2px solid rgba(160, 145, 115, 0.45);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+            pointer-events: none;
+        }
+
+        .piece-black {
+            background: radial-gradient(circle at 35% 30%, #bd2b2b, #7a1212 65%, #420606 100%);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7),
+                        inset 0 -4px 6px rgba(0, 0, 0, 0.5),
+                        inset 0 3px 5px rgba(255, 130, 130, 0.4);
+            border: 2px solid #590c0c;
+        }
+
+        .piece-black::after {
+            content: '';
+            width: 72%;
+            height: 72%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 180, 180, 0.25);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+
+        /* Selected & Forced Capture States */
+        .piece-selected {
+            transform: scale(1.14) translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.75), 0 0 0 4px #fbbf24 !important;
+        }
+
+        .piece-forced {
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.85), 0 5px 10px rgba(0,0,0,0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(251, 191, 36, 0), 0 5px 10px rgba(0,0,0,0.6); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0), 0 5px 10px rgba(0,0,0,0.6); }
+        }
+
+        /* Ghosted (Captured during multi-jump) */
+        .piece-captured-ghost {
+            opacity: 0.3;
+            transform: scale(0.85);
+            filter: grayscale(70%);
+            pointer-events: none;
+        }
+
+        /* Valid Move Indicators */
+        .move-dot {
+            width: 34%;
+            height: 34%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4ade80 0%, #16a34a 100%);
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
+            pointer-events: none;
+            animation: bounce-dot 1.2s infinite ease-in-out;
+        }
+
+        .capture-dot {
+            width: 44%;
+            height: 44%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fbbf24 0%, #dc2626 100%);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.95);
+            border: 2px solid #fef08a;
+            pointer-events: none;
+            animation: bounce-dot 0.9s infinite ease-in-out;
+        }
+
+        @keyframes bounce-dot {
+            0%, 100% { transform: scale(0.9); opacity: 0.85; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .last-move-square {
+            box-shadow: inset 0 0 0 3px rgba(56, 189, 248, 0.55);
+            background-color: rgba(56, 189, 248, 0.18) !important;
+        }
+
+        /* Custom Scrollbar for Rules Modal */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2a180c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8c5832;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b07042;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between p-3 sm:p-6">
+
+    <!-- Header & Navigation Bar -->
+    <header class="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 bg-[#26170e]/90 border border-[#5c3a21] px-5 py-3.5 rounded-2xl shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-red-700 flex items-center justify-center shadow-md border border-amber-300/40">
+                <i class="fa-solid fa-crown text-white text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-amber-300 tracking-wide flex items-center gap-2">
+                    หมากฮอสรัสเซีย <span class="text-xs sm:text-sm font-normal bg-amber-900/70 text-amber-200 px-2.5 py-0.5 rounded-full border border-amber-600/40">Шашки</span>
+                </h1>
+                <p class="text-xs text-amber-100/70">Russian Draughts 64 ช่อง • กติกามาตรฐานสากล</p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-2">
+            <!-- Game Mode Selector -->
+            <div class="flex bg-[#170e08] p-1 rounded-xl border border-[#4a2e1b]">
+                <button id="btnModeAI" onclick="setGameMode('ai')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-amber-600 text-white shadow">
+                    <i class="fa-solid fa-robot mr-1"></i> เล่นกับ AI
+                </button>
+                <button id="btnMode2P" onclick="setGameMode('2p')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-amber-200/70 hover:text-white">
+                    <i class="fa-solid fa-user-group mr-1"></i> เล่น 2 คน
+                </button>
+            </div>
+
+            <!-- Rules Modal Trigger Button -->
+            <button onclick="openRulesModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white text-xs sm:text-sm font-medium shadow-md border border-sky-400/30 transition active:scale-95 flex items-center gap-1.5">
+                <i class="fa-solid fa-book-open"></i> กติกาการเล่น
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+        
+        <!-- Left / Top Panel: Status & Scores -->
+        <div class="lg:col-span-4 flex flex-col gap-3 order-2 lg:order-1">
+            
+            <!-- Turn Status Card -->
+            <div class="bg-[#26170e]/90 border border-[#5c3a21] rounded-2xl p-4 shadow-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs uppercase tracking-wider text-amber-200/60">สถานะการเล่น</span>
+                    <span id="captureBadge" class="hidden text-xs bg-red-600/90 text-white px-2.5 py-0.5 rounded-full font-semibold animate-pulse">
+                        <i class="fa-solid fa-bolt mr-1"></i>บังคับกิน!
+                    </span>
+                </div>
+                <div id="turnDisplay" class="flex items-center gap-3 py-2 px-3 rounded-xl bg-[#1a0f09] border border-[#3d2514]">
+                    <div id="turnPieceIcon" class="w-7 h-7 rounded-full piece-white shrink-0"></div>
+                    <div>
+                        <div id="turnText" class="font-bold text-base text-amber-200">ตาของฝ่ายขาว</div>
+                        <div id="subStatusText" class="text-xs text-amber-100/60">เลือกหมากเพื่อเดิน</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scoreboard Card -->
+            <div class="bg-[#26170e]/90 border border-[#5c3a21] rounded-2xl p-4 shadow-xl flex flex-col gap-3">
+                <div class="text-xs uppercase tracking-wider text-amber-200/60">จำนวนหมากบนกระดาน</div>
+                
+                <!-- Black / Red Player Info -->
+                <div id="cardBlack" class="flex items-center justify-between p-2.5 rounded-xl bg-[#1a0f09]/70 border border-[#3d2514] transition">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full piece-black shrink-0"></div>
+                        <div>
+                            <div id="labelBlack" class="text-sm font-semibold text-red-300">ฝ่ายแดงเข้ม (AI)</div>
+                            <div class="text-[11px] text-amber-100/50">ฮอส: <span id="blackKingsCount" class="text-amber-300 font-semibold">0</span> ตัว</div>
+                        </div>
+                    </div>
+                    <div id="blackCount" class="text-2xl font-bold text-red-400">12</div>
+                </div>
+
+                <!-- White Player Info -->
+                <div id="cardWhite" class="flex items-center justify-between p-2.5 rounded-xl bg-[#1a0f09]/70 border border-amber-500/50 transition">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full piece-white shrink-0"></div>
+                        <div>
+                            <div id="labelWhite" class="text-sm font-semibold text-amber-100">ฝ่ายขาว (คุณ)</div>
+                            <div class="text-[11px] text-amber-100/50">ฮอส: <span id="whiteKingsCount" class="text-amber-300 font-semibold">0</span> ตัว</div>
+                        </div>
+                    </div>
+                    <div id="whiteCount" class="text-2xl font-bold text-amber-200">12</div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="bg-[#26170e]/90 border border-[#5c3a21] rounded-2xl p-4 shadow-xl flex flex-col gap-2.5">
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btnUndo" onclick="undoMove()" disabled class="py-2.5 px-3 rounded-xl bg-[#3d2514] hover:bg-[#52321b] disabled:opacity-40 disabled:pointer-events-none text-amber-100 text-sm font-medium border border-[#6e4427] transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-rotate-left"></i> ย้อนกลับ
+                    </button>
+                    <button onclick="startNewGame()" class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-sm font-medium border border-amber-400/30 transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-rotate"></i> เริ่มเกมใหม่
+                    </button>
+                </div>
+                
+                <!-- AI Difficulty Selector -->
+                <div id="aiDifficultyBox" class="flex items-center justify-between pt-2 border-t border-[#3d2514] text-xs">
+                    <span class="text-amber-200/70">ระดับความเก่ง AI:</span>
+                    <select id="aiDifficulty" onchange="changeDifficulty()" class="bg-[#170e08] text-amber-200 border border-[#5c3a21] rounded-lg px-2.5 py-1 outline-none">
+                        <option value="2">ง่าย (ฝึกหัด)</option>
+                        <option value="4" selected>ปานกลาง (มาตรฐาน)</option>
+                        <option value="6">ยาก (เซียนรัสเซีย)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quick Highlights of Russian Rules -->
+            <div class="bg-[#26170e]/70 border border-[#5c3a21]/60 rounded-2xl p-3.5 text-xs text-amber-100/80 space-y-1.5">
+                <div class="font-semibold text-amber-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-star text-amber-400"></i> จุดเด่นหมากฮอสรัสเซีย:
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-[11.5px] text-amber-100/70">
+                    <li>หมากเริ่มต้นฝั่งละ <strong>12 ตัว</strong></li>
+                    <li>เบี้ยธรรมดา <strong>สามารถกินถอยหลังได้!</strong></li>
+                    <li>ฮอสเดินและกินยาวสุดสายตา (Flying King)</li>
+                    <li>เบี้ยที่กระโดดกินไปตกแถวสุดท้าย <strong>เป็นฮอสทันทีและกินต่อในตานั้นได้เลย!</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right / Center Panel: The 8x8 Checkers Board -->
+        <div class="lg:col-span-8 flex flex-col items-center justify-center order-1 lg:order-2">
+            <div class="board-frame p-2.5 sm:p-4 rounded-2xl w-full max-w-[560px] flex flex-col items-center">
+                
+                <!-- Top Column Coordinates -->
+                <div class="w-full max-w-[540px] grid grid-cols-8 text-center text-[11px] text-amber-200/60 pb-1 font-mono">
+                    <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+                </div>
+
+                <div class="w-full flex items-center justify-center">
+                    <!-- Left Row Coordinates -->
+                    <div class="flex flex-col justify-around h-full text-[11px] text-amber-200/60 pr-1.5 font-mono select-none">
+                        <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+                    </div>
+
+                    <!-- 8x8 Grid -->
+                    <div id="boardGrid" class="board-grid rounded-lg overflow-hidden"></div>
+
+                    <!-- Right Row Coordinates -->
+                    <div class="flex flex-col justify-around h-full text-[11px] text-amber-200/60 pl-1.5 font-mono select-none">
+                        <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+                    </div>
+                </div>
+
+                <!-- Bottom Column Coordinates -->
+                <div class="w-full max-w-[540px] grid grid-cols-8 text-center text-[11px] text-amber-200/60 pt-1 font-mono">
+                    <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Game Over Banner Modal -->
+    <div id="gameOverModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-[#362013] to-[#1f120a] border-2 border-amber-500/60 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl transform transition-all">
+            <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center">
+                <i id="winnerIcon" class="fa-solid fa-trophy text-3xl text-amber-400"></i>
+            </div>
+            <h2 id="winnerTitle" class="text-2xl font-bold text-amber-300 mb-1">จบเกม!</h2>
+            <p id="winnerDesc" class="text-sm text-amber-100/80 mb-6">ฝ่ายขาวเป็นฝ่ายชนะ</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeGameOverModal()" class="px-4 py-2.5 rounded-xl bg-[#3d2514] hover:bg-[#52321b] text-amber-200 text-sm font-medium border border-[#6e4427] transition">
+                    ดูกระดาน
+                </button>
+                <button onclick="closeGameOverModal(); startNewGame();" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-lg transition">
+                    <i class="fa-solid fa-play mr-1"></i> เล่นอีกครั้ง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal (หน้าต่างอธิบายกติกาหมากฮอสรัสเซีย) -->
+    <div id="rulesModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+        <div class="bg-[#24150c] border-2 border-[#6e4427] rounded-3xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-[#1a0f08] border-b border-[#4a2e1b] flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-book-bookmark text-amber-400 text-xl"></i>
+                    <h2 class="text-lg sm:text-xl font-bold text-amber-300">กติกาหมากฮอสรัสเซีย (Russian Draughts / Шашки)</h2>
+                </div>
+                <button onclick="closeRulesModal()" class="w-8 h-8 rounded-lg bg-[#362013] hover:bg-red-800/80 text-amber-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-sm text-amber-100/90 leading-relaxed">
+                <div class="bg-amber-950/40 border border-amber-600/30 rounded-2xl p-4">
+                    <p class="text-amber-200 font-medium">
+                        <strong>หมากฮอสรัสเซีย (Shashki)</strong> เป็นหมากฮอสกระดาน 8x8 ที่ได้รับความนิยมสูงสุดในรัสเซียและยุโรปตะวันออก มีความสนุกและพลิกแพลงสูงมากเนื่องจากกฎการกินถอยหลังและการเข้าฮอสกลางอากาศ!
+                    </p>
+                </div>
+
+                <!-- Rule 1 -->
+                <div class="bg-[#1a0f08]/70 border border-[#3d2514] rounded-2xl p-4">
+                    <h3 class="font-bold text-amber-300 text-base mb-1.5 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center justify-center">1</span>
+                        กระดานและหมากเริ่มต้น (12 ตัว)
+                    </h3>
+                    <p class="text-amber-100/80 text-xs sm:text-sm">
+                        ใช้กระดานขนาด 8x8 ช่อง โดยวางตัวหมากบนช่องสีเข้ม <strong>ฝั่งละ 12 ตัว</strong> (เรียง 3 แถวแรกของแต่ละฝั่ง) ฝ่ายขาวเป็นฝ่ายเริ่มเดินก่อนเสมอ
+                    </p>
+                </div>
+
+                <!-- Rule 2 -->
+                <div class="bg-[#1a0f08]/70 border border-[#3d2514] rounded-2xl p-4">
+                    <h3 class="font-bold text-amber-300 text-base mb-1.5 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center justify-center">2</span>
+                        การเดินและการกินของ "เบี้ย" (Men)
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-amber-100/80">
+                        <li><strong>การเดินปกติ:</strong> เดินหน้าทแยงมุมได้ครั้งละ 1 ช่องไปยังช่องว่าง (เดินถอยหลังไม่ได้)</li>
+                        <li><strong class="text-amber-300">การกระโดดกิน (พิเศษ!):</strong> เบี้ยธรรมดาสามารถกระโดดกินหมากฝ่ายตรงข้ามที่อยู่ติดกันได้ <strong>ทั้งเดินหน้าและถอยหลัง!</strong> (4 ทิศทางทแยงมุม) หากมีช่องว่างถัดไปรองรับ</li>
+                    </ul>
+                </div>
+
+                <!-- Rule 3 -->
+                <div class="bg-[#1a0f08]/70 border border-[#3d2514] rounded-2xl p-4">
+                    <h3 class="font-bold text-amber-300 text-base mb-1.5 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center justify-center">3</span>
+                        ฮอส หรือ คิง (Flying King / Дамка)
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-amber-100/80">
+                        <li><strong>เดินยาว (Flying King):</strong> เดินหน้าหรือถอยหลังตามแนวทแยงได้ไกลทุกช่องตราบใดที่ไม่มีหมากขวาง</li>
+                        <li><strong>การกินของฮอส:</strong> สามารถกระโดดข้ามหมากฝ่ายตรงข้ามที่อยู่ห่างออกไปกี่ช่องก็ได้ และเลือกจอดในช่องว่างถัดไปช่องใดก็ได้ในแนวทแยงนั้น</li>
+                        <li><strong>กฎบังคับจอดเพื่อกินต่อ:</strong> หากการเลือกช่องจอดหลังกระโดดกินสามารถทำให้กระโดดกินหมากตัวอื่นต่อได้ ผู้เล่น<strong>ต้องเลือกจอดในช่องที่ทำให้กินต่อได้</strong>เท่านั้น!</li>
+                    </ul>
+                </div>
+
+                <!-- Rule 4 -->
+                <div class="bg-gradient-to-r from-amber-950/60 to-red-950/40 border border-amber-500/40 rounded-2xl p-4">
+                    <h3 class="font-bold text-amber-300 text-base mb-1.5 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">4</span>
+                        กฎพิเศษ: เข้าฮอสระหว่างกินต่อเนื่อง!
+                    </h3>
+                    <p class="text-xs sm:text-sm text-amber-100/90">
+                        หากเบี้ยธรรมดากระโดดกินหมากฝ่ายตรงข้าม แล้วไปตกที่<strong>แถวสุดท้าย (แถวฮอส)</strong> เบี้ยตัวนั้นจะ<strong>เลื่อนขั้นเป็น "ฮอส" ทันทีในตานั้น!</strong> และหากในจังหวะนั้นสามารถกินหมากตัวอื่นต่อในฐานะ "ฮอส" (เดินยาว) ได้ ก็จะต้องกระโดดกินต่อไปทันทีโดยไม่ต้องรอจบตา!
+                    </p>
+                </div>
+
+                <!-- Rule 5 -->
+                <div class="bg-[#1a0f08]/70 border border-[#3d2514] rounded-2xl p-4">
+                    <h3 class="font-bold text-amber-300 text-base mb-1.5 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center justify-center">5</span>
+                        กฎการบังคับกิน และการกินหลายต่อ
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-amber-100/80">
+                        <li><strong>บังคับกิน:</strong> หากมีตาที่สามารถกินหมากฝ่ายตรงข้ามได้ จะถูกบังคับให้ต้องกินเสมอ</li>
+                        <li><strong>เลือกทางกินได้อิสระ:</strong> หากมีทางเลือกในการกินหลายเส้นทาง สามารถเลือกเส้นทางใดก็ได้ (ไม่จำเป็นต้องเลือกทางที่กินได้จำนวนเยอะที่สุด) แต่เมื่อเริ่มกินในเส้นทางนั้นแล้ว ต้องกินต่อเนื่องไปจนกว่าจะไม่มีให้กินต่อ</li>
+                        <li><strong>ห้ามข้ามซ้ำ:</strong> ในการกินต่อเนื่อง 1 ตา ห้ามกระโดดข้ามหมากตัวเดิมที่ถูกกินไปแล้วซ้ำเป็นครั้งที่ 2 (หมากที่ถูกกินจะถูกหยิบออกเมื่อจบตานั้น)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3.5 bg-[#1a0f08] border-t border-[#4a2e1b] flex justify-end">
+                <button onclick="closeRulesModal()" class="px-6 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow transition">
+                    เข้าใจแล้ว เริ่มเล่นเลย!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================
+           RUSSIAN DRAUGHTS (ШАШКИ) - CORE ENGINE
+           ========================================== */
+        const WHITE = 1;
+        const BLACK = -1;
+
+        let board = [];
+        let currentTurn = WHITE;
+        let gameMode = 'ai'; // 'ai' or '2p'
+        let aiDepth = 4;
+        let isGameOver = false;
+        let aiThinking = false;
+
+        // Interactive Selection & Multi-jump Tracking
+        let selectedSquare = null;       // { r, c }
+        let activeMultiJumpPos = null;   // If in middle of multi-jump, locks to { r, c }
+        let capturedInTurn = [];         // Array of { r, c } ghosted pieces during current multi-jump
+        let validMovesForSelected = [];  // Valid single steps from selectedSquare
+        let forcedPieces = [];           // Array of { r, c } that have mandatory captures
+        let lastMoveHighlight = [];      // Array of { r, c } for visual feedback
+        let historyStack = [];           // Undo stack
+
+        const DIRS = [
+            [-1, -1], [-1, 1],
+            [1, -1],  [1, 1]
+        ];
+
+        // Initialize board with 12 pieces per side on dark squares
+        function initBoardData() {
+            board = Array.from({ length: 8 }, () => Array(8).fill(null));
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if ((r + c) % 2 === 1) {
+                        if (r < 3) {
+                            board[r][c] = { color: BLACK, isKing: false };
+                        } else if (r > 4) {
+                            board[r][c] = { color: WHITE, isKing: false };
+                        }
+                    }
+                }
+            }
+        }
+
+        function cloneBoard(b) {
+            return b.map(row => row.map(cell => cell ? { ...cell } : null));
+        }
+
+        function isInside(r, c) {
+            return r >= 0 && r < 8 && c >= 0 && c < 8;
+        }
+
+        function isCapturedGhost(r, c, ghostList) {
+            return ghostList.some(g => g.r === r && g.c === c);
+        }
+
+        function shouldPromote(color, r) {
+            return (color === WHITE && r === 0) || (color === BLACK && r === 7);
+        }
+
+        /* ----------------------------------------------------------
+           CAPTURE RULES FOR RUSSIAN DRAUGHTS:
+           - Men capture forward & backward (adjacent enemy + empty behind).
+           - If a Man lands on promotion row during capture, it IMMEDIATELY
+             becomes a King and continues capturing as a King!
+           - Kings (Flying) jump over an enemy at any distance and land on
+             any empty square beyond. HOWEVER, if some landing squares allow
+             further captures, the King MUST land on one of those squares!
+           - Ghosted pieces (already jumped in this turn) block movement
+             and cannot be jumped again.
+           ---------------------------------------------------------- */
+
+        // Get raw single-jump steps for a piece at (r, c) given current board and ghosted pieces
+        function getRawSingleJumps(b, r, c, piece, ghostList) {
+            const jumps = [];
+
+            if (!piece.isKing) {
+                // Man: can capture in all 4 diagonal directions
+                for (const [dr, dc] of DIRS) {
+                    const mr = r + dr;
+                    const mc = c + dc;
+                    const lr = r + 2 * dr;
+                    const lc = c + 2 * dc;
+
+                    if (isInside(lr, lc)) {
+                        const midPiece = b[mr][mc];
+                        if (
+                            midPiece &&
+                            midPiece.color !== piece.color &&
+                            !isCapturedGhost(mr, mc, ghostList) &&
+                            b[lr][lc] === null
+                        ) {
+                            const promotesNow = shouldPromote(piece.color, lr);
+                            jumps.push({
+                                fromR: r,
+                                fromC: c,
+                                toR: lr,
+                                toC: lc,
+                                captured: { r: mr, c: mc },
+                                promotes: promotesNow
+                            });
+                        }
+                    }
+                }
+            } else {
+                // Flying King: scan along all 4 diagonals
+                for (const [dr, dc] of DIRS) {
+                    let step = 1;
+                    let foundEnemy = null;
+
+                    while (true) {
+                        const nr = r + dr * step;
+                        const nc = c + dc * step;
+                        if (!isInside(nr, nc)) break;
+
+                        const cell = b[nr][nc];
+
+                        if (!foundEnemy) {
+                            if (cell !== null) {
+                                // Friendly piece or already-captured ghost piece blocks the ray
+                                if (cell.color === piece.color || isCapturedGhost(nr, nc, ghostList)) {
+                                    break;
+                                } else {
+                                    // Uncaptured enemy found!
+                                    foundEnemy = { r: nr, c: nc };
+                                }
+                            }
+                        } else {
+                            // Past the enemy piece: can land on any consecutive empty square
+                            if (cell === null) {
+                                jumps.push({
+                                    fromR: r,
+                                    fromC: c,
+                                    toR: nr,
+                                    toC: nc,
+                                    captured: foundEnemy,
+                                    promotes: false
+                                });
+                            } else {
+                                // Blocked by another piece beyond the enemy
+                                break;
+                            }
+                        }
+                        step++;
+                    }
+                }
+            }
+
+            return jumps;
+        }
+
+        // Filter single jumps according to Russian Flying King continuation rule:
+        // When a King jumps over a piece and has multiple empty landing squares along that diagonal,
+        // if at least one landing square along that direction allows a subsequent capture,
+        // the player MUST only land on squares that allow a subsequent capture.
+        function getValidNextJumps(b, r, c, ghostList) {
+            const piece = b[r][c];
+            if (!piece) return [];
+
+            const rawJumps = getRawSingleJumps(b, r, c, piece, ghostList);
+            if (rawJumps.length === 0) return [];
+
+            if (!piece.isKing) {
+                return rawJumps;
+            }
+
+            // Group flying king jumps by direction (or by captured enemy piece)
+            const groupedByEnemy = new Map();
+            for (const j of rawJumps) {
+                const key = `${j.captured.r},${j.captured.c}`;
+                if (!groupedByEnemy.has(key)) groupedByEnemy.set(key, []);
+                groupedByEnemy.get(key).push(j);
+            }
+
+            const validFiltered = [];
+
+            for (const [key, dirJumps] of groupedByEnemy.entries()) {
+                const continuableJumps = [];
+
+                for (const j of dirJumps) {
+                    // Simulate landing at (j.toR, j.toC)
+                    const tempPiece = { color: piece.color, isKing: true };
+                    const nextGhosts = [...ghostList, j.captured];
+                    b[r][c] = null;
+                    b[j.toR][j.toC] = tempPiece;
+
+                    const further = getRawSingleJumps(b, j.toR, j.toC, tempPiece, nextGhosts);
+                    if (further.length > 0) {
+                        continuableJumps.push(j);
+                    }
+
+                    // Revert
+                    b[j.toR][j.toC] = null;
+                    b[r][c] = piece;
+                }
+
+                if (continuableJumps.length > 0) {
+                    validFiltered.push(...continuableJumps);
+                } else {
+                    validFiltered.push(...dirJumps);
+                }
+            }
+
+            return validFiltered;
+        }
+
+        // Normal (non-capture) moves for a piece at (r, c)
+        function getNormalMovesForPiece(b, r, c) {
+            const piece = b[r][c];
+            if (!piece) return [];
+            const moves = [];
+
+            if (!piece.isKing) {
+                const forwardRow = piece.color === WHITE ? -1 : 1;
+                for (const dc of [-1, 1]) {
+                    const nr = r + forwardRow;
+                    const nc = c + dc;
+                    if (isInside(nr, nc) && b[nr][nc] === null) {
+                        moves.push({
+                            fromR: r,
+                            fromC: c,
+                            toR: nr,
+                            toC: nc,
+                            captured: null,
+                            promotes: shouldPromote(piece.color, nr)
+                        });
+                    }
+                }
+            } else {
+                // Flying King normal move
+                for (const [dr, dc] of DIRS) {
+                    let step = 1;
+                    while (true) {
+                        const nr = r + dr * step;
+                        const nc = c + dc * step;
+                        if (!isInside(nr, nc) || b[nr][nc] !== null) break;
+                        moves.push({
+                            fromR: r,
+                            fromC: c,
+                            toR: nr,
+                            toC: nc,
+                            captured: null,
+                            promotes: false
+                        });
+                        step++;
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        // Update which pieces are forced to capture at the start of a turn or during a multi-jump
+        function computeTurnForcedState() {
+            forcedPieces = [];
+
+            if (activeMultiJumpPos) {
+                forcedPieces = [{ r: activeMultiJumpPos.r, c: activeMultiJumpPos.c }];
+                return;
+            }
+
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = board[r][c];
+                    if (p && p.color === currentTurn) {
+                        const jumps = getValidNextJumps(board, r, c, []);
+                        if (jumps.length > 0) {
+                            forcedPieces.push({ r, c });
+                        }
+                    }
+                }
+            }
+        }
+
+        function hasAnyValidMove(b, color) {
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = b[r][c];
+                    if (p && p.color === color) {
+                        if (getValidNextJumps(b, r, c, []).length > 0) return true;
+                        if (getNormalMovesForPiece(b, r, c).length > 0) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /* ==========================================
+           UI & INTERACTION HANDLERS
+           ========================================== */
+
+        function renderBoard() {
+            const grid = document.getElementById('boardGrid');
+            grid.innerHTML = '';
+
+            let whiteMen = 0, whiteKings = 0;
+            let blackMen = 0, blackKings = 0;
+
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const sq = document.createElement('div');
+                    const isDark = (r + c) % 2 === 1;
+                    sq.className = `relative flex items-center justify-center ${isDark ? 'square-dark' : 'square-light'}`;
+
+                    // Highlight last move
+                    if (lastMoveHighlight.some(pos => pos.r === r && pos.c === c)) {
+                        sq.classList.add('last-move-square');
+                    }
+
+                    const piece = board[r][c];
+                    const isGhost = isCapturedGhost(r, c, capturedInTurn);
+
+                    if (piece) {
+                        if (!isGhost) {
+                            if (piece.color === WHITE) {
+                                whiteMen++;
+                                if (piece.isKing) whiteKings++;
+                            } else {
+                                blackMen++;
+                                if (piece.isKing) blackKings++;
+                            }
+                        }
+
+                        const pDiv = document.createElement('div');
+                        pDiv.className = `piece ${piece.color === WHITE ? 'piece-white' : 'piece-black'}`;
+
+                        if (isGhost) {
+                            pDiv.classList.add('piece-captured-ghost');
+                        } else {
+                            if (selectedSquare && selectedSquare.r === r && selectedSquare.c === c) {
+                                pDiv.classList.add('piece-selected');
+                            } else if (forcedPieces.some(fp => fp.r === r && fp.c === c) && (!aiThinking)) {
+                                pDiv.classList.add('piece-forced');
+                            }
+                        }
+
+                        // King Crown Icon
+                        if (piece.isKing) {
+                            const crown = document.createElement('i');
+                            crown.className = `fa-solid fa-crown text-sm sm:text-base z-20 drop-shadow ${
+                                piece.color === WHITE ? 'text-amber-600' : 'text-amber-300'
+                            }`;
+                            pDiv.appendChild(crown);
+                        }
+
+                        sq.appendChild(pDiv);
+                    }
+
+                    // Destination Indicators
+                    const moveOption = validMovesForSelected.find(m => m.toR === r && m.toC === c);
+                    if (moveOption) {
+                        const dot = document.createElement('div');
+                        dot.className = moveOption.captured ? 'capture-dot z-30' : 'move-dot z-30';
+                        sq.appendChild(dot);
+                        sq.style.cursor = 'pointer';
+                    }
+
+                    sq.onclick = () => onSquareClick(r, c);
+                    grid.appendChild(sq);
+                }
+            }
+
+            // Update Scoreboard
+            document.getElementById('whiteCount').textContent = whiteMen;
+            document.getElementById('whiteKingsCount').textContent = whiteKings;
+            document.getElementById('blackCount').textContent = blackMen;
+            document.getElementById('blackKingsCount').textContent = blackKings;
+
+            updateStatusUI();
+        }
+
+        function updateStatusUI() {
+            const turnPieceIcon = document.getElementById('turnPieceIcon');
+            const turnText = document.getElementById('turnText');
+            const subStatusText = document.getElementById('subStatusText');
+            const captureBadge = document.getElementById('captureBadge');
+            const cardWhite = document.getElementById('cardWhite');
+            const cardBlack = document.getElementById('cardBlack');
+            const btnUndo = document.getElementById('btnUndo');
+
+            btnUndo.disabled = historyStack.length === 0 || aiThinking || activeMultiJumpPos !== null;
+
+            if (currentTurn === WHITE) {
+                turnPieceIcon.className = 'w-7 h-7 rounded-full piece-white shrink-0';
+                turnText.textContent = gameMode === 'ai' ? 'ตาของคุณ (ฝ่ายขาว)' : 'ตาของฝ่ายขาว';
+                cardWhite.className = 'flex items-center justify-between p-2.5 rounded-xl bg-amber-950/50 border-2 border-amber-400 transition';
+                cardBlack.className = 'flex items-center justify-between p-2.5 rounded-xl bg-[#1a0f09]/70 border border-[#3d2514] opacity-75 transition';
+            } else {
+                turnPieceIcon.className = 'w-7 h-7 rounded-full piece-black shrink-0';
+                turnText.textContent = gameMode === 'ai' ? 'AI กำลังคิด...' : 'ตาของฝ่ายแดงเข้ม';
+                cardBlack.className = 'flex items-center justify-between p-2.5 rounded-xl bg-red-950/50 border-2 border-red-400 transition';
+                cardWhite.className = 'flex items-center justify-between p-2.5 rounded-xl bg-[#1a0f09]/70 border border-[#3d2514] opacity-75 transition';
+            }
+
+            if (forcedPieces.length > 0) {
+                captureBadge.classList.remove('hidden');
+                if (activeMultiJumpPos) {
+                    subStatusText.textContent = 'ต้องกระโดดกินต่อเนื่องจนจบตา!';
+                } else {
+                    subStatusText.textContent = 'บังคับกิน! เลือกหมากที่มีกรอบเรืองแสง';
+                }
+            } else {
+                captureBadge.classList.add('hidden');
+                subStatusText.textContent = aiThinking ? 'รอ AI เดินหมากสักครู่...' : 'เลือกหมากเพื่อเดินตามปกติ';
+            }
+        }
+
+        function onSquareClick(r, c) {
+            if (isGameOver || aiThinking) return;
+            if (gameMode === 'ai' && currentTurn === BLACK) return;
+
+            // 1. Check if clicked square is a valid move destination for currently selected piece
+            const chosenMove = validMovesForSelected.find(m => m.toR === r && m.toC === c);
+            if (chosenMove) {
+                executeMoveStep(chosenMove);
+                return;
+            }
+
+            // 2. If in the middle of a multi-jump, player cannot switch to another piece
+            if (activeMultiJumpPos) {
+                return;
+            }
+
+            // 3. Selecting own piece
+            const clickedPiece = board[r][c];
+            if (clickedPiece && clickedPiece.color === currentTurn) {
+                // If mandatory captures exist, only allow selecting a piece that can capture
+                if (forcedPieces.length > 0 && !forcedPieces.some(fp => fp.r === r && fp.c === c)) {
+                    return;
+                }
+
+                selectedSquare = { r, c };
+                if (forcedPieces.length > 0) {
+                    validMovesForSelected = getValidNextJumps(board, r, c, []);
+                } else {
+                    validMovesForSelected = getNormalMovesForPiece(board, r, c);
+                }
+                renderBoard();
+            } else {
+                selectedSquare = null;
+                validMovesForSelected = [];
+                renderBoard();
+            }
+        }
+
+        function saveStateForUndo() {
+            historyStack.push({
+                board: cloneBoard(board),
+                currentTurn: currentTurn,
+                lastMoveHighlight: [...lastMoveHighlight]
+            });
+            if (historyStack.length > 30) historyStack.shift();
+        }
+
+        function executeMoveStep(move) {
+            // Save undo state only at the very start of a turn (not mid-multi-jump)
+            if (!activeMultiJumpPos && !(gameMode === 'ai' && currentTurn === BLACK)) {
+                saveStateForUndo();
+            }
+
+            const movingPiece = board[move.fromR][move.fromC];
+            board[move.fromR][move.fromC] = null;
+
+            // Instant promotion rule (Russian Draughts: mid-jump promotion happens immediately!)
+            if (move.promotes) {
+                movingPiece.isKing = true;
+            }
+
+            board[move.toR][move.toC] = movingPiece;
+            lastMoveHighlight = [
+                { r: move.fromR, c: move.fromC },
+                { r: move.toR, c: move.toC }
+            ];
+
+            if (move.captured) {
+                capturedInTurn.push(move.captured);
+
+                // Check if further captures are available from the new square (including newly promoted King!)
+                const furtherJumps = getValidNextJumps(board, move.toR, move.toC, capturedInTurn);
+
+                if (furtherJumps.length > 0) {
+                    // Must continue jumping with this same piece
+                    activeMultiJumpPos = { r: move.toR, c: move.toC };
+                    selectedSquare = { r: move.toR, c: move.toC };
+                    validMovesForSelected = furtherJumps;
+                    computeTurnForcedState();
+                    renderBoard();
+                    return;
+                }
+            }
+
+            // Turn finished: remove all ghosted captured pieces from board
+            for (const cap of capturedInTurn) {
+                board[cap.r][cap.c] = null;
+            }
+
+            capturedInTurn = [];
+            activeMultiJumpPos = null;
+            selectedSquare = null;
+            validMovesForSelected = [];
+
+            // Switch turn
+            currentTurn = currentTurn === WHITE ? BLACK : WHITE;
+            computeTurnForcedState();
+            renderBoard();
+
+            // Check win condition
+            if (!hasAnyValidMove(board, currentTurn)) {
+                endGame(currentTurn === WHITE ? BLACK : WHITE);
+                return;
+            }
+
+            // Trigger AI if playing vs AI and it's Black's turn
+            if (gameMode === 'ai' && currentTurn === BLACK && !isGameOver) {
+                aiThinking = true;
+                updateStatusUI();
+                setTimeout(performAITurn, 450);
+            }
+        }
+
+        /* ==========================================
+           AI ENGINE (FULL MULTI-JUMP GENERATOR & MINIMAX)
+           ========================================== */
+
+        // Generate complete turn sequences (handling multi-jumps and instant mid-jump promotion)
+        function generateCompleteTurnSequences(b, color) {
+            const captureSequences = [];
+
+            function dfsCapture(currBoard, r, c, ghostList, pathSteps) {
+                const nextJumps = getValidNextJumps(currBoard, r, c, ghostList);
+                if (nextJumps.length === 0) {
+                    // End of sequence: clone board and remove all captured ghosts
+                    const finalBoard = cloneBoard(currBoard);
+                    for (const g of ghostList) {
+                        finalBoard[g.r][g.c] = null;
+                    }
+                    captureSequences.push({
+                        steps: pathSteps,
+                        resultingBoard: finalBoard
+                    });
+                    return;
+                }
+
+                for (const j of nextJumps) {
+                    const nextBoard = cloneBoard(currBoard);
+                    const p = nextBoard[r][c];
+                    nextBoard[r][c] = null;
+                    if (j.promotes) p.isKing = true;
+                    nextBoard[j.toR][j.toC] = p;
+
+                    dfsCapture(
+                        nextBoard,
+                        j.toR,
+                        j.toC,
+                        [...ghostList, j.captured],
+                        [...pathSteps, j]
+                    );
+                }
+            }
+
+            // Look for any capture sequences first (Mandatory Capture)
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = b[r][c];
+                    if (p && p.color === color) {
+                        const initialJumps = getValidNextJumps(b, r, c, []);
+                        if (initialJumps.length > 0) {
+                            dfsCapture(b, r, c, [], []);
+                        }
+                    }
+                }
+            }
+
+            if (captureSequences.length > 0) {
+                return captureSequences;
+            }
+
+            // Otherwise generate normal moves
+            const normalSequences = [];
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = b[r][c];
+                    if (p && p.color === color) {
+                        const moves = getNormalMovesForPiece(b, r, c);
+                        for (const m of moves) {
+                            const nextBoard = cloneBoard(b);
+                            const pieceCopy = nextBoard[r][c];
+                            nextBoard[r][c] = null;
+                            if (m.promotes) pieceCopy.isKing = true;
+                            nextBoard[m.toR][m.toC] = pieceCopy;
+
+                            normalSequences.push({
+                                steps: [m],
+                                resultingBoard: nextBoard
+                            });
+                        }
+                    }
+                }
+            }
+
+            return normalSequences;
+        }
+
+        // Heuristic Board Evaluation for Russian Draughts (from BLACK's perspective)
+        function evaluateBoard(b) {
+            let score = 0;
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = b[r][c];
+                    if (!p) continue;
+
+                    // Flying kings in Russian draughts are extremely powerful (~3.3x man value)
+                    let val = p.isKing ? 330 : 100;
+
+                    if (!p.isKing) {
+                        // Advancement bonus
+                        const advance = p.color === BLACK ? r : (7 - r);
+                        val += advance * 7;
+
+                        // Center control bonus
+                        if (c >= 2 && c <= 5 && r >= 2 && r <= 5) {
+                            val += 12;
+                        }
+                        // Back rank protection bonus
+                        if ((p.color === BLACK && r === 0) || (p.color === WHITE && r === 7)) {
+                            val += 15;
+                        }
+                    } else {
+                        // King central control
+                        if (c >= 2 && c <= 5 && r >= 2 && r <= 5) {
+                            val += 20;
+                        }
+                    }
+
+                    if (p.color === BLACK) {
+                        score += val;
+                    } else {
+                        score -= val;
+                    }
+                }
+            }
+            return score;
+        }
+
+        function minimax(b, depth, alpha, beta, maximizingPlayer) {
+            const color = maximizingPlayer ? BLACK : WHITE;
+            const sequences = generateCompleteTurnSequences(b, color);
+
+            if (sequences.length === 0) {
+                return maximizingPlayer ? -99999 - depth : 99999 + depth;
+            }
+            if (depth === 0) {
+                return evaluateBoard(b);
+            }
+
+            if (maximizingPlayer) {
+                let maxEval = -Infinity;
+                for (const seq of sequences) {
+                    const ev = minimax(seq.resultingBoard, depth - 1, alpha, beta, false);
+                    maxEval = Math.max(maxEval, ev);
+                    alpha = Math.max(alpha, ev);
+                    if (beta <= alpha) break;
+                }
+                return maxEval;
+            } else {
+                let minEval = Infinity;
+                for (const seq of sequences) {
+                    const ev = minimax(seq.resultingBoard, depth - 1, alpha, beta, true);
+                    minEval = Math.min(minEval, ev);
+                    beta = Math.min(beta, ev);
+                    if (beta <= alpha) break;
+                }
+                return minEval;
+            }
+        }
+
+        function performAITurn() {
+            if (isGameOver || currentTurn !== BLACK) {
+                aiThinking = false;
+                return;
+            }
+
+            const allSequences = generateCompleteTurnSequences(board, BLACK);
+            if (allSequences.length === 0) {
+                aiThinking = false;
+                endGame(WHITE);
+                return;
+            }
+
+            // Pick best move sequence using Minimax with Alpha-Beta Pruning
+            let bestScore = -Infinity;
+            let bestSequences = [];
+
+            for (const seq of allSequences) {
+                const score = minimax(seq.resultingBoard, aiDepth - 1, -Infinity, Infinity, false);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestSequences = [seq];
+                } else if (score === bestScore) {
+                    bestSequences.push(seq);
+                }
+            }
+
+            const chosenSeq = bestSequences[Math.floor(Math.random() * bestSequences.length)];
+            animateAISequence(chosenSeq.steps, 0);
+        }
+
+        // Step-by-step animation for AI multi-jumps so player can clearly follow the move
+        function animateAISequence(steps, index) {
+            if (index >= steps.length) {
+                aiThinking = false;
+                renderBoard();
+                return;
+            }
+
+            const step = steps[index];
+            selectedSquare = { r: step.fromR, c: step.fromC };
+            renderBoard();
+
+            setTimeout(() => {
+                executeMoveStep(step);
+                if (index + 1 < steps.length) {
+                    setTimeout(() => animateAISequence(steps, index + 1), 450);
+                } else {
+                    aiThinking = false;
+                    renderBoard();
+                }
+            }, 280);
+        }
+
+        /* ==========================================
+           GAME CONTROLS & MODALS
+           ========================================== */
+
+        function startNewGame() {
+            isGameOver = false;
+            aiThinking = false;
+            currentTurn = WHITE;
+            selectedSquare = null;
+            activeMultiJumpPos = null;
+            capturedInTurn = [];
+            validMovesForSelected = [];
+            lastMoveHighlight = [];
+            historyStack = [];
+
+            initBoardData();
+            computeTurnForcedState();
+            renderBoard();
+        }
+
+        function setGameMode(mode) {
+            gameMode = mode;
+            const btnAI = document.getElementById('btnModeAI');
+            const btn2P = document.getElementById('btnMode2P');
+            const labelBlack = document.getElementById('labelBlack');
+            const labelWhite = document.getElementById('labelWhite');
+            const aiDiffBox = document.getElementById('aiDifficultyBox');
+
+            if (mode === 'ai') {
+                btnAI.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-amber-600 text-white shadow';
+                btn2P.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-amber-200/70 hover:text-white';
+                labelBlack.textContent = 'ฝ่ายแดงเข้ม (AI)';
+                labelWhite.textContent = 'ฝ่ายขาว (คุณ)';
+                aiDiffBox.classList.remove('hidden');
+            } else {
+                btn2P.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-amber-600 text-white shadow';
+                btnAI.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-amber-200/70 hover:text-white';
+                labelBlack.textContent = 'ผู้เล่น 2 (ฝ่ายแดงเข้ม)';
+                labelWhite.textContent = 'ผู้เล่น 1 (ฝ่ายขาว)';
+                aiDiffBox.classList.add('hidden');
+            }
+
+            startNewGame();
+        }
+
+        function changeDifficulty() {
+            const sel = document.getElementById('aiDifficulty');
+            aiDepth = parseInt(sel.value, 10);
+        }
+
+        function undoMove() {
+            if (historyStack.length === 0 || aiThinking || activeMultiJumpPos !== null) return;
+
+            const prevState = historyStack.pop();
+            board = prevState.board;
+            currentTurn = prevState.currentTurn;
+            lastMoveHighlight = prevState.lastMoveHighlight;
+            isGameOver = false;
+            selectedSquare = null;
+            validMovesForSelected = [];
+            capturedInTurn = [];
+
+            computeTurnForcedState();
+            renderBoard();
+        }
+
+        function endGame(winnerColor) {
+            isGameOver = true;
+            const modal = document.getElementById('gameOverModal');
+            const title = document.getElementById('winnerTitle');
+            const desc = document.getElementById('winnerDesc');
+
+            if (winnerColor === WHITE) {
+                title.textContent = gameMode === 'ai' ? 'ยินดีด้วย! คุณชนะ!' : 'ฝ่ายขาวชนะ!';
+                desc.textContent = 'ฝ่ายแดงเข้มไม่มีหมากเหลือ หรือไม่มีตาเดินที่ถูกต้อง';
+            } else {
+                title.textContent = gameMode === 'ai' ? 'AI เป็นฝ่ายชนะ!' : 'ฝ่ายแดงเข้มชนะ!';
+                desc.textContent = 'ฝ่ายขาวไม่มีหมากเหลือ หรือไม่มีตาเดินที่ถูกต้อง';
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGameOverModal() {
+            const modal = document.getElementById('gameOverModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openRulesModal() {
+            const modal = document.getElementById('rulesModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRulesModal() {
+            const modal = document.getElementById('rulesModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Close modals on Escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeRulesModal();
+                closeGameOverModal();
+            }
+        });
+
+        // Start game on load
+        window.onload = () => {
+            startNewGame();
+        };
+    </script>
+</body>
+</html>
