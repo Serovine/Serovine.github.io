@@ -1,26 +1,48 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-C,Citigroup Inc.,13-10-26,Before Market,129.64,5.25%,NYSE,-3.78%
-DPZ,Domino's Pizza Inc,13-10-26,Before Market,309.36,-14.42%,NASDAQ,-4.00%
-GS,Goldman Sachs Group Inc.,13-10-26,Before Market,895.32,-0.45%,NYSE,+0.56%
-JNJ,Johnson & Johnson,13-10-26,Before Market,261.44,10.81%,NYSE,-6.74%
-JPM,JP Morgan Chase & Co.,13-10-26,Before Market,332.99,8.48%,NYSE,+0.13%
-UNH,UnitedHealth Group Incorporated,13-10-26,Before Market,379.3,26.12%,NYSE,+0.51%
-WFC,Wells Fargo & Company,13-10-26,Before Market,83.55,-1.04%,NYSE,-1.76%
-AZZ,AZZ Inc.,13-10-26,After Market,136.85,0.07%,NYSE,-2.62%
-ASML,ASML Holding N.V.,14-10-26,Before Market,1780.34,20.85%,NASDAQ,-1.22%
-BAC,Bank of America Corporation,14-10-26,Before Market,54.32,4.46%,NYSE,-5.31%
-BLK,BlackRock Inc.,14-10-26,Before Market,1082.39,9.48%,NYSE,+0.29%
-FAST,Fastenal Company,14-10-26,Before Market,50.75,4.33%,NASDAQ,+1.02%
-MS,Morgan Stanley,14-10-26,Before Market,190.02,8.14%,NYSE,-3.47%
-STT,State Street Corporation,14-10-26,Before Market,174.96,26.78%,NYSE,-6.41%
-CMC,Commercial Metals Company,15-10-26,Before Market,63.89,-2.57%,NYSE,+0.60%
-FHN,First Horizon Corporation,15-10-26,Before Market,23.08,-2.71%,NYSE,+1.70%
-MAN,ManpowerGroup,15-10-26,Before Market,52.78,100.55%,NYSE,-15.84%
-PLD,Prologis Inc.,15-10-26,Before Market,129.49,-4.17%,NYSE,-2.19%
-SCHW,Charles Schwab Corporation,15-10-26,Before Market,96.7,2.67%,NYSE,-2.35%
-TSM,Taiwan Semiconductor Manufactur,15-10-26,Before Market,453.31,22.93%,NYSE,-2.94%
-USB,U.S. Bancorp,15-10-26,Before Market,57.08,4.40%,NYSE,+1.83%
-CNS,Cohen & Steers Inc,15-10-26,After Market,69.26,11.57%,NYSE,+0.72%
-IBKR,Interactive Brokers Group Inc.,15-10-26,After Market,87.87,23.63%,NASDAQ,-2.81%
-JBHT,J.B. Hunt Transport Services,15-10-26,After Market,229.26,1.34%,NASDAQ,-3.31%
-TRV,The Travelers Companies Inc.,16-10-26,Before Market,368.75,24.99%,NYSE,+0.35%
+GE,GE Aerospace,20-10-26,Before Market,313.83,3.48%,NYSE,-4.49%
+GM,General Motors Company,20-10-26,Before Market,83.96,3.68%,NYSE,-8.03%
+MMM,3M Company,20-10-26,Before Market,164.75,7.62%,NYSE,+5.86%
+RTX,RTX Corporation,20-10-26,Before Market,193.92,-0.53%,NYSE,-0.52%
+CB,Chubb Limited,20-10-26,After Market,359.79,9.42%,NYSE,-0.37%
+COF,Capital One Financial Corporati,20-10-26,After Market,201.74,-1.52%,NYSE,+3.89%
+ISRG,Intuitive Surgical Inc.,20-10-26,After Market,426.7,-9.06%,NASDAQ,-2.35%
+NFLX,Netflix Inc.,20-10-26,After Market,70.53,-27.52%,NASDAQ,-5.31%
+SPCX,Space Exploration Technologies ,20-10-26,After Market,146.03,-9.27%,NASDAQ,+9.97%
+ABT,Abbott Laboratories,21-10-26,Before Market,104.89,9.79%,NYSE,-3.41%
+CME,CME Group Inc.,21-10-26,Before Market,293.87,3.17%,NASDAQ,+0.31%
+DHR,Danaher Corporation,21-10-26,Before Market,229.04,18.06%,NYSE,+2.73%
+ELV,Elevance Health Inc.,21-10-26,Before Market,428.26,33.69%,NYSE,+0.54%
+MCO,Moody's Corporation,21-10-26,Before Market,485.07,7.01%,NYSE,+1.27%
+NEE,NextEra Energy Inc.,21-10-26,Before Market,79.8,-11.95%,NYSE,-0.32%
+PM,Philip Morris International Inc,21-10-26,Before Market,205.2,32.25%,NYSE,-1.60%
+T,AT&T Inc.,21-10-26,Before Market,23.44,-9.38%,NYSE,-6.38%
+TMO,Thermo Fisher Scientific Inc,21-10-26,Before Market,690.0,31.26%,NYSE,+1.88%
+IBM,International Business Machines,21-10-26,After Market,232.14,-7.08%,NYSE,-0.77%
+LRCX,Lam Research Corporation,21-10-26,After Market,263.94,-1.19%,NASDAQ,-10.14%
+META,Meta Platforms Inc.,21-10-26,After Market,709.33,3.19%,NASDAQ,-6.81%
+MOH,Molina Healthcare Inc,21-10-26,After Market,207.36,39.20%,NYSE,-0.15%
+SAP,SAP  SE,21-10-26,After Market,224.29,25.92%,NYSE,+3.94%
+TSLA,Tesla Inc.,21-10-26,After Market,354.72,-11.46%,NASDAQ,-1.67%
+TXN,Texas Instruments Incorporated,21-10-26,After Market,276.48,21.53%,NASDAQ,-0.80%
+URI,United Rentals Inc.,21-10-26,After Market,1029.64,29.82%,NYSE,+3.23%
+BX,Blackstone Inc.,22-10-26,Before Market,106.61,-15.79%,NYSE,+6.77%
+CMCSA,Comcast Corporation,22-10-26,Before Market,21.9,-23.92%,NASDAQ,+3.74%
+HON,Honeywell International Inc.,22-10-26,Before Market,211.41,-12.95%,NASDAQ,+1.08%
+LMT,Lockheed Martin Corporation,22-10-26,Before Market,552.09,-5.58%,NYSE,+5.33%
+MSM,MSC Industrial Direct Company ,22-10-26,Before Market,130.38,34.67%,NYSE,-12.82%
+NDAQ,Nasdaq Inc.,22-10-26,Before Market,93.97,6.79%,NASDAQ,+6.94%
+NOK,Nokia Corporation Sponsored,22-10-26,Before Market,9.14,-11.35%,NYSE,-11.95%
+NSC,Norfolk Southern Corporation,22-10-26,Before Market,326.92,9.01%,NYSE,+2.15%
+PG,Procter & Gamble Company,22-10-26,Before Market,159.35,10.09%,NYSE,+6.27%
+SPOT,Spotify Technology S.A.,22-10-26,Before Market,530.46,-1.15%,NYSE,+8.58%
+UNP,Union Pacific Corporation,22-10-26,Before Market,289.04,16.23%,NYSE,+2.61%
+VLO,Valero Energy Corporation,22-10-26,Before Market,444.71,100.56%,NYSE,-4.15%
+APPF,AppFolio Inc.,22-10-26,After Market,212.13,35.57%,NASDAQ,-3.39%
+BE,Bloom Energy Corporation,22-10-26,After Market,221.31,6.47%,NYSE,-11.88%
+FIX,Comfort Systems USA Inc.,22-10-26,After Market,1439.07,-12.73%,NYSE,-7.70%
+MXL,MaxLinear Inc,22-10-26,After Market,71.32,171.49%,NASDAQ,-2.97%
+NEM,Newmont Corporation,22-10-26,After Market,118.6,2.25%,NYSE,-3.54%
+RNG,Ringcentral Inc.,22-10-26,After Market,75.44,87.45%,NYSE,+6.67%
+WDC,Western Digital Corporation,22-10-26,After Market,332.0,-10.83%,NASDAQ,-1.22%
+AXP,American Express Company,23-10-26,Before Market,313.59,-4.90%,NYSE,-3.59%
+INFY,Infosys Limited,23-10-26,Before Market,12.24,-13.52%,NYSE,-5.07%
