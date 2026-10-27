@@ -1,17 +1,17 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
 VZ,Verizon Communications Inc.,26-10-26,Before Market,44.66,-0.5%,NYSE,-2.94%
-AGYS,Agilysys Inc.,26-10-26,After Market,120.69,80.8%,NASDAQ,
-WELL,Welltower Inc.,26-10-26,After Market,237.32,14.5%,NYSE,
-AMT,American Tower Corporation,27-10-26,Before Market,188.97,8.2%,NYSE,
-BA,Boeing Company,27-10-26,Before Market,188.35,-19.0%,NYSE,
-CNC,Centene Corporation,27-10-26,Before Market,70.17,67.8%,NYSE,
-CVLT,Commvault Systems Inc.,27-10-26,Before Market,169.37,80.3%,NASDAQ,
-HCA,HCA Healthcare Inc.,27-10-26,Before Market,469.03,8.9%,NYSE,
-IQV,IQVIA Holdings Inc.,27-10-26,Before Market,279.36,72.2%,NYSE,
-KO,Coca-Cola Company ,27-10-26,Before Market,92.71,22.5%,NYSE,
-NVS,Novartis AG,27-10-26,Before Market,151.12,3.9%,NYSE,
-RGEN,Repligen Corporation,27-10-26,Before Market,176.93,50.4%,NASDAQ,
-SPGI,S&P Global Inc.,27-10-26,Before Market,450.31,9.5%,NYSE,
+AGYS,Agilysys Inc.,26-10-26,After Market,120.69,80.8%,NASDAQ,-3.76%
+WELL,Welltower Inc.,26-10-26,After Market,237.32,14.5%,NYSE,-1.75%
+AMT,American Tower Corporation,27-10-26,Before Market,188.97,8.2%,NYSE,-2.23%
+BA,Boeing Company,27-10-26,Before Market,188.35,-19.0%,NYSE,-1.33%
+CNC,Centene Corporation,27-10-26,Before Market,70.17,67.8%,NYSE,-0.36%
+CVLT,Commvault Systems Inc.,27-10-26,Before Market,169.37,80.3%,NASDAQ,-5.44%
+HCA,HCA Healthcare Inc.,27-10-26,Before Market,469.03,8.9%,NYSE,+4.32%
+IQV,IQVIA Holdings Inc.,27-10-26,Before Market,279.36,72.2%,NYSE,-1.32%
+KO,Coca-Cola Company ,27-10-26,Before Market,92.71,22.5%,NYSE,-0.82%
+NVS,Novartis AG,27-10-26,Before Market,151.12,3.9%,NYSE,+0.54%
+RGEN,Repligen Corporation,27-10-26,Before Market,176.93,50.4%,NASDAQ,-6.13%
+SPGI,S&P Global Inc.,27-10-26,Before Market,450.31,9.5%,NYSE,+4.93%
 CAKE,The Cheesecake Factory Incorpor,27-10-26,After Market,108.37,76.9%,NASDAQ,
 FFIV,F5 Inc.,27-10-26,After Market,455.42,50.2%,NASDAQ,
 ICLR,ICON plc,27-10-26,After Market,185.27,81.3%,NASDAQ,
