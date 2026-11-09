@@ -1,11 +1,11 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-AMG,Affiliated Managers Group Inc.,09-11-26,Before Market,362.96,21.90%,NYSE,
-CEG,Constellation Energy Corporatio,09-11-26,Before Market,249.95,-19.45%,NASDAQ,
-KSPI,Joint Stock Company Kaspi.kz ,09-11-26,Before Market,91.68,10.49%,NASDAQ,
-NRG,NRG Energy Inc.,09-11-26,Before Market,88.29,-37.23%,NYSE,
-ROIV,Roivant Sciences Ltd.,09-11-26,Before Market,38.88,37.48%,NASDAQ,
-TGTX,TG Therapeutics Inc.,09-11-26,Before Market,59.83,39.05%,NASDAQ,
-VIA,Via Transportation Inc.,09-11-26,Before Market,37.72,105.67%,NYSE,
+AMG,Affiliated Managers Group Inc.,09-11-26,Before Market,362.96,21.90%,NYSE,+1.08%
+CEG,Constellation Energy Corporatio,09-11-26,Before Market,249.95,-19.45%,NASDAQ,+0.86%
+KSPI,Joint Stock Company Kaspi.kz ,09-11-26,Before Market,91.68,10.49%,NASDAQ,+0.45%
+NRG,NRG Energy Inc.,09-11-26,Before Market,88.29,-37.23%,NYSE,+4.38%
+ROIV,Roivant Sciences Ltd.,09-11-26,Before Market,38.88,37.48%,NASDAQ,+3.24%
+TGTX,TG Therapeutics Inc.,09-11-26,Before Market,59.83,39.05%,NASDAQ,-2.06%
+VIA,Via Transportation Inc.,09-11-26,Before Market,37.72,105.67%,NYSE,-4.92%
 ABCL,AbCellera Biologics Inc.,09-11-26,After Market,11.88,146.47%,NASDAQ,
 ASTS,AST SpaceMobile Inc.,09-11-26,After Market,32.33,-50.53%,NASDAQ,
 BAP,Credicorp Ltd.,09-11-26,After Market,347.93,13.24%,NYSE,
@@ -37,7 +37,7 @@ NBIS,Nebius Group N.V.,12-11-26,Before Market,129.49,-29.92%,NASDAQ,
 NIQ,NIQ Global Intelligence plc,12-11-26,Before Market,20.42,82.32%,NYSE,
 TWST,Twist Bioscience Corporation,12-11-26,Before Market,120.79,106.34%,NASDAQ,
 AMAT,Applied Materials Inc.,12-11-26,After Market,332.71,-18.79%,NASDAQ,
-ANDG,Andersen Group Inc.,12-11-26,After Market,65,80.66%,NYSE,
+ANDG,Andersen Group Inc.,12-11-26,After Market,65.0,80.66%,NYSE,
 CBRS,Cerebras Systems Inc.,12-11-26,After Market,89.68,-71.17%,NASDAQ,
 CSCO,Cisco Systems Inc.,12-11-26,After Market,93.85,2.61%,NASDAQ,
 HTFL,Heartflow Inc.,12-11-26,After Market,52.4,74.78%,NASDAQ,
