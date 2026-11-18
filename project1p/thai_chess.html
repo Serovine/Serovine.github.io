@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หมากรุกไทย - Makruk Thai</title>
+<style>
+  :root {
+    --teak-light: #c88a4b;
+    --teak-med: #b57333;
+    --teak-dark: #7a4618;
+    --teak-border: #4a280b;
+    --line-color: #3b1e06;
+    --bg-dark: #1f1610;
+    --panel-bg: #2d2016;
+    --gold: #f0c36d;
+    --ivory: #fdfaf1;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    margin: 0;
+    padding: 16px;
+    font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
+    background: radial-gradient(circle at center, #362417 0%, #160e08 100%);
+    color: var(--ivory);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Header & Top Controls */
+  header {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 20px;
+    background: var(--panel-bg);
+    border: 2px solid var(--teak-dark);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  }
+
+  .top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  button, select {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gold);
+    background: #3d2b1d;
+    color: var(--ivory);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  button:hover:not(:disabled), select:hover {
+    background: #573d29;
+    transform: translateY(-1px);
+  }
+
+  button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #d49a45, #a66c1e);
+    color: #1a0f07;
+    border-color: #f7d488;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #e5ad57, #b87b28);
+  }
+
+  /* Main Layout */
+  .main-container {
+    width: 100%;
+    max-width: 980px;
+    display: grid;
+    grid-template-columns: minmax(320px, 560px) 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 820px) {
+    .main-container {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+
+  /* Teak Wood Board */
+  .board-frame {
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 1 / 1;
+    padding: 18px;
+    background: linear-gradient(145deg, #6e3d14, #472509);
+    border: 4px solid #2e1705;
+    border-radius: 14px;
+    box-shadow: 
+      0 14px 32px rgba(0,0,0,0.7),
+      inset 0 2px 4px rgba(255,255,255,0.15);
+    position: relative;
+  }
+
+  .board-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 3px solid var(--line-color);
+    /* Realistic teak wood grain texture */
+    background-color: var(--teak-med);
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        rgba(70, 32, 5, 0.08) 0px,
+        rgba(70, 32, 5, 0.08) 3px,
+        transparent 3px,
+        transparent 11px
+      ),
+      linear-gradient(180deg, #cf9153 0%, #b57435 50%, #c68646 100%);
+    box-shadow: inset 0 0 18px rgba(45, 20, 3, 0.45);
+  }
+
+  .cell {
+    position: relative;
+    border: 1.5px solid var(--line-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+  }
+
+  .cell.promotion-rank::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px dashed rgba(59, 30, 6, 0.25);
+    pointer-events: none;
+  }
+
+  .cell.selected {
+    background-color: rgba(255, 230, 100, 0.42);
+    box-shadow: inset 0 0 0 3px #ffd700;
+  }
+
+  .cell.last-move {
+    background-color: rgba(255, 195, 70, 0.28);
+  }
+
+  .cell.in-check {
+    background: radial-gradient(circle, rgba(255, 40, 40, 0.75) 20%, rgba(180, 0, 0, 0.3) 100%);
+    animation: pulseCheck 1s infinite alternate;
+  }
+
+  @keyframes pulseCheck {
+    from { box-shadow: inset 0 0 6px #ff0000; }
+    to { box-shadow: inset 0 0 18px #ffeb3b; }
+  }
+
+  /* Valid Move Indicators */
+  .move-dot {
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: rgba(30, 140, 45, 0.75);
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .capture-ring {
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    border: 4px solid rgba(215, 35, 35, 0.85);
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Piece Container */
+  .piece {
+    width: 86%;
+    height: 86%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    transition: transform 0.15s ease;
+  }
+
+  .cell:hover .piece {
+    transform: scale(1.06);
+  }
+
+  .piece svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Side Info Panel */
+  .side-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--panel-bg);
+    border: 2px solid var(--teak-dark);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  }
+
+  .status-banner {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cpu-badge {
+    font-size: 0.82rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+
+  .cpu-badge.black-cpu {
+    background: #222;
+    color: #eee;
+    border: 1px solid #666;
+  }
+
+  .cpu-badge.red-cpu {
+    background: #8f1616;
+    color: #ffdada;
+    border: 1px solid #e05353;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .stat-box {
+    background: rgba(0,0,0,0.28);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: #cbbba8;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 2px;
+  }
+
+  .captured-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .captured-row {
+    min-height: 34px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 8px;
+    padding: 4px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .mini-piece {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Move History */
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .history-list {
+    height: 190px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: monospace;
+    font-size: 0.92rem;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .history-item {
+    display: grid;
+    grid-template-columns: 36px 1fr 1fr;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* English Rules Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    z-index: 100;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal-content {
+    background: #281b11;
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 24px;
+    color: var(--ivory);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+    line-height: 1.55;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(240, 195, 109, 0.3);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    color: var(--gold);
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+
+  .rule-card {
+    background: rgba(0,0,0,0.28);
+    border: 1px solid rgba(240, 195, 109, 0.25);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .rule-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .rule-card h4 {
+    margin: 0 0 4px 0;
+    color: var(--gold);
+  }
+
+  .rule-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #e4d7c5;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1 id="ui-title">หมากรุกไทย</h1>
+  </div>
+
+  <div class="top-actions">
+    <label for="difficulty-select" id="ui-diff-label" style="font-size:0.9rem; color:#d8c6b0;">ระดับ CPU:</label>
+    <select id="difficulty-select" onchange="changeDifficulty(this.value)">
+      <option value="easy" id="opt-easy">Easy (หมากดำ)</option>
+      <option value="normal" id="opt-normal" selected>Normal (หมากดำ)</option>
+      <option value="hard" id="opt-hard">Hard (หมากแดงชาด)</option>
+    </select>
+
+    <button id="btn-rewind" onclick="rewindMove()">⏪ ย้อนตาเดิน</button>
+    <button class="btn-primary" id="btn-new" onclick="initGame()">🔄 เริ่มใหม่</button>
+    <button id="btn-sound" onclick="toggleSound()">🔊 เสียง: เปิด</button>
+    <button id="btn-rules" onclick="toggleRulesModal(true)">📖 Rules (EN)</button>
+    <button id="btn-lang" onclick="toggleLanguage()">🌐 TH / EN</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <!-- Teak Board -->
+  <div class="board-frame">
+    <div id="board" class="board-grid"></div>
+  </div>
+
+  <!-- Side Controls & Status -->
+  <div class="side-panel">
+    <div class="card">
+      <div class="status-banner">
+        <span id="status-text">ตาของคุณ (หมากขาว)</span>
+        <span id="cpu-color-badge" class="cpu-badge black-cpu">CPU: BLACK</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label" id="ui-count-label">นับศักดิ์ 64 ตา (ไร้การกิน)</div>
+          <div class="stat-value" id="countdown-val">64</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="ui-turn-label">จำนวนตาที่เดิน</div>
+          <div class="stat-value" id="turn-number">1</div>
+        </div>
+      </div>
+
+      <div class="captured-area">
+        <div class="stat-label" id="ui-cap-cpu">หมาก CPU ที่ถูกกิน:</div>
+        <div class="captured-row" id="captured-by-player"></div>
+        <div class="stat-label" id="ui-cap-player">หมากคุณที่ถูกกิน:</div>
+        <div class="captured-row" id="captured-by-cpu"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="history-header">
+        <span id="ui-history-title">ประวัติตาเดิน (Move History)</span>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- English Rules Modal (Always in English as requested) -->
+<div class="modal-backdrop" id="rules-modal" onclick="if(event.target===this) toggleRulesModal(false)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Makruk Thai (Thai Chess) — Quick Rules</h2>
+      <button onclick="toggleRulesModal(false)">✕ Close</button>
+    </div>
+
+    <p>
+      <strong>Makruk</strong> is the traditional chess of Thailand, believed to be one of the closest living relatives to the original Indian <em>Chaturanga</em>. You play as <strong>Ivory White</strong> (moving first from the bottom). The CPU plays as <strong>Onyx Black</strong> on Easy/Normal and switches to <strong>Crimson Red</strong> on Hard!
+    </p>
+
+    <h3>Piece Movements</h3>
+    <div class="rules-grid" id="rules-piece-grid"></div>
+
+    <h3>Special Rules to Know</h3>
+    <ul>
+      <li><strong>Starting Position:</strong> Pawns (Bia) start on the <strong>3rd rank</strong> (row), not the 2nd! Look closely too: the White King starts on the right of his Met, while the CPU's Met stands opposite your King.</li>
+      <li><strong>Pawn Promotion (Bia Ngai):</strong> When a Pawn reaches the <strong>6th rank</strong> (the opponent's pawn starting line), it flips over immediately into a <strong>Promoted Pawn (Bia Ngai)</strong> and moves like a <em>Met</em> (1 step diagonally).</li>
+      <li><strong>No Castling or Double-Step:</strong> Pawns always move 1 square forward (no 2-square initial jump and no <em>en passant</em>). Kings cannot castle.</li>
+      <li><strong>64-Move Draw Countdown:</strong> If <strong>64 consecutive moves</strong> (half-moves) occur without any piece being captured, the game automatically ends in a <strong>Draw</strong>.</li>
+      <li><strong>Victory:</strong> Checkmate (Ruk Jon) wins the game. Stalemate (Ab) results in a Draw.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   1. LANGUAGE & UI DICTIONARY (TH / EN)
+   ========================================================= */
+let currentLang = 'th';
+let soundEnabled = true;
+
+const i18n = {
+  th: {
+    title: 'หมากรุกไทย',
+    diffLabel: 'ระดับ CPU:',
+    easy: 'Easy (หมากดำ)',
+    normal: 'Normal (หมากดำ)',
+    hard: 'Hard (หมากแดงชาด)',
+    rewind: '⏪ ย้อนตาเดิน',
+    newGame: '🔄 เริ่มใหม่',
+    soundOn: '🔊 เสียง: เปิด',
+    soundOff: '🔇 เสียง: ปิด',
+    countLabel: 'นับถอยหลัง 64 ตา (ไร้การกิน)',
+    turnLabel: 'ตาเดินที่',
+    capCpu: 'หมาก CPU ที่คุณกินได้:',
+    capPlayer: 'หมากของคุณที่ถูกกิน:',
+    historyTitle: 'ประวัติตาเดิน',
+    yourTurn: 'ตาของคุณ (หมากขาวงาช้าง)',
+    cpuThinking: 'CPU กำลังคิด...',
+    checkAlert: ' — รุกขุน!',
+    youWin: '🎉 ชนะแล้ว! คุณรุกจน CPU สำเร็จ',
+    cpuWin: '💀 พ่ายแพ้! ขุนของคุณถูกรุกจน',
+    drawStalemate: '🤝 เสมอ! (อับหมาก - ไม่มีตาเดินที่ถูกกติกา)',
+    draw64: '🤝 เสมอ! (เดินครบ 64 ตาโดยไม่มีการกินหมาก)',
+    badgeBlack: 'CPU: หมากดำ',
+    badgeRed: 'CPU: หมากแดงชาด'
+  },
+  en: {
+    title: 'Makruk Thai',
+    diffLabel: 'CPU Level:',
+    easy: 'Easy (Black Pieces)',
+    normal: 'Normal (Black Pieces)',
+    hard: 'Hard (Crimson Red)',
+    rewind: '⏪ Rewind',
+    newGame: '🔄 New Game',
+    soundOn: '🔊 Sound: ON',
+    soundOff: '🔇 Sound: OFF',
+    countLabel: '64-Move Draw Countdown',
+    turnLabel: 'Move Number',
+    capCpu: 'Captured CPU Pieces:',
+    capPlayer: 'Captured Player Pieces:',
+    historyTitle: 'Move History',
+    yourTurn: 'Your Turn (Ivory White)',
+    cpuThinking: 'CPU is thinking...',
+    checkAlert: ' — CHECK!',
+    youWin: '🎉 Victory! Checkmate against CPU!',
+    cpuWin: '💀 Defeat! Your King was Checkmated.',
+    drawStalemate: '🤝 Draw by Stalemate!',
+    draw64: '🤝 Draw! (64 moves without a capture)',
+    badgeBlack: 'CPU: BLACK',
+    badgeRed: 'CPU: CRIMSON RED'
+  }
+};
+
+/* =========================================================
+   2. WEB AUDIO SYNTHESIZER (NO EXTERNAL FILES)
+   ========================================================= */
+let audioCtx = null;
+
+function playSound(type) {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+
+    if (type === 'move') {
+      // Wooden clack
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(170, now);
+      osc.frequency.exponentialRampToValueAtTime(55, now + 0.065);
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.07);
+    } else if (type === 'capture') {
+      // Sharp double slap on teak board
+      [0, 0.035].forEach((offset, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(idx === 0 ? 240 : 140, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(45, now + offset + 0.08);
+        gain.gain.setValueAtTime(0.4, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.08);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.085);
+      });
+    } else if (type === 'check') {
+      // Traditional metallic chime alert
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, now); // D5
+      osc.frequency.setValueAtTime(880, now + 0.09); // A5
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.42);
+    } else if (type === 'gameover') {
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i * 0.11);
+        gain.gain.setValueAtTime(0.25, now + i * 0.11);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.11 + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.11);
+        osc.stop(now + i * 0.11 + 0.36);
+      });
+    }
+  } catch (e) {}
+}
+
+/* =========================================================
+   3. CUSTOM SVG THAI CHESS PIECES (IVORY vs BLACK/CRIMSON)
+   ========================================================= */
+function getPieceSVG(type, side, difficultyOverride) {
+  const diff = difficultyOverride || difficulty;
+  let fill, stroke, innerStroke, accent;
+
+  if (side === 'w') {
+    // Ivory White
+    fill = '#fdf8ec';
+    stroke = '#422912';
+    innerStroke = '#9c7a54';
+    accent = '#d1b58e';
+  } else {
+    if (diff === 'hard') {
+      // Crimson Red (Hard Mode CPU)
+      fill = '#a81c1c';
+      stroke = '#2b0505';
+      innerStroke = '#f29b7e';
+      accent = '#730f0f';
+    } else {
+      // Onyx Black (Easy / Normal CPU)
+      fill = '#232323';
+      stroke = '#080808';
+      innerStroke = '#a89f91';
+      accent = '#3d3d3d';
+    }
+  }
+
+  let shape = '';
+  switch (type) {
+    case 'K': // Khun (King) - Tall tiered royal spire
+      shape = `
+        <ellipse cx="50" cy="84" rx="34" ry="8" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <path d="M20 82 C20 56, 32 42, 38 32 L50 10 L62 32 C68 42, 80 56, 80 82 Z" fill="${fill}" stroke="${stroke}" stroke-width="3.8" stroke-linejoin="round"/>
+        <path d="M30 68 Q50 61 70 68" fill="none" stroke="${innerStroke}" stroke-width="2.8" stroke-linecap="round"/>
+        <path d="M35 53 Q50 47 65 53" fill="none" stroke="${innerStroke}" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 38 Q50 34 60 38" fill="none" stroke="${innerStroke}" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="50" cy="11" r="4.5" fill="${innerStroke}" stroke="${stroke}" stroke-width="2"/>
+      `;
+      break;
+
+    case 'K_N': // Khon (Nobleman / Bishop) - Tapered stupa cone
+      shape = `
+        <ellipse cx="50" cy="83" rx="31" ry="7" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <path d="M23 81 C24 54, 34 36, 50 18 C66 36, 76 54, 77 81 Z" fill="${fill}" stroke="${stroke}" stroke-width="3.8" stroke-linejoin="round"/>
+        <path d="M31 66 Q50 60 69 66" fill="none" stroke="${innerStroke}" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M38 48 Q50 43 62 48" fill="none" stroke="${innerStroke}" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="50" cy="20" r="3.5" fill="${innerStroke}"/>
+      `;
+      break;
+
+    case 'M': // Met (Counselor / Queen) - Shorter lotus bud cone
+      shape = `
+        <ellipse cx="50" cy="81" rx="27" ry="6.5" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <path d="M27 79 C28 57, 36 42, 50 30 C64 42, 72 57, 73 79 Z" fill="${fill}" stroke="${stroke}" stroke-width="3.8" stroke-linejoin="round"/>
+        <path d="M34 64 Q50 59 66 64" fill="none" stroke="${innerStroke}" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="31" r="3.2" fill="${innerStroke}"/>
+      `;
+      break;
+
+    case 'N': // Ma (Thai Knight) - Stylized Thai Horse Profile
+      shape = `
+        <ellipse cx="50" cy="84" rx="32" ry="7" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <path d="M25 81 L29 52 C27 38, 34 24, 46 19 L49 11 L55 18 C67 20, 76 31, 73 41 C68 45, 58 43, 53 39 C51 45, 57 52, 68 58 L73 81 Z"
+              fill="${fill}" stroke="${stroke}" stroke-width="3.8" stroke-linejoin="round"/>
+        <circle cx="58" cy="28" r="3" fill="${innerStroke}"/>
+        <path d="M35 34 Q31 48 35 66" fill="none" stroke="${innerStroke}" stroke-width="2.6" stroke-linecap="round"/>
+      `;
+      break;
+
+    case 'R': // Ruea (Boat / Rook) - Traditional Thai Boat Pedestal
+      shape = `
+        <ellipse cx="50" cy="83" rx="33" ry="7" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <path d="M21 80 L27 42 L15 30 Q50 38 85 30 L73 42 L79 80 Z"
+              fill="${fill}" stroke="${stroke}" stroke-width="3.8" stroke-linejoin="round"/>
+        <path d="M28 64 L72 64" stroke="${innerStroke}" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M30 48 L70 48" stroke="${innerStroke}" stroke-width="2.4" stroke-linecap="round"/>
+      `;
+      break;
+
+    case 'P': // Bia (Cowrie Shell / Unpromoted Pawn)
+      shape = `
+        <circle cx="50" cy="53" r="30" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <circle cx="50" cy="50" r="28" fill="${fill}" stroke="${stroke}" stroke-width="3.5"/>
+        <circle cx="50" cy="50" r="18" fill="none" stroke="${innerStroke}" stroke-width="2.4"/>
+        <circle cx="50" cy="50" r="5" fill="${innerStroke}"/>
+      `;
+      break;
+
+    case 'PM': // Bia Ngai (Flipped Promoted Pawn) - Cowrie shell with distinct 4 pips & diamond
+      shape = `
+        <circle cx="50" cy="53" r="31" fill="${accent}" stroke="${stroke}" stroke-width="3.5"/>
+        <circle cx="50" cy="50" r="29" fill="${fill}" stroke="${stroke}" stroke-width="3.8"/>
+        <circle cx="50" cy="50" r="22" fill="none" stroke="${innerStroke}" stroke-width="2.2" stroke-dasharray="5 3"/>
+        <polygon points="50,34 66,50 50,66 34,50" fill="none" stroke="${innerStroke}" stroke-width="2.6"/>
+        <circle cx="50" cy="43" r="2.8" fill="${innerStroke}"/>
+        <circle cx="57" cy="50" r="2.8" fill="${innerStroke}"/>
+        <circle cx="50" cy="57" r="2.8" fill="${innerStroke}"/>
+        <circle cx="43" cy="50" r="2.8" fill="${innerStroke}"/>
+      `;
+      break;
+  }
+
+  return `<svg viewBox="0 0 100 100" style="filter: drop-shadow(0 3px 3px rgba(0,0,0,0.45));">${shape}</svg>`;
+}
+
+/* =========================================================
+   4. MAKRUK THAI ENGINE & GAME STATE
+   ========================================================= */
+let board = [];
+let turn = 'w'; // 'w' = Player (Ivory), 'b' = CPU (Black or Crimson)
+let difficulty = 'normal';
+let selectedSq = null;
+let validMovesForSelected = [];
+let lastMove = null;
+let halfMovesWithoutCapture = 0;
+let fullMoveNumber = 1;
+let gameOver = false;
+let isCpuThinking = false;
+let stateHistory = [];
+let moveLog = []; // Array of { num, w, b }
+let capturedByPlayer = [];
+let capturedByCpu = [];
+
+// Initial Makruk Setup:
+// Row 0: CPU back rank (R, N, K_N, K, M, K_N, N, R) -> Wait: In Makruk, Kings & Mets are opposite each other!
+// White (Row 7): R, N, K_N, M, K, K_N, N, R (White King on e1/col 4, Met on d1/col 3)
+// CPU   (Row 0): R, N, K_N, K, M, K_N, N, R (CPU King on d8/col 3, Met on e8/col 4)
+function createInitialBoard() {
+  const b = Array.from({ length: 8 }, () => Array(8).fill(null));
+  const cpuBack = ['R', 'N', 'K_N', 'K', 'M', 'K_N', 'N', 'R'];
+  const playerBack = ['R', 'N', 'K_N', 'M', 'K', 'K_N', 'N', 'R'];
+
+  for (let c = 0; c < 8; c++) {
+    b[0][c] = { type: cpuBack[c], side: 'b' };
+    b[2][c] = { type: 'P', side: 'b' }; // Pawns on 3rd rank from top
+    b[5][c] = { type: 'P', side: 'w' }; // Pawns on 3rd rank from bottom
+    b[7][c] = { type: playerBack[c], side: 'w' };
+  }
+  return b;
+}
+
+function cloneBoard(b) {
+  return b.map(row => row.map(cell => (cell ? { ...cell } : null)));
+}
+
+function inBounds(r, c) {
+  return r >= 0 && r < 8 && c >= 0 && c < 8;
+}
+
+// Generate pseudo-legal moves for a piece at (r, c)
+function getPseudoMoves(b, r, c) {
+  const p = b[r][c];
+  if (!p) return [];
+  const moves = [];
+  const side = p.side;
+  const forward = side === 'w' ? -1 : 1;
+
+  const addMove = (nr, nc) => {
+    if (!inBounds(nr, nc)) return false;
+    const target = b[nr][nc];
+    if (!target) {
+      moves.push({ fr: r, fc: c, tr: nr, tc: nc });
+      return true;
+    } else if (target.side !== side) {
+      moves.push({ fr: r, fc: c, tr: nr, tc: nc, capture: true });
+      return false;
+    }
+    return false;
+  };
+
+  switch (p.type) {
+    case 'K': // Khun: 1 step in all 8 directions
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr !== 0 || dc !== 0) addMove(r + dr, c + dc);
+        }
+      }
+      break;
+
+    case 'M': // Met or Bia Ngai (PM): 1 step diagonally
+    case 'PM':
+      [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(([dr, dc]) => addMove(r + dr, c + dc));
+      break;
+
+    case 'K_N': // Khon: 1 step diagonally or 1 step straight forward
+      [[-1, -1], [-1, 1], [1, -1], [1, 1], [forward, 0]].forEach(([dr, dc]) => addMove(r + dr, c + dc));
+      break;
+
+    case 'N': // Ma (Knight): L-jump
+      [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]].forEach(([dr, dc]) => addMove(r + dr, c + dc));
+      break;
+
+    case 'R': // Ruea (Rook): orthogonal sliding
+      [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([dr, dc]) => {
+        let nr = r + dr, nc = c + dc;
+        while (addMove(nr, nc)) {
+          nr += dr;
+          nc += dc;
+        }
+      });
+      break;
+
+    case 'P': // Bia (Pawn): 1 step forward, captures 1 step forward-diagonal
+      if (inBounds(r + forward, c) && !b[r + forward][c]) {
+        moves.push({ fr: r, fc: c, tr: r + forward, tc: c });
+      }
+      [-1, 1].forEach(dc => {
+        const nr = r + forward, nc = c + dc;
+        if (inBounds(nr, nc) && b[nr][nc] && b[nr][nc].side !== side) {
+          moves.push({ fr: r, fc: c, tr: nr, tc: nc, capture: true });
+        }
+      });
+      break;
+  }
+
+  return moves;
+}
+
+function applyMoveOnBoard(b, move) {
+  const nb = cloneBoard(b);
+  const piece = { ...nb[move.fr][move.fc] };
+  nb[move.fr][move.fc] = null;
+
+  // Check Pawn Promotion on reaching opponent's pawn rank (Row 2 for White, Row 5 for Black)
+  if (piece.type === 'P') {
+    if ((piece.side === 'w' && move.tr === 2) || (piece.side === 'b' && move.tr === 5)) {
+      piece.type = 'PM';
+    }
+  }
+  nb[move.tr][move.tc] = piece;
+  return nb;
+}
+
+function findKing(b, side) {
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (b[r][c] && b[r][c].side === side && b[r][c].type === 'K') {
+        return { r, c };
+      }
+    }
+  }
+  return null;
+}
+
+function isKingInCheck(b, side) {
+  const kingPos = findKing(b, side);
+  if (!kingPos) return true;
+  const opp = side === 'w' ? 'b' : 'w';
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (b[r][c] && b[r][c].side === opp) {
+        const moves = getPseudoMoves(b, r, c);
+        if (moves.some(m => m.tr === kingPos.r && m.tc === kingPos.c)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function getAllLegalMoves(b, side) {
+  const legal = [];
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (b[r][c] && b[r][c].side === side) {
+        const pseudo = getPseudoMoves(b, r, c);
+        for (const m of pseudo) {
+          const nextBoard = applyMoveOnBoard(b, m);
+          if (!isKingInCheck(nextBoard, side)) {
+            legal.push(m);
+          }
+        }
+      }
+    }
+  }
+  return legal;
+}
+
+/* =========================================================
+   5. AI ENGINE (EASY / NORMAL / HARD)
+   ========================================================= */
+const pieceWeights = {
+  K: 10000,
+  R: 520,
+  N: 310,
+  K_N: 270,
+  M: 185,
+  PM: 185,
+  P: 100
+};
+
+function evaluateBoard(b) {
+  let score = 0;
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const p = b[r][c];
+      if (!p) continue;
+      let val = pieceWeights[p.type];
+
+      // Center control bonus
+      const centerBonus = (3.5 - Math.abs(3.5 - r)) * 4 + (3.5 - Math.abs(3.5 - c)) * 4;
+      val += centerBonus;
+
+      // Pawn advancement bonus toward promotion rank
+      if (p.type === 'P') {
+        if (p.side === 'b') val += r * 14;
+        else val += (7 - r) * 14;
+      }
+
+      if (p.side === 'b') score += val;
+      else score -= val;
+    }
+  }
+  return score;
+}
+
+function chooseCpuMove() {
+  const legalMoves = getAllLegalMoves(board, 'b');
+  if (legalMoves.length === 0) return null;
+
+  // EASY: Mostly random with slight preference for immediate captures
+  if (difficulty === 'easy') {
+    const captures = legalMoves.filter(m => board[m.tr][m.tc] !== null);
+    if (captures.length > 0 && Math.random() < 0.55) {
+      return captures[Math.floor(Math.random() * captures.length)];
+    }
+    return legalMoves[Math.floor(Math.random() * legalMoves.length)];
+  }
+
+  // NORMAL (Depth 2) & HARD (Depth 3 with Alpha-Beta & Move Ordering)
+  const depth = difficulty === 'hard' ? 3 : 2;
+
+  // Order captures first for faster alpha-beta pruning
+  legalMoves.sort((a, b) => {
+    const capA = board[a.tr][a.tc] ? pieceWeights[board[a.tr][a.tc].type] : 0;
+    const capB = board[b.tr][b.tc] ? pieceWeights[board[b.tr][b.tc].type] : 0;
+    return capB - capA;
+  });
+
+  let bestScore = -Infinity;
+  let bestMoves = [];
+
+  for (const m of legalMoves) {
+    const nextB = applyMoveOnBoard(board, m);
+    const score = minimax(nextB, depth - 1, -Infinity, Infinity, false);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMoves = [m];
+    } else if (Math.abs(score - bestScore) <= 4) {
+      bestMoves.push(m);
+    }
+  }
+
+  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+}
+
+function minimax(b, depth, alpha, beta, isMaximizing) {
+  if (depth === 0) return evaluateBoard(b);
+
+  const side = isMaximizing ? 'b' : 'w';
+  const moves = getAllLegalMoves(b, side);
+
+  if (moves.length === 0) {
+    if (isKingInCheck(b, side)) {
+      return isMaximizing ? -9000 - depth * 10 : 9000 + depth * 10;
+    }
+    return 0; // Stalemate
+  }
+
+  // Simple capture ordering
+  moves.sort((a, m2) => (b[m2.tr][m2.tc] ? 1 : 0) - (b[a.tr][a.tc] ? 1 : 0));
+
+  if (isMaximizing) {
+    let maxEval = -Infinity;
+    for (const m of moves) {
+      const ev = minimax(applyMoveOnBoard(b, m), depth - 1, alpha, beta, false);
+      maxEval = Math.max(maxEval, ev);
+      alpha = Math.max(alpha, ev);
+      if (beta <= alpha) break;
+    }
+    return maxEval;
+  } else {
+    let minEval = Infinity;
+    for (const m of moves) {
+      const ev = minimax(applyMoveOnBoard(b, m), depth - 1, alpha, beta, true);
+      minEval = Math.min(minEval, ev);
+      beta = Math.min(beta, ev);
+      if (beta <= alpha) break;
+    }
+    return minEval;
+  }
+}
+
+/* =========================================================
+   6. GAMEPLAY FLOW, REWIND & UI RENDER
+   ========================================================= */
+function formatCoord(r, c) {
+  const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  return `${files[c]}${8 - r}`;
+}
+
+function saveSnapshot() {
+  stateHistory.push({
+    board: cloneBoard(board),
+    turn,
+    lastMove: lastMove ? { ...lastMove } : null,
+    halfMovesWithoutCapture,
+    fullMoveNumber,
+    gameOver,
+    moveLog: JSON.parse(JSON.stringify(moveLog)),
+    capturedByPlayer: [...capturedByPlayer],
+    capturedByCpu: [...capturedByCpu]
+  });
+}
+
+function executeMove(move) {
+  const movingPiece = board[move.fr][move.fc];
+  const targetPiece = board[move.tr][move.tc];
+  const isPromo = movingPiece.type === 'P' &&
+    ((movingPiece.side === 'w' && move.tr === 2) || (movingPiece.side === 'b' && move.tr === 5));
+
+  if (targetPiece) {
+    halfMovesWithoutCapture = 0;
+    if (movingPiece.side === 'w') capturedByPlayer.push(targetPiece.type);
+    else capturedByCpu.push(targetPiece.type);
+  } else {
+    halfMovesWithoutCapture++;
+  }
+
+  // Record algebraic-style move string
+  const sym = movingPiece.type === 'K_N' ? 'Kh' : movingPiece.type;
+  const moveStr = `${sym}:${formatCoord(move.fr, move.fc)}${targetPiece ? 'x' : '-'}${formatCoord(move.tr, move.tc)}${isPromo ? '=PM' : ''}`;
+
+  if (movingPiece.side === 'w') {
+    moveLog.push({ num: fullMoveNumber, w: moveStr, b: '' });
+  } else {
+    if (moveLog.length > 0) {
+      moveLog[moveLog.length - 1].b = moveStr;
+    }
+    fullMoveNumber++;
+  }
+
+  board = applyMoveOnBoard(board, move);
+  lastMove = move;
+  selectedSq = null;
+  validMovesForSelected = [];
+  turn = turn === 'w' ? 'b' : 'w';
+
+  // Check endgame conditions
+  const nextMoves = getAllLegalMoves(board, turn);
+  const inCheck = isKingInCheck(board, turn);
+
+  if (nextMoves.length === 0) {
+    gameOver = true;
+    playSound('gameover');
+    if (inCheck) {
+      updateStatusBanner(turn === 'b' ? i18n[currentLang].youWin : i18n[currentLang].cpuWin);
+    } else {
+      updateStatusBanner(i18n[currentLang].drawStalemate);
+    }
+    renderAll();
+    return;
+  }
+
+  if (halfMovesWithoutCapture >= 64) {
+    gameOver = true;
+    playSound('gameover');
+    updateStatusBanner(i18n[currentLang].draw64);
+    renderAll();
+    return;
+  }
+
+  if (inCheck) {
+    playSound('check');
+  } else if (targetPiece) {
+    playSound('capture');
+  } else {
+    playSound('move');
+  }
+
+  renderAll();
+
+  // Trigger CPU turn
+  if (!gameOver && turn === 'b') {
+    isCpuThinking = true;
+    updateStatusBanner(i18n[currentLang].cpuThinking);
+    setTimeout(() => {
+      const cpuMove = chooseCpuMove();
+      isCpuThinking = false;
+      if (cpuMove) {
+        executeMove(cpuMove);
+      }
+    }, 320);
+  }
+}
+
+function onSquareClick(r, c) {
+  if (gameOver || isCpuThinking || turn !== 'w') return;
+
+  // Check if clicked square is a valid destination for currently selected piece
+  const chosenMove = validMovesForSelected.find(m => m.tr === r && m.tc === c);
+  if (chosenMove) {
+    saveSnapshot(); // Save state right before player's move so Rewind restores player's turn
+    executeMove(chosenMove);
+    return;
+  }
+
+  // Otherwise select own piece
+  const clickedPiece = board[r][c];
+  if (clickedPiece && clickedPiece.side === 'w') {
+    selectedSq = { r, c };
+    const allLegal = getAllLegalMoves(board, 'w');
+    validMovesForSelected = allLegal.filter(m => m.fr === r && m.fc === c);
+  } else {
+    selectedSq = null;
+    validMovesForSelected = [];
+  }
+  renderBoard();
+}
+
+function rewindMove() {
+  if (isCpuThinking || stateHistory.length === 0) return;
+  const prev = stateHistory.pop();
+  board = prev.board;
+  turn = prev.turn;
+  lastMove = prev.lastMove;
+  halfMovesWithoutCapture = prev.halfMovesWithoutCapture;
+  fullMoveNumber = prev.fullMoveNumber;
+  gameOver = prev.gameOver;
+  moveLog = prev.moveLog;
+  capturedByPlayer = prev.capturedByPlayer;
+  capturedByCpu = prev.capturedByCpu;
+  selectedSq = null;
+  validMovesForSelected = [];
+  playSound('move');
+  renderAll();
+}
+
+function changeDifficulty(val) {
+  difficulty = val;
+  renderAll();
+}
+
+function initGame() {
+  board = createInitialBoard();
+  turn = 'w';
+  selectedSq = null;
+  validMovesForSelected = [];
+  lastMove = null;
+  halfMovesWithoutCapture = 0;
+  fullMoveNumber = 1;
+  gameOver = false;
+  isCpuThinking = false;
+  stateHistory = [];
+  moveLog = [];
+  capturedByPlayer = [];
+  capturedByCpu = [];
+  renderAll();
+}
+
+function updateStatusBanner(customText) {
+  const statusEl = document.getElementById('status-text');
+  if (customText) {
+    statusEl.textContent = customText;
+    return;
+  }
+  const inCheck = isKingInCheck(board, turn);
+  const baseText = turn === 'w' ? i18n[currentLang].yourTurn : i18n[currentLang].cpuThinking;
+  statusEl.textContent = baseText + (inCheck ? i18n[currentLang].checkAlert : '');
+}
+
+function renderBoard() {
+  const boardEl = document.getElementById('board');
+  boardEl.innerHTML = '';
+
+  const whiteKingCheck = isKingInCheck(board, 'w') ? findKing(board, 'w') : null;
+  const blackKingCheck = isKingInCheck(board, 'b') ? findKing(board, 'b') : null;
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+
+      // Subtle dashed border on promotion ranks (Row 2 and Row 5)
+      if (r === 2 || r === 5) cell.classList.add('promotion-rank');
+
+      if (selectedSq && selectedSq.r === r && selectedSq.c === c) {
+        cell.classList.add('selected');
+      }
+      if (lastMove && ((lastMove.fr === r && lastMove.fc === c) || (lastMove.tr === r && lastMove.tc === c))) {
+        cell.classList.add('last-move');
+      }
+      if ((whiteKingCheck && whiteKingCheck.r === r && whiteKingCheck.c === c) ||
+          (blackKingCheck && blackKingCheck.r === r && blackKingCheck.c === c)) {
+        cell.classList.add('in-check');
+      }
+
+      const p = board[r][c];
+      if (p) {
+        const pieceDiv = document.createElement('div');
+        pieceDiv.className = 'piece';
+        pieceDiv.innerHTML = getPieceSVG(p.type, p.side);
+        cell.appendChild(pieceDiv);
+      }
+
+      // Highlight valid destinations
+      const validMove = validMovesForSelected.find(m => m.tr === r && m.tc === c);
+      if (validMove) {
+        const indicator = document.createElement('div');
+        indicator.className = board[r][c] ? 'capture-ring' : 'move-dot';
+        cell.appendChild(indicator);
+      }
+
+      cell.onclick = () => onSquareClick(r, c);
+      boardEl.appendChild(cell);
+    }
+  }
+}
+
+function renderSidePanel() {
+  if (!gameOver && !isCpuThinking) {
+    updateStatusBanner();
+  }
+
+  // Update CPU Color Badge (Black on Easy/Normal, Crimson Red on Hard)
+  const badge = document.getElementById('cpu-color-badge');
+  if (difficulty === 'hard') {
+    badge.className = 'cpu-badge red-cpu';
+    badge.textContent = i18n[currentLang].badgeRed;
+  } else {
+    badge.className = 'cpu-badge black-cpu';
+    badge.textContent = i18n[currentLang].badgeBlack;
+  }
+
+  // Update 64-move countdown & move number
+  document.getElementById('countdown-val').textContent = Math.max(0, 64 - halfMovesWithoutCapture);
+  document.getElementById('turn-number').textContent = fullMoveNumber;
+  document.getElementById('btn-rewind').disabled = stateHistory.length === 0 || isCpuThinking;
+
+  // Render captured pieces
+  const capPlayerEl = document.getElementById('captured-by-player');
+  capPlayerEl.innerHTML = capturedByPlayer.map(t => `<div class="mini-piece">${getPieceSVG(t, 'b')}</div>`).join('');
+
+  const capCpuEl = document.getElementById('captured-by-cpu');
+  capCpuEl.innerHTML = capturedByCpu.map(t => `<div class="mini-piece">${getPieceSVG(t, 'w')}</div>`).join('');
+
+  // Render move history list
+  const histEl = document.getElementById('history-list');
+  histEl.innerHTML = moveLog.map(item => `
+    <div class="history-item">
+      <span style="color:#b99b78;">${item.num}.</span>
+      <span>${item.w}</span>
+      <span style="color:#f0c36d;">${item.b || ''}</span>
+    </div>
+  `).join('');
+  histEl.scrollTop = histEl.scrollHeight;
+}
+
+function renderAll() {
+  renderBoard();
+  renderSidePanel();
+}
+
+/* =========================================================
+   7. UI CONTROLS & ENGLISH RULES MODAL
+   ========================================================= */
+function toggleLanguage() {
+  currentLang = currentLang === 'th' ? 'en' : 'th';
+  const t = i18n[currentLang];
+  document.getElementById('ui-title').textContent = t.title;
+  document.getElementById('ui-diff-label').textContent = t.diffLabel;
+  document.getElementById('opt-easy').textContent = t.easy;
+  document.getElementById('opt-normal').textContent = t.normal;
+  document.getElementById('opt-hard').textContent = t.hard;
+  document.getElementById('btn-rewind').textContent = t.rewind;
+  document.getElementById('btn-new').textContent = t.newGame;
+  document.getElementById('btn-sound').textContent = soundEnabled ? t.soundOn : t.soundOff;
+  document.getElementById('ui-count-label').textContent = t.countLabel;
+  document.getElementById('ui-turn-label').textContent = t.turnLabel;
+  document.getElementById('ui-cap-cpu').textContent = t.capCpu;
+  document.getElementById('ui-cap-player').textContent = t.capPlayer;
+  document.getElementById('ui-history-title').textContent = t.historyTitle;
+  renderAll();
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  const t = i18n[currentLang];
+  document.getElementById('btn-sound').textContent = soundEnabled ? t.soundOn : t.soundOff;
+}
+
+function toggleRulesModal(show) {
+  const modal = document.getElementById('rules-modal');
+  if (show) modal.classList.add('open');
+  else modal.classList.remove('open');
+}
+
+function populateEnglishRulesModal() {
+  const piecesInfo = [
+    { type: 'K', name: 'Khun (King)', desc: 'Moves 1 step in any direction (8 ways). Must be protected from check.' },
+    { type: 'M', name: 'Met (Counselor / Queen)', desc: 'Moves 1 step diagonally in any of the 4 diagonal directions.' },
+    { type: 'K_N', name: 'Khon (Nobleman / Bishop)', desc: 'Moves 1 step diagonally (4 ways) OR 1 step straight forward (5 ways total).' },
+    { type: 'R', name: 'Ruea (Boat / Rook)', desc: 'Slides any number of vacant squares horizontally or vertically.' },
+    { type: 'N', name: 'Ma (Horse / Knight)', desc: 'Jumps in an L-shape (2 squares in one direction, then 1 perpendicular), leaping over pieces.' },
+    { type: 'P', name: 'Bia (Cowrie Shell / Pawn)', desc: 'Moves 1 step straight forward, captures 1 step diagonally forward.' },
+    { type: 'PM', name: 'Bia Ngai (Promoted Pawn)', desc: 'Created when a Pawn reaches the 6th rank. Moves 1 step diagonally just like a Met.' }
+  ];
+
+  const grid = document.getElementById('rules-piece-grid');
+  grid.innerHTML = piecesInfo.map(info => `
+    <div class="rule-card">
+      <div class="rule-icon">${getPieceSVG(info.type, 'w', 'normal')}</div>
+      <div>
+        <h4>${info.name}</h4>
+        <p>${info.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Initialize on load
+populateEnglishRulesModal();
+initGame();
+</script>
+</body>
+</html>
