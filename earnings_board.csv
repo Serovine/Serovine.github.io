@@ -1,20 +1,20 @@
 Symbol,Company,Earnings Date,Time,Price,6M %Change,Exchange,%Today
-AMTM,Amentum Holdings Inc.,23-11-26,After Market,20.34,-12.18%,NYSE,
-HPE,Hewlett Packard Enterprise Comp,23-11-26,After Market,40.91,21.09%,NYSE,
-SYM,Symbotic Inc.,23-11-26,After Market,31.1,-38.96%,NASDAQ,
-ZM,Zoom Communications Inc.,23-11-26,After Market,81.26,-16.01%,NASDAQ,
-ADI,Analog Devices Inc.,24-11-26,Before Market,345.92,-9.44%,NASDAQ,
-ANF,Abercrombie & Fitch Company,24-11-26,Before Market,137.92,80.31%,NYSE,
-BBY,Best Buy Co. Inc.,24-11-26,Before Market,97.95,64.01%,NYSE,
-BILI,Bilibili Inc.,24-11-26,Before Market,10.6,-39.70%,NASDAQ,
-BURL,Burlington Stores Inc.,24-11-26,Before Market,245.34,-22.37%,NYSE,
-DKS,Dick's Sporting Goods Inc,24-11-26,Before Market,132.25,-39.45%,NYSE,
-DLTR,Dollar Tree Inc.,24-11-26,Before Market,137.96,44.14%,NASDAQ,
-DY,Dycom Industries Inc.,24-11-26,Before Market,205.55,-50.40%,NYSE,
-MDT,Medtronic plc.,24-11-26,Before Market,99.94,30.09%,NYSE,
-MMED,MiniMed Group Inc.,24-11-26,Before Market,16.01,36.60%,NASDAQ,
-SJM,The J.M. Smucker Company,24-11-26,Before Market,133.68,33.54%,NYSE,
-VIPS,Vipshop Holdings Limited,24-11-26,Before Market,12.54,-13.64%,NYSE,
+AMTM,Amentum Holdings Inc.,23-11-26,After Market,20.34,-12.18%,NYSE,+21.84%
+HPE,Hewlett Packard Enterprise Comp,23-11-26,After Market,40.91,21.09%,NYSE,-14.36%
+SYM,Symbotic Inc.,23-11-26,After Market,31.1,-38.96%,NASDAQ,+6.29%
+ZM,Zoom Communications Inc.,23-11-26,After Market,81.26,-16.01%,NASDAQ,+3.37%
+ADI,Analog Devices Inc.,24-11-26,Before Market,345.92,-9.44%,NASDAQ,-15.44%
+ANF,Abercrombie & Fitch Company,24-11-26,Before Market,137.92,80.31%,NYSE,+21.87%
+BBY,Best Buy Co. Inc.,24-11-26,Before Market,97.95,64.01%,NYSE,+2.57%
+BILI,Bilibili Inc.,24-11-26,Before Market,10.6,-39.70%,NASDAQ,+0.04%
+BURL,Burlington Stores Inc.,24-11-26,Before Market,245.34,-22.37%,NYSE,+6.77%
+DKS,Dick's Sporting Goods Inc,24-11-26,Before Market,132.25,-39.45%,NYSE,+12.09%
+DLTR,Dollar Tree Inc.,24-11-26,Before Market,137.96,44.14%,NASDAQ,+9.76%
+DY,Dycom Industries Inc.,24-11-26,Before Market,205.55,-50.40%,NYSE,-10.97%
+MDT,Medtronic plc.,24-11-26,Before Market,99.94,30.09%,NYSE,-4.29%
+MMED,MiniMed Group Inc.,24-11-26,Before Market,16.01,36.60%,NASDAQ,+4.22%
+SJM,The J.M. Smucker Company,24-11-26,Before Market,133.68,33.54%,NYSE,-3.15%
+VIPS,Vipshop Holdings Limited,24-11-26,Before Market,12.54,-13.64%,NYSE,+2.14%
 ADSK,Autodesk Inc.,24-11-26,After Market,244.48,1.79%,NASDAQ,
 DELL,Dell Technologies Inc.,24-11-26,After Market,278.02,10.31%,NYSE,
 HPQ,HP Inc.,24-11-26,After Market,27.96,30.48%,NYSE,
