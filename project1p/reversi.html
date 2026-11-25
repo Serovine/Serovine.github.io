@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Othello</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --accent:#22c55e; --text:#e2e8f0; --muted:#94a3b8;
+    --board:#15803d; --line:#0b4d23; --gold:#facc15;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",Tahoma,"Noto Sans Thai",sans-serif;
+    background:radial-gradient(circle at top,#1e293b,#020617);
+    color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px 10px;
+  }
+  .app{width:100%;max-width:560px;display:flex;flex-direction:column;gap:14px}
+
+  .top{position:relative;display:flex;justify-content:center;align-items:center}
+  h1{font-size:1.8rem;letter-spacing:8px;font-weight:800}
+  .icon-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--panel);border:none;
+    color:var(--text);width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer;transition:.15s}
+  .icon-btn:active{transform:translateY(-50%) scale(.92)}
+
+  .scorebar{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+  .player{background:var(--panel);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;
+    border:2px solid transparent;transition:.3s}
+  .player.active{border-color:var(--accent);box-shadow:0 0 14px rgba(34,197,94,.4)}
+  .player.win{border-color:var(--gold);animation:glow 1.1s ease-in-out infinite alternate}
+  .player.win .name::after{content:" 👑"}
+  .player.lose{opacity:.45;filter:grayscale(.7)}
+  @keyframes glow{from{box-shadow:0 0 8px rgba(250,204,21,.3)}to{box-shadow:0 0 26px rgba(250,204,21,.8)}}
+  .player .chip{width:30px;height:30px;border-radius:50%;flex-shrink:0}
+  .chip.black{background:radial-gradient(circle at 30% 30%,#555,#000)}
+  .chip.white{background:radial-gradient(circle at 30% 30%,#fff,#cbd5e1)}
+  .player .info{display:flex;flex-direction:column;line-height:1.2}
+  .player .name{font-size:.8rem;color:var(--muted)}
+  .player .count{font-size:1.5rem;font-weight:700;transform-origin:center}
+  .player.right{flex-direction:row-reverse;text-align:right}
+  .player.right .count{align-self:flex-end}
+  .count.bump{animation:bump .22s ease-out}
+  @keyframes bump{50%{transform:scale(1.4)}}
+  .vs{color:var(--muted);font-weight:700}
+
+  .status{text-align:center;min-height:24px;font-size:1rem;color:var(--muted)}
+  .status b{color:var(--text)}
+  .status small{font-size:.75rem;color:#64748b}
+  .thinking::after{content:"";display:inline-block;width:12px;animation:dots 1s steps(4) infinite;text-align:left}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  .board-wrap{position:relative;background:#3f2a14;padding:10px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.6);overflow:hidden}
+  .board-wrap.counting{cursor:pointer}
+  .board{display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1/1;width:100%;
+    background:var(--line);gap:2px;border:2px solid var(--line);border-radius:6px;overflow:hidden}
+  .cell{background:var(--board);position:relative;display:flex;align-items:center;justify-content:center}
+  .cell:nth-child(odd){background:#16843f}
+  .cell.hint{cursor:pointer}
+  .cell.hint::after{content:"";width:28%;height:28%;border-radius:50%;background:rgba(0,0,0,.28);transition:.15s}
+  .cell.hint.for-white::after{background:rgba(255,255,255,.35)}
+  .cell.hint:hover::after{width:40%;height:40%}
+  .disc{width:82%;height:82%;border-radius:50%;position:relative;display:none}
+  .disc.black,.disc.white{display:block}
+  .disc.black{background:radial-gradient(circle at 30% 30%,#555,#000 70%);box-shadow:0 3px 5px rgba(0,0,0,.6)}
+  .disc.white{background:radial-gradient(circle at 30% 30%,#fff,#cbd5e1 75%);box-shadow:0 3px 5px rgba(0,0,0,.5)}
+  .disc.last::after{content:"";position:absolute;top:50%;left:50%;width:22%;height:22%;transform:translate(-50%,-50%);
+    border-radius:50%;background:#ef4444}
+  .disc.pop{animation:pop .3s ease-out}
+  .disc.flip{animation:flip .4s ease-in-out}
+  .disc.vanish{animation:vanish .35s ease-in forwards}
+  @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+  @keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+  @keyframes vanish{to{transform:scale(0) rotate(90deg);opacity:0}}
+
+  .toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:rgba(15,23,42,.92);
+    padding:12px 20px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;white-space:nowrap;z-index:5}
+  .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  .banner{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%) scaleY(0);background:rgba(2,6,23,.88);
+    text-align:center;padding:20px 0;z-index:6;pointer-events:none;transition:transform .45s cubic-bezier(.2,1.5,.4,1)}
+  .banner.show{transform:translateY(-50%) scaleY(1)}
+  .banner .big{font-size:2.6rem;font-weight:800;letter-spacing:3px}
+  .banner.show .big{animation:zoomIn .6s ease-out}
+  .banner.win .big{color:var(--gold);text-shadow:0 0 20px rgba(250,204,21,.6)}
+  .banner.lose .big{color:#f87171}
+  .banner.draw .big{color:#e2e8f0}
+  .banner .small{color:var(--muted);font-size:1.1rem;margin-top:4px}
+  @keyframes zoomIn{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .controls{background:var(--panel);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .row label.title{width:70px;color:var(--muted);font-size:.9rem}
+  .seg{display:flex;background:#0f172a;border-radius:10px;padding:3px;flex:1}
+  .seg button{flex:1;border:none;background:transparent;color:var(--muted);padding:8px 6px;border-radius:8px;
+    cursor:pointer;font-size:.9rem;font-family:inherit;transition:.2s}
+  .seg button.on{background:var(--accent);color:#052e16;font-weight:700}
+  .btns{display:flex;gap:10px}
+  .btn{flex:1;border:none;padding:11px 8px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--accent);color:#052e16}
+  .btn.secondary{background:#334155;color:var(--text)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem;cursor:pointer}
+  .toggle input{accent-color:var(--accent);width:18px;height:18px}
+  .hint-text{font-size:.75rem;color:#64748b;text-align:center}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:10;padding:20px}
+  .overlay.show{display:flex}
+  .modal{background:var(--panel);border-radius:18px;padding:26px 22px;text-align:center;width:100%;max-width:360px;animation:pop .35s}
+  .modal .emoji{font-size:3.6rem;line-height:1;animation:bounce 1s ease-in-out infinite alternate}
+  @keyframes bounce{to{transform:translateY(-8px)}}
+  .modal h2{font-size:1.8rem;margin:10px 0 4px}
+  .modal .score{font-size:1.2rem;font-weight:600}
+  .modal .note{color:var(--muted);font-size:.95rem;margin:4px 0 14px}
+  .bar{display:flex;height:28px;border-radius:14px;overflow:hidden;margin-bottom:18px;border:2px solid #0f172a;font-weight:700;font-size:.85rem}
+  .bar div{display:flex;align-items:center;justify-content:center;overflow:hidden;transition:width 1.1s cubic-bezier(.3,1,.4,1);width:50%}
+  .bar .bb{background:linear-gradient(#333,#000);color:#fff}
+  .bar .bw{background:linear-gradient(#fff,#cbd5e1);color:#111}
+  .modal .btn{font-size:.9rem}
+
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+  #confetti i{position:absolute;top:-14px;width:8px;height:14px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--r))}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <h1>OTHELLO</h1>
+    <button class="icon-btn" id="soundBtn" title="เปิด/ปิดเสียง (M)">🔊</button>
+  </header>
+
+  <div class="scorebar">
+    <div class="player" id="pBlack">
+      <div class="chip black"></div>
+      <div class="info"><span class="name" id="nameBlack">คุณ</span><span class="count" id="cBlack">2</span></div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="player right" id="pWhite">
+      <div class="chip white"></div>
+      <div class="info"><span class="name" id="nameWhite">CPU</span><span class="count" id="cWhite">2</span></div>
+    </div>
+  </div>
+
+  <div class="status" id="status">ตาของคุณ</div>
+
+  <div class="board-wrap" id="boardWrap">
+    <div class="board" id="board"></div>
+    <div class="toast" id="toast"></div>
+    <div class="banner" id="banner">
+      <div class="big" id="bannerBig">คุณชนะ!</div>
+      <div class="small" id="bannerSmall">40 – 24</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <label class="title">ระดับ</label>
+      <div class="seg" id="levelSeg">
+        <button data-v="easy">ง่าย</button>
+        <button data-v="medium" class="on">ปานกลาง</button>
+        <button data-v="hard">ยาก</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="title">เล่นเป็น</label>
+      <div class="seg" id="sideSeg">
+        <button data-v="1" class="on">⚫ ดำ (เดินก่อน)</button>
+        <button data-v="-1">⚪ ขาว</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="hintToggle" checked> แสดงช่องที่เดินได้</label>
+    </div>
+    <div class="btns">
+      <button class="btn secondary" id="undoBtn">↶ Undo</button>
+      <button class="btn primary" id="newBtn">เกมใหม่</button>
+    </div>
+    <div class="hint-text">คีย์ลัด: Ctrl+Z / U = Undo · N = เกมใหม่ · M = เสียง · Space = ข้ามการนับคะแนน</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="emoji" id="resultEmoji">🏆</div>
+    <h2 id="resultTitle">คุณชนะ!</h2>
+    <div class="score" id="resultScore">คุณ 40 – 24 CPU</div>
+    <div class="note" id="resultNote">ชนะห่าง 16 แต้ม</div>
+    <div class="bar"><div class="bb" id="barB">32</div><div class="bw" id="barW">32</div></div>
+    <div class="btns">
+      <button class="btn secondary" id="ovUndo">↶ Undo</button>
+      <button class="btn secondary" id="ovView">ดูกระดาน</button>
+      <button class="btn primary" id="ovNew">เล่นใหม่</button>
+    </div>
+  </div>
+</div>
+
+<div id="confetti"></div>
+
+<script>
+/* ================== SOUND (Web Audio) ================== */
+const sfx = (() => {
+  let ctx = null, muted = false;
+  try { muted = localStorage.getItem('othello-muted') === '1'; } catch(e){}
+
+  function ac(){
+    if (!ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function tone(f, dur, { type = 'sine', vol = .2, delay = 0, to = null } = {}){
+    if (muted) return;
+    const c = ac(); if (!c) return;
+    const t = c.currentTime + delay;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f, t);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(c.destination);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  return {
+    unlock(){ if (!muted) ac(); },
+    get muted(){ return muted; },
+    setMuted(v){ muted = v; try { localStorage.setItem('othello-muted', v ? '1' : '0'); } catch(e){} },
+    place(){ tone(320, .12, { type:'triangle', vol:.35, to:110 }); tone(1800, .02, { type:'square', vol:.03 }); },
+    flip(n){ for (let k = 0; k < Math.min(n, 8); k++) tone(700 + k*70, .05, { type:'square', vol:.045, delay:.08 + k*.04 }); },
+    invalid(){ tone(140, .12, { type:'sawtooth', vol:.07 }); },
+    pass(){ tone(520, .12, { vol:.15 }); tone(390, .2, { vol:.15, delay:.12 }); },
+    undo(){ tone(650, .14, { type:'triangle', vol:.15, to:300 }); },
+    sweep(){ tone(900, .45, { type:'triangle', vol:.12, to:140 }); },
+    tick(i){ tone(420 + i*14, .06, { vol:.14 }); },
+    win(){
+      [523, 659, 784, 1047].forEach((f, k) => tone(f, k === 3 ? .6 : .18, { type:'triangle', vol:.22, delay:k*.13 }));
+      tone(1319, .6, { vol:.08, delay:.39 });
+    },
+    lose(){ [392, 330, 262].forEach((f, k) => tone(f, k === 2 ? .7 : .28, { type:'triangle', vol:.2, delay:k*.28 })); },
+    draw(){ tone(440, .22, { type:'triangle', vol:.2 }); tone(554, .5, { type:'triangle', vol:.2, delay:.24 }); }
+  };
+})();
+
+/* ================== GAME ENGINE ================== */
+const BLACK = 1, WHITE = -1, EMPTY = 0;
+const DIRS = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const WEIGHTS = [
+  100,-20, 10,  5,  5, 10,-20,100,
+  -20,-50, -2, -2, -2, -2,-50,-20,
+   10, -2,  1,  1,  1,  1, -2, 10,
+    5, -2,  1,  0,  0,  1, -2,  5,
+    5, -2,  1,  0,  0,  1, -2,  5,
+   10, -2,  1,  1,  1,  1, -2, 10,
+  -20,-50, -2, -2, -2, -2,-50,-20,
+  100,-20, 10,  5,  5, 10,-20,100
+];
+
+function initBoard(){
+  const b = new Array(64).fill(EMPTY);
+  b[27] = WHITE; b[28] = BLACK; b[35] = BLACK; b[36] = WHITE;
+  return b;
+}
+
+function getFlips(b, idx, p){
+  if (b[idx] !== EMPTY) return [];
+  const r = idx >> 3, c = idx & 7, flips = [];
+  for (const [dr, dc] of DIRS){
+    let rr = r + dr, cc = c + dc; const line = [];
+    while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr*8+cc] === -p){
+      line.push(rr*8+cc); rr += dr; cc += dc;
+    }
+    if (line.length && rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr*8+cc] === p) flips.push(...line);
+  }
+  return flips;
+}
+
+function validMoves(b, p){
+  const moves = [];
+  for (let i = 0; i < 64; i++){
+    if (b[i] !== EMPTY) continue;
+    const f = getFlips(b, i, p);
+    if (f.length) moves.push({ idx: i, flips: f });
+  }
+  return moves;
+}
+
+function applyMove(b, m, p){
+  const nb = b.slice();
+  nb[m.idx] = p;
+  for (const f of m.flips) nb[f] = p;
+  return nb;
+}
+
+function countDiscs(b){
+  let black = 0, white = 0;
+  for (const v of b){ if (v === BLACK) black++; else if (v === WHITE) white++; }
+  return { black, white, empty: 64 - black - white };
+}
+
+/* ================== AI ================== */
+function finalScore(b, p){
+  const { black, white } = countDiscs(b);
+  return (p === BLACK ? black - white : white - black) * 1000;
+}
+
+function evaluate(b, p){
+  let empties = 0, pos = 0, discDiff = 0;
+  for (let i = 0; i < 64; i++){
+    const v = b[i];
+    if (v === EMPTY){ empties++; continue; }
+    const s = v === p ? 1 : -1;
+    pos += WEIGHTS[i] * s;
+    discDiff += s;
+  }
+  if (empties === 0) return finalScore(b, p);
+  const my = validMoves(b, p).length, op = validMoves(b, -p).length;
+  if (my === 0 && op === 0) return finalScore(b, p);
+  const mob = (my + op) ? 100 * (my - op) / (my + op) : 0;
+  const discWeight = empties < 16 ? 4 : 0;
+  return pos + mob * 0.8 + discDiff * discWeight;
+}
+
+function orderMoves(moves){
+  return moves.sort((a, b) => WEIGHTS[b.idx] - WEIGHTS[a.idx]);
+}
+
+function negamax(b, p, depth, alpha, beta, passed){
+  if (depth <= 0) return evaluate(b, p);
+  const moves = validMoves(b, p);
+  if (!moves.length){
+    if (passed) return finalScore(b, p);
+    return -negamax(b, -p, depth, -beta, -alpha, true);
+  }
+  orderMoves(moves);
+  let best = -Infinity;
+  for (const m of moves){
+    const v = -negamax(applyMove(b, m, p), -p, depth - 1, -beta, -alpha, false);
+    if (v > best) best = v;
+    if (best > alpha) alpha = best;
+    if (alpha >= beta) break;
+  }
+  return best;
+}
+
+function searchBest(b, p, depth, noise = 0){
+  const moves = orderMoves(validMoves(b, p));
+  let best = moves[0], bestVal = -Infinity, alpha = -Infinity;
+  for (const m of moves){
+    let v = -negamax(applyMove(b, m, p), -p, depth - 1, -Infinity, noise ? Infinity : -alpha, false);
+    if (noise) v += Math.random() * noise;
+    if (v > bestVal){ bestVal = v; best = m; }
+    if (!noise && v > alpha) alpha = v;
+  }
+  return best;
+}
+
+function chooseCpuMove(b, p, lv){
+  const moves = validMoves(b, p);
+  if (moves.length === 1) return moves[0];
+  if (lv === 'easy') return moves[Math.floor(Math.random() * moves.length)];
+  if (lv === 'medium') return searchBest(b, p, 2, 15);
+  const empties = countDiscs(b).empty;
+  const depth = empties <= 10 ? empties : 5;
+  return searchBest(b, p, depth);
+}
+
+/* ================== GAME STATE ================== */
+let board, current, lastMove, history, gameOver, thinking, cpuTimer;
+let human = BLACK, cpu = WHITE, level = 'medium', showHints = true;
+let phase = null;            // null | 'counting' | 'done'
+let finalCount = null;       // {black, white}
+let endTimers = [];
+
+const $ = id => document.getElementById(id);
+const boardEl = $('board'), boardWrap = $('boardWrap');
+const cells = [], discs = [];
+
+function replay(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function later(fn, ms){ endTimers.push(setTimeout(fn, ms)); }
+
+for (let i = 0; i < 64; i++){
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  const disc = document.createElement('div');
+  disc.className = 'disc';
+  disc.addEventListener('animationend', () => disc.classList.remove('pop', 'flip'));
+  cell.appendChild(disc);
+  cell.addEventListener('click', () => humanMove(i));
+  boardEl.appendChild(cell);
+  cells.push(cell); discs.push(disc);
+}
+
+function nameOf(p){ return p === human ? 'คุณ' : 'CPU'; }
+function colorOf(p){ return p === BLACK ? 'ดำ' : 'ขาว'; }
+
+function setCount(el, v){
+  if (el.textContent !== String(v)){ el.textContent = v; replay(el, 'bump'); }
+}
+
+function render(anim){
+  const hints = (!gameOver && !thinking && current === human && showHints)
+    ? new Set(validMoves(board, human).map(m => m.idx)) : new Set();
+
+  for (let i = 0; i < 64; i++){
+    const d = discs[i], v = board[i];
+    d.classList.toggle('black', v === BLACK);
+    d.classList.toggle('white', v === WHITE);
+    d.classList.toggle('last', i === lastMove);
+    cells[i].classList.toggle('hint', hints.has(i));
+    cells[i].classList.toggle('for-white', human === WHITE);
+  }
+  if (anim){
+    (anim.pops || []).forEach(i => replay(discs[i], 'pop'));
+    (anim.flips || []).forEach(f => replay(discs[f], 'flip'));
+  }
+
+  const { black, white } = countDiscs(board);
+  setCount($('cBlack'), black);
+  setCount($('cWhite'), white);
+  $('nameBlack').textContent = human === BLACK ? 'คุณ' : 'CPU';
+  $('nameWhite').textContent = human === WHITE ? 'คุณ' : 'CPU';
+  $('pBlack').classList.toggle('active', !gameOver && current === BLACK);
+  $('pWhite').classList.toggle('active', !gameOver && current === WHITE);
+
+  const st = $('status');
+  st.classList.remove('thinking');
+  if (phase === 'counting'){
+    st.innerHTML = '<b>เกมจบ!</b> กำลังนับคะแนน <small>(แตะกระดานเพื่อข้าม)</small>';
+  } else if (phase === 'done' && finalCount){
+    const me = human === BLACK ? finalCount.black : finalCount.white;
+    const op = human === BLACK ? finalCount.white : finalCount.black;
+    const txt = me > op ? 'คุณชนะ' : me < op ? 'CPU ชนะ' : 'เสมอ';
+    st.innerHTML = `จบเกม — <b>${txt}</b> (${me} – ${op})`;
+  } else if (gameOver){
+    st.innerHTML = '<b>เกมจบแล้ว</b>';
+  } else if (current === human){
+    st.innerHTML = `ตาของ<b>คุณ</b> (${colorOf(human)})`;
+  } else {
+    st.innerHTML = '<b>CPU</b> กำลังคิด'; st.classList.add('thinking');
+  }
+
+  $('undoBtn').disabled = history.length === 0;
+  $('ovUndo').disabled = history.length === 0;
+}
+
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+/* ---------- end-of-game effects ---------- */
+function cancelEnd(){
+  endTimers.forEach(clearTimeout); endTimers = [];
+  phase = null; finalCount = null;
+  discs.forEach(d => { d.classList.remove('vanish'); d.style.animationDelay = ''; });
+  ['pBlack', 'pWhite'].forEach(id => $(id).classList.remove('win', 'lose'));
+  $('banner').className = 'banner';
+  $('confetti').innerHTML = '';
+  $('overlay').classList.remove('show');
+  boardWrap.classList.remove('counting');
+}
+
+function sortedBoard(black, white){
+  const b = new Array(64).fill(EMPTY);
+  for (let i = 0; i < black; i++) b[i] = BLACK;
+  for (let i = 0; i < white; i++) b[63 - i] = WHITE;
+  return b;
+}
+
+function endGame(anim){
+  gameOver = true; thinking = false;
+  const { black, white } = countDiscs(board);
+  finalCount = { black, white };
+  phase = 'counting';
+  boardWrap.classList.add('counting');
+  render(anim);
+
+  // 1) clear board in a diagonal wave
+  later(() => {
+    discs.forEach((d, i) => {
+      if (board[i] !== EMPTY){
+        d.style.animationDelay = ((i >> 3) + (i & 7)) * 15 + 'ms';
+        d.classList.add('vanish');
+      }
+    });
+    sfx.sweep();
+  }, 1000);
+
+  // 2) start counting
+  later(() => {
+    discs.forEach(d => { d.classList.remove('vanish'); d.style.animationDelay = ''; });
+    board = new Array(64).fill(EMPTY);
+    lastMove = -1;
+    render(null);
+    countStep(0);
+  }, 1650);
+}
+
+function countStep(i){
+  const { black, white } = finalCount;
+  if (i >= Math.max(black, white)){ later(finishCount, 350); return; }
+  const pops = [];
+  if (i < black){ board[i] = BLACK; pops.push(i); }
+  if (i < white){ board[63 - i] = WHITE; pops.push(63 - i); }
+  render({ pops });
+  sfx.tick(i);
+  later(() => countStep(i + 1), Math.max(28, 75 - i * 1.5));
+}
+
+function skipCount(){
+  endTimers.forEach(clearTimeout); endTimers = [];
+  discs.forEach(d => { d.classList.remove('vanish'); d.style.animationDelay = ''; });
+  finishCount();
+}
+
+function finishCount(){
+  phase = 'done';
+  boardWrap.classList.remove('counting');
+  const { black, white } = finalCount;
+  board = sortedBoard(black, white);
+  lastMove = -1;
+  render(null);
+
+  const me = human === BLACK ? black : white;
+  const op = human === BLACK ? white : black;
+  const res = me > op ? 'win' : me < op ? 'lose' : 'draw';
+  const pH = human === BLACK ? 'pBlack' : 'pWhite';
+  const pC = human === BLACK ? 'pWhite' : 'pBlack';
+  if (res === 'win'){ $(pH).classList.add('win'); $(pC).classList.add('lose'); }
+  if (res === 'lose'){ $(pC).classList.add('win'); $(pH).classList.add('lose'); }
+
+  const banner = $('banner');
+  banner.className = 'banner ' + res;
+  $('bannerBig').textContent = { win:'คุณชนะ!', lose:'CPU ชนะ', draw:'เสมอ!' }[res];
+  $('bannerSmall').textContent = `${me} – ${op}`;
+  void banner.offsetWidth;
+  banner.classList.add('show');
+
+  sfx[res]();
+  if (res === 'win') confetti();
+
+  later(() => { banner.classList.remove('show'); showResult(me, op, res, black, white); }, 2100);
+}
+
+function showResult(me, op, res, black, white){
+  $('resultEmoji').textContent = { win:'🏆', lose:'😢', draw:'🤝' }[res];
+  $('resultTitle').textContent = { win:'คุณชนะ!', lose:'CPU ชนะ', draw:'เสมอ!' }[res];
+  $('resultScore').textContent = `คุณ ${me} – ${op} CPU`;
+  $('resultNote').textContent =
+    res === 'win'  ? (op === 0 ? 'Perfect Game! กินหมดกระดาน' : `ชนะห่าง ${me - op} แต้ม`) :
+    res === 'lose' ? `แพ้ ${op - me} แต้ม — ลองอีกครั้ง!` : 'สูสีสุดๆ';
+
+  const barB = $('barB'), barW = $('barW'), total = black + white || 1;
+  barB.textContent = black || ''; barW.textContent = white || '';
+  barB.style.width = '50%'; barW.style.width = '50%';
+  $('overlay').classList.add('show');
+  later(() => {
+    barB.style.width = (black / total * 100) + '%';
+    barW.style.width = (white / total * 100) + '%';
+  }, 80);
+}
+
+function confetti(){
+  const box = $('confetti');
+  const colors = ['#22c55e', '#facc15', '#3b82f6', '#ef4444', '#a855f7', '#ffffff'];
+  for (let i = 0; i < 100; i++){
+    const p = document.createElement('i');
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = (2.2 + Math.random() * 2) + 's';
+    p.style.animationDelay = (Math.random() * .7) + 's';
+    p.style.setProperty('--dx', (Math.random() * 240 - 120) + 'px');
+    p.style.setProperty('--r', (Math.random() * 900 - 450) + 'deg');
+    box.appendChild(p);
+  }
+  later(() => { box.innerHTML = ''; }, 5200);
+}
+
+/* ---------- game flow ---------- */
+function newGame(){
+  clearTimeout(cpuTimer);
+  cancelEnd();
+  board = initBoard(); current = BLACK; lastMove = -1;
+  history = []; gameOver = false; thinking = false;
+  nextTurn(null);
+}
+
+function nextTurn(anim){
+  if (!validMoves(board, current).length){
+    if (!validMoves(board, -current).length){ endGame(anim); return; }
+    toast(`${nameOf(current)} ไม่มีตาเดิน — ข้ามตา`);
+    sfx.pass();
+    current = -current;
+  }
+  if (current === cpu){
+    thinking = true;
+    render(anim);
+    cpuTimer = setTimeout(cpuMove, 550);
+  } else {
+    thinking = false;
+    render(anim);
+  }
+}
+
+function doMove(m, p){
+  board = applyMove(board, m, p);
+  lastMove = m.idx;
+  current = -p;
+  sfx.place();
+  sfx.flip(m.flips.length);
+  nextTurn({ pops: [m.idx], flips: m.flips });
+}
+
+function humanMove(idx){
+  if (gameOver || thinking || current !== human) return;
+  const flips = getFlips(board, idx, human);
+  if (!flips.length){ if (board[idx] === EMPTY) sfx.invalid(); return; }
+  history.push({ board: board.slice(), current, lastMove });
+  doMove({ idx, flips }, human);
+}
+
+function cpuMove(){
+  if (gameOver || current !== cpu) return;
+  const m = chooseCpuMove(board, cpu, level);
+  thinking = false;
+  doMove(m, cpu);
+}
+
+function undo(){
+  if (!history.length) return;
+  clearTimeout(cpuTimer);
+  cancelEnd();
+  const s = history.pop();
+  board = s.board; current = s.current; lastMove = s.lastMove;
+  gameOver = false; thinking = false;
+  sfx.undo();
+  nextTurn(null);
+}
+
+/* ================== CONTROLS ================== */
+function setupSeg(id, onChange){
+  const seg = $(id);
+  seg.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+    seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    onChange(btn.dataset.v);
+  }));
+}
+setupSeg('levelSeg', v => { level = v; toast(`ระดับ: ${{easy:'ง่าย', medium:'ปานกลาง', hard:'ยาก'}[v]}`); });
+setupSeg('sideSeg', v => { human = +v; cpu = -human; newGame(); });
+
+function updateSoundBtn(){ $('soundBtn').textContent = sfx.muted ? '🔇' : '🔊'; }
+function toggleSound(){
+  sfx.setMuted(!sfx.muted);
+  updateSoundBtn();
+  if (!sfx.muted) sfx.place();
+}
+updateSoundBtn();
+
+$('soundBtn').addEventListener('click', toggleSound);
+$('hintToggle').addEventListener('change', e => { showHints = e.target.checked; render(null); });
+$('undoBtn').addEventListener('click', undo);
+$('newBtn').addEventListener('click', newGame);
+$('ovUndo').addEventListener('click', undo);
+$('ovNew').addEventListener('click', newGame);
+$('ovView').addEventListener('click', () => $('overlay').classList.remove('show'));
+boardWrap.addEventListener('click', () => { if (phase === 'counting') skipCount(); });
+
+document.addEventListener('pointerdown', () => sfx.unlock());
+document.addEventListener('keydown', e => {
+  sfx.unlock();
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'z'){ e.preventDefault(); undo(); }
+  else if (k === 'u') undo();
+  else if (k === 'n') newGame();
+  else if (k === 'm') toggleSound();
+  else if (k === ' ' && phase === 'counting'){ e.preventDefault(); skipCount(); }
+});
+
+newGame();
+</script>
+</body>
+</html>
