@@ -107,10 +107,10 @@ canvas{display:block;width:100%;height:100%;}
     <div class="ov-t cy-t">NEON<br>ASSAULT</div>
     <div class="ov-sub">DESTROY · SURVIVE · ASCEND</div>
     <div id="kbGuide">
-      <div class="kg-key">← →</div><div class="kg-val">Move Turret</div>
+      <div class="kg-key">← →</div><div class="kg-val">Turret Move</div>
       <div class="kg-key">SPACE</div><div class="kg-val">Shot</div>
       <div class="kg-key">X</div><div class="kg-val">Beam Cannon</div>
-      <div class="kg-key">⚠</div><div class="kg-val">Don't let the blocks fall to base!</div>
+      <div class="kg-key">⚠</div><div class="kg-val">Don't Let the blocks fall to your base!</div>
     </div>
     <button class="ov-btn" id="btnStart">▶ START GAME</button>
   </div>
@@ -768,21 +768,78 @@ function drawGoalBall(){
 
 function drawPlayer(){
   const{x:px,y:py,w:pw,h:ph}=player;
+  const t=performance.now()/1000;
   const stunned=G.playerStunTimer>0;
-  const col=stunned?'#ff0033':'#00ffff';
-  // Flicker when stunned
-  if(stunned&&Math.floor(Date.now()/80)%2===0)return;
-  ctx.shadowColor=col;ctx.shadowBlur=16;
-  ctx.fillStyle=stunned?'#330011':'#003344';ctx.strokeStyle=col;ctx.lineWidth=2;
-  roundRect(ctx,px,py+ph*.42,pw,ph*.58,4);ctx.fill();ctx.stroke();
-  ctx.fillStyle=stunned?'#440022':'#004455';ctx.strokeStyle=stunned?'#dd0022':'#00dddd';ctx.lineWidth=1.5;
-  roundRect(ctx,px+pw*.12,py+8,pw*.76,ph*.52,4);ctx.fill();ctx.stroke();
-  ctx.fillStyle=stunned?'#550033':'#005566';
-  for(let i=0;i<5;i++)ctx.fillRect(px+4+i*(pw*.18),py+ph*.56,pw*.13,ph*.14);
-  ctx.fillStyle=col;ctx.shadowBlur=10;ctx.fillRect(px+pw/2-3,py-5,6,14);
-  ctx.fillStyle=stunned?'rgba(255,0,51,.9)':'rgba(0,255,255,.9)';ctx.shadowBlur=18;
-  ctx.beginPath();ctx.arc(px+pw/2,py-5,4,0,Math.PI*2);ctx.fill();
-  ctx.shadowBlur=0;
+  const P=stunned
+    ?{rgb:'255,0,51', line:'#ff3355',hi:'#ff99aa',d1:'#4a0a1e',d2:'#1a0008'}
+    :{rgb:'0,255,255',line:'#00f0ff',hi:'#aaffff',d1:'#0c4660',d2:'#021420'};
+
+  // เอียงตามความเร็ว + แรงถีบตอนยิง
+  const vx=px-(player._lx??px);player._lx=px;
+  player._tilt=(player._tilt||0)*.8+Math.max(-1,Math.min(1,vx/4))*.2;
+  const rc=player.recoil||0;player.recoil=rc*.8;
+
+  ctx.save();
+  if(stunned)ctx.globalAlpha=Math.floor(t*12)%2?.35:.95;
+  const hw=pw/2, hy=-ph*.5;
+  ctx.translate(px+hw,py+ph);
+  ctx.rotate(player._tilt*.08);
+
+  // แสงไอพ่นใต้ป้อม
+  const f=.75+Math.random()*.25;
+  const hg=ctx.createRadialGradient(0,0,0,0,0,hw*1.1);
+  hg.addColorStop(0,`rgba(${P.rgb},${.4*f})`);hg.addColorStop(1,`rgba(${P.rgb},0)`);
+  ctx.fillStyle=hg;ctx.fillRect(-hw*1.1,-8,hw*2.2,14);
+
+  // ครีบข้าง
+  ctx.fillStyle=P.d1;ctx.strokeStyle=P.line;ctx.lineWidth=1.5;
+  for(const s of[-1,1]){
+    ctx.beginPath();ctx.moveTo(s*hw*.8,hy);ctx.lineTo(s*(hw+3),hy-4);
+    ctx.lineTo(s*hw,-3);ctx.closePath();ctx.fill();ctx.stroke();
+  }
+
+  // ตัวถัง
+  ctx.beginPath();
+  ctx.moveTo(-hw,-3);ctx.lineTo(-hw+4,0);ctx.lineTo(hw-4,0);ctx.lineTo(hw,-3);
+  ctx.lineTo(hw*.8,hy);ctx.lineTo(-hw*.8,hy);ctx.closePath();
+  const hull=ctx.createLinearGradient(0,hy,0,0);
+  hull.addColorStop(0,P.d1);hull.addColorStop(1,P.d2);
+  ctx.fillStyle=hull;ctx.shadowColor=P.line;ctx.shadowBlur=14;ctx.fill();
+  ctx.shadowBlur=0;ctx.strokeStyle=P.line;ctx.lineWidth=2;ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(-hw*.76,hy+1.5);ctx.lineTo(hw*.76,hy+1.5);ctx.stroke();
+
+  // ไฟวิ่ง
+  const step=Math.floor(t*8)%5;
+  for(let i=0;i<5;i++){
+    ctx.fillStyle=i===step?P.hi:`rgba(${P.rgb},.25)`;
+    ctx.fillRect(-hw*.6+i*hw*.3-2.5,hy*.45-1.5,5,3);
+  }
+
+  // ลำกล้อง (ถอยหลังเมื่อยิง)
+  const dr=hw*.42, bt=-ph-10+rc*4, bb=hy-dr+3, bw=6;
+  const bg=ctx.createLinearGradient(-bw/2,0,bw/2,0);
+  bg.addColorStop(0,P.d1);bg.addColorStop(.5,P.hi);bg.addColorStop(1,P.d1);
+  ctx.fillStyle=bg;ctx.fillRect(-bw/2,bt,bw,bb-bt);
+  ctx.strokeStyle=P.line;ctx.lineWidth=1;ctx.strokeRect(-bw/2,bt,bw,bb-bt);
+  ctx.fillStyle=P.line;ctx.fillRect(-bw/2-1.5,bt,bw+3,3);
+
+  // โดม
+  ctx.beginPath();ctx.arc(0,hy,dr,Math.PI,0);ctx.closePath();
+  const dg=ctx.createRadialGradient(-dr*.3,hy-dr*.5,1,0,hy,dr);
+  dg.addColorStop(0,P.hi);dg.addColorStop(.35,P.d1);dg.addColorStop(1,P.d2);
+  ctx.fillStyle=dg;ctx.fill();ctx.strokeStyle=P.line;ctx.lineWidth=1.5;ctx.stroke();
+
+  // ลูกแก้วปลายปืน + แสงแฟลชตอนยิง
+  ctx.shadowColor=P.line;ctx.shadowBlur=14+rc*20;
+  ctx.fillStyle=`rgba(${P.rgb},${.7+Math.sin(t*6)*.2})`;
+  ctx.beginPath();ctx.arc(0,bt-1,2.5+rc*3,0,Math.PI*2);ctx.fill();
+  if(rc>.4){
+    ctx.fillStyle=`rgba(255,255,255,${rc*.8})`;
+    ctx.beginPath();ctx.moveTo(0,bt-14*rc);ctx.lineTo(3,bt-1);
+    ctx.lineTo(0,bt+2);ctx.lineTo(-3,bt-1);ctx.closePath();ctx.fill();
+  }
+  ctx.restore();
 }
 function drawMiniGun(x,y){
   ctx.fillStyle='#332200';ctx.strokeStyle='#ffaa00';ctx.lineWidth=1.5;
