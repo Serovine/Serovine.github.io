@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neon Pachinko — True Arcade Edition</title>
+<style>
+:root {
+  color-scheme: dark;
+  --gold: #ffd17d;
+  --cyan: #6af3ff;
+  --pink: #ff7cce;
+  --green: #85ffc1;
+  --panel: #111b2ef0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 10% 0%, #32244e, transparent 55%),
+    radial-gradient(ellipse at 95% 70%, #123e47, transparent 55%),
+    #090e19;
+  color: #edf4ff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, input {
+  font: inherit;
+  touch-action: manipulation;
+}
+
+button {
+  border: 1px solid #ffffff26;
+  border-radius: 12px;
+  background: #22314a;
+  color: #eef6ff;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.14s, border-color 0.14s, transform 0.08s, box-shadow 0.14s;
+}
+
+button:hover { background: #324868; border-color: var(--cyan); }
+button:active { transform: translateY(1px) scale(0.985); }
+button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+input[type=range] {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+@media (pointer: coarse) {
+  input[type=range] { height: 28px; }
+  input[type=range]::-webkit-slider-thumb { width: 24px; height: 24px; }
+}
+
+.app {
+  height: 100dvh;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+/* Top Compact Bar */
+.topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(17px, 3vw, 24px);
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(255, 209, 125, 0.3);
+  white-space: nowrap;
+}
+
+.badge-state {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  background: #142238;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  white-space: nowrap;
+}
+
+.badge-state.fever {
+  background: #3a122e;
+  border-color: var(--pink);
+  color: var(--gold);
+  box-shadow: 0 0 16px rgba(255, 124, 206, 0.55);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.icon-btn {
+  padding: 7px 11px;
+  font-size: 13px;
+  font-weight: 700;
+  background: #17253d;
+}
+
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 750;
+  background: #162a45;
+  border-color: #6af3ff60;
+  color: #eaf8ff;
+}
+
+/* Slim Stats + Status Strip */
+.hud-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: #101a2de8;
+  border: 1px solid #ffffff16;
+  flex-wrap: wrap;
+}
+
+.hud-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hud-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: #ffffff08;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-pill span {
+  color: #9cb0cc;
+  font-size: 11px;
+}
+
+.hud-pill b {
+  font-size: 14px;
+  color: #eef6ff;
+}
+
+.hud-pill.stock b { color: var(--gold); font-size: 16px; }
+.hud-pill.hold { border-left: 2px solid var(--pink); }
+.hud-pill.jp { border-left: 2px solid var(--gold); }
+.hud-pill.start { border-left: 2px solid var(--green); }
+
+#netDiff {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.status-line {
+  flex: 1 1 220px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--cyan);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Full-Viewport Board Stage */
+.stage {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  container-type: size;
+}
+
+.cabinet {
+  padding: 6px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f2d195, #6d4930 25%, #343144 60%, #bc894e);
+  box-shadow: 0 18px 55px #0009;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.board-frame {
+  position: relative;
+  width: min(100cqw - 12px, (100cqh - 12px) * 600 / 840);
+  aspect-ratio: 600 / 840;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: #0a1324;
+  touch-action: manipulation;
+}
+
+/* Clickable / Touchable ↑ Rail Launcher Overlay Button */
+.rail-fire-hit {
+  position: absolute;
+  left: 87.5%;
+  top: 86.5%;
+  right: 0.4%;
+  bottom: 0.4%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  z-index: 5;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rail-fire-hit:hover,
+.rail-fire-hit:active {
+  background: transparent;
+  border-color: transparent;
+  transform: none;
+}
+
+.rail-fire-hit:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+/* Modal Dialog (Settings, Handle Power, Auto, Test Tools, Physics Lab) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 9, 19, 0.74);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  width: min(440px, 100%);
+  max-height: min(90dvh, 780px);
+  background: var(--panel);
+  border: 1px solid #6af3ff42;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(14px) scale(0.97);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modal-backdrop.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: #0b1322;
+  border-bottom: 1px solid #ffffff16;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 16.5px;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 18px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.modal-group {
+  padding: 13px;
+  border-radius: 14px;
+  background: #162238;
+  border: 1px solid #ffffff12;
+}
+
+.modal-group h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9bb7d8;
+}
+
+.control label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  margin-bottom: 4px;
+}
+
+.power-hints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #9bb0cb;
+  margin-top: 2px;
+}
+
+.modal-group .control + .control { margin-top: 10px; }
+
+.row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.row:first-of-type { margin-top: 0; }
+
+.row button {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.shoot-auto {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  border: 2px solid var(--gold);
+  font-size: 15px;
+  font-weight: 850;
+  color: #241c15;
+  background: linear-gradient(135deg, #ffe7af, #eaa644);
+}
+
+.shoot-auto.active {
+  background: linear-gradient(135deg, #ff7cce, #ff2a85);
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 18px rgba(255, 124, 206, 0.45);
+}
+
+.test-btn {
+  color: var(--cyan);
+  border-color: #6af3ff65;
+  background: #10313f;
+}
+
+.fever-btn {
+  color: var(--pink);
+  border-color: #ff7cce65;
+  background: #31102f;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 12px;
+  color: #adbed6;
+  line-height: 1.55;
+}
+
+/* Mobile refinements */
+@media (max-width: 680px) {
+  .app {
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+  }
+
+  .brand h1 { font-size: 16.5px; }
+  .badge-state { font-size: 10.5px; padding: 4px 8px; }
+  .icon-btn { padding: 6px 9px; font-size: 12px; }
+  .menu-btn { padding: 6px 10px; font-size: 12px; }
+
+  .hud-strip {
+    padding: 5px 8px;
+    gap: 5px;
+  }
+
+  .hud-pills {
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .hud-pill {
+    padding: 2px 6px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .hud-pill span { font-size: 10px; }
+  .hud-pill b { font-size: 13px; }
+  .hud-pill.stock b { font-size: 14.5px; }
+  .hud-pill.active-balls { display: none; }
+
+  .status-line {
+    flex-basis: 100%;
+    text-align: left;
+    font-size: 11px;
+    border-top: 1px solid #ffffff10;
+    padding-top: 4px;
+  }
+
+  .cabinet {
+    padding: 4px;
+    border-radius: 17px;
+  }
+
+  .board-frame {
+    width: min(100cqw - 8px, (100cqh - 8px) * 600 / 840);
+  }
+
+  canvas { border-radius: 13px; }
+}
+
+/* Short landscape fallback so board stays usable */
+@media (max-height: 499px) {
+  html, body, .app {
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .stage {
+    flex: none;
+    container-type: normal;
+  }
+
+  .board-frame {
+    width: min(94vw, 440px);
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <h1>NEON PACHINKO</h1>
+        <div id="stateBadge" class="badge-state">MODE: NORMAL</div>
+      </div>
+      <div class="topbar-actions">
+        <button id="pauseQuickBtn" class="icon-btn" type="button" aria-label="Pause or resume game" title="Pause / Resume">⏸</button>
+        <button id="openMenuBtn" class="menu-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="menuModal">
+          ⚙️ Menu
+        </button>
+      </div>
+    </div>
+
+    <div class="hud-strip">
+      <div class="hud-pills">
+        <div class="hud-pill stock">
+          <span>STOCK</span>
+          <b id="stockDisplay">250</b>
+          <span id="netDiff" style="color: var(--green)">+0</span>
+        </div>
+        <div class="hud-pill hold">
+          <span>HOLD</span>
+          <b id="queue">0/4</b>
+        </div>
+        <div class="hud-pill jp">
+          <span>FEVER</span>
+          <b id="jackpots">0</b>
+        </div>
+        <div class="hud-pill start">
+          <span>START</span>
+          <b id="hits">0</b>
+        </div>
+        <div class="hud-pill active-balls">
+          <span>BALLS</span>
+          <b id="active">0</b>
+        </div>
+      </div>
+      <div id="message" class="status-line" role="status">
+        Tap ↑ at bottom-right (or press Space) to shoot 1 ball · Open ⚙️ Menu for Power &amp; Auto
+      </div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="cabinet">
+      <div class="board-frame">
+        <canvas id="board" width="600" height="840" aria-label="Pachinko board">
+          Your browser does not support HTML5 Canvas.
+        </canvas>
+        <button id="railFireBtn" class="rail-fire-hit" type="button" aria-label="Shoot 1 ball (bottom-right up arrow button)" title="Click / Tap to shoot 1 ball"></button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Main Control Modal -->
+<div id="modalBackdrop" class="modal-backdrop">
+  <section id="menuModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-header">
+      <h2 id="modalTitle">⚙️ Launcher &amp; Game Menu</h2>
+      <button id="closeMenuBtn" class="modal-close" type="button" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-group">
+        <h3>Launcher</h3>
+        <div class="control">
+          <label for="handlePower">
+            <span>Handle Power</span>
+            <b id="powerText" style="color: var(--gold)">65%</b>
+          </label>
+          <input id="handlePower" type="range" min="15" max="100" value="65">
+          <div class="power-hints">
+            <span>15% (Right)</span>
+            <span>65% (Center)</span>
+            <span>100% (Left)</span>
+          </div>
+        </div>
+
+        <button id="autoShootBtn" class="shoot-auto" type="button">
+          ⚪ AUTO: OFF (Tap for Rapid Fire)
+        </button>
+
+        <div class="row">
+          <button id="modalSingleShotBtn" class="test-btn" type="button">🎯 Shoot 1</button>
+          <button id="pauseMenuBtn" type="button">Pause</button>
+          <button id="resetMenuBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="modal-group">
+        <h3>Ball Stock &amp; Test Tools</h3>
+        <div class="row">
+          <button id="add100" type="button">+100 Balls</button>
+          <button id="add500" type="button">+500 Balls</button>
+        </div>
+        <div class="row">
+          <button id="testSpin" class="test-btn" type="button">🎰 Spin Slot Now</button>
+          <button id="forceFever" class="fever-btn" type="button">🔥 Force FEVER!</button>
+        </div>
+      </div>
+
+      <div class="modal-group">
+        <h3>Options</h3>
+        <label class="switch">
+          <input id="infinite" type="checkbox">
+          Infinite Balls
+        </label>
+        <label class="switch">
+          <input id="sound" type="checkbox" checked>
+          Web Audio Synth SFX
+        </label>
+        <label class="switch">
+          <input id="trails" type="checkbox" checked>
+          Motion Trails
+        </label>
+      </div>
+
+      <div class="modal-group">
+        <h3>Physics Lab &amp; Jackpot</h3>
+        <div class="control">
+          <label for="jackpotRate">
+            Jackpot Rate <span id="rateValue">25%</span>
+          </label>
+          <input id="jackpotRate" type="range" min="5" max="100" step="5" value="25">
+        </div>
+
+        <div class="control">
+          <label for="gravity">
+            Gravity <span id="gravityValue">900</span>
+          </label>
+          <input id="gravity" type="range" min="400" max="1400" step="50" value="900">
+        </div>
+
+        <div class="control">
+          <label for="bounce">
+            Pin Bounce <span id="bounceValue">0.72</span>
+          </label>
+          <input id="bounce" type="range" min="0.35" max="0.92" step="0.01" value="0.72">
+        </div>
+      </div>
+
+      <div class="modal-group hint">
+        <h3>Quick Guide</h3>
+        <div>• Tap/click <b>↑</b> at bottom-right (or press <b>Spacebar</b>) to shoot 1 ball</div>
+        <div>• Adjust <b>Handle Power</b> or toggle <b>AUTO</b> right here</div>
+        <div>• Slot stops <b>Left → Right → Center</b>: matching Left &amp; Right triggers <b>REACH!</b></div>
+        <div>• Triple match triggers <b>12s FEVER</b>, opening the center Attacker for <b>+15</b> per ball</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+"use strict";
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const canvas = $("board");
+  const ctx = canvas.getContext("2d");
+
+  const W = 600;
+  const H = 840;
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+
+  const LEFT = 42;
+  const RIGHT = 528;
+  const BALL_RADIUS = 7;
+  const MAX_BALLS = 55;
+  const BIN_TOP = 752;
+  const BIN_BOTTOM = 805;
+  const BIN_WIDTH = (RIGHT - LEFT) / 7;
+  const MIN_FIRE_INTERVAL = 0.08;
+
+  const BIN_REWARDS = [8, 0, 5, 12, 5, 0, 8];
+  const REEL_DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const SLOT_COLORS = ["#6af3ff", "#85ffc1", "#ffd17d", "#ff7cce", "#bb9aff"];
+
+  const SCREEN = { x: 173, y: 158, w: 226, h: 119 };
+  const START = { x: 285, y: 595, radius: 22 };
+  const ATTACKER = { x: 185, y: 678, w: 200, h: 34, reward: 15 };
+  const LAUNCH_BTN = { x: 534, y: 744, w: 46, h: 68 };
+
+  const settings = {
+    gravity: 900,
+    bounce: 0.72,
+    handlePower: 0.65,
+    jackpotChance: 0.25,
+    autoFire: false,
+    sound: true,
+    trails: true,
+    infinite: false
+  };
+
+  let balls = [];
+  let sparks = [];
+  let rings = [];
+  let labels = [];
+
+  const INITIAL_STOCK = 250;
+  let stock = INITIAL_STOCK;
+  let addedStock = 0;
+  let visibleStock = INITIAL_STOCK;
+  let centerHits = 0;
+  let jackpotCount = 0;
+  let paused = false;
+  let time = 0;
+  let startGlow = 0;
+  let attackerGlow = 0;
+  let launcherPress = 0;
+  let launcherHeld = false;
+  let launcherHover = false;
+  let autoFireClock = 0;
+  let lastFireTime = -1;
+  let lastImpact = -1;
+  let audio = null;
+
+  const binGlow = Array(7).fill(0);
+
+  const slot = {
+    active: false,
+    elapsed: 0,
+    duration: 2.2,
+    reels: [7, 7, 7],
+    isJackpot: false,
+    isReach: false,
+    queue: 0,
+    maxQueue: 4,
+    flash: 0,
+    cooldown: 0,
+    lockedReels: 0,
+    colorIndex: 0
+  };
+
+  const fever = {
+    active: false,
+    timer: 0,
+    maxDuration: 12.0,
+    ballsCaught: 0
+  };
+
+  const bumpers = [
+    { x: 123, y: 345, r: 27, color: "#6af3ff", glow: 0, scale: 1 },
+    { x: 447, y: 345, r: 27, color: "#ff7cce", glow: 0, scale: 1 },
+    { x: 285, y: 425, r: 30, color: "#ffd17d", glow: 0, scale: 1 }
+  ];
+
+  function createRotors() {
+    return [
+      { x: 170, y: 515, length: 46, angle: 0.4, omega: 1.2, baseOmega: 0.9, inertia: 2200 },
+      { x: 400, y: 515, length: 46, angle: 2.6, omega: -1.2, baseOmega: -0.9, inertia: 2200 }
+    ];
+  }
+
+  let rotors = createRotors();
+
+  const walls = [
+    { x1: LEFT, y1: 53, x2: LEFT, y2: 814 },
+    { x1: RIGHT, y1: 111, x2: RIGHT, y2: 814 },
+    { x1: LEFT, y1: 53, x2: 405, y2: 53 },
+
+    // Gable roof above slot screen
+    { x1: 168, y1: 156, x2: 285, y2: 132 },
+    { x1: 285, y1: 132, x2: 404, y2: 156 },
+    { x1: 168, y1: 156, x2: 168, y2: 280 },
+    { x1: 404, y1: 156, x2: 404, y2: 280 },
+    { x1: 168, y1: 280, x2: 404, y2: 280 },
+
+    // Funnel walls guiding balls into START
+    { x1: 220, y1: 560, x2: 258, y2: 584 },
+    { x1: 350, y1: 560, x2: 312, y2: 584 }
+  ];
+
+  for (let i = 1; i < 7; i++) {
+    const x = LEFT + i * BIN_WIDTH;
+    walls.push({ x1: x, y1: BIN_TOP, x2: x, y2: 813 });
+  }
+
+  const attackerClosedWalls = [
+    { x1: ATTACKER.x, y1: ATTACKER.y, x2: 285, y2: ATTACKER.y - 6 },
+    { x1: 285, y1: ATTACKER.y - 6, x2: ATTACKER.x + ATTACKER.w, y2: ATTACKER.y },
+    { x1: ATTACKER.x, y1: ATTACKER.y, x2: ATTACKER.x, y2: ATTACKER.y + ATTACKER.h },
+    { x1: ATTACKER.x + ATTACKER.w, y1: ATTACKER.y, x2: ATTACKER.x + ATTACKER.w, y2: ATTACKER.y + ATTACKER.h },
+    { x1: ATTACKER.x, y1: ATTACKER.y + ATTACKER.h, x2: ATTACKER.x + ATTACKER.w, y2: ATTACKER.y + ATTACKER.h }
+  ];
+
+  const attackerOpenFlaps = [
+    { x1: ATTACKER.x - 18, y1: ATTACKER.y - 10, x2: ATTACKER.x, y2: ATTACKER.y + 4 },
+    { x1: ATTACKER.x + ATTACKER.w + 18, y1: ATTACKER.y - 10, x2: ATTACKER.x + ATTACKER.w, y2: ATTACKER.y + 4 }
+  ];
+
+  function distToSegment(px, py, seg) {
+    const dx = seg.x2 - seg.x1;
+    const dy = seg.y2 - seg.y1;
+    const lenSq = dx * dx + dy * dy;
+    const t = Math.max(0, Math.min(1, ((px - seg.x1) * dx + (py - seg.y1) * dy) / (lenSq || 1)));
+    return Math.hypot(px - (seg.x1 + dx * t), py - (seg.y1 + dy * t));
+  }
+
+  const pins = [];
+  const boardWalls = walls.filter(w => w.y1 !== BIN_TOP);
+  for (let row = 0; row < 12; row++) {
+    const y = 110 + row * 46;
+    for (let col = 0; col < 9; col++) {
+      const x = 72 + col * 51 + (row % 2 ? 25 : 0);
+      if (x > 504 || y > 625) continue;
+
+      const insideScreen =
+        x > SCREEN.x - 20 &&
+        x < SCREEN.x + SCREEN.w + 20 &&
+        y > SCREEN.y - 24 &&
+        y < SCREEN.y + SCREEN.h + 20;
+
+      if (insideScreen) continue;
+      if (boardWalls.some(w => distToSegment(x, y, w) < 22.5)) continue;
+      if (bumpers.some(b => Math.hypot(x - b.x, y - b.y) < b.r + 25)) continue;
+      if (rotors.some(r => Math.hypot(x - r.x, y - r.y) < r.length + 20)) continue;
+      if (Math.hypot(x - START.x, y - START.y) < 52) continue;
+
+      pins.push({ x, y, r: 5, glow: 0 });
+    }
+  }
+
+  function message(value) {
+    $("message").textContent = value;
+  }
+
+  // --- Web Audio API ---
+  function unlockAudio() {
+    if (!settings.sound) return;
+    try {
+      const AudioClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioClass) return;
+      if (!audio) audio = new AudioClass();
+      if (audio.state === "suspended") audio.resume().catch(() => {});
+    } catch (_) {}
+  }
+
+  function tone(frequency, duration = 0.07, volume = 0.025, delay = 0, type = "triangle") {
+    if (!settings.sound || !audio || audio.state !== "running") return;
+
+    const at = audio.currentTime + delay;
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, at);
+
+    gain.gain.setValueAtTime(0.0001, at);
+    gain.gain.exponentialRampToValueAtTime(volume, at + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+    oscillator.start(at);
+    oscillator.stop(at + duration + 0.02);
+
+    oscillator.onended = () => {
+      oscillator.disconnect();
+      gain.disconnect();
+    };
+  }
+
+  function impact(frequency, volume = 0.02) {
+    if (time - lastImpact < 0.035) return;
+    lastImpact = time;
+    tone(frequency, 0.045, volume);
+  }
+
+  // --- Effects ---
+  function burst(x, y, color, count = 14, force = 160) {
+    for (let i = 0; i < count && sparks.length < 450; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = force * (0.3 + Math.random() * 0.7);
+      sparks.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 0.4 + Math.random() * 0.45,
+        color
+      });
+    }
+  }
+
+  function ripple(x, y, color, size = 80) {
+    if (rings.length >= 45) return;
+    rings.push({ x, y, color, radius: 8, size, life: 0.55 });
+  }
+
+  function floatingText(x, y, value, color) {
+    if (labels.length < 50) {
+      labels.push({ x, y, value, color, life: 1.15 });
+    }
+  }
+
+  function addStockReward(amount) {
+    if (!settings.infinite) {
+      stock += amount;
+    }
+  }
+
+  // --- Ball Launch ---
+  function fireBall(fromManual = false) {
+    unlockAudio();
+    if (paused) {
+      if (fromManual) message("Game paused! Press ▶ above to resume before shooting.");
+      return;
+    }
+
+    if (time - lastFireTime < MIN_FIRE_INTERVAL) return;
+
+    if (!settings.infinite && stock <= 0) {
+      message("Out of balls! Open ⚙️ Menu to add +100 balls or enable Infinite mode.");
+      return;
+    }
+
+    if (balls.length >= MAX_BALLS) return;
+
+    lastFireTime = time;
+    if (!settings.infinite) stock--;
+
+    launcherPress = 1;
+    const jitter = (Math.random() - 0.5) * 0.04;
+    const launchPower = Math.max(0.1, Math.min(1, settings.handlePower + jitter));
+
+    balls.push({
+      x: 558,
+      y: 750,
+      vx: 0,
+      vy: 0,
+      r: BALL_RADIUS,
+      lane: true,
+      distance: 0,
+      power: launchPower,
+      startCooldown: 0,
+      stuckTime: 0,
+      trail: [],
+      trailClock: 0,
+      dead: false
+    });
+
+    burst(558, 744, "#ffd17d", 6, 95);
+    tone(220 + launchPower * 380, 0.09, 0.03);
+  }
+
+  // --- Slot & Fever State Machine ---
+  function triggerNextSpin() {
+    if (slot.active || slot.queue <= 0 || slot.cooldown > 0 || fever.active) return;
+
+    slot.queue--;
+    slot.active = true;
+    slot.elapsed = 0;
+    slot.lockedReels = 0;
+    slot.colorIndex = 0;
+
+    const winRoll = Math.random() < settings.jackpotChance;
+    slot.isJackpot = winRoll;
+
+    if (winRoll) {
+      const luckyDigit = [1, 3, 5, 7, 9][Math.floor(Math.random() * 5)];
+      slot.reels = [luckyDigit, luckyDigit, luckyDigit];
+      slot.isReach = true;
+      slot.duration = 3.1;
+    } else {
+      // Stop order is Left [0] -> Right [2] -> Center [1]
+      // True Reach matches Left [0] and Right [2], leaving Center [1] for the climax
+      const fakeReach = Math.random() < 0.32;
+      const d1 = REEL_DIGITS[Math.floor(Math.random() * 9)];
+      const d3 = fakeReach ? d1 : REEL_DIGITS[Math.floor(Math.random() * 9)];
+      let d2 = REEL_DIGITS[Math.floor(Math.random() * 9)];
+
+      if (fakeReach && Math.random() < 0.65) {
+        const offset = Math.random() < 0.5 ? 1 : 8;
+        d2 = ((d1 - 1 + offset) % 9) + 1;
+      } else if (d1 === d2 && d2 === d3) {
+        d2 = (d2 % 9) + 1;
+      }
+
+      slot.reels = [d1, d2, d3];
+      slot.isReach = (d1 === d3);
+      slot.duration = slot.isReach ? 3.0 : 2.2;
+    }
+
+    tone(380, 0.1, 0.03);
+  }
+
+  function addSlotQueue() {
+    if (fever.active) return false;
+    if (slot.queue >= slot.maxQueue) return false;
+    slot.queue++;
+    triggerNextSpin();
+    return true;
+  }
+
+  function startFeverMode() {
+    const alreadyFever = fever.active;
+    fever.active = true;
+    fever.timer = fever.maxDuration;
+    if (!alreadyFever) {
+      fever.ballsCaught = 0;
+      jackpotCount++;
+    }
+    slot.flash = 1.5;
+    slot.colorIndex = 2;
+
+    burst(285, 218, "#ffd17d", 95, 340);
+    burst(285, 690, "#ff7cce", 60, 260);
+    ripple(285, 218, "#ffd17d", 200);
+    ripple(285, 690, "#ff7cce", 160);
+    floatingText(285, 140, "JACKPOT!! FEVER MODE!", "#ffd17d");
+
+    [523, 659, 784, 1047, 784, 1047].forEach((freq, idx) => {
+      tone(freq, 0.18, 0.045, idx * 0.11, "square");
+    });
+
+    message("🔥 JACKPOT! ATTACKER gate open for 12s — shoot into center for +15 per ball!");
+  }
+
+  function updateSlotAndFever(dt) {
+    slot.flash = Math.max(0, slot.flash - dt);
+    slot.cooldown = Math.max(0, slot.cooldown - dt);
+
+    if (fever.active) {
+      fever.timer -= dt;
+      if (fever.timer <= 0) {
+        fever.active = false;
+        fever.timer = 0;
+        slot.colorIndex = 0;
+        message(`FEVER ended! Caught ${fever.ballsCaught} balls (+${fever.ballsCaught * ATTACKER.reward} balls)`);
+      }
+      return;
+    }
+
+    if (!slot.active) {
+      triggerNextSpin();
+      return;
+    }
+
+    slot.elapsed += dt;
+
+    const stopTimes = [
+      slot.duration * 0.45,
+      slot.duration * 0.70,
+      slot.duration * 0.96
+    ];
+
+    const lockedCount = stopTimes.filter(t => slot.elapsed >= t).length;
+    if (lockedCount > slot.lockedReels) {
+      slot.lockedReels = lockedCount;
+      tone(440 + lockedCount * 180, 0.1, 0.038);
+
+      if (lockedCount === 2 && slot.isReach) {
+        slot.colorIndex = 4;
+        floatingText(285, 145, "REACH!!", "#ff7cce");
+        tone(880, 0.15, 0.04, 0.05, "sawtooth");
+        tone(1175, 0.2, 0.04, 0.18, "sawtooth");
+      }
+    }
+
+    if (slot.elapsed >= slot.duration) {
+      slot.active = false;
+      slot.cooldown = 0.6;
+
+      if (slot.isJackpot) {
+        startFeverMode();
+      } else {
+        slot.flash = 0.3;
+        slot.colorIndex = 0;
+        if (slot.isReach) {
+          message(`So close! Rolled [${slot.reels.join("-")}] — try again!`);
+        }
+      }
+    }
+  }
+
+  function hitStartChucker(ball) {
+    ball.startCooldown = 1.2;
+    centerHits++;
+    startGlow = 1;
+
+    const reward = 5;
+    addStockReward(reward);
+
+    addSlotQueue();
+    ripple(START.x, START.y, "#6af3ff", 90);
+    burst(START.x, START.y, "#6af3ff", 18, 150);
+    floatingText(START.x, START.y - 30, `+${reward} BALLS & SPIN!`, "#6af3ff");
+
+    tone(660, 0.09, 0.035);
+    tone(990, 0.12, 0.035, 0.07);
+  }
+
+  // --- Physics ---
+  function collideCircle(ball, object, bounce, boost = 0) {
+    const dx = ball.x - object.x;
+    const dy = ball.y - object.y;
+    const distance = Math.hypot(dx, dy);
+    const limit = ball.r + object.r;
+
+    if (distance >= limit) return false;
+
+    const nx = distance > 0.0001 ? dx / distance : 0;
+    const ny = distance > 0.0001 ? dy / distance : -1;
+
+    ball.x = object.x + nx * (limit + 0.05);
+    ball.y = object.y + ny * (limit + 0.05);
+
+    const normalSpeed = ball.vx * nx + ball.vy * ny;
+    if (normalSpeed >= 0) return false;
+
+    const impulse = -(1 + bounce) * normalSpeed + boost;
+    ball.vx += impulse * nx;
+    ball.vy += impulse * ny;
+
+    return true;
+  }
+
+  function collideSegment(ball, segment, rotor = null, thickness = 3) {
+    const dx = segment.x2 - segment.x1;
+    const dy = segment.y2 - segment.y1;
+    const lengthSquared = dx * dx + dy * dy;
+
+    const t = Math.max(0, Math.min(1,
+      ((ball.x - segment.x1) * dx + (ball.y - segment.y1) * dy) /
+      (lengthSquared || 1)
+    ));
+
+    const px = segment.x1 + dx * t;
+    const py = segment.y1 + dy * t;
+    const ox = ball.x - px;
+    const oy = ball.y - py;
+    const distance = Math.hypot(ox, oy);
+    const limit = ball.r + thickness;
+
+    if (distance >= limit) return;
+
+    let nx, ny;
+    if (distance > 0.0001) {
+      nx = ox / distance;
+      ny = oy / distance;
+    } else {
+      const length = Math.sqrt(lengthSquared) || 1;
+      nx = -dy / length;
+      ny = dx / length;
+      if (ball.vx * nx + ball.vy * ny > 0) {
+        nx = -nx;
+        ny = -ny;
+      }
+    }
+
+    ball.x += nx * (limit - distance + 0.04);
+    ball.y += ny * (limit - distance + 0.04);
+
+    let surfaceVX = 0;
+    let surfaceVY = 0;
+    let lever = 0;
+
+    if (rotor) {
+      const rx = px - rotor.x;
+      const ry = py - rotor.y;
+      surfaceVX = -rotor.omega * ry;
+      surfaceVY = rotor.omega * rx;
+      lever = rx * ny - ry * nx;
+    }
+
+    const relativeSpeed =
+      (ball.vx - surfaceVX) * nx +
+      (ball.vy - surfaceVY) * ny;
+
+    if (relativeSpeed >= 0) return;
+
+    const denominator = rotor ? 1 + (lever * lever) / rotor.inertia : 1;
+    const impulse = -(1 + settings.bounce) * relativeSpeed / denominator;
+
+    ball.vx += impulse * nx;
+    ball.vy += impulse * ny;
+
+    if (rotor) {
+      rotor.omega -= (lever * impulse) / rotor.inertia;
+      rotor.omega = Math.max(-18, Math.min(18, rotor.omega));
+      if (Math.abs(relativeSpeed) > 70) impact(340, 0.022);
+    }
+  }
+
+  function rotorArms(rotor) {
+    const arms = [];
+    const innerR = 9;
+    for (let i = 0; i < 4; i++) {
+      const angle = rotor.angle + i * (Math.PI / 2);
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      arms.push({
+        x1: rotor.x + cos * innerR,
+        y1: rotor.y + sin * innerR,
+        x2: rotor.x + cos * rotor.length,
+        y2: rotor.y + sin * rotor.length
+      });
+    }
+    return arms;
+  }
+
+  function moveInLane(ball, dt) {
+    const straightLength = 660;
+    const arcLength = Math.PI * 60;
+
+    ball.distance += (760 + ball.power * 640) * dt;
+
+    if (ball.distance < straightLength) {
+      ball.x = 558;
+      ball.y = 750 - ball.distance;
+      return;
+    }
+
+    if (ball.distance < straightLength + arcLength) {
+      const angle = -(ball.distance - straightLength) / 60;
+      ball.x = 498 + Math.cos(angle) * 60;
+      ball.y = 90 + Math.sin(angle) * 60;
+      return;
+    }
+
+    ball.lane = false;
+    ball.x = 438;
+    ball.y = 92;
+    ball.vx = -(90 + ball.power * 380);
+    ball.vy = 80 + ball.power * 95;
+
+    burst(ball.x, ball.y, "#6af3ff", 5, 80);
+  }
+
+  function collectBallInBin(ball) {
+    const index = Math.max(0, Math.min(6,
+      Math.floor((ball.x - LEFT) / BIN_WIDTH)
+    ));
+
+    const reward = BIN_REWARDS[index];
+    const x = LEFT + (index + 0.5) * BIN_WIDTH;
+
+    addStockReward(reward);
+    binGlow[index] = 1;
+    ball.dead = true;
+
+    if (reward > 0) {
+      floatingText(x, 750, `+${reward} BALLS`, "#ffd17d");
+      burst(ball.x, 788, "#ffd17d", 14, 130);
+      tone(reward >= 10 ? 880 : 580, 0.11, 0.025);
+    } else {
+      floatingText(x, 754, "OUT", "#6c7f96");
+      tone(160, 0.04, 0.01);
+    }
+  }
+
+  function physicsStep(dt) {
+    const movingArms = [];
+
+    for (const rotor of rotors) {
+      rotor.angle += rotor.omega * dt;
+      rotor.omega += (rotor.baseOmega - rotor.omega) * (1 - Math.exp(-0.55 * dt));
+      movingArms.push({ rotor, arms: rotorArms(rotor) });
+    }
+
+    for (const ball of balls) {
+      if (ball.dead) continue;
+
+      if (ball.lane) {
+        moveInLane(ball, dt);
+        continue;
+      }
+
+      ball.startCooldown = Math.max(0, ball.startCooldown - dt);
+
+      ball.vy += settings.gravity * dt;
+      ball.vx *= Math.exp(-0.022 * dt);
+      ball.vy *= Math.exp(-0.022 * dt);
+
+      ball.x += ball.vx * dt;
+      ball.y += ball.vy * dt;
+
+      if (Math.hypot(ball.vx, ball.vy) < 18) {
+        ball.stuckTime += dt;
+        if (ball.stuckTime > 0.25) {
+          ball.vx += (Math.random() > 0.5 ? 1 : -1) * 95;
+          ball.vy = -80;
+          ball.stuckTime = 0;
+        }
+      } else {
+        ball.stuckTime = 0;
+      }
+
+      for (const wall of walls) collideSegment(ball, wall);
+
+      for (const pin of pins) {
+        if (collideCircle(ball, pin, settings.bounce)) {
+          pin.glow = 1;
+          if (Math.hypot(ball.vx, ball.vy) > 110) {
+            impact(880 + pin.x * 1.5, 0.012);
+            burst(pin.x, pin.y, "#b7f2ff", 2, 50);
+          }
+        }
+      }
+
+      for (const bumper of bumpers) {
+        if (collideCircle(ball, bumper, 0.95, 290)) {
+          bumper.glow = 1;
+          bumper.scale = 1.28;
+          burst(ball.x, ball.y, bumper.color, 14, 190);
+          ripple(bumper.x, bumper.y, bumper.color);
+          impact(190 + bumper.x * 0.8, 0.045);
+        }
+      }
+
+      for (const item of movingArms) {
+        collideCircle(ball, { x: item.rotor.x, y: item.rotor.y, r: 10 }, settings.bounce);
+        for (const arm of item.arms) {
+          collideSegment(ball, arm, item.rotor, 5.5);
+        }
+      }
+
+      if (
+        ball.startCooldown <= 0 &&
+        Math.hypot(ball.x - START.x, ball.y - START.y) < START.radius
+      ) {
+        hitStartChucker(ball);
+      }
+
+      if (fever.active) {
+        for (const flap of attackerOpenFlaps) collideSegment(ball, flap);
+        if (
+          ball.x > ATTACKER.x &&
+          ball.x < ATTACKER.x + ATTACKER.w &&
+          ball.y > ATTACKER.y &&
+          ball.y < ATTACKER.y + ATTACKER.h
+        ) {
+          addStockReward(ATTACKER.reward);
+          fever.ballsCaught++;
+          attackerGlow = 1;
+          ball.dead = true;
+          burst(ball.x, ball.y, "#ff7cce", 22, 180);
+          floatingText(ball.x, ATTACKER.y - 10, `+${ATTACKER.reward} FEVER!`, "#ffd17d");
+          tone(1046, 0.09, 0.04, 0, "square");
+          continue;
+        }
+      } else {
+        for (const w of attackerClosedWalls) collideSegment(ball, w);
+      }
+
+      if (ball.x < LEFT + ball.r) {
+        ball.x = LEFT + ball.r;
+        ball.vx = Math.abs(ball.vx) * settings.bounce;
+      }
+      if (ball.x > RIGHT - ball.r) {
+        ball.x = RIGHT - ball.r;
+        ball.vx = -Math.abs(ball.vx) * settings.bounce;
+      }
+      if (ball.y < 24 + ball.r) {
+        ball.y = 24 + ball.r;
+        ball.vy = Math.abs(ball.vy) * settings.bounce;
+      }
+
+      const speed = Math.hypot(ball.vx, ball.vy);
+      if (speed > 1150) {
+        ball.vx *= 1150 / speed;
+        ball.vy *= 1150 / speed;
+      }
+
+      if (ball.y > BIN_BOTTOM - ball.r) collectBallInBin(ball);
+    }
+
+    for (let i = 0; i < balls.length; i++) {
+      const a = balls[i];
+      if (a.dead || a.lane) continue;
+
+      for (let j = i + 1; j < balls.length; j++) {
+        const b = balls[j];
+        if (b.dead || b.lane) continue;
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distance = Math.hypot(dx, dy);
+        const limit = a.r + b.r;
+
+        if (distance >= limit) continue;
+
+        const nx = distance > 0.0001 ? dx / distance : 1;
+        const ny = distance > 0.0001 ? dy / distance : 0;
+        const push = (limit - distance + 0.02) / 2;
+
+        a.x -= nx * push;
+        a.y -= ny * push;
+        b.x += nx * push;
+        b.y += ny * push;
+
+        const speed = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        if (speed < 0) {
+          const impulse = -(1 + settings.bounce) * speed / 2;
+          a.vx -= impulse * nx;
+          a.vy -= impulse * ny;
+          b.vx += impulse * nx;
+          b.vy += impulse * ny;
+        }
+      }
+    }
+
+    balls = balls.filter(ball => !ball.dead);
+  }
+
+  function update(dt) {
+    time += dt;
+
+    if (settings.autoFire) {
+      autoFireClock += dt;
+      if (autoFireClock >= 0.34) {
+        autoFireClock = 0;
+        fireBall(false);
+      }
+    }
+
+    for (let i = 0; i < 4; i++) {
+      physicsStep(dt / 4);
+    }
+
+    updateSlotAndFever(dt);
+
+    startGlow = Math.max(0, startGlow - dt * 2.2);
+    attackerGlow = Math.max(0, attackerGlow - dt * 3);
+    launcherPress = launcherHeld ? 1 : Math.max(0, launcherPress - dt * 6.5);
+
+    for (const pin of pins) pin.glow = Math.max(0, pin.glow - dt * 4);
+    for (const bumper of bumpers) {
+      bumper.glow = Math.max(0, bumper.glow - dt * 2.5);
+      bumper.scale = Math.max(1, bumper.scale - dt * 2.2);
+    }
+    for (let i = 0; i < binGlow.length; i++) {
+      binGlow[i] = Math.max(0, binGlow[i] - dt * 1.6);
+    }
+
+    visibleStock += (stock - visibleStock) * (1 - Math.exp(-dt * 8));
+    if (Math.abs(stock - visibleStock) < 0.1) visibleStock = stock;
+
+    for (const ball of balls) {
+      if (!settings.trails) continue;
+      ball.trailClock += dt;
+      if (ball.trailClock >= 0.022) {
+        ball.trailClock = 0;
+        ball.trail.push({ x: ball.x, y: ball.y });
+        if (ball.trail.length > 24) ball.trail.shift();
+      }
+    }
+
+    for (const spark of sparks) {
+      spark.life -= dt;
+      spark.x += spark.vx * dt;
+      spark.y += spark.vy * dt;
+      spark.vy += 200 * dt;
+    }
+    sparks = sparks.filter(spark => spark.life > 0);
+
+    for (const ring of rings) {
+      ring.life -= dt;
+      ring.radius += (ring.size - ring.radius) * dt * 7;
+    }
+    rings = rings.filter(ring => ring.life > 0);
+
+    for (const label of labels) {
+      label.life -= dt;
+      label.y -= 28 * dt;
+    }
+    labels = labels.filter(label => label.life > 0);
+  }
+
+  // --- Drawing Helpers ---
+  function roundedRect(targetCtx, x, y, w, h, radius, fill, stroke, width = 1) {
+    const r = Math.max(0, Math.min(radius, w / 2, h / 2));
+    targetCtx.beginPath();
+    targetCtx.moveTo(x + r, y);
+    targetCtx.arcTo(x + w, y, x + w, y + h, r);
+    targetCtx.arcTo(x + w, y + h, x, y + h, r);
+    targetCtx.arcTo(x, y + h, x, y, r);
+    targetCtx.arcTo(x, y, x + w, y, r);
+    targetCtx.closePath();
+
+    if (fill) {
+      targetCtx.fillStyle = fill;
+      targetCtx.fill();
+    }
+    if (stroke) {
+      targetCtx.strokeStyle = stroke;
+      targetCtx.lineWidth = width;
+      targetCtx.stroke();
+    }
+  }
+
+  function circle(targetCtx, x, y, r, fill, stroke, width = 1) {
+    targetCtx.beginPath();
+    targetCtx.arc(x, y, r, 0, Math.PI * 2);
+    if (fill) {
+      targetCtx.fillStyle = fill;
+      targetCtx.fill();
+    }
+    if (stroke) {
+      targetCtx.strokeStyle = stroke;
+      targetCtx.lineWidth = width;
+      targetCtx.stroke();
+    }
+  }
+
+  function line(targetCtx, x1, y1, x2, y2, color, width = 2) {
+    targetCtx.beginPath();
+    targetCtx.moveTo(x1, y1);
+    targetCtx.lineTo(x2, y2);
+    targetCtx.strokeStyle = color;
+    targetCtx.lineWidth = width;
+    targetCtx.lineCap = "round";
+    targetCtx.stroke();
+  }
+
+  function text(targetCtx, value, x, y, size, color, weight = 600) {
+    targetCtx.font = `${weight} ${size}px system-ui, sans-serif`;
+    targetCtx.textAlign = "center";
+    targetCtx.textBaseline = "middle";
+    targetCtx.fillStyle = color;
+    targetCtx.fillText(String(value), x, y);
+  }
+
+  // Offscreen layer for static board elements
+  const staticLayer = document.createElement("canvas");
+  staticLayer.width = W * DPR;
+  staticLayer.height = H * DPR;
+  const sCtx = staticLayer.getContext("2d");
+  sCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  (function buildStaticLayer() {
+    sCtx.save();
+    sCtx.globalAlpha = 0.08;
+    for (let y = 70; y < 805; y += 26) line(sCtx, LEFT, y, RIGHT, y, "#8ebbdc", 1);
+    for (let x = LEFT; x < RIGHT; x += 26) line(sCtx, x, 60, x, 803, "#8ebbdc", 1);
+    sCtx.restore();
+
+    roundedRect(sCtx, 18, 17, 565, 807, 20, null, "#bf925d", 3);
+    text(sCtx, "N E O N   P A C H I N K O   A R C A D E", 242, 35, 13, "#ffdf9b", 700);
+
+    function railPath() {
+      sCtx.beginPath();
+      sCtx.moveTo(558, 754);
+      sCtx.lineTo(558, 90);
+      sCtx.arc(498, 90, 60, 0, -Math.PI, true);
+      sCtx.lineTo(438, 108);
+    }
+    railPath();
+    sCtx.strokeStyle = "#b58c59";
+    sCtx.lineWidth = 25;
+    sCtx.stroke();
+
+    railPath();
+    sCtx.strokeStyle = "#101b2c";
+    sCtx.lineWidth = 19;
+    sCtx.stroke();
+
+    railPath();
+    sCtx.strokeStyle = "#536c83";
+    sCtx.lineWidth = 2;
+    sCtx.stroke();
+
+    for (let y = 160; y < 715; y += 65) {
+      line(sCtx, 553, y + 4, 558, y - 3, "#6af3ff75");
+      line(sCtx, 558, y - 3, 563, y + 4, "#6af3ff75");
+    }
+
+    for (const wall of walls) {
+      if (wall.y1 === BIN_TOP) continue;
+      const funnel = wall.y1 === 560;
+      line(
+        sCtx, wall.x1, wall.y1, wall.x2, wall.y2,
+        funnel ? "#7fe6f2" : "#aa875b",
+        funnel ? 5 : 4
+      );
+    }
+
+    for (let i = 1; i < 7; i++) {
+      const x = LEFT + i * BIN_WIDTH;
+      line(sCtx, x, BIN_TOP, x, 808, "#b28b5a", 5);
+      circle(sCtx, x, BIN_TOP, 4, "#ffe0a0");
+    }
+  })();
+
+  function drawRailLauncherButton() {
+    ctx.save();
+    const pressOffset = launcherPress * 3.5;
+    const pulse = 0.5 + 0.5 * Math.sin(time * 4.5);
+    const activeGlow = launcherPress > 0.05 || launcherHover;
+    const bx = LAUNCH_BTN.x;
+    const by = LAUNCH_BTN.y + pressOffset;
+    const bw = LAUNCH_BTN.w;
+    const bh = LAUNCH_BTN.h;
+
+    // Recessed base under the button when pressed
+    roundedRect(ctx, bx, LAUNCH_BTN.y + 4, bw, bh - 2, 11, "#0d1626", "#ffffff18", 1);
+
+    ctx.shadowColor = activeGlow ? "#6af3ff" : "#ffd17d";
+    ctx.shadowBlur = activeGlow ? 20 : 8 + pulse * 8;
+
+    const grad = ctx.createLinearGradient(bx, by, bx, by + bh);
+    if (launcherPress > 0.2) {
+      grad.addColorStop(0, "#4df2ff");
+      grad.addColorStop(1, "#1e6f8c");
+    } else if (launcherHover) {
+      grad.addColorStop(0, "#385478");
+      grad.addColorStop(1, "#1e324d");
+    } else {
+      grad.addColorStop(0, "#2c4160");
+      grad.addColorStop(1, "#17253a");
+    }
+
+    roundedRect(
+      ctx, bx, by, bw, bh, 11,
+      grad,
+      activeGlow ? "#6af3ff" : "#ffd17d",
+      activeGlow ? 2.4 : 2
+    );
+    ctx.shadowBlur = 0;
+
+    const cx = bx + bw / 2;
+    const arrowCol = launcherPress > 0.2 ? "#ffffff" : "#ffd17d";
+    text(ctx, "↑", cx, by + 22, 26, arrowCol, 900);
+    text(ctx, "FIRE", cx, by + 44, 10, "#e6f6ff", 800);
+    text(ctx, `${Math.round(settings.handlePower * 100)}%`, cx, by + 58, 9.5, "#ffd17d", 700);
+    ctx.restore();
+  }
+
+  function drawSlotScreen() {
+    ctx.save();
+
+    const color = fever.active ? "#ff7cce" : SLOT_COLORS[slot.colorIndex];
+
+    if (slot.flash > 0) {
+      ctx.translate(
+        Math.sin(time * 36) * slot.flash * 1.8,
+        Math.cos(time * 30) * slot.flash * 1.2
+      );
+    }
+
+    ctx.shadowColor = color;
+    ctx.shadowBlur = fever.active ? 28 : 16 + slot.flash * 18;
+
+    roundedRect(
+      ctx, SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h,
+      14, "#121d35", color, 2.5
+    );
+
+    ctx.shadowBlur = 0;
+
+    const reachVisible = slot.active && slot.lockedReels >= 2 && slot.isReach;
+    const headerTitle = fever.active
+      ? `🔥 FEVER MODE! (${fever.timer.toFixed(1)}s) 🔥`
+      : slot.active
+        ? (reachVisible
+            ? `⚡ REACH! ${slot.reels[0]}-${slot.reels[0]}-${slot.reels[0]} ⚡`
+            : "SLOT SPINNING...")
+        : "PACHINKO DIGITAL SLOT";
+
+    text(ctx, headerTitle, 286, 175, 10.5, fever.active ? "#ffd17d" : "#dcecff", 800);
+
+    const stopOrderTimes = [
+      slot.duration * 0.45,
+      slot.duration * 0.96,
+      slot.duration * 0.70
+    ];
+
+    for (let i = 0; i < 3; i++) {
+      const x = 191 + i * 64;
+      const y = 190;
+      const w = 59;
+      const h = 54;
+      const stopTime = stopOrderTimes[i];
+      const spinning = slot.active && slot.elapsed < stopTime;
+
+      roundedRect(
+        ctx, x, y, w, h, 8,
+        "#060c17",
+        spinning ? color : "#ffffff35",
+        spinning ? 2 : 1
+      );
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x + 2, y + 2, w - 4, h - 4);
+      ctx.clip();
+
+      if (spinning) {
+        const progress = Math.min(1, slot.elapsed / stopTime);
+        const ease = 1 - Math.pow(1 - progress, 2.2);
+        const totalSteps = 27 + i * 9 + (slot.reels[i] - 1);
+        const position = totalSteps * ease;
+        const whole = Math.floor(position);
+        const fraction = position - whole;
+
+        for (let row = -1; row <= 2; row++) {
+          const digit = ((whole + row) % 9 + 9) % 9 + 1;
+          const digitY = y + h / 2 + (row - fraction) * h;
+          text(ctx, digit, x + w / 2, digitY, 42, color, 900);
+        }
+
+        const shade = ctx.createLinearGradient(0, y, 0, y + h);
+        shade.addColorStop(0, "#060c17dd");
+        shade.addColorStop(0.28, "#060c1700");
+        shade.addColorStop(0.72, "#060c1700");
+        shade.addColorStop(1, "#060c17dd");
+
+        ctx.fillStyle = shade;
+        ctx.fillRect(x, y, w, h);
+      } else {
+        const digit = slot.reels[i];
+        const digitColor = (fever.active || (!slot.active && slot.isJackpot)) ? "#ffd17d" : color;
+        text(ctx, digit, x + w / 2, y + h / 2, 42, digitColor, 900);
+      }
+
+      ctx.restore();
+    }
+
+    text(ctx, "HOLD:", 232, 261, 9.5, "#9bb4d0", 700);
+    for (let q = 0; q < slot.maxQueue; q++) {
+      const qx = 266 + q * 18;
+      const qy = 261;
+      const isLit = q < slot.queue;
+      circle(
+        ctx, qx, qy, 5,
+        isLit ? "#ff7cce" : "#0a1220",
+        isLit ? "#ffffff" : "#ffffff30",
+        1.5
+      );
+    }
+
+    for (let i = 0; i < 18; i++) {
+      ctx.globalAlpha = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * (fever.active ? 9 : 3) - i * 0.5));
+      circle(ctx, SCREEN.x + 11 + i * 12, SCREEN.y - 6, 2.5, color);
+    }
+
+    ctx.restore();
+  }
+
+  function drawAttacker() {
+    ctx.save();
+    const isOpen = fever.active;
+    const borderCol = isOpen ? "#ffd17d" : "#495a72";
+    const bgCol = isOpen
+      ? `rgba(255, 124, 206, ${0.22 + attackerGlow * 0.4})`
+      : "#0c1526";
+
+    if (isOpen) {
+      ctx.shadowColor = "#ff7cce";
+      ctx.shadowBlur = 18 + attackerGlow * 20;
+    }
+
+    roundedRect(
+      ctx, ATTACKER.x, ATTACKER.y, ATTACKER.w, ATTACKER.h,
+      9, bgCol, borderCol, isOpen ? 2.5 : 1.5
+    );
+    ctx.shadowBlur = 0;
+
+    if (isOpen) {
+      line(ctx, ATTACKER.x - 18, ATTACKER.y - 10, ATTACKER.x, ATTACKER.y + 4, "#ffd17d", 4);
+      line(ctx, ATTACKER.x + ATTACKER.w + 18, ATTACKER.y - 10, ATTACKER.x + ATTACKER.w, ATTACKER.y + 4, "#ffd17d", 4);
+      text(ctx, `⚡ ATTACKER OPEN! (+${ATTACKER.reward} BALLS) ⚡`, 285, ATTACKER.y + 17, 11, "#ffd17d", 850);
+    } else {
+      line(ctx, ATTACKER.x + 2, ATTACKER.y, 285, ATTACKER.y - 6, "#6f86a4", 3);
+      line(ctx, 285, ATTACKER.y - 6, ATTACKER.x + ATTACKER.w - 2, ATTACKER.y, "#6f86a4", 3);
+      text(ctx, "ATTACKER GATE [CLOSED — GET TRIPLE TO OPEN]", 285, ATTACKER.y + 17, 9, "#6b809b", 700);
+    }
+    ctx.restore();
+  }
+
+  function drawBoard() {
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#10192e");
+    bg.addColorStop(0.55, fever.active ? "#26122c" : "#112c3c");
+    bg.addColorStop(1, "#101627");
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.drawImage(staticLayer, 0, 0, W, H);
+
+    for (let i = 0; i < 24; i++) {
+      const y = 62 + i * 28.5;
+      ctx.globalAlpha = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(time * (fever.active ? 8 : 2.2) - i * 0.4));
+      circle(ctx, 27, y, 3, i % 2 ? "#6af3ff" : "#ffd17d");
+      if (y < 735) {
+        circle(ctx, 578, y, 3, i % 2 ? "#ffd17d" : "#6af3ff");
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    drawRailLauncherButton();
+
+    for (const pin of pins) {
+      if (pin.glow > 0) {
+        circle(ctx, pin.x, pin.y, 8 + pin.glow * 5, `rgba(106,243,255,${pin.glow * 0.25})`);
+      }
+      circle(ctx, pin.x + 1, pin.y + 2, 6, "#0007");
+      circle(ctx, pin.x, pin.y, pin.r, pin.glow > 0.3 ? "#eaffff" : "#bd955d");
+      circle(ctx, pin.x - 1.4, pin.y - 1.5, 1.7, "#ffefc5");
+    }
+
+    for (const bumper of bumpers) {
+      ctx.save();
+      const r = bumper.r * bumper.scale;
+      ctx.shadowColor = bumper.color;
+      ctx.shadowBlur = 12 + bumper.glow * 25;
+
+      circle(ctx, bumper.x, bumper.y, r + 5, "#111a2b", bumper.color, 2);
+      circle(ctx, bumper.x, bumper.y, r, bumper.color);
+      ctx.shadowBlur = 0;
+
+      circle(ctx, bumper.x, bumper.y, r - 6, "#132339");
+      circle(ctx, bumper.x, bumper.y, r - 12, "#2b3c56", "#ffffff25", 2);
+      text(ctx, "BUMP", bumper.x, bumper.y, 9.5, bumper.color, 850);
+      ctx.restore();
+    }
+
+    for (const rotor of rotors) {
+      circle(ctx, rotor.x, rotor.y, rotor.length + 6, null, "#ffffff10");
+
+      for (const arm of rotorArms(rotor)) {
+        line(ctx, arm.x1 + 2, arm.y1 + 4, arm.x2 + 2, arm.y2 + 4, "#0007", 13);
+        line(ctx, arm.x1, arm.y1, arm.x2, arm.y2, "#a36ac1", 10);
+        line(ctx, arm.x1, arm.y1, arm.x2, arm.y2, "#efbaff", 3);
+        circle(ctx, arm.x2, arm.y2, 5.5, "#ffd17d");
+      }
+
+      circle(ctx, rotor.x, rotor.y, 10, "#35485f", "#e9f5ff", 2);
+      circle(ctx, rotor.x, rotor.y, 4, "#ffd17d");
+    }
+
+    ctx.save();
+    ctx.shadowColor = "#6af3ff";
+    ctx.shadowBlur = 14 + startGlow * 25;
+    circle(ctx, START.x, START.y, START.radius + 4, "#0b1b2e", "#6af3ff", 2.5);
+    circle(ctx, START.x, START.y, START.radius - 3, "#173c4c", "#6af3ff80");
+    text(ctx, "START", START.x, START.y - 4, 10, "#e4ffff", 850);
+    text(ctx, "+5 & SPIN", START.x, START.y + 8, 8, "#ffd17d", 750);
+    ctx.restore();
+
+    drawAttacker();
+
+    for (let i = 0; i < 7; i++) {
+      const x = LEFT + i * BIN_WIDTH;
+      const reward = BIN_REWARDS[i];
+      const hasReward = reward > 0;
+      const color = reward >= 10 ? "#ff7cce" : hasReward ? "#ffd17d" : "#647890";
+
+      const fill = binGlow[i] > 0
+        ? hasReward
+          ? `rgba(255,209,125,${0.15 + binGlow[i] * 0.4})`
+          : `rgba(130,160,190,${0.08 + binGlow[i] * 0.2})`
+        : hasReward ? "#1d283a" : "#0e1624";
+
+      roundedRect(
+        ctx, x + 3, BIN_TOP + 2,
+        BIN_WIDTH - 6, 53, 7,
+        fill, color, i === 3 ? 2 : 1
+      );
+
+      text(ctx, hasReward ? `+${reward}` : "OUT", x + BIN_WIDTH / 2, 773, 19, color, 850);
+      text(
+        ctx, hasReward ? "BALLS" : "LOST",
+        x + BIN_WIDTH / 2, 793, 7.5,
+        hasReward ? "#d9c494" : "#5d6f85"
+      );
+    }
+
+    drawSlotScreen();
+  }
+
+  function drawBalls() {
+    for (const ball of balls) {
+      if (settings.trails && ball.trail.length > 1) {
+        ctx.beginPath();
+        ball.trail.forEach((point, index) => {
+          if (index === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+        ctx.lineTo(ball.x, ball.y);
+        ctx.lineWidth = 2.2;
+        ctx.strokeStyle = "#91eaff45";
+        ctx.stroke();
+      }
+
+      circle(ctx, ball.x + 2, ball.y + 3, ball.r, "#0007");
+
+      const metal = ctx.createRadialGradient(
+        ball.x - 2.5, ball.y - 3, 0.5,
+        ball.x, ball.y, ball.r
+      );
+      metal.addColorStop(0, "#ffffff");
+      metal.addColorStop(0.25, "#eaf8ff");
+      metal.addColorStop(0.55, "#a2b6cc");
+      metal.addColorStop(0.8, "#53647b");
+      metal.addColorStop(1, "#dce9f9");
+
+      circle(ctx, ball.x, ball.y, ball.r, metal, "#ffffff80", 0.7);
+    }
+  }
+
+  function drawEffects() {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+
+    for (const spark of sparks) {
+      ctx.globalAlpha = Math.min(1, spark.life * 1.7);
+      circle(ctx, spark.x, spark.y, 2.2, spark.color);
+    }
+
+    for (const ring of rings) {
+      ctx.globalAlpha = Math.max(0, ring.life * 1.5);
+      circle(ctx, ring.x, ring.y, ring.radius, null, ring.color, 2.2);
+    }
+
+    ctx.globalCompositeOperation = "source-over";
+
+    for (const label of labels) {
+      ctx.globalAlpha = Math.min(1, label.life * 2);
+      text(ctx, label.value, label.x, label.y, 16, label.color, 900);
+    }
+
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    drawBoard();
+    drawBalls();
+    drawEffects();
+
+    if (paused) {
+      ctx.fillStyle = "#050b18bb";
+      ctx.fillRect(0, 0, W, H);
+      roundedRect(ctx, 130, 348, 340, 132, 20, "#16223b", "#ffd17d", 2);
+      text(ctx, "PAUSED", 300, 392, 30, "#ffdc96", 850);
+      text(ctx, "Press ▶ above or Resume in Menu", 300, 440, 14, "#d9eaff");
+    }
+  }
+
+  // Dirty-checked HUD
+  const hudCache = {};
+  function setTextIfChanged(id, val) {
+    const str = String(val);
+    if (hudCache[id] !== str) {
+      hudCache[id] = str;
+      $(id).textContent = str;
+    }
+  }
+
+  function updateHUD() {
+    const stockText = settings.infinite
+      ? "∞"
+      : Math.round(visibleStock).toLocaleString("en-US");
+    setTextIfChanged("stockDisplay", stockText);
+
+    const diff = stock - INITIAL_STOCK - addedStock;
+    const netText = settings.infinite
+      ? "FREE"
+      : (diff >= 0 ? "+" : "") + diff.toLocaleString("en-US");
+    setTextIfChanged("netDiff", netText);
+
+    const netColor = settings.infinite
+      ? "var(--cyan)"
+      : diff >= 0 ? "var(--green)" : "var(--pink)";
+    if (hudCache.netColor !== netColor) {
+      hudCache.netColor = netColor;
+      $("netDiff").style.color = netColor;
+    }
+
+    setTextIfChanged("active", balls.length);
+    setTextIfChanged("hits", centerHits);
+    setTextIfChanged("queue", `${slot.queue}/${slot.maxQueue}`);
+    setTextIfChanged("jackpots", jackpotCount);
+
+    const badgeText = fever.active
+      ? `🔥 FEVER (${fever.timer.toFixed(1)}s)`
+      : slot.active ? "MODE: SPIN" : "MODE: NORMAL";
+    setTextIfChanged("stateBadge", badgeText);
+
+    if (hudCache.feverClass !== fever.active) {
+      hudCache.feverClass = fever.active;
+      $("stateBadge").classList.toggle("fever", fever.active);
+    }
+  }
+
+  // --- Modal Control ---
+  const modalBackdrop = $("modalBackdrop");
+  const menuModal = $("menuModal");
+  const openMenuBtn = $("openMenuBtn");
+
+  function setModalOpen(open) {
+    modalBackdrop.classList.toggle("open", open);
+    menuModal.setAttribute("aria-hidden", String(!open));
+    openMenuBtn.setAttribute("aria-expanded", String(open));
+  }
+
+  openMenuBtn.onclick = () => {
+    unlockAudio();
+    setModalOpen(!modalBackdrop.classList.contains("open"));
+  };
+  $("closeMenuBtn").onclick = () => setModalOpen(false);
+  modalBackdrop.addEventListener("click", event => {
+    if (event.target === modalBackdrop) setModalOpen(false);
+  });
+
+  // --- Pause & Reset ---
+  function setPaused(value) {
+    paused = value;
+    $("pauseMenuBtn").textContent = paused ? "Resume" : "Pause";
+    $("pauseQuickBtn").textContent = paused ? "▶" : "⏸";
+  }
+
+  function togglePause() {
+    unlockAudio();
+    setPaused(!paused);
+  }
+
+  function resetGame() {
+    balls = [];
+    sparks = [];
+    rings = [];
+    labels = [];
+    stock = INITIAL_STOCK;
+    addedStock = 0;
+    visibleStock = INITIAL_STOCK;
+    centerHits = 0;
+    jackpotCount = 0;
+    startGlow = 0;
+    attackerGlow = 0;
+    launcherPress = 0;
+    launcherHeld = false;
+    autoFireClock = 0;
+    lastFireTime = -1;
+
+    fever.active = false;
+    fever.timer = 0;
+    fever.ballsCaught = 0;
+
+    slot.active = false;
+    slot.elapsed = 0;
+    slot.duration = 2.2;
+    slot.reels = [7, 7, 7];
+    slot.isJackpot = false;
+    slot.isReach = false;
+    slot.queue = 0;
+    slot.flash = 0;
+    slot.cooldown = 0;
+    slot.lockedReels = 0;
+    slot.colorIndex = 0;
+
+    rotors = createRotors();
+    binGlow.fill(0);
+    pins.forEach(p => p.glow = 0);
+    bumpers.forEach(b => { b.glow = 0; b.scale = 1; });
+
+    setPaused(false);
+    message("Board reset! Tap ↑ at bottom-right to start shooting.");
+    setModalOpen(false);
+  }
+
+  $("pauseQuickBtn").onclick = togglePause;
+  $("pauseMenuBtn").onclick = () => {
+    togglePause();
+    setModalOpen(false);
+  };
+  $("resetMenuBtn").onclick = resetGame;
+
+  // --- Bottom-Right ↑ Rail Fire Button ---
+  const railFireBtn = $("railFireBtn");
+  railFireBtn.addEventListener("pointerenter", () => { launcherHover = true; });
+  railFireBtn.addEventListener("pointerleave", () => {
+    launcherHover = false;
+    launcherHeld = false;
+  });
+  railFireBtn.addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    launcherHeld = true;
+    fireBall(true);
+  });
+  const releaseLauncher = () => { launcherHeld = false; };
+  railFireBtn.addEventListener("pointerup", releaseLauncher);
+  railFireBtn.addEventListener("pointercancel", releaseLauncher);
+  railFireBtn.addEventListener("keydown", event => {
+    if ((event.code === "Enter" || event.code === "Space") && !event.repeat) {
+      event.preventDefault();
+      fireBall(true);
+    }
+  });
+
+  // --- Modal Controls (Handle Power, Auto, Single Shot, Test, Settings) ---
+  $("handlePower").oninput = event => {
+    const val = Number(event.target.value);
+    settings.handlePower = val / 100;
+    $("powerText").textContent = val + "%";
+  };
+
+  const autoBtn = $("autoShootBtn");
+  autoBtn.onclick = () => {
+    unlockAudio();
+    settings.autoFire = !settings.autoFire;
+    autoBtn.classList.toggle("active", settings.autoFire);
+    autoBtn.textContent = settings.autoFire
+      ? "⚡ AUTO: ON (Rapid Fire Active)"
+      : "⚪ AUTO: OFF (Tap for Rapid Fire)";
+    message(settings.autoFire
+      ? "Auto-Fire enabled! Close Menu to watch the action."
+      : "Auto-Fire disabled! Tap ↑ at bottom-right to shoot 1 ball.");
+  };
+
+  $("modalSingleShotBtn").addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    fireBall(true);
+  });
+  $("modalSingleShotBtn").addEventListener("keydown", event => {
+    if ((event.code === "Enter" || event.code === "Space") && !event.repeat) {
+      event.preventDefault();
+      fireBall(true);
+    }
+  });
+
+  const firstGestureUnlock = () => {
+    unlockAudio();
+    window.removeEventListener("pointerdown", firstGestureUnlock);
+    window.removeEventListener("keydown", firstGestureUnlock);
+  };
+  window.addEventListener("pointerdown", firstGestureUnlock, { passive: true });
+  window.addEventListener("keydown", firstGestureUnlock, { passive: true });
+
+  window.addEventListener("keydown", event => {
+    if (event.code === "Escape" && modalBackdrop.classList.contains("open")) {
+      setModalOpen(false);
+      return;
+    }
+    if (event.code === "Space" && !event.repeat) {
+      const target = event.target;
+      if (target instanceof Element && target.matches("input, button, summary")) return;
+      event.preventDefault();
+      fireBall(true);
+    }
+  });
+
+  $("add100").onclick = () => {
+    stock += 100;
+    addedStock += 100;
+    message("Added +100 balls to stock!");
+    setModalOpen(false);
+  };
+
+  $("add500").onclick = () => {
+    stock += 500;
+    addedStock += 500;
+    message("Added +500 balls to stock!");
+    setModalOpen(false);
+  };
+
+  $("testSpin").onclick = () => {
+    unlockAudio();
+    if (paused) setPaused(false);
+    if (fever.active) {
+      message("FEVER mode active! Wait for it to finish before spinning.");
+    } else if (!addSlotQueue()) {
+      message("Hold queue is full (4/4)!");
+    } else {
+      message("Added spin to Hold queue! Watch the center slot screen.");
+    }
+    setModalOpen(false);
+  };
+
+  $("forceFever").onclick = () => {
+    unlockAudio();
+    if (paused) setPaused(false);
+    slot.active = false;
+    slot.reels = [7, 7, 7];
+    slot.isJackpot = true;
+    startFeverMode();
+    setModalOpen(false);
+  };
+
+  $("infinite").onchange = event => {
+    settings.infinite = event.target.checked;
+  };
+
+  $("sound").onchange = event => {
+    settings.sound = event.target.checked;
+    unlockAudio();
+  };
+
+  $("trails").onchange = event => {
+    settings.trails = event.target.checked;
+    if (!settings.trails) balls.forEach(ball => { ball.trail.length = 0; });
+  };
+
+  $("jackpotRate").oninput = event => {
+    const val = Number(event.target.value);
+    settings.jackpotChance = val / 100;
+    $("rateValue").textContent = val + "%";
+  };
+
+  $("gravity").oninput = event => {
+    settings.gravity = Number(event.target.value);
+    $("gravityValue").textContent = settings.gravity;
+  };
+
+  $("bounce").oninput = event => {
+    settings.bounce = Number(event.target.value);
+    $("bounceValue").textContent = settings.bounce.toFixed(2);
+  };
+
+  const FIXED_DT = 1 / 120;
+  let previousFrame = performance.now();
+  let accumulator = 0;
+
+  function frame(now) {
+    const elapsed = Math.min((now - previousFrame) / 1000, 0.05);
+    previousFrame = now;
+
+    if (!paused) {
+      accumulator += elapsed;
+      while (accumulator >= FIXED_DT) {
+        update(FIXED_DT);
+        accumulator -= FIXED_DT;
+      }
+    } else {
+      accumulator = 0;
+    }
+
+    draw();
+    updateHUD();
+    requestAnimationFrame(frame);
+  }
+
+  updateHUD();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
